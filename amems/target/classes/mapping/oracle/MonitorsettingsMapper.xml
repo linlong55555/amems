@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.monitorsettings.dao.MonitorsettingsMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.Monitorsettings" >
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="KEY" property="key" jdbcType="VARCHAR" />
+    <result column="YJTS_JB1" property="yjtsJb1" jdbcType="DECIMAL" />
+    <result column="YJTS_JB2" property="yjtsJb2" jdbcType="DECIMAL" />
+    <result column="YJTS_JB3" property="yjtsJb3" jdbcType="DECIMAL" />
+  </resultMap>
+  <insert id="insert" parameterType="com.eray.thjw.po.Monitorsettings" >
+    insert into T_THRESHOLD (DPRTCODE, KEY, YJTS_JB1, 
+      YJTS_JB2, YJTS_JB3)
+    values (#{dprtcode,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, #{yjtsJb1,jdbcType=DECIMAL}, 
+      #{yjtsJb2,jdbcType=DECIMAL}, #{yjtsJb3,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.Monitorsettings" >
+    insert into T_THRESHOLD
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="key != null" >
+        KEY,
+      </if>
+      <if test="yjtsJb1 != null" >
+        YJTS_JB1,
+      </if>
+      <if test="yjtsJb2 != null" >
+        YJTS_JB2,
+      </if>
+      <if test="yjtsJb3 != null" >
+        YJTS_JB3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="key != null" >
+        #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="yjtsJb1 != null" >
+        #{yjtsJb1,jdbcType=DECIMAL},
+      </if>
+      <if test="yjtsJb2 != null" >
+        #{yjtsJb2,jdbcType=DECIMAL},
+      </if>
+      <if test="yjtsJb3 != null" >
+        #{yjtsJb3,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  
+  	<!-- 根据dprtcode查询系统阀值设置信息 -->
+	<select id="selectThresholdByDprtcode" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+<!-- 		select
+		<include refid="Base_Column_List" />
+		from T_THRESHOLD
+		where dprtcode = #{dprtcode} -->
+		
+		select 
+		<include refid="Base_Column_List" />
+		 from t_threshold  t
+          where (t.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+                 or
+                 ( not EXISTS ( select 1 from t_threshold where  key=t.key  and dprtcode= #{dprtcode,jdbcType=VARCHAR}
+    			 		
+      		 			) and dprtcode = '-1' ))  
+	</select>
+	  	<!-- 根据dprtcode和key查询系统阀值设置信息 -->
+	<select id="selectThresholdByKeyandDprtcode" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+ 		select
+		<include refid="Base_Column_List" />
+		from T_THRESHOLD
+		where dprtcode = #{dprtcode,jdbcType=VARCHAR} and key=#{key,jdbcType=VARCHAR} 
+		
+	</select>
+	
+	<!-- add  -->
+	<select id="selectThresholdByKeyandDprtcodes" parameterType="com.eray.thjw.po.Monitorsettings"
+		resultMap="BaseResultMap">
+ 		select
+		<include refid="Base_Column_List" />
+		from T_THRESHOLD
+		where 
+		dprtcode in
+		 <foreach collection="paramsMap.dprtcodes" item="k" index="index" open="(" close=")" separator=",">
+			#{k}
+		 </foreach>
+		 and key=#{key,jdbcType=VARCHAR} 
+		
+	</select>
+	<!-- add  -->
+ 	<sql id="Base_Column_List">
+		KEY, YJTS_JB1, YJTS_JB2, YJTS_JB3,dprtcode
+	</sql> 
+  
+  	<!-- 根据keys查询数据 -->
+	<select id="selectThresholdByKeys" parameterType="com.eray.thjw.po.Monitorsettings" resultMap="BaseResultMap">
+    	select 
+    	<include refid="Base_Column_List" />
+    	from  T_THRESHOLD
+		where dprtcode=#{dprtcode,jdbcType=VARCHAR}
+		<if test="keys != null" >
+		and key in 
+		 <foreach collection="keys" item="k" index="index" open="(" close=")" separator=",">
+			#{k}
+		 </foreach>
+		 </if>
+	</select>
+	
+	 <update id="updateByKeyandDprtcode" parameterType="com.eray.thjw.po.Monitorsettings" >
+    update T_THRESHOLD
+    <set >
+      <if test="yjtsJb1 != null" >
+        YJTS_JB1 = #{yjtsJb1,jdbcType=VARCHAR},
+      </if>
+      <if test="yjtsJb2 != null" >
+        YJTS_JB2 = #{yjtsJb2,jdbcType=VARCHAR},
+      </if>
+      <if test="yjtsJb3 != null" >
+        YJTS_JB3 = #{yjtsJb3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where key = #{key,jdbcType=VARCHAR} and dprtcode=#{dprtcode,jdbcType=VARCHAR}
+  </update>
+  
+  <!--  获取适航性资料子类型 -->
+  <select id="selectShxzlSubTypeByDprtcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+	SELECT
+		<include refid="Base_Column_List" />
+	FROM T_THRESHOLD T
+	WHERE T.DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND UPPER(T.key) like UPPER('JSWJ_%')
+  </select>
+	
+	
+  <!-- 批量修改-->
+  <update id="update4Batch" parameterType="java.util.List">
+  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+       UPDATE T_THRESHOLD 
+       <set >
+        	YJTS_JB1 = #{item.yjtsJb1,jdbcType=VARCHAR},
+        	YJTS_JB2 = #{item.yjtsJb2,jdbcType=VARCHAR},
+        	YJTS_JB3 = #{item.yjtsJb3,jdbcType=VARCHAR}
+       </set>
+       WHERE KEY = #{item.key,jdbcType=VARCHAR} AND DPRTCODE=#{item.dprtcode,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+  
+  <!-- 批量删除-->
+  <update id="delete4Batch" parameterType="java.util.List">
+  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+        DELETE FROM T_THRESHOLD
+        WHERE KEY = #{item.key,jdbcType=VARCHAR} AND DPRTCODE=#{item.dprtcode,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+  
+  <!-- 批量新增 -->
+  <insert id="insert4Batch" parameterType="java.util.List" >
+	     INSERT INTO T_THRESHOLD (DPRTCODE, 
+	     						  KEY, 
+	     						  YJTS_JB1, 
+      							  YJTS_JB2, 
+      							  YJTS_JB3)
+	      <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		    select 
+		    	  #{item.dprtcode,jdbcType=VARCHAR}, 
+		    	  #{item.key,jdbcType=VARCHAR}, 
+			      #{item.yjtsJb1,jdbcType=DECIMAL}, 
+			      #{item.yjtsJb2,jdbcType=DECIMAL}, 
+			      #{item.yjtsJb3,jdbcType=DECIMAL}
+		  	from dual
+	    </foreach>
+  </insert>
+	
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.framework.saibong.dao.SaibongSnMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.framework.saibong.po.SaibongSn" >
+    <id column="CFKEY" property="cfkey" jdbcType="VARCHAR" />
+    <id column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DJH" property="djh" jdbcType="VARCHAR" />
+    <result column="DQLSH" property="dqlsh" jdbcType="DECIMAL" />
+    <result column="FSSJ" property="fssj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CFKEY, DPRTCODE, DJH, DQLSH, FSSJ
+  </sql>
+  
+  <select id="getSaibongSnByDprtAndKeyAndDjh" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SAIBONG_SN
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} 
+      and CFKEY = #{cfkey,jdbcType=VARCHAR} 
+      and DJH = #{djh,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getSaibongSn4ProjectCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+     SELECT  <include refid="Base_Column_List" />
+     FROM SAIBONG_SN
+     where DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+           and CFKEY = #{cfkey,jdbcType=VARCHAR} 
+  </select>
+  
+  <insert id="insertSelective" parameterType="com.eray.framework.saibong.po.SaibongSn" >
+    insert into SAIBONG_SN
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cfkey != null" >
+        CFKEY,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="djh != null" >
+        DJH,
+      </if>
+      <if test="dqlsh != null" >
+        DQLSH,
+      </if>
+      <if test="fssj != null" >
+        FSSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cfkey != null" >
+        #{cfkey,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="djh != null" >
+        #{djh,jdbcType=VARCHAR},
+      </if>
+      <if test="dqlsh != null" >
+        #{dqlsh,jdbcType=DECIMAL},
+      </if>
+      <if test="fssj != null" >
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateDqlsh" parameterType="com.eray.framework.saibong.po.SaibongSn" >
+    update SAIBONG_SN
+    set DQLSH = #{dqlsh,jdbcType=DECIMAL},
+        FSSJ = sysdate
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+      and DJH = #{djh,jdbcType=VARCHAR}
+      and CFKEY = #{cfkey,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateSaibongSn4ProjectCode" parameterType="com.eray.framework.saibong.po.SaibongSn">
+      update SAIBONG_SN
+      set DJH = #{djh,jdbcType=VARCHAR}, FSSJ = sysdate
+      where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and CFKEY = #{cfkey,jdbcType=VARCHAR}
+  </update>
+</mapper>

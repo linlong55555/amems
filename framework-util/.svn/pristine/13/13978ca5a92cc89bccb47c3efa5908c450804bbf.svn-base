@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.framework.saibong.dao.SaibongRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.framework.saibong.po.SaibongRule" >
+    <id column="CFKEY" property="cfkey" jdbcType="VARCHAR" />
+    <id column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="GZNR" property="gznr" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CFKEY, DPRTCODE, GZNR
+  </sql>
+  
+  <select id="getSaibongRuleByDprtAndKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SAIBONG_RULE
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and CFKEY = #{cfkey,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="insertSelective" parameterType="com.eray.framework.saibong.po.SaibongRule" >
+    insert into SAIBONG_RULE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cfkey != null" >
+        CFKEY,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="gznr != null" >
+        GZNR,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cfkey != null" >
+        #{cfkey,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="gznr != null" >
+        #{gznr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.framework.saibong.po.SaibongRule" >
+    update SAIBONG_RULE
+    <set >
+      <if test="gznr != null" >
+        GZNR = #{gznr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CFKEY = #{cfkey,jdbcType=VARCHAR}
+      and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 查询所有组织机构的采番规则，无规则则使用通用规则代替 -->
+  	<select id="selectAllDeptSaibongRules" resultMap="BaseResultMap">
+		SELECT T.CFKEY, DEPT.ID DPRTCODE, T.GZNR    
+		FROM SAIBONG_RULE T
+		    JOIN T_DEPARTMENT DEPT ON DEPT.DPRTTYPE = 1
+		    AND (T.DPRTCODE = DEPT.ID OR (T.DPRTCODE = '-1' AND NOT EXISTS ( SELECT 1 FROM SAIBONG_RULE TEMP WHERE TEMP.CFKEY = T.CFKEY  AND TEMP.DPRTCODE = DEPT.ID )))
+		ORDER BY DEPT.ID
+	</select>
+</mapper>

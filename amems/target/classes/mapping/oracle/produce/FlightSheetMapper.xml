@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.produce.dao.FlightSheetMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.FlightSheet">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="ZDDWID" jdbcType="VARCHAR" property="zddwid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="XDDWID" jdbcType="VARCHAR" property="xddwid" />
+    <result column="XDRID" jdbcType="VARCHAR" property="xdrid" />
+    <result column="XDSJ" jdbcType="TIMESTAMP" property="xdsj" />
+    <result column="XDBZ" jdbcType="VARCHAR" property="xdbz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="IS_XDTX" jdbcType="DECIMAL" property="isXdtx" />
+    <result column="FXJLBH" jdbcType="VARCHAR" property="fxjlbh" />
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+    <result column="JLBYM" jdbcType="VARCHAR" property="jlbym" />
+    <result column="FXRQ" jdbcType="TIMESTAMP" property="fxrq" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="KCSJ" jdbcType="TIMESTAMP" property="kcsj" />
+    <result column="GJBS" jdbcType="DECIMAL" property="gjbs" />
+    <result column="HBH" jdbcType="VARCHAR" property="paramsMap.hbh" />
+    <result column="HBHID" jdbcType="VARCHAR" property="paramsMap.hbhid" />
+    <result column="fxrwlx" jdbcType="VARCHAR" property="paramsMap.fxrwlx" />
+    <result column="qfz" jdbcType="VARCHAR" property="paramsMap.qfz" />
+    <result column="zlz" jdbcType="VARCHAR" property="paramsMap.zlz" />
+    <result column="kcsj" jdbcType="VARCHAR" property="paramsMap.kcsj" />
+    <result column="qfsj" jdbcType="VARCHAR" property="paramsMap.qfsj" />
+    <result column="ldsj" jdbcType="VARCHAR" property="paramsMap.ldsj" />
+    <result column="tcsj" jdbcType="VARCHAR" property="paramsMap.tcsj" />
+    
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.produce.po.FlightSheet" id="DetailResultMap" extends="BaseResultMap">
+    <association property="zdr" javaType="com.eray.thjw.po.User">  
+        <id column="ZDRID" property="id"/>  
+        <result column="ZDRUSERNAME" property="username"/>  
+        <result column="ZDRREALNAME" property="realname"/>  
+    </association>  
+    <association property="xdr" javaType="com.eray.thjw.po.User">  
+        <id column="XDRID" property="id"/>  
+        <result column="XDRUSERNAME" property="username"/>  
+        <result column="XDRREALNAME" property="realname"/>  
+    </association>
+    <collection property="legs" ofType="com.eray.thjw.produce.po.FlightSheetLeg">
+    	<id column="LEGID" property="id" jdbcType="VARCHAR" />
+	    <result column="LEGMAINID" property="mainid" jdbcType="VARCHAR" />
+	    <result column="LEGZT" property="zt" jdbcType="DECIMAL" />
+	    <result column="LEGHD" property="hd" jdbcType="DECIMAL" />
+	    <result column="LEGHDMS" property="hdms" jdbcType="VARCHAR" />
+	    <result column="LEGHZ" property="hz" jdbcType="VARCHAR" />
+	    <result column="LEGJCRID" property="jcrid" jdbcType="VARCHAR" />
+	    <result column="LEGJCR" property="jcr" jdbcType="VARCHAR" />
+	    <result column="LEGBZ" property="bz" jdbcType="VARCHAR" />
+	    <collection property="antiIces" ofType="com.eray.thjw.produce.po.FlightSheetAntiIce">
+	    	<id column="ICEID" property="id" jdbcType="VARCHAR" />
+		    <result column="ICEMAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="ICEZT" property="zt" jdbcType="DECIMAL" />
+		    <result column="ICEHDID" property="hdid" jdbcType="VARCHAR" />
+		    <result column="ICEXC" property="xc" jdbcType="DECIMAL" />
+		    <result column="ICEFBYLX" property="fbylx" jdbcType="VARCHAR" />
+		    <result column="ICEFBDM" property="fbdm" jdbcType="VARCHAR" />
+		    <result column="ICEKSSJ" property="kssj" jdbcType="VARCHAR" />
+		    <result column="ICEBCSJ" property="bcsj" jdbcType="VARCHAR" />
+	    </collection>
+	    <collection property="finishedWorks" ofType="com.eray.thjw.produce.po.FlightSheetFinishedWork">
+	    	<id column="WORKID" property="id" jdbcType="VARCHAR" />
+		    <result column="WORKMAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="WORKZT" property="zt" jdbcType="DECIMAL" />
+		    <result column="WORKHDID" property="hdid" jdbcType="VARCHAR" />
+		    <result column="WORKXC" property="xc" jdbcType="DECIMAL" />
+		    <result column="WORKSGBS" property="sgbs" jdbcType="DECIMAL" />
+		    <result column="WORKGBID" property="gbid" jdbcType="VARCHAR" />
+		    <result column="WORKGBBH" property="gbbh" jdbcType="VARCHAR" />
+		    <result column="WORKGDID" property="gdid" jdbcType="VARCHAR" />
+		    <result column="WORKGDBH" property="gdbh" jdbcType="VARCHAR" />
+		    <result column="WORKGZNR" property="gznr" jdbcType="VARCHAR" />
+		    <result column="WORKGZBG" property="gzbg" jdbcType="VARCHAR" />
+		    <result column="WORKGZXX" property="gzxx" jdbcType="VARCHAR" />
+		    <result column="WORKCLCS" property="clcs" jdbcType="VARCHAR" />
+		    <result column="WORKSJGS" property="sjgs" jdbcType="DECIMAL" />
+		    <result column="WORKSJRS" property="sjrs" jdbcType="DECIMAL" />
+		    <result column="WORKWCRQ" property="wcrq" jdbcType="TIMESTAMP" />
+		    <result column="WORKZRRID" property="zrrid" jdbcType="VARCHAR" />
+		    <result column="WORKZRR" property="zrr" jdbcType="VARCHAR" />
+		    <result column="WORKBZ" property="bz" jdbcType="VARCHAR" />
+		    <result column="WORKGZZID" property="gzzid" jdbcType="VARCHAR" />
+		    <result column="WORKGZZ" property="gzz" jdbcType="VARCHAR" />
+		    <result column="WORKSJZD" property="sjZd" jdbcType="VARCHAR" />
+		    <result column="WORKRWXX" property="rwxx" jdbcType="VARCHAR" />
+		    <result column="WORKHSGS" property="hsgs" jdbcType="DECIMAL" />
+		    <result column="WOWXXMLX" property="paramsMap.wxxmlx" jdbcType="VARCHAR" />
+		    <association property="workorder" javaType="com.eray.thjw.produce.po.Workorder">  
+			    <id column="WORKORDERID" property="id" jdbcType="VARCHAR" />
+			    <result column="WORKORDERIDGBID" property="gbid" jdbcType="VARCHAR" />
+			    <result column="WORKORDERGDBH" property="gdbh" jdbcType="VARCHAR" />
+			    <result column="WORKORDERGDBT" property="gdbt" jdbcType="VARCHAR" />
+			    <result column="WORKORDERGDLX" property="gdlx" jdbcType="DECIMAL" />
+			    <result column="WORKORDERGZXX" property="gzxx" jdbcType="VARCHAR" />
+    			<result column="WORKORDERCLCS" property="clcs" jdbcType="VARCHAR" />
+			</association>
+			<collection property="workers" ofType="com.eray.thjw.produce.po.FlightSheetWorker">  
+			    <id column="WORKERID" property="id" jdbcType="VARCHAR" />
+			    <result column="WORKERGZZ" property="gzz" jdbcType="VARCHAR" />
+			    <result column="WORKERGZZID" property="gzzid" jdbcType="VARCHAR" />
+			</collection>
+		    <collection property="disassemblies" ofType="com.eray.thjw.produce.po.FlightSheetDisassemblyRecord">
+		    	<id column="RECID" property="id" jdbcType="VARCHAR" />
+			    <result column="RECMAINID" property="mainid" jdbcType="VARCHAR" />
+			    <result column="RECZT" property="zt" jdbcType="DECIMAL" />
+			    <result column="RECSGBS" property="sgbs" jdbcType="DECIMAL" />
+			    <result column="RECCX_BS" property="cxBs" jdbcType="DECIMAL" />
+			    <result column="RECCX_ZJQDID" property="cxZjqdid" jdbcType="VARCHAR" />
+			    <result column="RECCX_SJ" property="cxSj" jdbcType="TIMESTAMP" />
+			    <result column="RECCX_BZ" property="cxBz" jdbcType="VARCHAR" />
+			    <result column="RECCX_WCKCID" property="cxWckcid" jdbcType="VARCHAR" />
+			    <result column="RECCX_KCLVID" property="cxKclvid" jdbcType="VARCHAR" />
+			    <result column="RECZS_BS" property="zsBs" jdbcType="DECIMAL" />
+			    <result column="RECZS_ZJQDID" property="zsZjqdid" jdbcType="VARCHAR" />
+			    <result column="RECZS_SJ" property="zsSj" jdbcType="TIMESTAMP" />
+			    <result column="RECZS_BZ" property="zsBz" jdbcType="VARCHAR" />
+			    <result column="RECZS_WCKCID" property="zsWckcid" jdbcType="VARCHAR" />
+			    <result column="RECZS_KCLVID" property="zsKclvid" jdbcType="VARCHAR" />
+			    <result column="RECGDCZJLID" property="gdczjlid" jdbcType="VARCHAR" />
+			    <result column="RECZRRID" property="zrrid" jdbcType="VARCHAR" />
+    			<result column="RECZRR" property="zrr" jdbcType="VARCHAR" />
+			    <association property="zsj" javaType="com.eray.thjw.produce.po.InstallationListTemp">  
+			    	<id column="ZSJID" jdbcType="VARCHAR" property="id" />
+				    <result column="ZSJDPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+				    <result column="ZSJXGZJQDID" jdbcType="VARCHAR" property="xgzjqdid" />
+				    <result column="ZSJJX" jdbcType="VARCHAR" property="jx" />
+				    <result column="ZSJFJZCH" jdbcType="VARCHAR" property="fjzch" />
+				    <result column="ZSJWZ" jdbcType="DECIMAL" property="wz" />
+				    <result column="ZSJCJ" jdbcType="DECIMAL" property="cj" />
+				    <result column="ZSJFJDID" jdbcType="VARCHAR" property="fjdid" />
+				    <result column="ZSJBJH" jdbcType="VARCHAR" property="bjh" />
+				    <result column="ZSJZWMC" jdbcType="VARCHAR" property="zwmc" />
+				    <result column="ZSJYWMC" jdbcType="VARCHAR" property="ywmc" />
+				    <result column="ZSJCJJH" jdbcType="VARCHAR" property="cjjh" />
+				    <result column="ZSJXH" jdbcType="VARCHAR" property="xh" />
+				    <result column="ZSJZJH" jdbcType="VARCHAR" property="zjh" />
+				    <result column="ZSJJLDW" jdbcType="VARCHAR" property="jldw" />
+				    <result column="ZSJXLH" jdbcType="VARCHAR" property="xlh" />
+				    <result column="ZSJPCH" jdbcType="VARCHAR" property="pch" />
+				    <result column="ZSJZJSL" jdbcType="DECIMAL" property="zjsl" />
+				    <result column="ZSJLLKLX" jdbcType="DECIMAL" property="llklx" />
+				    <result column="ZSJLLKBH" jdbcType="VARCHAR" property="llkbh" />
+				    <result column="ZSJFJZW" jdbcType="VARCHAR" property="fjzw" />
+				    <result column="ZSJCHUCRQ" jdbcType="TIMESTAMP" property="chucrq" />
+				    <result column="ZSJTSN" jdbcType="VARCHAR" property="tsn" />
+				    <result column="ZSJTSO" jdbcType="VARCHAR" property="tso" />
+				    <result column="ZSJCSN" jdbcType="DECIMAL" property="csn" />
+				    <result column="ZSJCSO" jdbcType="DECIMAL" property="cso" />
+				    <result column="ZSJBJGZJL" jdbcType="VARCHAR" property="bjgzjl" />
+				    <result column="ZSJBZ" jdbcType="VARCHAR" property="bz" />
+				    <result column="ZSJSKBS" jdbcType="DECIMAL" property="skbs" />
+				    <result column="ZSJSSBS" jdbcType="DECIMAL" property="ssbs" />
+				    <result column="ZSJAZSJ" jdbcType="TIMESTAMP" property="azsj" />
+				    <result column="ZSJAZR" jdbcType="VARCHAR" property="azr" />
+				    <result column="ZSJAZRID" jdbcType="VARCHAR" property="azrid" />
+				    <result column="ZSJZJJLX" jdbcType="VARCHAR" property="zjjlx" />
+				    <result column="ZSJZJHNAME" jdbcType="VARCHAR" property="paramsMap.zjhname" />
+				    <result column="ZSJSXZT" jdbcType="VARCHAR" property="paramsMap.sxzt" />
+				    <association property="parent" javaType="com.eray.thjw.produce.po.InstallationListTemp">
+				    	<id column="ZSJPARID" property="id" jdbcType="VARCHAR"/>
+					    <result column="ZSJPARWZ" property="wz" jdbcType="DECIMAL" />
+					    <result column="ZSJPARCJ" property="cj" jdbcType="DECIMAL" />
+					    <result column="ZSJPARBJH" property="bjh" jdbcType="VARCHAR" />
+					    <result column="ZSJPARZWMC" property="zwmc" jdbcType="VARCHAR" />
+					    <result column="ZSJPARYWMC" property="ywmc" jdbcType="VARCHAR" />
+					    <result column="ZSJPARCJJH" property="cjjh" jdbcType="VARCHAR" />
+					    <result column="ZSJPARXLH" property="xlh" jdbcType="VARCHAR" />
+					    <result column="ZSJPARPCH" property="pch" jdbcType="VARCHAR" />
+				    </association>
+				    <collection property="initDatas" ofType="com.eray.thjw.produce.po.InstallationListTemp2Init">  
+					    <id column="ZSJINITID" property="id" jdbcType="VARCHAR" />
+					    <result column="ZSJINITJKLBH" property="jklbh" jdbcType="VARCHAR" />
+					    <result column="ZSJINITJKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+					    <result column="ZSJINITCSZ" property="csz" jdbcType="VARCHAR" />
+				    </collection>
+				    <collection property="certificates" ofType="com.eray.thjw.aerialmaterial.po.ComponentCertificate">  
+					    <id column="CERTID" property="id" jdbcType="VARCHAR" />
+					    <result column="CERTJH" property="jh" jdbcType="VARCHAR" />
+					    <result column="CERTXLH" property="xlh" jdbcType="VARCHAR" />
+					    <result column="CERTPCH" property="pch" jdbcType="VARCHAR" />
+					    <result column="CERTZSBH" property="zsbh" jdbcType="VARCHAR" />
+					    <result column="CERTZSCFWZ" property="zscfwz" jdbcType="VARCHAR" />
+					    <result column="CERTZJLX" property="zjlx" jdbcType="VARCHAR" />
+					    <result column="CERTQSRQ" property="qsrq" jdbcType="TIMESTAMP" />
+					    <collection property="attachments" ofType="com.eray.thjw.flightdata.po.Attachment">  
+						    <id column="CERTATTID" property="id" jdbcType="VARCHAR" />
+						    <result column="CERTATTMAINID" property="mainid" jdbcType="VARCHAR" />
+						    <result column="CERTATTDPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+						    <result column="CERTATTYSWJM" property="yswjm" jdbcType="VARCHAR" />
+						    <result column="CERTATTWBWJM" property="wbwjm" jdbcType="VARCHAR" />
+						    <result column="CERTATTNBWJM" property="nbwjm" jdbcType="VARCHAR" />
+						    <result column="CERTATTWJDX" property="wjdx" jdbcType="DECIMAL" />
+						    <result column="CERTATTHZM" property="hzm" jdbcType="VARCHAR" />
+						    <result column="CERTATTSM" property="sm" jdbcType="VARCHAR" />
+						    <result column="CERTATTCFLJ" property="cflj" jdbcType="VARCHAR" />
+						    <result column="CERTATTYXZT" property="yxzt" jdbcType="DECIMAL" />
+						    <result column="CERTATTCZSJ" property="czsj" jdbcType="TIMESTAMP" />
+						    <result column="CERTATTCZBMID" property="czbmid" jdbcType="VARCHAR" />
+						    <result column="CERTATTCZRID" property="czrid" jdbcType="VARCHAR" />
+						    <result column="CERTATTCZRNAME" property="czrname" jdbcType="VARCHAR" />
+						    <result column="CERTATTREALNAME" property="realname" jdbcType="VARCHAR" />
+					    </collection>
+				    </collection>
+			    </association>
+			    <association property="cxj" javaType="com.eray.thjw.produce.po.InstallationListEditable">  
+			    	<id column="CXJID" property="id" jdbcType="VARCHAR" />
+				    <result column="CXJWZ" property="wz" jdbcType="DECIMAL" />
+				    <result column="CXJCJ" property="cj" jdbcType="DECIMAL" />
+				    <result column="CXJBJH" property="bjh" jdbcType="VARCHAR" />
+				    <result column="CXJZWMC" property="zwmc" jdbcType="VARCHAR" />
+				    <result column="CXJYWMC" property="ywmc" jdbcType="VARCHAR" />
+				    <result column="CXJXLH" property="xlh" jdbcType="VARCHAR" />
+				    <result column="CXJPCH" property="pch" jdbcType="VARCHAR" />
+				    <result column="CXJZJSL" property="zjsl" jdbcType="DECIMAL" />
+				    <association property="parent" javaType="com.eray.thjw.produce.po.InstallationListEditable">
+				    	<id column="CXJPARID" property="id" jdbcType="VARCHAR"/>
+					    <result column="CXJPARWZ" property="wz" jdbcType="DECIMAL" />
+					    <result column="CXJPARCJ" property="cj" jdbcType="DECIMAL" />
+					    <result column="CXJPARBJH" property="bjh" jdbcType="VARCHAR" />
+				    </association>
+			    </association>
+		    </collection>
+		    <collection property="attachments" ofType="com.eray.thjw.flightdata.po.Attachment">  
+			    <id column="WORKATTID" property="id" jdbcType="VARCHAR" />
+			    <result column="CERTATTMAINID" property="mainid" jdbcType="VARCHAR" />
+			    <result column="WORKATTDPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+			    <result column="WORKATTYSWJM" property="yswjm" jdbcType="VARCHAR" />
+			    <result column="WORKATTWBWJM" property="wbwjm" jdbcType="VARCHAR" />
+			    <result column="WORKATTNBWJM" property="nbwjm" jdbcType="VARCHAR" />
+			    <result column="WORKATTWJDX" property="wjdx" jdbcType="DECIMAL" />
+			    <result column="WORKATTHZM" property="hzm" jdbcType="VARCHAR" />
+			    <result column="WORKATTSM" property="sm" jdbcType="VARCHAR" />
+			    <result column="WORKATTCFLJ" property="cflj" jdbcType="VARCHAR" />
+			    <result column="WORKATTYXZT" property="yxzt" jdbcType="DECIMAL" />
+			    <result column="WORKATTCZSJ" property="czsj" jdbcType="TIMESTAMP" />
+			    <result column="WORKATTCZBMID" property="czbmid" jdbcType="VARCHAR" />
+			    <result column="WORKATTCZRID" property="czrid" jdbcType="VARCHAR" />
+			    <result column="WORKATTCZRNAME" property="czrname" jdbcType="VARCHAR" />
+			    <result column="WORKATTREALNAME" property="realname" jdbcType="VARCHAR" />
+		    </collection>
+	    </collection>
+    </collection>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, ZDDWID, ZDRID, ZDSJ, XDDWID, XDRID, XDSJ, XDBZ, ZT, IS_XDTX, FXJLBH, 
+    FJZCH, JLBYM, FXRQ, BZ, KCSJ
+  </sql>
+  
+  <sql id="Detail_Column_List">
+    B1.ID, B1.DPRTCODE, B1.ZDDWID, B1.ZDRID, B1.ZDSJ, B1.XDDWID, B1.XDRID, B1.XDSJ, 
+    B1.XDBZ, B1.ZT, B1.IS_XDTX, B1.FXJLBH, B1.FJZCH, B1.JLBYM, B1.FXRQ, B1.BZ, B1.KCSJ,
+    ZDR.USERNAME AS ZDRUSERNAME, ZDR.REALNAME AS ZDRREALNAME,
+    XDR.USERNAME AS XDRUSERNAME, XDR.REALNAME AS XDRREALNAME
+  </sql>
+ 
+  
+  <select id="queryAllList" resultMap="DetailResultMap" parameterType="com.eray.thjw.produce.po.FlightSheet">
+	SELECT 
+		<include refid="Detail_Column_List" />
+		FROM B_S2_006 B1
+		LEFT JOIN T_USER ZDR ON B1.ZDRID = ZDR.ID
+		LEFT JOIN T_USER XDR ON B1.XDRID = XDR.ID
+		 	
+			<include refid="BaseResulParam"></include>
+	    	<choose>
+				 <when test='pagination.sort == "auto"'>
+				    	 ORDER BY B1.FXRQ DESC, JLBYM DESC
+				 </when>
+			     <otherwise>
+					     ORDER BY B1.${pagination.sort} ${pagination.order}
+			     </otherwise>
+		    </choose>
+  </select>
+  <!-- 搜索参数 -->
+  <sql id="BaseResulParam">
+	   	WHERE 1=1  
+	    <if test="fjzch != null and fjzch != ''">
+             AND B1.FJZCH = #{fjzch, jdbcType=VARCHAR}
+        </if>
+        <if test="dprtcode != null and dprtcode != ''">
+             AND B1.DPRTCODE =  #{dprtcode, jdbcType=VARCHAR}
+        </if>
+        <if test="keyword != null and keyword != ''">
+		     AND (
+		     	UPPER(B1.FXJLBH) LIKE UPPER('%'||#{keyword}||'%')
+		     	 )              <!-- 左右匹配 查询关键字 -->
+		</if>
+	    <if test="id != null and id != '' " >   
+             AND  B1.ID  = #{id, jdbcType=VARCHAR}
+        </if>
+        <!-- 飞行日期 -->
+   	    <if test="fxrq != null and fxrq != ''">
+             AND  B1.FXRQ = TRUNC(#{fxrq, jdbcType=TIMESTAMP})
+        </if>
+        <!-- 飞行日期范围-->
+        <if test="paramsMap != null and paramsMap.fxrqBegin != null and paramsMap.fxrqBegin != ''">
+        	AND  B1.FXRQ &gt;= TRUNC(TO_DATE(#{paramsMap.fxrqBegin}, 'YYYY-MM-DD'))
+        </if>
+        <if test="paramsMap != null and paramsMap.fxrqEnd != null and paramsMap.fxrqEnd != ''">
+        	AND  B1.FXRQ &lt;= TRUNC(TO_DATE(#{paramsMap.fxrqEnd}, 'YYYY-MM-DD'))
+        </if>
+        <!-- 关键字-->
+        <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+        	AND  (UPPER(B1.FXJLBH) LIKE UPPER('%'||#{paramsMap.keyword}||'%') OR
+          	      UPPER(B1.JLBYM) LIKE UPPER('%'||#{paramsMap.keyword}||'%')
+          	)
+       </if>
+       <!-- 状态 -->
+   	   <if test="paramsMap != null and paramsMap.ztList != null">
+   	   		<if test="paramsMap.ztList.size > 0">
+			    AND B1.ZT IN
+	   			<foreach item="item" index="index" collection="paramsMap.ztList" open="(" separator="," close=")">  
+	       			#{item}  
+	   			</foreach>  
+   	   		</if>
+   	   		<if test="paramsMap.ztList.size == 0">
+			    AND 1 = 0
+   	   		</if>
+	   </if>
+        <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+        <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    		B1.FJZCH = FJZCH
+	    		AND B1.DPRTCODE = DPRTCODE
+	    		AND ZT = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId != null and paramsMap.userId !=""'>                       
+	    	</when>
+   	    </choose>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_S2_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.FlightSheet">
+    insert into B_S2_006 (ID, DPRTCODE, ZDDWID, 
+      ZDRID, ZDSJ, XDDWID, 
+      XDRID, XDSJ, XDBZ, 
+      ZT, IS_XDTX, FXJLBH, 
+      FJZCH, JLBYM, FXRQ, 
+      BZ, KCSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{zddwid,jdbcType=VARCHAR}, 
+      #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, #{xddwid,jdbcType=VARCHAR}, 
+      #{xdrid,jdbcType=VARCHAR}, #{xdsj,jdbcType=TIMESTAMP}, #{xdbz,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{isXdtx,jdbcType=DECIMAL}, #{fxjlbh,jdbcType=VARCHAR}, 
+      #{fjzch,jdbcType=VARCHAR}, #{jlbym,jdbcType=VARCHAR}, #{fxrq,jdbcType=TIMESTAMP}, 
+      #{bz,jdbcType=VARCHAR}, #{kcsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.FlightSheet">
+    insert into B_S2_006
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="zddwid != null">
+        ZDDWID,
+      </if>
+      <if test="zdrid != null">
+        ZDRID,
+      </if>
+      <if test="zdsj != null">
+        ZDSJ,
+      </if>
+      <if test="xddwid != null">
+        XDDWID,
+      </if>
+      <if test="xdrid != null">
+        XDRID,
+      </if>
+      <if test="xdsj != null">
+        XDSJ,
+      </if>
+      <if test="xdbz != null">
+        XDBZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="isXdtx != null">
+        IS_XDTX,
+      </if>
+      <if test="fxjlbh != null">
+        FXJLBH,
+      </if>
+      <if test="fjzch != null">
+        FJZCH,
+      </if>
+      <if test="jlbym != null">
+        JLBYM,
+      </if>
+      <if test="fxrq != null">
+        FXRQ,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="kcsj != null">
+        KCSJ,
+      </if>
+      <if test="gjbs != null">
+        GJBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null">
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xddwid != null">
+        #{xddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdrid != null">
+        #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdsj != null">
+        #{xdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xdbz != null">
+        #{xdbz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdtx != null">
+        #{isXdtx,jdbcType=DECIMAL},
+      </if>
+      <if test="fxjlbh != null">
+        #{fxjlbh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jlbym != null">
+        #{jlbym,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrq != null">
+        trunc(#{fxrq,jdbcType=TIMESTAMP}),
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsj != null">
+        #{kcsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gjbs != null">
+        #{gjbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.FlightSheet">
+    update B_S2_006
+    <set>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null">
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xddwid != null">
+        XDDWID = #{xddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdrid != null">
+        XDRID = #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdsj != null">
+        XDSJ = #{xdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xdbz != null">
+        XDBZ = #{xdbz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdtx != null">
+        IS_XDTX = #{isXdtx,jdbcType=DECIMAL},
+      </if>
+      <if test="fxjlbh != null">
+        FXJLBH = #{fxjlbh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jlbym != null">
+        JLBYM = #{jlbym,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrq != null">
+        FXRQ = trunc(#{fxrq,jdbcType=TIMESTAMP}),
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsj != null">
+        KCSJ = #{kcsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gjbs != null">
+        GJBS = #{gjbs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.FlightSheet">
+    update B_S2_006
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      XDDWID = #{xddwid,jdbcType=VARCHAR},
+      XDRID = #{xdrid,jdbcType=VARCHAR},
+      XDSJ = #{xdsj,jdbcType=TIMESTAMP},
+      XDBZ = #{xdbz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      IS_XDTX = #{isXdtx,jdbcType=DECIMAL},
+      FXJLBH = #{fxjlbh,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      JLBYM = #{jlbym,jdbcType=VARCHAR},
+      FXRQ = #{fxrq,jdbcType=TIMESTAMP},
+      BZ = #{bz,jdbcType=VARCHAR},
+      KCSJ = #{kcsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="queryFlightSheetList" parameterType="com.eray.thjw.produce.po.FlightSheet" resultMap="BaseResultMap">
+	  select b_s2_00601.id as hbhid, --航班id
+	       b_s2_00601.hbh as hbh, --航班号
+	       b_s2_006.fxrq, --飞行日期/航班日期
+	       b_s2_006.fxjlbh, --飞行记录本号
+	       b_s2_006.jlbym, --记录本页码
+	       b_s2_006.id -- 飞行记录本id
+	  from b_s2_00601
+	  join b_s2_006 on b_s2_00601.mainid = b_s2_006.id
+	               and b_s2_00601.zt = 1
+	               and b_s2_006.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	               and b_s2_006.zt in (2, 12, 99)
+	               and b_s2_006.fjzch = #{fjzch,jdbcType=VARCHAR}
+	       <if test="paramsMap !=null and paramsMap.keyword !=null and paramsMap.keyword !=''">
+		   		and UPPER(b_s2_006.hbh) like UPPER('%'||#{paramsMap.keyword}||'%')
+		   </if>
+  </select>
+  
+  <!-- 查询飞行记录本详情 -->
+  <select id="queryDetail" parameterType="com.eray.thjw.produce.po.FlightSheet" resultMap="DetailResultMap">
+	  select 
+	  	flb.id, flb.dprtcode, flb.zt, flb.is_xdtx, flb.fxjlbh, flb.fjzch, flb.jlbym,
+   		flb.fxrq, flb.bz, flb.kcsj, flb.gjbs,
+        leg.id as legid, leg.mainid as legmainid, leg.hd as leghd, leg.hdms as leghdms, 
+        leg.hz as leghz, leg.jcrid as legjcrid, leg.jcr as legjcr, leg.bz as leghz,
+        ice.id as iceid, ice.mainid as icemainid, ice.hdid as icehdid, ice.xc as icexc, 
+        ice.fbylx as icefbylx, ice.fbdm as icefbdm, ice.kssj as icekssj, ice.bcsj as icebcsj,
+        work.id as workid, work.mainid as workmainid, work.zt as workzt, work.hdid as workhdid,
+        work.xc as workxc, work.sgbs as worksgbs, work.gbid as workgbid, work.gbbh as workgbbh,
+        work.gdid as workgdid, work.gdbh as workgdbh, work.gznr as workgznr, work.gzbg as workgzbg,
+        work.gzxx as workgzxx, work.clcs as workclcs, work.sjgs as worksjgs, work.sjrs as worksjrs,
+        work.wcrq as workwcrq, work.zrrid as workzrrid, work.zrr as workzrr, work.bz as workbz,
+        work.gzzid as workgzzid, work.gzz as workgzz, work.sj_zd as worksjzd, work.rwxx as workrwxx,
+        work.hsgs as workhsgs,
+        rec.id as recid, rec.mainid as recmainid, rec.zt as reczt, rec.sgbs as recsgbs,
+        rec.cx_bs as reccx_bs, rec.cx_zjqdid as reccx_zjqdid, rec.cx_sj as reccx_sj,
+        rec.cx_bz as reccx_bz, rec.cx_wckcid as reccx_wckcid, rec.cx_kclvid as reccx_kclvid,
+        rec.zs_bs as reczs_bs, rec.zs_zjqdid as reczs_zjqdid, rec.zs_sj as reczs_sj,
+        rec.zs_bz as reczs_bz, rec.zs_wckcid as reczs_wckcid, rec.zs_kclvid as reczs_kclvid,
+        rec.gdczjlid as recgdczjlid, rec.zrrid as reczrrid, rec.zrr as reczrr,
+        worker.id as workerid, worker.gzz as workergzz, worker.gzzid as workergzzid,
+        zsj.id as zsjid, zsj.dprtcode as zsjdprtcode, zsj.xgzjqdid as zsjxgzjqdid, zsj.jx as zsjjx,
+        zsj.fjzch as zsjfjzch, zsj.wz as zsjwz, zsj.cj as zsjcj, zsj.fjdid as zsjfjdid,
+        zsj.bjh as zsjbjh, zsj.zwmc as zsjzwmc, zsj.ywmc as zsjywmc, zsj.cjjh as zsjcjjh,
+        zsj.xh as zsjxh, zsj.zjh as zsjzjh, zsj.jldw as zsjjldw, zsj.xlh as zsjxlh, zsj.pch as zsjpch,
+        zsj.zjsl as zsjzjsl, zsj.llklx as zsjllklx, zsj.llkbh as zsjllkbh, zsj.fjzw as zsjfjzw,
+        zsj.chucrq as zsjchucrq, zsj.tsn as zsjtsn, zsj.tso as zsjtso, zsj.csn as zsjcsn,
+        zsj.cso as zsjcso, zsj.bjgzjl as zsjbjgzjl, zsj.bz as zsjbz, zsj.skbs as zsjskbs,
+        case when zsjzjh.zjh is not null then zsjzjh.zjh ||' '||zsjzjh.ywms else null end as zsjzjhname, 
+        case when zsjsxq.id is null then null when zsjsxq.zjzt = 1 and zsjsxq.yxbs = 1 then 1 else 0 end zsjsxzt,
+        zsj.azrid as zsjazrid, zsj.azr as zsjazr, zsj.zjjlx as zsjzjjlx, zsj.azsj as zsjazsj,
+        zsjpar.id as zsjparid, zsjpar.bjh as zsjparbjh, zsjpar.zwmc as zsjparzwmc, 
+        zsjpar.ywmc as zsjparywmc, zsjpar.xlh as zsjparxlh, 
+        zsjpar.pch as zsjparpch, zsjpar.wz as zsjparwz, zsjpar.cj as zsjparcj, 
+        zsjinit.id as zsjinitid, zsjinit.mainid as zsjinitmainid, zsjinit.jklbh as zsjinitjklbh,
+        zsjinit.jkflbh as zsjinitjkflbh, zsjinit.csz as zsjinitcsz,
+        cert.id as certid, cert.jh as certjh, cert.xlh as certxlh, cert.pch as certpch, cert.zsbh as certzsbh, 
+    	cert.zscfwz as certzscfwz, cert.zjlx as certzjlx, cert.qsrq as certqsrq,
+    	certatt.id as certattid, certatt.mainid as certattmainid, certatt.yswjm as certattyswjm, 
+    	certatt.wbwjm as certattwbwjm, certatt.nbwjm as certattnbwjm, certatt.wjdx as certattwjdx, 
+    	certatt.hzm as certatthzm, certatt.sm as certattsm, certatt.cflj as certattcflj, 
+    	certatt.czsj as certattczsj, certatt.czbmid as certattczbmid, 
+    	case when certattuser.username is not null then certattuser.username || ' ' ||certattuser.realname else null end as certattczrname,
+    	workatt.id as workattid, workatt.mainid as workattmainid, workatt.yswjm as workattyswjm, 
+        workatt.wbwjm as workattwbwjm, workatt.nbwjm as workattnbwjm, workatt.wjdx as workattwjdx, 
+        workatt.hzm as workatthzm, workatt.sm as workattsm, workatt.cflj as workattcflj, 
+        workatt.czsj as workattczsj, workatt.czbmid as workattczbmid, 
+        case when workattuser.username is not null then workattuser.username || ' ' ||workattuser.realname else null end as workattczrname,  
+        cxj.id as cxjid, cxj.bjh as cxjbjh, cxj.xlh as cxjxlh, cxj.ywmc as cxjywmc, 
+        cxj.pch as cxjpch, cxj.zjsl as cxjzjsl,
+        cxjpar.id as cxjparid, cxjpar.bjh as cxjparbjh, cxjpar.cj as cxjparcj, cxjpar.wz as cxjparwz,
+        cxj.zwmc as cxjzwmc, cxj.wz as cxjwz, workorder.gdlx as workordergdlx,workorder.gdbt as workordergdbt,
+        workorder.gzxx as workordergzxx,workorder.clcs as workorderclcs, wxxm.wxxmlx as wowxxmlx
+      from B_S2_006 flb
+        left join b_s2_00602 leg on flb.id = leg.mainid and leg.zt = 1
+        left join b_s2_00603 ice on leg.id = ice.hdid and ice.zt = 1
+        left join b_s2_00604 work on leg.id = work.hdid and work.zt = 1
+        left join b_s2_0060401 rec on work.id = rec.mainid and rec.zt = 1
+        left join b_s2_0060402 worker on work.id = worker.mainid and worker.zt = 1
+        left join b_s2_002 zsj on rec.zs_zjqdid = zsj.id
+        left join b_s2_004 zsjsxq on zsj.id = zsjsxq.id
+        left join d_005 zsjzjh on zsj.zjh = zsjzjh.zjh and zsj.dprtcode = zsjzjh.dprtcode and zsjzjh.zt = 1
+        left join b_s2_00201 zsjinit on zsj.id = zsjinit.mainid
+        left join d_00601 jk on zsjinit.jklbh = jk.jklbh
+        left join b_s2_004 zsjpar on zsj.fjdid = zsjpar.id
+        left join b_h2_024 cert on 
+	    	  case when zsj.xlh is null then '-' else zsj.xlh end = cert.xlh 
+	      and case when zsj.pch is null or zsj.xlh is not null then '-' else zsj.pch end = cert.pch
+	      and case when zsj.xlh is not null then '-' else cert.pch end = cert.pch
+	      and zsj.bjh = cert.jh
+	      and zsj.dprtcode = cert.dprtcode
+	      and cert.zt = 1
+        left join d_011 workatt on workatt.mainid = work.gdid and workatt.yxzt = 1
+		left join t_user workattuser on workatt.czrid = workattuser.id 
+	    left join d_011 certatt on certatt.mainid = cert.id and certatt.yxzt = 1
+	    left join t_user certattuser on certatt.czrid = certattuser.id 
+        left join b_s2_004 cxj on rec.cx_zjqdid = cxj.id
+        left join b_s2_004 cxjpar on cxj.fjdid = cxjpar.id
+        left join b_s2_008 workorder on workorder.id = work.gdid 
+        left join b_g2_012 wxxm on workorder.lyrwid = wxxm.id
+    where flb.ID = #{id,jdbcType=VARCHAR}
+      order by leg.hd, ice.xc, work.xc, jk.pxh
+  </select>
+  
+  <!-- 获取同一飞机的同一飞行记录本页码数量 -->
+  <select id="getJlbymCount" resultType="int" parameterType="com.eray.thjw.produce.po.FlightSheet">
+	SELECT count(1)
+		FROM B_S2_006 
+	  WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} 
+	    AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	    AND JLBYM = #{jlbym,jdbcType=VARCHAR}
+	    AND ZT != 9
+	    <if test="id != null and id != ''">
+             AND ID != #{id, jdbcType=VARCHAR}
+        </if>
+  </select>
+  
+  <!-- 获取同一飞机的大于指定飞行日期的数量 -->
+  <select id="getFxrqCount" resultType="int" parameterType="com.eray.thjw.produce.po.FlightSheet">
+	SELECT count(1)
+		FROM B_S2_006 
+	  WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} 
+	    AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	    AND TRUNC(FXRQ) &gt; TRUNC(#{fxrq, jdbcType=TIMESTAMP})
+	    AND ZT != 9
+  </select>
+  
+  <!-- 获取同一飞机的大于指定飞行时间的数量 -->
+  <select id="getFxsjCount" resultType="int" parameterType="com.eray.thjw.produce.po.FlightSheet">
+	SELECT count(1)
+		FROM B_S2_006 b1
+		left join b_s2_00601 b2 on b1.id = b2.mainid
+	  WHERE b1.FJZCH = #{fjzch,jdbcType=VARCHAR} 
+	    AND b1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	    AND (TRUNC(b1.FXRQ) &gt; TRUNC(#{fxrq, jdbcType=TIMESTAMP}) 
+	    	or b2.kcsj &gt; #{kcsj, jdbcType=TIMESTAMP}
+	    	or b2.tcsj &gt; #{kcsj, jdbcType=TIMESTAMP})
+	    AND b1.ZT != 9
+  </select>
+  
+  <!-- 更新修订提醒标识为提醒 -->
+  <update id="updateReviseFlag">
+  	UPDATE B_S2_006 T
+	   SET T.IS_XDTX = 1
+	 WHERE T.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND T.ZT IN (2, 12)
+	   AND (T.KCSJ > #{kcsj, jdbcType=TIMESTAMP} OR (T.KCSJ = #{kcsj, jdbcType=TIMESTAMP} AND T.JLBYM > #{jlbym,jdbcType=VARCHAR}))
+	   AND T.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	   AND T.ID != #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <select id="getHbhFxrqFlightRecord" parameterType="com.eray.thjw.produce.po.FlightSheet" resultMap="BaseResultMap">
+ 	select b1.id, b1.fjzch, b1.fxrq ,b2.hbh ,b2.fxrwlx,b2.qfz,b2.zlz,b2.kcsj,b2.qfsj,b2.ldsj,b2.tcsj,b1.fxjlbh,b1.jlbym   
+	from  b_s2_006 b1
+	join b_s2_00601 b2 on b1.id=b2.mainid where b1.fjzch=#{fjzch,jdbcType=VARCHAR} and b1.zt in (1,2,10,12,99) and b1.dprtcode=#{dprtcode,jdbcType=VARCHAR}
+	<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''"> 
+	 and UPPER(b2.hbh) like UPPER('%'||#{paramsMap.keyword}||'%')
+	</if>
+	order by b1.fxrq desc,b2.kcsj desc
+  </select>
+  
+  <!-- 查询上一页下一页 -->
+  <select id="queryClosePage" resultMap="BaseResultMap" parameterType="com.eray.thjw.produce.po.FlightSheet">
+	select (
+		SELECT ID
+		  FROM (SELECT B1.ID, B1.FXRQ, B1.ZDSJ
+		          FROM B_S2_006 B1
+		         INNER JOIN B_S2_006 B2
+		            ON B2.ID = #{id,jdbcType=VARCHAR}
+		         WHERE B1.FJZCH = B2.FJZCH
+		           AND B1.DPRTCODE = B2.DPRTCODE
+		           AND B1.KCSJ &gt;= B2.KCSJ
+		           AND B1.ID != #{id,jdbcType=VARCHAR}
+		           AND B1.ZT IN (1,2,12,99)
+		         ORDER BY B1.FXRQ, B1.JLBYM)
+		 WHERE ROWNUM = 1
+	) as nextpage ,
+	(
+		SELECT ID
+		  FROM (SELECT B1.ID, B1.FXRQ, B1.ZDSJ
+		          FROM B_S2_006 B1
+		         INNER JOIN B_S2_006 B2
+		            ON B2.ID = #{id,jdbcType=VARCHAR}
+		         WHERE B1.FJZCH = B2.FJZCH
+		           AND B1.DPRTCODE = B2.DPRTCODE
+		           AND B1.KCSJ &lt;= B2.KCSJ
+		           AND B1.ID != #{id,jdbcType=VARCHAR}
+		           AND B1.ZT IN (1,2,12,99)
+		         ORDER BY B1.FXRQ DESC, B1.JLBYM DESC)
+		 WHERE ROWNUM = 1
+	) as lastpage from dual
+  </select>
+  
+    <!-- 根据参数查询:导入专用 -->
+   <select id="findFlightSheetByParam" resultType="com.eray.thjw.produce.po.FlightSheet" parameterType="java.util.Map">
+		select 
+		 	<include refid="Base_Column_List"></include>
+		from B_S2_006
+	 	WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} 
+	      AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	      AND JLBYM = #{jlbym,jdbcType=VARCHAR}
+	      AND to_char(fxrq, 'yyyyMMdd') = #{fxrq,jdbcType=VARCHAR}
+	      AND ZT = #{zt,jdbcType=VARCHAR}
+   </select>
+  
+  <!-- 批量新增:导入专用 -->
+  <insert id="insert4Batch" parameterType="java.util.List" >
+    INSERT INTO B_S2_006 (ID, DPRTCODE, ZDDWID, 
+					      ZDRID, ZDSJ, XDDWID, 
+					      XDRID, XDSJ, XDBZ, 
+					      ZT, IS_XDTX, FXJLBH, 
+					      FJZCH, JLBYM, FXRQ, 
+					      BZ, KCSJ)
+      <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+	    select 
+	     	  #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.zddwid,jdbcType=VARCHAR}, 
+	          #{item.zdrid,jdbcType=VARCHAR}, #{item.zdsj,jdbcType=TIMESTAMP}, #{item.xddwid,jdbcType=VARCHAR}, 
+	          #{item.xdrid,jdbcType=VARCHAR}, #{item.xdsj,jdbcType=TIMESTAMP}, #{item.xdbz,jdbcType=VARCHAR}, 
+	          #{item.zt,jdbcType=DECIMAL}, #{item.isXdtx,jdbcType=DECIMAL}, #{item.fxjlbh,jdbcType=VARCHAR}, 
+	          #{item.fjzch,jdbcType=VARCHAR}, #{item.jlbym,jdbcType=VARCHAR}, #{item.fxrq,jdbcType=TIMESTAMP}, 
+	          #{item.bz,jdbcType=VARCHAR}, #{item.kcsj,jdbcType=TIMESTAMP}
+	  	from dual
+    </foreach>
+  </insert>
+  
+  <!-- 批量更新开车时间:导入专用 -->
+  <update id="updateKcsj4Batch" parameterType="java.util.List">
+  		<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+	  		update B_S2_006 set KCSJ =
+	  		(   select min(B_S2_00601.KCSJ) 
+	  		    from B_S2_00601 
+	  			where B_S2_006.ID=B_S2_00601.MAINID and B_S2_00601.MAINID = #{item,jdbcType=VARCHAR}
+			)
+			where B_S2_006.ID = #{item,jdbcType=VARCHAR}
+  		</foreach>
+  </update>
+  
+</mapper>

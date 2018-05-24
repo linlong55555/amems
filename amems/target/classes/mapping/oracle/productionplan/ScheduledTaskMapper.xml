@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.ScheduledTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.ScheduledTask" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="RWDH" property="rwdh" jdbcType="VARCHAR" />
+    <result column="RWLX" property="rwlx" jdbcType="DECIMAL" />
+    <result column="RWZLX" property="rwzlx" jdbcType="DECIMAL" />
+    <result column="FXJLDID" property="fxjldid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="XSZT" property="xszt" jdbcType="DECIMAL" />
+    <result column="XGGDID" property="xggdid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="RWXX" property="rwxx" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="DYSJ" property="dysj" jdbcType="TIMESTAMP" />
+    <result column="DYBMID" property="dybmid" jdbcType="VARCHAR" />
+    <result column="DYRID" property="dyrid" jdbcType="VARCHAR" />
+    <result column="JHGS_RS" property="jhgsRs" jdbcType="DECIMAL" />
+    <result column="JHGS_XS" property="jhgsXs" jdbcType="DECIMAL" />
+    <result column="SJGS_RS" property="sjgsRs" jdbcType="DECIMAL" />
+    <result column="SJGS_XS" property="sjgsXs" jdbcType="DECIMAL" />
+    <result column="GSSH_ZT" property="gsshZt" jdbcType="DECIMAL" />
+    <result column="GSSH_DCBBH" property="gsshDcbbh" jdbcType="VARCHAR" />
+    <result column="GSSH_TJRID" property="gsshTjrid" jdbcType="VARCHAR" />
+    <result column="GSSH_TJRQ" property="gsshTjrq" jdbcType="TIMESTAMP" />
+    <result column="GSSH_BZ" property="gsshBz" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZDJSRID" property="zdjsrid" jdbcType="VARCHAR" />
+    <result column="ZDJSRQ" property="zdjsrq" jdbcType="TIMESTAMP" />
+    <result column="ZDJSYY" property="zdjsyy" jdbcType="VARCHAR" />
+    
+    <result column="gdzt" property="gdzt" jdbcType="VARCHAR" />
+    <result column="fxrq" property="fxrq" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, RWDH, RWLX, RWZLX, FXJLDID, ZT, XSZT, XGGDID, DPRTCODE, RWXX, FJZCH, BJH, XLH, 
+    DYSJ, DYBMID, DYRID, JHGS_RS, JHGS_XS, SJGS_RS, SJGS_XS, GSSH_ZT, GSSH_DCBBH, GSSH_TJRID, 
+    GSSH_TJRQ, GSSH_BZ, BZ, WHDWID, WHRID, WHSJ, ZDJSRID, ZDJSRQ, ZDJSYY
+  </sql>
+  
+   <!-- save b_s_009 计划任务 -->
+   <insert id="save" parameterType="com.eray.thjw.productionplan.po.ScheduledTask">
+    insert into b_s_009 (ID,RWDH,RWLX,RWZLX,ZT,XSZT,XGGDID,DPRTCODE,RWXX,FJZCH,BJH,XLH,JHGS_RS,JHGS_XS,BZ,WHDWID,WHRID,WHSJ,GSSH_ZT)
+    values (#{id,jdbcType=VARCHAR},#{rwdh,jdbcType=VARCHAR},#{rwlx,jdbcType=DECIMAL},#{rwzlx,jdbcType=DECIMAL},#{zt,jdbcType=DECIMAL},#{xszt,jdbcType=VARCHAR},#{xggdid,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},#{rwxx,jdbcType=VARCHAR},#{fjzch,jdbcType=VARCHAR},#{bjh,jdbcType=VARCHAR},#{xlh,jdbcType=VARCHAR},#{jhgsRs,jdbcType=DECIMAL},#{jhgsXs,jdbcType=DECIMAL},#{bz,jdbcType=VARCHAR},#{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR},sysdate,#{gsshZt,jdbcType=DECIMAL})
+  </insert>
+  
+  <select id="queryAllPageList" resultMap="BaseResultMap">
+         select t1.id,
+       t1.rwdh, 
+       t1.rwxx, 
+       t1.fjzch,
+       t1.dprtcode,
+       t1.rwlx,
+       t1.rwzlx, 
+       t1.fxrq, 
+       t1.jhgs_rs, 
+       t1.jhgs_xs, 
+       t1.jhgs, 
+       t1.sjgs_rs, 
+       t1.sjgs_xs, 
+       t1.sjgs, 
+       t1.pcl, 
+       t1.gdzt,
+       t1.dcbbh, 
+       t1.tjrid, 
+       t1.xggdid,
+       t1.tjrxx, 
+       t1.tjrq, 
+       t1.gssh_bz 
+  from (
+  select b1.id,
+       b1.rwdh,
+       b1.rwxx,
+       b1.dprtcode,
+       b1.fjzch,
+       b1.xggdid,
+       b1.rwlx,
+       b1.rwzlx, 
+       b2.fxrq, 
+       (CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) jhgs_rs, 
+       (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END) jhgs_xs, 
+       ((CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) * (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END)) jhgs, 
+       (CASE WHEN b1.sjgs_rs IS NULL THEN 0 ELSE b1.sjgs_rs END) sjgs_rs, 
+       (CASE WHEN b1.sjgs_xs IS NULL THEN 0 ELSE b1.sjgs_xs END) sjgs_xs, 
+       ((CASE WHEN b1.sjgs_rs IS NULL THEN 0 ELSE b1.sjgs_rs END) * (CASE WHEN b1.sjgs_xs IS NULL THEN 0 ELSE b1.sjgs_xs END)) sjgs,
+       round(((((CASE WHEN b1.sjgs_rs IS NULL THEN 0 ELSE b1.sjgs_rs END) * (CASE WHEN b1.sjgs_xs IS NULL THEN 0 ELSE b1.sjgs_xs END)) - ((CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) * (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END))) / 
+       case (CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) * (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END) when 0 then 1 else (CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) * (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END) end
+        * 100), 2) pcl,
+       case
+         when round(abs((((CASE WHEN b1.sjgs_rs IS NULL THEN 0 ELSE b1.sjgs_rs END) * (CASE WHEN b1.sjgs_xs IS NULL THEN 0 ELSE b1.sjgs_xs END)) -
+                        ((CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) * (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END))) /
+                        case (CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) * (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END) when 0 then 1 else (CASE WHEN b1.jhgs_rs IS NULL THEN 0 ELSE b1.jhgs_rs END) * (CASE WHEN b1.jhgs_xs IS NULL THEN 0 ELSE b1.jhgs_xs END) end * 100),
+                    2) &lt;=
+              (select yjts_jb1 from t_threshold where key = 'GDGS') then
+          3
+         else
+          b1.gssh_zt
+       end gdzt ,
+       b1.gssh_dcbbh dcbbh,
+       b1.gssh_tjrid tjrid,
+       b3.username || ' ' || b3.realname tjrxx,
+       to_char(b1.gssh_tjrq, 'yyyy-mm-dd') tjrq,
+       b1.gssh_bz 
+       from b_s_009 b1 left join b_s_006 b2 on b1.fxjldid = b2.id left join t_user b3 on b1.gssh_tjrid = b3.id 
+        where b1.zt = 10	
+  ) t1
+  <include refid="FlightRecordParam"></include>
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		order by t1.gdzt, t1.fxrq desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+ 
+	<!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+	   where 1=1
+		  <if test="fjzch != null and fjzch == ''">
+	        and  t1.fjzch is null
+	  	 </if>
+		   <if test="fjzch != null and fjzch != ''">
+		        and  t1.fjzch =#{fjzch}
+		   </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="id != null and id != ''">
+             and t1.id =  #{id}
+       	 </if>
+       	  <if test="rwlx != null and rwlx != ''">
+             and t1.rwlx =  #{rwlx}
+       	 </if>
+       	  <if test="rwzlx != null and rwzlx != ''">
+             and t1.rwzlx =  #{rwzlx}
+       	 </if>
+         <if test="gdzt != null and gdzt != ''">
+             and  t1.gdzt in (${gdzt})  
+         </if>
+           <if test="fxDateBegin != null and fxDateBegin != ''">
+		    and t1.fxrq &gt;=to_date(#{fxDateBegin}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="fxDateEnd != null and fxDateEnd != ''">
+		    and t1.fxrq &lt;=to_date(#{fxDateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="keyword != null and keyword != ''">
+		      and (
+		      	   UPPER(t1.dcbbh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.rwdh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.rwxx) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.gssh_bz) like UPPER('%'||#{keyword}||'%')
+		    	 )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+		      <choose>                                                                 
+		    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+		    		 AND exists 
+		    		( SELECT 1 from D_007 where 
+		    		t1.fjzch = FJZCH
+		    		AND t1.dprtcode = DPRTCODE
+		    		AND zt = 1
+		    		)
+		    	</when>
+		    	<when test='paramsMap.userType != "admin" and paramsMap.userId != null and paramsMap.userId !=""'>                       
+		    		
+		    	</when>
+	   	</choose>
+		  
+		  
+	</sql>
+  
+    <select id="queryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_s_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+	<!-- 修改工时工单 -->
+	<select id="modify" parameterType="com.eray.thjw.productionplan.po.ScheduledTask" >
+		 update b_s_009 set
+		 GSSH_DCBBH=#{gsshDcbbh},
+		GSSH_TJRID=#{gsshTjrid},
+		GSSH_TJRQ=to_date(#{gsshTjrq},'yyyy-mm-dd'),
+		GSSH_BZ=#{gsshBz}
+		 where ID = #{id}
+	</select>
+	
+	  
+	<!-- 修改工时工单 -->
+	<select id="update" parameterType="com.eray.thjw.productionplan.po.ScheduledTask" >
+		 update b_s_009 set
+		 bz=#{bz}
+		 where ID = #{id}
+	</select>
+	
+	
+	<!--提交审核工时工单 -->
+	<select id="subWorkersimplex" parameterType="com.eray.thjw.productionplan.po.ScheduledTask" >
+		 update b_s_009 set
+		 GSSH_DCBBH=#{gsshDcbbh},
+		GSSH_TJRID=#{gsshTjrid},
+		gssh_zt=#{gdzt},
+		GSSH_TJRQ=to_date(#{gsshTjrq},'yyyy-mm-dd'),
+		GSSH_BZ=#{gsshBz}
+		 where ID = #{id}
+	</select>
+
+
+</mapper>

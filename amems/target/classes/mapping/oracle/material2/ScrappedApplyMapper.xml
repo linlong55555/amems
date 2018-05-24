@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.ScrappedApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.ScrappedApply" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="BFDH" property="bfdh" jdbcType="VARCHAR" />
+    <result column="BFRQ" property="bfrq" jdbcType="TIMESTAMP" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="SQBMID" property="sqbmid" jdbcType="VARCHAR" />
+    <result column="SQRID" property="sqrid" jdbcType="VARCHAR" />
+    <result column="SQSJ" property="sqsj" jdbcType="TIMESTAMP" />
+    <result column="SPBMID" property="spbmid" jdbcType="VARCHAR" />
+    <result column="SPRID" property="sprid" jdbcType="VARCHAR" />
+    <result column="SPSJ" property="spsj" jdbcType="TIMESTAMP" />
+    <result column="SPYJ" property="spyj" jdbcType="VARCHAR" />
+    <result column="ZDJSRID" property="zdjsrid" jdbcType="VARCHAR" />
+    <result column="ZDJSRQ" property="zdjsrq" jdbcType="TIMESTAMP" />
+    <result column="ZDJSYY" property="zdjsyy" jdbcType="VARCHAR" />
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap type="com.eray.thjw.material2.po.ScrappedApply" id="ResultMap" extends="BaseResultMap">
+		<association property="sqr" javaType="com.eray.thjw.po.User">
+			<id column="sqrid" property="id" />
+			<result column="sqr_realname" property="realname" />
+			<result column="sqr_username" property="username" />
+		</association>
+		<association property="shr" javaType="com.eray.thjw.po.User">
+			<id column="shrid" property="id" />
+			<result column="shr_realname" property="realname" />
+			<result column="shr_username" property="username" />
+		</association>
+	</resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, BFDH, BFRQ, SM, SQBMID, SQRID, SQSJ, SPBMID, 
+    SPRID, SPSJ, SPYJ, ZDJSRID, ZDJSRQ, ZDJSYY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.ScrappedApply" >
+    insert into B_H2_009 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      BFDH, BFRQ, SM, SQBMID, 
+      SQRID, SQSJ, SPBMID, 
+      SPRID, SPSJ, SPYJ, 
+      ZDJSRID, ZDJSRQ, ZDJSYY
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{bfdh,jdbcType=VARCHAR}, #{bfrq,jdbcType=TIMESTAMP}, #{sm,jdbcType=VARCHAR}, #{sqbmid,jdbcType=VARCHAR}, 
+      #{sqrid,jdbcType=VARCHAR}, #{sqsj,jdbcType=TIMESTAMP}, #{spbmid,jdbcType=VARCHAR}, 
+      #{sprid,jdbcType=VARCHAR}, #{spsj,jdbcType=TIMESTAMP}, #{spyj,jdbcType=VARCHAR}, 
+      #{zdjsrid,jdbcType=VARCHAR}, #{zdjsrq,jdbcType=TIMESTAMP}, #{zdjsyy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.ScrappedApply" >
+    insert into B_H2_009
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="bfdh != null" >
+        BFDH,
+      </if>
+      <if test="bfrq != null" >
+        BFRQ,
+      </if>
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="sqbmid != null" >
+        SQBMID,
+      </if>
+      <if test="sqrid != null" >
+        SQRID,
+      </if>
+      <if test="sqsj != null" >
+        SQSJ,
+      </if>
+      <if test="spbmid != null" >
+        SPBMID,
+      </if>
+      <if test="sprid != null" >
+        SPRID,
+      </if>
+      <if test="spsj != null" >
+        SPSJ,
+      </if>
+      <if test="spyj != null" >
+        SPYJ,
+      </if>
+      <if test="zdjsrid != null" >
+        ZDJSRID,
+      </if>
+      <if test="zdjsrq != null" >
+        ZDJSRQ,
+      </if>
+      <if test="zdjsyy != null" >
+        ZDJSYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bfdh != null" >
+        #{bfdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sm != null" >
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="sqbmid != null" >
+        #{sqbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsj != null" >
+        #{sqsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spbmid != null" >
+        #{spbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="sprid != null" >
+        #{sprid,jdbcType=VARCHAR},
+      </if>
+      <if test="spsj != null" >
+        #{spsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spyj != null" >
+        #{spyj,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null" >
+        #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null" >
+        #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null" >
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.ScrappedApply" >
+    update B_H2_009
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bfdh != null" >
+        BFDH = #{bfdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        BFRQ = #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="sqbmid != null" >
+        SQBMID = #{sqbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        SQRID = #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsj != null" >
+        SQSJ = #{sqsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spbmid != null" >
+        SPBMID = #{spbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="sprid != null" >
+        SPRID = #{sprid,jdbcType=VARCHAR},
+      </if>
+      <if test="spsj != null" >
+        SPSJ = #{spsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spyj != null" >
+        SPYJ = #{spyj,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null" >
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null" >
+        ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null" >
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.ScrappedApply" >
+    update B_H2_009
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BFDH = #{bfdh,jdbcType=VARCHAR},
+      BFRQ = #{bfrq,jdbcType=TIMESTAMP},
+      SM = #{sm,jdbcType=VARCHAR},
+      SQBMID = #{sqbmid,jdbcType=VARCHAR},
+      SQRID = #{sqrid,jdbcType=VARCHAR},
+      SQSJ = #{sqsj,jdbcType=TIMESTAMP},
+      SPBMID = #{spbmid,jdbcType=VARCHAR},
+      SPRID = #{sprid,jdbcType=VARCHAR},
+      SPSJ = #{spsj,jdbcType=TIMESTAMP},
+      SPYJ = #{spyj,jdbcType=VARCHAR},
+      ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      ZDJSYY = #{zdjsyy,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <!-- 报废申请列表 -->
+  <select id="getAllList" parameterType="com.eray.thjw.material2.po.ScrappedApply" resultMap="ResultMap">
+  		select  h.ID, h.DPRTCODE, h.WHBMID, h.WHRID, h.WHSJ, h.ZT, h.BFDH, h.BFRQ, 
+		h.SM, h.SQBMID, h.SQRID, h.SQSJ, h.SPBMID, h.SPRID, h.SPSJ, h.SPYJ, h.ZDJSRID, 
+		h.ZDJSRQ, h.ZDJSYY,
+		sqr.username sqr_username,sqr.realname sqr_realname,
+		shr.username shr_username,shr.realname shr_realname,
+		(select count(1) from d_011 where D_011.mainid=h.id and D_011.yxzt=1) as ATTACHCOUNT
+  		from b_h2_009 h left join t_user sqr on h.sqrid= sqr.id
+		left join t_user shr on h.sprid= shr.id 
+		 <include refid="scrapParam"></include>
+		 <choose>
+			<when test='pagination.sort == "auto"'>
+				order by zt
+			</when>
+			<otherwise>
+				order by ${pagination.sort} ${pagination.order}
+			</otherwise>
+		</choose>
+  </select>
+  <sql id="scrapParam">
+		where 1=1 
+		<if test="keyword != null and keyword != ''">
+			and ( lower(h.bfdh) like lower('%'||#{keyword}||'%')
+			OR lower(h.sm) like lower('%'||#{keyword}||'%')   )
+		</if>
+		<if test="dprtcode != null and dprtcode != ''">
+			and h.dprtcode = #{dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.bfrqBegin != null and paramsMap.bfrqBegin != ''">
+			and h.bfrq &gt;= to_date(#{paramsMap.bfrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+		<if test="paramsMap != null and paramsMap.bfrqEnd != null and paramsMap.bfrqEnd != ''">
+			and h.bfrq &lt;= to_date(#{paramsMap.bfrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+		<if test="paramsMap != null and paramsMap.ztList != null and paramsMap.ztList != ''">
+		    and h.zt in
+     			 <foreach item="item" index="index" collection="paramsMap.ztList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		<!-- id -->
+		<if test="id != null and id != ''">
+			and h.id = #{id}
+		</if>
+		<choose> 
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+	    		and h.sqrid = #{paramsMap.userId}
+	    	</when>
+	   	</choose>
+	</sql>
+	
+	<select id="getListById" parameterType="com.eray.thjw.material2.po.ScrappedApply" resultType="map">
+   	SELECT CASE
+         WHEN H2021.ID IS NULL THEN
+          0
+         ELSE
+          1
+       END BFZT, --销毁状态：0未销毁、1已销毁
+       D008.HCLX, --航材类型：0其他、1航材、2设备（改为工具设备）、3工具（废弃）、4危险品（改为化工品）、5低值易耗品、6松散件
+       H017.KCID, --库存ID
+       H017.BJID, --部件ID
+       H017.BJH, --部件号
+       H017.PCH, --批次号
+       H017.SN, --序列号
+       D008.ZWMS, --中文描述
+       D008.YWMS, --英文描述
+       H017.CKLB, --仓库类别：1待处理库、2不可用库、3待修库、5可用库
+       H017.CKH, --仓库编号
+       H017.CKMC,
+       H017.KWH, --库位编号
+       D008.GG, --规格
+       D008.XINGH, --型号
+       H200901.KCSL BFSL, --报废数量
+       D008.JLDW, --计量单位
+       H017.CQID, --产权ID
+       D026.CQBH, --产权编号
+       D026.FJZCH, --产权-飞机注册号
+       D026.GSMC, --产权-公司名称
+       ROUND(BH032.CB * H200901.KCSL, 2) ZCB, --成本
+       ROUND(BH032.JZ * H200901.KCSL, 2) ZJZ, --价值
+       BH032.CB KCCB,
+       BH032.CBBZ BIZ,
+       BH032.JZ,
+       BH032.JZBZ,
+       TO_CHAR(H017.RKSJ, 'yyyy-mm-dd') RKRQ, --入库日期
+       TO_CHAR(H017.HJSM, 'yyyy-mm-dd') HJSM, --货架寿命
+       CEIL(H017.HJSM - SYSDATE) SYTS, --剩余天数
+       H2021.XHSJ, --销毁时间
+       TUSER.USERNAME || ' ' || TUSER.REALNAME XHR --销毁人
+  FROM B_H2_00901 H200901
+  JOIN B_H2_009 H2009
+    ON H200901.ZT = 1
+   AND H200901.MAINID = H2009.ID
+   AND H2009.ID = #{id,jdbcType=VARCHAR}
+  LEFT JOIN B_H_017 H017
+    ON H017.ID = H200901.kcllid
+  LEFT JOIN B_H2_021 H2021
+    ON H2021.ZT = 1
+   AND H200901.ID = H2021.BFMXID
+  LEFT JOIN D_008 D008
+    ON H2009.DPRTCODE = D008.DPRTCODE
+   AND H017.BJH = D008.BJH
+  LEFT JOIN D_026 D026
+    ON D026.ID = H017.cqid
+  LEFT JOIN T_USER TUSER
+    ON TUSER.ID = H2021.XHRID
+   left join b_h_032 BH032 
+	on H017.dprtcode = BH032.dprtcode 
+	and COALESCE(H017.sn, '-')=COALESCE(BH032.xlh,'-') 
+	and COALESCE(H017.pch,'-')=COALESCE(BH032.pch,'-') 
+	and H017.bjh = BH032.bjh
+	where 1=1 
+		<if test="keyword != null and keyword != ''">
+			and ( lower(H017.BJH) like lower('%'||#{keyword}||'%')
+			OR lower(D008.ZWMS) like lower('%'||#{keyword}||'%' ) 
+			OR lower(D008.YWMS) like lower('%'||#{keyword}||'%'  )
+			OR lower(H017.PCH) like lower('%'||#{keyword}||'%'  )
+			OR lower(H017.GG) like lower('%'||#{keyword}||'%'  )
+			OR lower(H017.XH) like lower('%'||#{keyword}||'%'  )
+			OR lower(H017.PCH) like lower('%'||#{keyword}||'%'  )
+			OR lower(H017.SN) like lower('%'||#{keyword}||'%')   )
+		</if>
+		<choose>
+			<when test='pagination.sort == "auto"'>
+				 ORDER BY H017.CKH ASC, H017.KWH ASC
+			</when>
+			<otherwise>
+				order by ${pagination.sort} ${pagination.order}
+			</otherwise>
+		</choose>
+  </select>
+  <select id="getCount4CheckExist" parameterType="string" resultType="int">
+  	select count(1) from b_h2_009 where bfdh =#{bfdh,jdbcType=VARCHAR} and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  <select id="getRecord" parameterType="String" resultMap="ResultMap">
+  	select  h.ID, h.DPRTCODE, h.WHBMID, h.WHRID, h.WHSJ, h.ZT, h.BFDH, h.BFRQ, 
+		h.SM, h.SQBMID, h.SQRID, h.SQSJ, h.SPBMID, h.SPRID, h.SPSJ, h.SPYJ, h.ZDJSRID, 
+		h.ZDJSRQ, h.ZDJSYY,
+		sqr.username sqr_username,sqr.realname sqr_realname,
+		shr.username shr_username,shr.realname shr_realname,
+		(select count(1) from d_011 where D_011.mainid=h.id and D_011.yxzt=1) as ATTACHCOUNT
+  		from b_h2_009 h left join t_user sqr on h.sqrid= sqr.id
+		left join t_user shr on h.sprid= shr.id 
+		where h.id =#{id,jdbcType=VARCHAR}
+  </select>
+  <select id="getAuditList" parameterType="com.eray.thjw.material2.po.ScrappedApply" resultMap="ResultMap">
+  		select  h.ID, h.DPRTCODE, h.WHBMID, h.WHRID, h.WHSJ, h.ZT, h.BFDH, h.BFRQ, 
+		h.SM, h.SQBMID, h.SQRID, h.SQSJ, h.SPBMID, h.SPRID, h.SPSJ, h.SPYJ, h.ZDJSRID, 
+		h.ZDJSRQ, h.ZDJSYY,
+		sqr.username sqr_username,sqr.realname sqr_realname,
+		shr.username shr_username,shr.realname shr_realname
+  		from b_h2_009 h left join t_user sqr on h.sqrid= sqr.id
+		left join t_user shr on h.sprid= shr.id 
+		where h.zt = #{zt,jdbcType=DECIMAL} 
+		<choose>                                                                 
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+	    		and h.sprid = #{paramsMap.userId}
+	    	</when>
+	   	</choose>
+  </select>
+</mapper>

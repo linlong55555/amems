@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.component.saibong.dao.SaibongUtilMapper">
+	<resultMap type="com.eray.component.saibong.po.SaibongGz" id="SaibongGzMap">
+		<id column="cfkey" property="cfkey" />
+		<id column="dprtcode" property="dprtcode" />
+		<result column="g_gdwz" property="ggdwz" />
+		<result column="g_cfzcsx" property="gcfzcsx" />
+		<result column="t_rqgs" property="trqgs" />
+		<result column="t_cfzcsx" property="tcfzcsx" />
+		<result column="l_lshcd" property="llshcd" />
+		<result column="l_tbgz" property="ltbgz" />
+		<result column="l_cfzcsx" property="lcfzcsx" />
+		<result column="fgf" property="fgf" />
+		<result column="tvalue" property="tvalue" />
+		<result column="tsysdate" property="tsysdate" />
+		<!-- 动态内容位置  -->
+		<result column="dtwzwz" property="dtwzwz" />
+		
+	</resultMap>
+	<resultMap type="com.eray.component.saibong.po.SaibongGz" extends="SaibongGzMap" id="SaibongGzWithXxMap">
+		<association property="saibongXx" javaType="com.eray.component.saibong.po.SaibongXx">
+			<id column="xx_cfkey" property="cfkey" />
+			<id column="xx_dprtcode" property="dprtcode" />
+			<result column="xx_dqfh" property="dqfh" />
+			<result column="xx_dqlsh" property="dqlsh" />
+			<result column="xx_g_value" property="gvalue" />
+			<result column="xx_t_value" property="tvalue" />
+			<result column="xx_l_value" property="lvalue" />
+			<result column="xx_fssj" property="fssj" />
+			<result column="xx_fssj_str" property="fssjStr" />
+		</association>
+	</resultMap>
+	<resultMap type="com.eray.component.saibong.po.SaibongGz" extends="SaibongGzMap" id="SaibongGzWithXxTwoMap">
+		<association property="saibongXxTwo" javaType="com.eray.component.saibong.po.SaibongXxTwo">
+			<id column="two_cfkey" property="cfkey" />
+			<id column="two_dprtcode" property="dprtcode" />
+			<result column="two_dqfh" property="dqfh" />
+			<result column="two_dqlsh" property="dqlsh" />
+			<result column="two_g_value" property="gvalue" />
+			<result column="two_t_value" property="tvalue" />
+			<result column="two_l_value" property="lvalue" />
+			<result column="two_fssj" property="fssj" />
+			<result column="two_fssj_str" property="fssjStr" />
+			<result column="two_djh" property="djh" />
+		</association>
+	</resultMap>
+	
+	<select id = "selectSaibongXx" resultMap="SaibongGzWithXxMap">
+		select 
+			gz.cfkey, 
+			gz.dprtcode, 
+			gz.g_gdwz, 
+			gz.g_cfzcsx, 
+			gz.t_rqgs, 
+			gz.t_cfzcsx, 
+			gz.l_lshcd, 
+			gz.l_tbgz, 
+			gz.l_cfzcsx, 
+			gz.fgf, 
+			CURRENT_TIMESTAMP as tsysdate,
+			to_char(CURRENT_TIMESTAMP, gz.t_rqgs) tvalue, 
+			xx.cfkey as xx_cfkey,
+			xx.dprtcode as xx_dprtcode,
+			xx.dqfh as xx_dqfh,
+			xx.dqlsh as xx_dqlsh,
+			xx.g_value as xx_g_value,
+			xx.t_value as xx_t_value,
+			xx.l_value as xx_l_value,
+			xx.fssj as xx_fssj,
+			to_char(xx.fssj, gz.t_rqgs) as xx_fssj_str
+		from 
+			(
+				select * from saibong_gz 
+					where cfkey = #{1} and (dprtcode = #{0}
+       					or
+      		 			( not EXISTS ( select 1 from saibong_gz where cfkey = #{1} and dprtcode = #{0}) and dprtcode = '-1' ))
+			) gz 
+	       left join saibong_xx xx
+	       on  gz.cfkey = xx.cfkey and xx.dprtcode = #{0}
+	</select>
+	
+	<select id = "selectSaibongXxTwo" resultMap="SaibongGzWithXxTwoMap">
+		select 
+			gz.cfkey, 
+			gz.dprtcode, 
+			gz.g_gdwz, 
+			gz.g_cfzcsx, 
+			gz.t_rqgs, 
+			gz.t_cfzcsx, 
+			gz.l_lshcd, 
+			gz.l_tbgz, 
+			gz.l_cfzcsx, 
+			gz.fgf, 
+			gz.dtwzwz,
+			CURRENT_TIMESTAMP as tsysdate,
+			to_char(CURRENT_TIMESTAMP, gz.t_rqgs) tvalue, 
+			two.cfkey as two_cfkey,
+			two.dprtcode as two_dprtcode,
+			two.dqfh as two_dqfh,
+			two.dqlsh as two_dqlsh,
+			two.g_value as two_g_value,
+			two.t_value as two_t_value,
+			two.l_value as two_l_value,
+			two.fssj as two_fssj,
+			to_char(two.fssj, gz.t_rqgs) two_fssj_str, 
+			two.djh as two_djh
+		from 
+			(
+				select * from saibong_gz 
+					where cfkey = #{1} and (dprtcode = #{0}
+       					or
+      		 			( not EXISTS ( select 1 from saibong_gz where cfkey = #{1} and dprtcode = #{0}) and dprtcode = '-1' ))
+			) gz 
+	       left join saibong_xx_two two
+	       on  gz.cfkey = two.cfkey and two.djh = #{2, jdbcType=VARCHAR} and two.dprtcode = #{0}
+	</select>
+	
+	<update id="updateSaibongXx" parameterType="com.eray.component.saibong.po.SaibongXx">
+		update SAIBONG_XX set
+		DQFH=#{dqfh,jdbcType=VARCHAR} ,
+		dqlsh=#{dqlsh,jdbcType=INTEGER},
+		g_value=#{gvalue,jdbcType=VARCHAR},
+		t_value=#{tvalue,jdbcType=VARCHAR}, 
+		l_value=#{lvalue,jdbcType=VARCHAR},
+		fssj=#{fssj,jdbcType=TIMESTAMP}
+		where cfkey=#{cfkey,jdbcType=VARCHAR} and dprtcode=#{dprtcode,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateSaibongXxTwo" parameterType="com.eray.component.saibong.po.SaibongXxTwo">
+		update SAIBONG_XX_TWO set
+		DQFH=#{dqfh,jdbcType=VARCHAR} ,
+		dqlsh=#{dqlsh,jdbcType=INTEGER},
+		g_value=#{gvalue,jdbcType=VARCHAR},
+		t_value=#{tvalue,jdbcType=VARCHAR}, 
+		l_value=#{lvalue,jdbcType=VARCHAR},
+		fssj=#{fssj,jdbcType=TIMESTAMP} 
+		where cfkey=#{cfkey,jdbcType=VARCHAR} and djh=#{djh,jdbcType=VARCHAR} and dprtcode=#{dprtcode,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="insertSaibongXx" parameterType="com.eray.component.saibong.po.SaibongXx">
+		insert into 
+			SAIBONG_XX  (CFKEY, DPRTCODE, DQFH, DQLSH, G_VALUE, T_VALUE, L_VALUE, FSSJ)
+		values
+		(
+			#{cfkey,jdbcType=VARCHAR},
+		  	#{dprtcode,jdbcType=VARCHAR},
+		  	#{dqfh,jdbcType=VARCHAR} ,
+		  	#{dqlsh,jdbcType=INTEGER},
+		  	#{gvalue,jdbcType=VARCHAR},
+		  	#{tvalue,jdbcType=VARCHAR}, 
+		  	#{lvalue,jdbcType=VARCHAR},
+		  	#{fssj,jdbcType=TIMESTAMP} 
+		)
+	</insert>
+	
+	<insert id="insertSaibongXxTwo" parameterType="com.eray.component.saibong.po.SaibongXxTwo">
+		insert into 
+			SAIBONG_XX_TWO  (CFKEY, DPRTCODE, DJH, DQFH, DQLSH, G_VALUE, T_VALUE, L_VALUE, FSSJ)
+		values
+		(
+			#{cfkey,jdbcType=VARCHAR},
+		  	#{dprtcode,jdbcType=VARCHAR},
+		  	#{djh,jdbcType=VARCHAR},
+		  	#{dqfh,jdbcType=VARCHAR} ,
+		  	#{dqlsh,jdbcType=INTEGER},
+		  	#{gvalue,jdbcType=VARCHAR},
+		  	#{tvalue,jdbcType=VARCHAR}, 
+		  	#{lvalue,jdbcType=VARCHAR},
+		  	#{fssj,jdbcType=TIMESTAMP} 
+		)
+	</insert>
+	
+</mapper>

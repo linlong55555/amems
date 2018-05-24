@@ -1,0 +1,24 @@
+alter table t_workgroup add mrbs integer;
+comment on column t_workgroup.mrbs  is '默认标识：0初始、1默认';
+alter table b_g2_014 add wz integer;
+comment on column b_g2_014.wz  is '位置：-1默认、21 1发、22 2发、23 3发、 24 4发';
+alter table b_g2_014_rec add wz integer;
+comment on column b_g2_014_rec.wz  is '位置：-1默认、21 1发、22 2发、23 3发、 24 4发';
+alter table b_g2_014 add zxbs integer;
+comment on column b_g2_014.zxbs  is '最新标识：最新标识：1初始、2最新版本、3老版本';
+alter table b_g2_014_rec add zxbs integer;
+comment on column b_g2_014_rec.zxbs  is '最新标识：最新标识：1初始、2最新版本、3老版本';
+alter table b_h_006_new add hangcly varchar2(50);
+comment on column b_h_006_new.hangcly  is '航材来源(新)，数据来源于数据字典';
+alter table b_h_001 add hangcly varchar2(50);
+comment on column b_h_001.hangcly  is '航材来源(新)，数据来源于数据字典';
+alter table b_h_001_rec add hangcly varchar2(50);
+comment on column b_h_001_rec.hangcly  is '航材来源(新)，数据来源于数据字典';
+alter table b_h_003 add hangcly varchar2(50);
+comment on column b_h_003.hangcly  is '航材来源(新)，数据来源于数据字典';
+alter table b_h_003_rec add hangcly varchar2(50);
+comment on column b_h_003_rec.hangcly  is '航材来源(新)，数据来源于数据字典';
+alter table b_h_017 add hangcly varchar2(50);
+comment on column b_h_017.hangcly  is '航材来源(新)，数据来源于数据字典';
+insert into d_001 (lxid, lxmc, xlms, is_bj, is_xz, is_sc, is_mc, is_sz, dprtCode) values (85, '航材来源', '航材管理', 1, 1, 1, 1, 1, '-1');
+

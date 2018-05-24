@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.MaintenanceMapper" >
+
+    <!-- 维修方案字段类型转换 -->
+	<resultMap id="BaseResultMap" type="com.eray.thjw.po.Maintenance" >
+	    <id column="ID" property="id" jdbcType="VARCHAR" />
+	    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+	    <result column="WXFABH" property="wxfabh" jdbcType="VARCHAR" />
+	    <result column="BB" property="bb" jdbcType="DECIMAL" />
+	    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+	    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+	    <result column="JX" property="jx" jdbcType="VARCHAR" />
+	    <result column="JH_SXRQ" property="jhSxrq" jdbcType="TIMESTAMP" />
+	    <result column="SJ_SXRQ" property="sjSxrq" jdbcType="TIMESTAMP" />
+	    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+	    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+	    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+	    <result column="SXBMID" property="sxbmid" jdbcType="VARCHAR" />
+	    <result column="SXRID" property="sxrid" jdbcType="VARCHAR" />
+	    <result column="SXSJ" property="sxsj" jdbcType="TIMESTAMP" />
+	    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+	    <result column="F_BBID" property="fBbid" jdbcType="VARCHAR" />
+	    <result column="B_BBID" property="bBbid" jdbcType="VARCHAR" />
+	    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+	    <result column="ZXBS" property="zxbs" jdbcType="DECIMAL" />
+	    <result column="SXJYRID" property="sxjyrid" jdbcType="VARCHAR" />
+	    <result column="MAXBB" property="maxbb" jdbcType="DECIMAL" />
+	</resultMap>
+  
+	<!-- 配置维修方案与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.po.Maintenance" id="MaintenanceToUserMap" extends="BaseResultMap">  
+	
+		<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZID" property="id"/>  
+	        <result column="ZUSERNAME" property="username"/>  
+	        <result column="ZREALNAME" property="realname"/>  
+	    </association>  
+	
+	  	<association property="user" javaType="com.eray.thjw.po.User">  
+	        <id column="SID" property="id"/>  
+	        <result column="SUSERNAME" property="username"/>  
+	        <result column="SREALNAME" property="realname"/>  
+	    </association>  
+	    
+	    <association property="jyr" javaType="com.eray.thjw.po.User">  
+	        <id column="XID" property="id"/>  
+	        <result column="XUSERNAME" property="username"/>  
+	        <result column="XREALNAME" property="realname"/>  
+	    </association>  
+	    
+	</resultMap> 
+	
+	<!-- 配置定检项目和监控项目一对多关系 -->
+	<resultMap type="com.eray.thjw.po.Maintenance" id="MaintenanceToMonitorItem" extends="BaseResultMap">  
+		<collection property="fixedCheckedItems" ofType="com.eray.thjw.po.FixedCheckItem">  
+		    <id column="DJXMID" property="id" jdbcType="VARCHAR" />
+		    <result column="WXFABH" property="wxfabh" jdbcType="VARCHAR" />
+		    <result column="DJBH" property="djbh" jdbcType="VARCHAR" />
+		    <result column="BB" property="bb" jdbcType="DECIMAL" />
+		    <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+		    <result column="DJXMZWMS" property="zwms" jdbcType="VARCHAR" />
+		    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+		    <result column="ZYXS" property="zyxs" jdbcType="DECIMAL" />
+		    <result column="JHGS_RS" property="jhgsRs" jdbcType="DECIMAL" />
+		    <result column="JHGS_XSS" property="jhgsXss" jdbcType="DECIMAL" />
+		    <result column="YXX" property="yxx" jdbcType="DECIMAL" />
+		    <result column="DJXMBZ" property="bz" jdbcType="VARCHAR" />
+		    <result column="SPZT" property="spzt" jdbcType="DECIMAL" />
+		    
+		    <collection property="monitorItemList" ofType="com.eray.thjw.po.MonitorItem">  
+	            <id column="JKXMID" property="id" jdbcType="VARCHAR" />
+			    <result column="DJXMID" property="djxmid" jdbcType="VARCHAR" />
+			    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+			    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+			    <result column="ZQZ" property="zqz" jdbcType="DECIMAL" />
+			    <result column="DW" property="dw" jdbcType="DECIMAL" />
+			    <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+			    <result column="JKLMS" property="jklms" jdbcType="DECIMAL" />
+       		</collection>
+       </collection> 
+	  
+	</resultMap> 
+  
+    <!-- 维修方案表基础字段 -->
+	<sql id="Base_Column_List" >
+    	ID, 
+    	DPRTCODE, 
+    	WXFABH, 
+    	BB, 
+    	ZWMS, 
+    	YWMS, 
+    	JX, 
+    	JH_SXRQ, 
+    	SJ_SXRQ, 
+    	ZDBMID, 
+    	ZDRID, 
+    	ZDSJ, 
+    	SXBMID, 
+    	SXRID, 
+    	SXSJ, 
+    	ZT, 
+    	F_BBID,
+    	B_BBID, 
+    	BZ, 
+    	ZXBS
+	</sql>
+  
+    <!-- 维修方案与用户表字段 -->
+	<sql id="Maintenance_User_List" >
+	    B.ID, 
+	    B.DPRTCODE, 
+	    B.WXFABH, 
+	    B.BB, 
+	    B.ZWMS, 
+	    B.YWMS, 
+	    B.JX, 
+	    B.JH_SXRQ, 
+	    B.SJ_SXRQ, 
+	    B.ZDBMID, 
+	    B.ZDRID, 
+	    B.ZDSJ, 
+	    B.SXBMID, 
+	    B.SXRID, 
+	    B.SXSJ, 
+	    B.ZT, 
+	    B.F_BBID, 
+	    B.B_BBID , 
+	    B.BZ , 
+	    B.ZXBS ,
+	    B.SXJYRID,
+	    ZU.ID AS ZID ,
+	    ZU.USERNAME AS ZUSERNAME,  
+	    ZU.REALNAME AS ZREALNAME,
+	    SU.ID AS SID,
+	    SU.USERNAME AS SUSERNAME,  
+	    SU.REALNAME AS SREALNAME,
+	    XU.ID AS XID,
+	    XU.USERNAME AS XUSERNAME,
+	    XU.REALNAME AS XREALNAME
+	</sql>
+  
+	<!-- 搜索参数 -->
+	<sql id="mtToUserParam">
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	UPPER(B.WXFABH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B.ZWMS) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B.JX) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B.BB) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B.BZ) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(ZU.USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(ZU.REALNAME) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="zdrrealname != null and zdrrealname != ''">
+		    and (UPPER(ZU.USERNAME) like UPPER('%'||#{zdrrealname}||'%')
+		    	or UPPER(ZU.REALNAME) like UPPER('%'||#{zdrrealname}||'%')
+		    )
+		</if>
+		<if test="zt != null and zt != ''">
+		    and B.ZT = #{zt}
+		</if>
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.jhSxrqBegin != null and paramsMap.jhSxrqBegin != ''">
+		    and B.JH_SXRQ &gt;= to_date(#{paramsMap.jhSxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.jhSxrqEnd != null and paramsMap.jhSxrqEnd != ''">
+		    and B.JH_SXRQ &lt;= to_date(#{paramsMap.jhSxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sjSxrqBegin != null and paramsMap.sjSxrqBegin != ''">
+		    and B.SJ_SXRQ &gt;= to_date(#{paramsMap.sjSxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sjSxrqEnd != null and paramsMap.sjSxrqEnd != ''">
+		    and B.SJ_SXRQ &lt;= to_date(#{paramsMap.sjSxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqBegin != null and paramsMap.zdrqBegin != ''">
+		    and B.ZDSJ &gt;= to_date(#{paramsMap.zdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqEnd != null and paramsMap.zdrqEnd != ''">
+		    and B.ZDSJ &lt;= to_date(#{paramsMap.zdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="zxbs != null and zxbs != ''">
+		    and B.ZXBS = #{zxbs}
+		</if>
+		<if test="zxbs == 0">
+		    and B.ZXBS = 0
+		</if>
+		<!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+	    <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    			B.jx = FJJX
+	    		AND B.dprtcode = DPRTCODE
+	    		AND zt = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+	    		 AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    			B.jx= FJJX
+	    		AND B.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    	</when>
+	   	</choose>
+	   	
+	   	<if test="jx != null and jx != ''">
+		    and B.JX = #{jx}
+		</if>
+	   	
+	   	<if test="id != null and id != ''">
+			and B.ID = #{id}
+		</if>
+		
+	</sql>
+	<!-- 根据主键查询维修方案信息 -->
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    		<include refid="Base_Column_List" />
+    	from B_G_011
+    	where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据主键查询维修方案及用户信息 -->
+	<select id="selectById" resultMap="MaintenanceToUserMap" parameterType="java.lang.String" >
+		select 
+           	<include refid="Maintenance_User_List" />
+           from B_G_011 B
+           left join T_USER ZU
+           on B.ZDRID = ZU.ID
+           left join T_USER SU
+           on B.SXRID = SU.ID
+           left join T_USER XU
+           on B.SXJYRID = XU.ID
+    	where B.ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据维修方案编号查询机型 -->
+	<select id="getFjjxByWxfabh" resultType="java.lang.String" parameterType="java.lang.String" >
+		select 
+    		DISTINCT JX
+    	from B_G_011
+    	where ZT != 8 and DPRTCODE = #{dprtcode} and WXFABH = #{wxfabh,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据维修方案编号、版本查询维修方案信息 -->
+	<select id="selectByWxfabhBb" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    		<include refid="Base_Column_List" />
+    	from B_G_011
+    	where ZT != 8 and DPRTCODE = #{dprtcode} and BB = #{bb,jdbcType=VARCHAR} and WXFABH = #{wxfabh,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 检查维修方案是否存在 -->
+	<select id="checkMaintenance" parameterType="com.eray.thjw.po.Maintenance" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+           from B_G_011
+           where ZT != 8 and DPRTCODE = #{dprtcode} and JX = #{jx}
+	</select>
+	
+	<!-- 根据维修方案编号查询维修方案信息 -->
+	<select id="queryAllListByWxfabh" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    		<include refid="Base_Column_List" />
+    	from B_G_011
+    	where ZT != 8 and DPRTCODE = #{dprtcode} and WXFABH = #{wxfabh,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据维修方案编号查询最大版本维修方案信息 -->
+	<select id="queryMaxInfoByWxfabh" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    		<include refid="Base_Column_List" />
+    	from B_G_011
+    	where ZT != 8 and DPRTCODE = #{dprtcode} and BB = (SELECT MAX(BB) FROM B_G_011 WHERE ZT != 8 and DPRTCODE = #{dprtcode} and WXFABH = #{wxfabh})
+    	and WXFABH = #{wxfabh}
+	</select>
+	
+	<!-- 根据维修方案编号查询版本  -->
+	<select id="queryBbListByWxfabh" resultType="BigDecimal" parameterType="java.lang.String" >
+		SELECT B.BB FROM B_G_011 B WHERE B.ZT != 8 and B.DPRTCODE = #{dprtcode} and B.WXFABH = #{wxfabh} ORDER BY B.BB DESC
+	</select>
+	
+	<!-- 根据维修方案编号查询最大版本  -->
+	<select id="getMaxBbByWxfabh" resultType="BigDecimal" parameterType="java.lang.String" >
+		SELECT MAX(B.BB) FROM B_G_011 B WHERE B.ZT != 8 and B.DPRTCODE = #{dprtcode} and B.WXFABH = #{wxfabh}
+	</select>
+	
+	<!-- 根据条件查询维修方案信息,去重 -->
+	<select id="selectByDprtcodeList" resultMap="BaseResultMap" parameterType="Map" >
+		SELECT B.WXFABH,B.ZWMS,B.DPRTCODE from B_G_011 B 
+    	JOIN (SELECT WXFABH,DPRTCODE,MAX(BB) AS BB FROM B_G_011 where ZT != 8 GROUP BY WXFABH,DPRTCODE) C
+    	ON B.WXFABH = C.WXFABH AND B.DPRTCODE = C.DPRTCODE AND B.BB = C.BB
+		WHERE B.ZT != 8
+              <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+			    <choose>                                                                 
+			    	<when test='userType!=null and userType == "admin"'>                       
+			    		 AND exists 
+			    		( SELECT 1 from D_007 where 
+			    			B.jx = FJJX
+			    		AND B.DPRTCODE = DPRTCODE
+			    		AND zt = 1
+			    		)
+			    		and exists 
+			    		(select 1 from t_department d 
+					    where d.id = B.DPRTCODE)
+			    	</when>
+			    	<when test='userType != "admin" and userId!=null and userId != ""'>                       
+			    		 AND exists 
+			    		( SELECT 1 from V_ROLE_JX where 
+			    			B.jx= FJJX
+			    		AND B.dprtcode = DPRTCODE
+			    		AND USER_ID = #{userId,jdbcType=VARCHAR}
+			    		)
+			    		and exists 
+			    		(select 1 from t_user2role ur 
+			    		join t_role2dprt rd 
+			    		on ur.role_id = rd.role_id      
+					    where ur.user_id = #{userId,jdbcType=VARCHAR} and rd.dprt_id = B.DPRTCODE)
+			    	</when>
+			   	</choose>  
+              
+        ORDER BY B.DPRTCODE ASC,B.WXFABH ASC
+	</select>
+	
+	<!-- 根据查询条件分页查询待生效或生效维修方案信息 -->
+	<select id="queryAllPageListEff" parameterType="com.eray.thjw.po.Maintenance" resultMap="MaintenanceToUserMap">
+				select 
+	            	<include refid="Maintenance_User_List" />
+	            from B_G_011 B
+	            left join T_USER ZU
+	            on B.ZDRID = ZU.ID
+	            left join T_USER SU
+	            on B.SXRID = SU.ID
+	            left join T_USER XU
+	            on B.SXJYRID = XU.ID
+	            where 1=1 and B.ZT in(2,3)
+	            <include refid="mtToUserParam"></include>
+	            <!-- order by B.ID asc -->
+			  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by B.ZXBS asc,B.WXFABH desc,B.BB desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+				</choose>
+	</select>
+
+	<!-- 根据查询条件分页查询维修方案信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.po.Maintenance" resultMap="MaintenanceToUserMap">
+				select 
+	            	<include refid="Maintenance_User_List" />
+	            	,B1.MAXBB
+	            from B_G_011 B
+	            left join T_USER ZU
+	            on B.ZDRID = ZU.ID
+	            left join T_USER SU
+	            on B.SXRID = SU.ID
+	            left join T_USER XU
+	            on B.SXJYRID = XU.ID
+	            left join (select WXFABH,MAX(BB) AS MAXBB from B_G_011 where
+	            ZT != 8
+	            <if test="dprtcode != null and dprtcode != ''">
+		   		 and dprtcode = #{dprtcode}
+				</if>
+	             group by WXFABH) B1
+	            on B.WXFABH = B1.WXFABH
+	            where 1=1 and B.ZT != 8
+	            <include refid="mtToUserParam"></include>
+	            
+	            <!-- order by B.ID asc -->
+			  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by B.WXFABH ${pagination.order},B.BB ${pagination.order}
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+				</choose>
+	</select>
+  
+  	<!-- 根据id删除维修方案 -->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+	    delete from B_G_011
+	    where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<!-- 新增维修方案 -->
+	<insert id="insert" parameterType="com.eray.thjw.po.Maintenance" >
+		insert into B_G_011 (
+			ID, 
+			DPRTCODE, 
+			WXFABH, 
+			BB, 
+			ZWMS, 
+			YWMS, 
+			JX, 
+			JH_SXRQ, 
+			SJ_SXRQ, 
+			ZDBMID, 
+			ZDRID, 
+			ZDSJ, 
+			SXBMID, 
+			SXRID, 
+			SXSJ, 
+			ZT, 
+			F_BBID, 
+			B_BBID,
+			BZ,
+			ZXBS
+		)
+		values (
+	        #{id,jdbcType=VARCHAR}, 
+	        #{dprtcode,jdbcType=VARCHAR}, 
+	        #{wxfabh,jdbcType=VARCHAR}, 
+	        #{bb,jdbcType=DECIMAL}, 
+	        #{zwms,jdbcType=VARCHAR}, 
+	        #{ywms,jdbcType=VARCHAR}, 
+	        #{jx,jdbcType=VARCHAR}, 
+	        #{jhSxrq,jdbcType=TIMESTAMP}, 
+	        #{sjSxrq,jdbcType=TIMESTAMP}, 
+	        #{zdbmid,jdbcType=VARCHAR}, 
+	        #{zdrid,jdbcType=VARCHAR}, 
+	        sysdate, 
+	        #{sxbmid,jdbcType=VARCHAR}, 
+	        #{sxrid,jdbcType=VARCHAR}, 
+	        #{sxsj,jdbcType=TIMESTAMP}, 
+	        #{zt,jdbcType=DECIMAL}, 
+	        #{fBbid,jdbcType=VARCHAR}, 
+	        #{bBbid,jdbcType=VARCHAR},
+	        #{bz,jdbcType=VARCHAR}),
+	        #{zxbs,jdbcType=DECIMAL}
+		)
+	</insert>
+	<!-- 根据条件新增维修方案 -->
+	<insert id="insertSelective" parameterType="com.eray.thjw.po.Maintenance" >
+    	insert into B_G_011
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+		    <if test="id != null" >
+		      ID,
+		    </if>
+		    <if test="dprtcode != null" >
+		      DPRTCODE,
+		    </if>
+		    <if test="wxfabh != null" >
+		      WXFABH,
+		    </if>
+		    <if test="bb != null" >
+		      BB,
+		    </if>
+		    <if test="zwms != null" >
+		      ZWMS,
+		    </if>
+		    <if test="ywms != null" >
+		      YWMS,
+		    </if>
+		    <if test="jx != null" >
+		      JX,
+		    </if>
+		    <if test="jhSxrq != null" >
+		      JH_SXRQ,
+		    </if>
+		    <if test="sjSxrq != null" >
+		      SJ_SXRQ,
+		    </if>
+		    <if test="zdbmid != null" >
+		      ZDBMID,
+		    </if>
+		    <if test="zdrid != null" >
+		      ZDRID,
+		    </if>
+		      ZDSJ,
+		    <if test="sxbmid != null" >
+		      SXBMID,
+		    </if>
+		    <if test="sxrid != null" >
+		      SXRID,
+		    </if>
+		    <if test="sxsj != null" >
+		      SXSJ,
+		    </if>
+		    <if test="zt != null" >
+		      ZT,
+		    </if>
+		    <if test="fBbid != null" >
+		      F_BBID,
+		    </if>
+		    <if test="bBbid != null" >
+		      B_BBID,
+		    </if>
+		    <if test="bz != null" >
+		      BZ,
+		    </if>
+		    <if test="zxbs != null" >
+		      ZXBS,
+		    </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+		    <if test="id != null" >
+		      #{id,jdbcType=VARCHAR},
+		    </if>
+		    <if test="dprtcode != null" >
+		      #{dprtcode,jdbcType=VARCHAR},
+		    </if>
+		    <if test="wxfabh != null" >
+		      #{wxfabh,jdbcType=VARCHAR},
+		    </if>
+		    <if test="bb != null" >
+		      #{bb,jdbcType=DECIMAL},
+		    </if>
+		    <if test="zwms != null" >
+		      #{zwms,jdbcType=VARCHAR},
+		    </if>
+		    <if test="ywms != null" >
+		      #{ywms,jdbcType=VARCHAR},
+		    </if>
+		    <if test="jx != null" >
+		      #{jx,jdbcType=VARCHAR},
+		    </if>
+		    <if test="jhSxrq != null" >
+		      #{jhSxrq,jdbcType=TIMESTAMP},
+		    </if>
+		    <if test="sjSxrq != null" >
+		      #{sjSxrq,jdbcType=TIMESTAMP},
+		    </if>
+		    <if test="zdbmid != null" >
+		      #{zdbmid,jdbcType=VARCHAR},
+		    </if>
+		    <if test="zdrid != null" >
+		      #{zdrid,jdbcType=VARCHAR},
+		    </if>
+		      sysdate,
+		    <if test="sxbmid != null" >
+		      #{sxbmid,jdbcType=VARCHAR},
+		    </if>
+		    <if test="sxrid != null" >
+		      #{sxrid,jdbcType=VARCHAR},
+		    </if>
+		    <if test="sxsj != null" >
+		      #{sxsj,jdbcType=TIMESTAMP},
+		    </if>
+		    <if test="zt != null" >
+		      #{zt,jdbcType=DECIMAL},
+		    </if>
+		    <if test="fBbid != null" >
+		      #{fBbid,jdbcType=VARCHAR},
+		    </if>
+		    <if test="bBbid != null" >
+		      #{bBbid,jdbcType=VARCHAR},
+		    </if>
+		    <if test="bz != null" >
+		      #{bz,jdbcType=VARCHAR},
+		    </if>
+		    <if test="zxbs != null" >
+		      #{zxbs,jdbcType=DECIMAL},
+		    </if>
+	    </trim>
+	</insert>
+	
+	<!-- 修改维修方案生效 -->
+	<update id="updateEffective" parameterType="com.eray.thjw.po.Maintenance" >
+    	update B_G_011
+    	set 
+     		SJ_SXRQ = to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'),
+      		SXBMID = #{sxbmid,jdbcType=VARCHAR},
+      		SXRID = #{sxrid,jdbcType=VARCHAR},
+      		SXSJ = sysdate,
+      		ZT = #{zt,jdbcType=DECIMAL},
+      		ZXBS = #{zxbs,jdbcType=DECIMAL},
+      		SXJYRID = #{sxjyrid,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 小于当前版本的维修方案最新标识修改成老版本 -->
+	<update id="updateBbToOld" parameterType="Map" >
+    	update B_G_011
+    	set 
+      		ZXBS = #{zxbs,jdbcType=DECIMAL}
+		where ID in 
+			 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+			 </foreach>
+	</update>
+	
+	<!-- 根据条件修改维修方案 -->	
+	<update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Maintenance" >
+    	update B_G_011
+	    <set >
+<!-- 	        <if test="dprtcode != null" > -->
+<!-- 	        	DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!-- 	        </if> -->
+	        <if test="wxfabh != null" >
+	        	WXFABH = #{wxfabh,jdbcType=VARCHAR},
+	        </if>
+	        <if test="bb != null" >
+	        	BB = #{bb,jdbcType=DECIMAL},
+	        </if>
+	        <if test="zwms != null" >
+	        	ZWMS = #{zwms,jdbcType=VARCHAR},
+	        </if>
+	        <if test="ywms != null" >
+	        	YWMS = #{ywms,jdbcType=VARCHAR},
+	        </if>
+	        <if test="jx != null" >
+	        	JX = #{jx,jdbcType=VARCHAR},
+	        </if>
+	        <if test="jhSxrq != null" >
+	        	JH_SXRQ = #{jhSxrq,jdbcType=TIMESTAMP},
+	        </if>
+	        <if test="sjSxrq != null" >
+	        	SJ_SXRQ = #{sjSxrq,jdbcType=TIMESTAMP},
+	        </if>
+	        <if test="zdbmid != null" >
+	        	ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+	        </if>
+	        <if test="zdrid != null" >
+	        	ZDRID = #{zdrid,jdbcType=VARCHAR},
+	        </if>
+	        <if test="zdsj != null" >
+	        	ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+	        </if>
+	        <if test="sxbmid != null" >
+	        	SXBMID = #{sxbmid,jdbcType=VARCHAR},
+	        </if>
+	        <if test="sxrid != null" >
+	        	SXRID = #{sxrid,jdbcType=VARCHAR},
+	        </if>
+	        <if test="sxsj != null" >
+	        	SXSJ = #{sxsj,jdbcType=TIMESTAMP},
+	        </if>
+	        <if test="zt != null" >
+	        	ZT = #{zt,jdbcType=DECIMAL},
+	        </if>
+	        <if test="fBbid != null" >
+	        	F_BBID = #{fBbid,jdbcType=VARCHAR},
+	        </if>
+	        <if test="bBbid != null" >
+	        	B_BBID = #{bBbid,jdbcType=VARCHAR},
+	        </if>
+	        <if test="bz != null" >
+	        	BZ = #{bz,jdbcType=VARCHAR},
+	        </if>
+	        <if test="zxbs != null" >
+	        	ZXBS = #{zxbs,jdbcType=DECIMAL},
+	        </if>
+	    </set>
+    	where ID = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 修改维修方案信息 -->
+	<update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.Maintenance" >
+    	update B_G_011
+    	set 
+<!--       		DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      		WXFABH = #{wxfabh,jdbcType=VARCHAR},
+     		BB = #{bb,jdbcType=DECIMAL},
+     		ZWMS = #{zwms,jdbcType=VARCHAR},
+     		YWMS = #{ywms,jdbcType=VARCHAR},
+     		JX = #{jx,jdbcType=VARCHAR},
+     		JH_SXRQ = #{jhSxrq,jdbcType=TIMESTAMP},
+     		SJ_SXRQ = #{sjSxrq,jdbcType=TIMESTAMP},
+      		ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      		ZDRID = #{zdrid,jdbcType=VARCHAR},
+      		ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      		SXBMID = #{sxbmid,jdbcType=VARCHAR},
+      		SXRID = #{sxrid,jdbcType=VARCHAR},
+      		SXSJ = #{sxsj,jdbcType=TIMESTAMP},
+      		ZT = #{zt,jdbcType=DECIMAL},
+      		F_BBID = #{fBbid,jdbcType=VARCHAR},
+      		B_BBID = #{bBbid,jdbcType=VARCHAR},
+      		BZ = #{bz,jdbcType=VARCHAR},
+      		ZXBS = #{zxbs,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<!-- 根据飞机机型查询最新的定检项目和监控项目 -->
+    <select id="selectByFjjx" resultMap="MaintenanceToMonitorItem" parameterType="java.util.HashMap" >
+		WITH 
+			NEWESTWXFA AS
+			(
+			  SELECT * FROM (
+			    SELECT B_G_011.ID,B_G_011.WXFABH,B_G_011.ZWMS,B_G_011.JX,B_G_011.BB,B_G_011.DPRTCODE,MAX(BB) OVER (PARTITION BY JX, DPRTCODE) MAXBB 
+			    FROM B_G_011 WHERE ZT = 3 AND JX = #{fjjx,jdbcType=VARCHAR} AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+			  )A WHERE A.BB = A.MAXBB ORDER BY A.JX
+			),
+			NEWESTDJXH AS
+			(
+			  SELECT * FROM (
+			    SELECT B_G_012.WXFABH,B_G_012.DJBH,B_G_012.ID,B_G_012.ZWMS,B_G_012.BZ,B_G_012.BB,B_G_012.DPRTCODE,MAX(BB) OVER (PARTITION BY WXFABH, DJBH, DPRTCODE) MAXBB 
+			    FROM B_G_012 WHERE ZT = 3
+			    AND YXX = 1
+			  )A WHERE A.BB = A.MAXBB
+			)
+			
+		SELECT W.JX,W.ID,W.WXFABH,W.ZWMS,D.ID AS DJXMID,D.DJBH,D.ZWMS AS DJXMZWMS,D.BZ AS DJXMBZ,D.BB AS BB,
+		B.ID AS JKXMID,B.JKLBH,B.JKFLBH,B.ZQZ,B.DW,D2.MS AS JKLMS FROM  NEWESTWXFA W 
+		LEFT JOIN NEWESTDJXH D ON W.WXFABH = D.WXFABH AND W.DPRTCODE = D.DPRTCODE
+		AND NOT EXISTS
+   			(SELECT 1 FROM B_S_00103 WHERE B_S_00103.ZT = 1 AND B_S_00103.DJBH = D.DJBH AND B_S_00103.DPRTCODE = D.DPRTCODE
+   				AND B_S_00103.WXFABH = D.WXFABH  AND B_S_00103.ZJQDID = #{zjqdid,jdbcType=VARCHAR})
+		LEFT JOIN B_G_01201 B ON D.ID = B.DJXMID AND B.ZT = 1
+		LEFT JOIN D_006 D1 ON B.JKFLBH = D1.JKFLBH
+		LEFT JOIN D_00601 D2 ON B.JKLBH = D2.JKLBH
+		ORDER BY D.DJBH, D1.PXH, D2.PXH
+    </select>
+    <!-- 根据查询条件分页查询维修方案信息（去重，状态为生效，最新标识为1） -->
+	<select id="queryAllPageDistincList" parameterType="com.eray.thjw.po.Maintenance" resultMap="MaintenanceToUserMap">
+				select  <!-- distinct(B.WXFABH)  -->
+	            	  <include refid="Maintenance_User_List" />
+	            from B_G_011 B
+	            left join T_USER ZU
+	            on B.ZDRID = ZU.ID
+	            left join T_USER SU
+	            on B.SXRID = SU.ID
+	            left join T_USER XU
+	            on B.SXJYRID = XU.ID
+	            where 1=1 and B.ZT = 3 and B.ZXBS=1
+	            <include refid="mtToUserParam"></include>
+	            <!-- order by B.ID asc -->
+	            <if test="dprtcode != null and dprtcode != ''">
+		   		 and B.dprtcode = #{dprtcode}
+				</if>
+			  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by B.ID ${pagination.order}
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+				</choose>
+	</select>
+    
+    <!-- 查询未匹配的定检项目以及其维修方案 -->
+    <select id="findUnmatchItem" resultMap="MaintenanceToMonitorItem" parameterType="java.lang.String" >
+		WITH 
+			NEWESTWXFA AS
+			(
+			  SELECT * FROM (
+			    SELECT B_G_011.ID,B_G_011.WXFABH,B_G_011.JX,B_G_011.BB,B_G_011.DPRTCODE,MAX(BB) OVER (PARTITION BY JX, DPRTCODE) MAXBB 
+			    FROM B_G_011 WHERE ZT = 3 AND JX = #{fjjx,jdbcType=VARCHAR} AND DPRTCODE = #{dprtCode,jdbcType=VARCHAR}
+			  )A WHERE A.BB = A.MAXBB ORDER BY A.JX
+			),
+			NEWESTDJXH AS
+			(
+			  SELECT * FROM (
+			    SELECT B_G_012.WXFABH,B_G_012.DJBH,B_G_012.ID,B_G_012.ZWMS,B_G_012.BZ,B_G_012.BB,B_G_012.DPRTCODE,MAX(BB) OVER (PARTITION BY WXFABH, DJBH, DPRTCODE) MAXBB 
+			    FROM B_G_012 WHERE ZT = 3
+			    AND YXX = 1
+			    AND NOT EXISTS
+          			(SELECT 1 FROM B_S_00103 WHERE B_S_00103.ZT = 1 AND B_S_00103.DJBH = B_G_012.DJBH AND B_S_00103.WXFABH = B_G_012.WXFABH AND B_S_00103.DPRTCODE = B_G_012.DPRTCODE)
+			  )A WHERE A.BB = A.MAXBB
+			)
+			
+		SELECT W.JX,W.ID,W.WXFABH,D.ID AS DJXMID,D.DJBH,D.ZWMS AS DJXMZWMS,D.BZ AS DJXMBZ,
+		B.ID AS JKXMID,B.JKLBH,B.JKFLBH,B.ZQZ,B.DW,D2.MS AS JKLMS FROM  NEWESTWXFA W 
+		INNER JOIN NEWESTDJXH D ON W.WXFABH = D.WXFABH AND W.DPRTCODE = D.DPRTCODE
+		INNER JOIN B_G_01201 B ON D.ID = B.DJXMID
+		LEFT JOIN D_006 D1 ON B.JKFLBH = D1.JKFLBH
+		LEFT JOIN D_00601 D2 ON B.JKLBH = D2.JKLBH
+		WHERE B.ZT = 1
+		ORDER BY D.DJBH, D1.PXH, D2.PXH
+    </select>
+    
+    
+    <!-- 根据查询条件分页查询维修方案信息（去重，状态为生效，最新标识为1） -->
+	<select id="selectMaintenanceByJx" parameterType="com.eray.thjw.po.Maintenance" resultMap="MaintenanceToUserMap">
+	
+		select A.id,A.wxfabh,A.bb,A.zwms,A.ywms,A.jx from (
+			select t.id,t.wxfabh,t.bb,t.zwms,t.ywms,t.jx,
+					row_number() over(ORDER BY t.bb DESC) SN from b_g_011 t 
+						where t.zt != 8
+						<if test="jx != null and jx != ''">
+						    and t.JX = #{jx}
+						</if>
+						<if test="dprtcode != null">
+						    and t.DPRTCODE = #{dprtcode}
+						</if>
+						) A
+					where A.SN=1
+		
+	</select> 
+    
+    
+    
+    
+    
+</mapper>

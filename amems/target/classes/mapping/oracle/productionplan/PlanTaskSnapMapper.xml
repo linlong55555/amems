@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.PlanTaskSnapMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlanTaskSnap" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="DJXMID" property="djxmid" jdbcType="VARCHAR" />
+    <result column="DJXMBH" property="djxmbh" jdbcType="VARCHAR" />
+    <result column="JKXMBH_F" property="jkxmbhF" jdbcType="VARCHAR" />
+    <result column="JKFLBH_F" property="jkflbhF" jdbcType="VARCHAR" />
+    <result column="JKZ_JH_F" property="jkzJhF" jdbcType="VARCHAR" />
+    <result column="JKZ_SJ_F" property="jkzSjF" jdbcType="VARCHAR" />
+    <result column="JKXMBH_S" property="jkxmbhS" jdbcType="VARCHAR" />
+    <result column="JKFLBH_S" property="jkflbhS" jdbcType="VARCHAR" />
+    <result column="JKZ_JH_S" property="jkzJhS" jdbcType="VARCHAR" />
+    <result column="JKZ_SJ_S" property="jkzSjS" jdbcType="VARCHAR" />
+    <result column="JKXMBH_T" property="jkxmbhT" jdbcType="VARCHAR" />
+    <result column="JKFLBH_T" property="jkflbhT" jdbcType="VARCHAR" />
+    <result column="JKZ_JH_T" property="jkzJhT" jdbcType="VARCHAR" />
+    <result column="JKZ_SJ_T" property="jkzSjT" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, ZJQDID, DJXMID, DJXMBH, JKXMBH_F, JKFLBH_F, JKZ_JH_F, JKZ_SJ_F, JKXMBH_S, 
+    JKFLBH_S, JKZ_JH_S, JKZ_SJ_S, JKXMBH_T, JKFLBH_T, JKZ_JH_T, JKZ_SJ_T, WHDWID, WHRID, 
+    WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_00901
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="queryList" resultMap="BaseResultMap"  parameterType="com.eray.thjw.productionplan.po.PlanTaskHistory" >
+     select 
+    <include refid="Base_Column_List" />
+    from B_S_00901 
+    where 1=1 
+    <if test="ids != null" >
+         and mainid in 
+         <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+		  #{item}
+   		</foreach>
+    </if>
+    
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_00901
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.productionplan.po.PlanTaskSnap" >
+    insert into B_S_00901 (ID, MAINID, ZJQDID, 
+      DJXMID, DJXMBH, JKXMBH_F, 
+      JKFLBH_F, JKZ_JH_F, JKZ_SJ_F, 
+      JKXMBH_S, JKFLBH_S, JKZ_JH_S, 
+      JKZ_SJ_S, JKXMBH_T, JKFLBH_T, 
+      JKZ_JH_T, JKZ_SJ_T, WHDWID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR}, 
+      #{djxmid,jdbcType=VARCHAR}, #{djxmbh,jdbcType=VARCHAR}, #{jkxmbhF,jdbcType=VARCHAR}, 
+      #{jkflbhF,jdbcType=VARCHAR}, #{jkzJhF,jdbcType=VARCHAR}, #{jkzSjF,jdbcType=VARCHAR}, 
+      #{jkxmbhS,jdbcType=VARCHAR}, #{jkflbhS,jdbcType=VARCHAR}, #{jkzJhS,jdbcType=VARCHAR}, 
+      #{jkzSjS,jdbcType=VARCHAR}, #{jkxmbhT,jdbcType=VARCHAR}, #{jkflbhT,jdbcType=VARCHAR}, 
+      #{jkzJhT,jdbcType=VARCHAR}, #{jkzSjT,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.PlanTaskSnap" >
+    insert into B_S_00901
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID,
+      </if>
+      <if test="djxmid != null" >
+        DJXMID,
+      </if>
+      <if test="djxmbh != null" >
+        DJXMBH,
+      </if>
+      <if test="jkxmbhF != null" >
+        JKXMBH_F,
+      </if>
+      <if test="jkflbhF != null" >
+        JKFLBH_F,
+      </if>
+      <if test="jkzJhF != null" >
+        JKZ_JH_F,
+      </if>
+      <if test="jkzSjF != null" >
+        JKZ_SJ_F,
+      </if>
+      <if test="jkxmbhS != null" >
+        JKXMBH_S,
+      </if>
+      <if test="jkflbhS != null" >
+        JKFLBH_S,
+      </if>
+      <if test="jkzJhS != null" >
+        JKZ_JH_S,
+      </if>
+      <if test="jkzSjS != null" >
+        JKZ_SJ_S,
+      </if>
+      <if test="jkxmbhT != null" >
+        JKXMBH_T,
+      </if>
+      <if test="jkflbhT != null" >
+        JKFLBH_T,
+      </if>
+      <if test="jkzJhT != null" >
+        JKZ_JH_T,
+      </if>
+      <if test="jkzSjT != null" >
+        JKZ_SJ_T,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ ,
+      </if>
+        ZT
+       
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmid != null" >
+        #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmbh != null" >
+        #{djxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhF != null" >
+        #{jkxmbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhF != null" >
+        #{jkflbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzJhF != null" >
+        #{jkzJhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzSjF != null" >
+        #{jkzSjF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhS != null" >
+        #{jkxmbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhS != null" >
+        #{jkflbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzJhS != null" >
+        #{jkzJhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzSjS != null" >
+        #{jkzSjS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhT != null" >
+        #{jkxmbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhT != null" >
+        #{jkflbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzJhT != null" >
+        #{jkzJhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzSjT != null" >
+        #{jkzSjT,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+        '1'
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.PlanTaskSnap" >
+    update B_S_00901
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmid != null" >
+        DJXMID = #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmbh != null" >
+        DJXMBH = #{djxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhF != null" >
+        JKXMBH_F = #{jkxmbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhF != null" >
+        JKFLBH_F = #{jkflbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzJhF != null" >
+        JKZ_JH_F = #{jkzJhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzSjF != null" >
+        JKZ_SJ_F = #{jkzSjF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhS != null" >
+        JKXMBH_S = #{jkxmbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhS != null" >
+        JKFLBH_S = #{jkflbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzJhS != null" >
+        JKZ_JH_S = #{jkzJhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzSjS != null" >
+        JKZ_SJ_S = #{jkzSjS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhT != null" >
+        JKXMBH_T = #{jkxmbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhT != null" >
+        JKFLBH_T = #{jkflbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzJhT != null" >
+        JKZ_JH_T = #{jkzJhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzSjT != null" >
+        JKZ_SJ_T = #{jkzSjT,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.PlanTaskSnap" >
+    update B_S_00901
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      DJXMID = #{djxmid,jdbcType=VARCHAR},
+      DJXMBH = #{djxmbh,jdbcType=VARCHAR},
+      JKXMBH_F = #{jkxmbhF,jdbcType=VARCHAR},
+      JKFLBH_F = #{jkflbhF,jdbcType=VARCHAR},
+      JKZ_JH_F = #{jkzJhF,jdbcType=VARCHAR},
+      JKZ_SJ_F = #{jkzSjF,jdbcType=VARCHAR},
+      JKXMBH_S = #{jkxmbhS,jdbcType=VARCHAR},
+      JKFLBH_S = #{jkflbhS,jdbcType=VARCHAR},
+      JKZ_JH_S = #{jkzJhS,jdbcType=VARCHAR},
+      JKZ_SJ_S = #{jkzSjS,jdbcType=VARCHAR},
+      JKXMBH_T = #{jkxmbhT,jdbcType=VARCHAR},
+      JKFLBH_T = #{jkflbhT,jdbcType=VARCHAR},
+      JKZ_JH_T = #{jkzJhT,jdbcType=VARCHAR},
+      JKZ_SJ_T = #{jkzSjT,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

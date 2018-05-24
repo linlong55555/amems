@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.DetailEngineeringMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.DetailEngineering" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="ZXFL" property="zxfl" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="BJXLH" property="bjxlh" jdbcType="VARCHAR" />
+    <result column="JKXMBH_F" property="jkxmbhF" jdbcType="VARCHAR" />
+    <result column="JKFLBH_F" property="jkflbhF" jdbcType="VARCHAR" />
+    <result column="JKZ_F" property="jkzF" jdbcType="VARCHAR" />
+    <result column="JKXMBH_S" property="jkxmbhS" jdbcType="VARCHAR" />
+    <result column="JKFLBH_S" property="jkflbhS" jdbcType="VARCHAR" />
+    <result column="JKZ_S" property="jkzS" jdbcType="VARCHAR" />
+    <result column="JKXMBH_T" property="jkxmbhT" jdbcType="VARCHAR" />
+    <result column="JKFLBH_T" property="jkflbhT" jdbcType="VARCHAR" />
+    <result column="JKZ_T" property="jkzT" jdbcType="VARCHAR" />
+    <result column="XH" property="xh" jdbcType="DECIMAL" />
+    <result column="GDH" property="gdh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="JHGS_RS" property="jhgsRs" jdbcType="DECIMAL" />
+    <result column="JHGS_XSS" property="jhgsXss" jdbcType="DECIMAL" />
+    <result column="BJMS" property="bjms" jdbcType="VARCHAR" />
+    <result column="ywms" property="ywms" jdbcType="VARCHAR" />
+    <result column="zwms" property="zwms" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    B_G_00901.ID, B_G_00901.MAINID, B_G_00901.ZXFL, B_G_00901.FJZCH, B_G_00901.ZJQDID, B_G_00901.BJH, B_G_00901.BJXLH, B_G_00901.JKXMBH_F, B_G_00901.JKFLBH_F, B_G_00901.JKZ_F, B_G_00901.JKXMBH_S, 
+    B_G_00901.JKFLBH_S, B_G_00901.JKZ_S, B_G_00901.JKXMBH_T, B_G_00901.JKFLBH_T, B_G_00901.JKZ_T, B_G_00901.XH, B_G_00901.GDH, B_G_00901.ZT, B_G_00901.WHDWID, B_G_00901.WHRID, B_G_00901.WHSJ, 
+    B_G_00901.DPRTCODE,B_G_00901.JHGS_RS, B_G_00901.JHGS_XSS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />,a.zwms||' '|| a.ywms as bjms
+    from B_G_00901 left join d_008 a on B_G_00901.bjh=a.bjh and B_G_00901.Dprtcode = a.dprtcode and a.zt = 1 
+    where B_G_00901.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据mainid查询所有 -->
+  <select id="selectByPrimaryKeyMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    a.ID, a.MAINID, a.ZXFL, a.FJZCH, a.ZJQDID, a.BJH, a.BJXLH, a.JKXMBH_F, a.JKFLBH_F, a.JKZ_F, 
+    
+    a.JKXMBH_S, a.JKFLBH_S, a.JKZ_S, a.JKXMBH_T, a.JKFLBH_T, a.JKZ_T, a.XH, a.GDH, a.ZT, a.WHDWID, 
+    
+    a.WHRID, a.WHSJ, a.DPRTCODE,a.JHGS_RS, a.JHGS_XSS ,b.ywms||' '||b.zwms  bjms,b.ywms,b.zwms
+    
+    from B_G_00901 a left join d_008 b on a.BJH=b.bjh and a.dprtcode=b.dprtcode and b.zt=1 where  a.MAINID = #{id,jdbcType=VARCHAR} order by a.xh
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_00901
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.DetailEngineering" >
+    insert into B_G_00901 (ID, MAINID, ZXFL, 
+      FJZCH, ZJQDID, BJH, 
+      BJXLH, JKXMBH_F, JKFLBH_F, 
+      JKZ_F, JKXMBH_S, JKFLBH_S, 
+      JKZ_S, JKXMBH_T, JKFLBH_T, 
+      JKZ_T, XH, GDH, ZT, 
+      WHDWID, WHRID, WHSJ, 
+      DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zxfl,jdbcType=VARCHAR}, 
+      #{fjzch,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, 
+      #{bjxlh,jdbcType=VARCHAR}, #{jkxmbhF,jdbcType=VARCHAR}, #{jkflbhF,jdbcType=VARCHAR}, 
+      #{jkzF,jdbcType=VARCHAR}, #{jkxmbhS,jdbcType=VARCHAR}, #{jkflbhS,jdbcType=VARCHAR}, 
+      #{jkzS,jdbcType=VARCHAR}, #{jkxmbhT,jdbcType=VARCHAR}, #{jkflbhT,jdbcType=VARCHAR}, 
+      #{jkzT,jdbcType=VARCHAR}, #{xh,jdbcType=DECIMAL}, #{gdh,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, sysdate, 
+      #{dprtcode,jdbcType=VARCHAR}), #{jhgsRs,jdbcType=DECIMAL}, #{jhgsXss,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.DetailEngineering" >
+    insert into B_G_00901
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="zxfl != null" >
+        ZXFL,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="bjxlh != null" >
+        BJXLH,
+      </if>
+      <if test="jkxmbhF != null" >
+        JKXMBH_F,
+      </if>
+      <if test="jkflbhF != null" >
+        JKFLBH_F,
+      </if>
+      <if test="jkzF != null" >
+        JKZ_F,
+      </if>
+      <if test="jkxmbhS != null" >
+        JKXMBH_S,
+      </if>
+      <if test="jkflbhS != null" >
+        JKFLBH_S,
+      </if>
+      <if test="jkzS != null" >
+        JKZ_S,
+      </if>
+      <if test="jkxmbhT != null" >
+        JKXMBH_T,
+      </if>
+      <if test="jkflbhT != null" >
+        JKFLBH_T,
+      </if>
+      <if test="jkzT != null" >
+        JKZ_T,
+      </if>
+      <if test="xh != null" >
+        XH,
+      </if>
+      <if test="gdh != null" >
+        GDH,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+       <if test="jhgsRs != null" >
+        JHGS_RS,
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zxfl != null" >
+        #{zxfl,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjxlh != null" >
+        #{bjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhF != null" >
+        #{jkxmbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhF != null" >
+        #{jkflbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzF != null" >
+        #{jkzF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhS != null" >
+        #{jkxmbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhS != null" >
+        #{jkflbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzS != null" >
+        #{jkzS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhT != null" >
+        #{jkxmbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhT != null" >
+        #{jkflbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzT != null" >
+        #{jkzT,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null" >
+        #{xh,jdbcType=DECIMAL},
+      </if>
+      <if test="gdh != null" >
+        #{gdh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        sysdate,
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null" >
+        #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.DetailEngineering" >
+    update B_G_00901
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zxfl != null" >
+        ZXFL = #{zxfl,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjxlh != null" >
+        BJXLH = #{bjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhF != null" >
+        JKXMBH_F = #{jkxmbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhF != null" >
+        JKFLBH_F = #{jkflbhF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzF != null" >
+        JKZ_F = #{jkzF,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhS != null" >
+        JKXMBH_S = #{jkxmbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhS != null" >
+        JKFLBH_S = #{jkflbhS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzS != null" >
+        JKZ_S = #{jkzS,jdbcType=VARCHAR},
+      </if>
+      <if test="jkxmbhT != null" >
+        JKXMBH_T = #{jkxmbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbhT != null" >
+        JKFLBH_T = #{jkflbhT,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzT != null" >
+        JKZ_T = #{jkzT,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null" >
+        XH = #{xh,jdbcType=DECIMAL},
+      </if>
+      <if test="gdh != null" >
+        GDH = #{gdh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = sysdate,
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="jhgsRs != null" >
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.DetailEngineering" >
+    update B_G_00901
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZXFL = #{zxfl,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      BJXLH = #{bjxlh,jdbcType=VARCHAR},
+      JKXMBH_F = #{jkxmbhF,jdbcType=VARCHAR},
+      JKFLBH_F = #{jkflbhF,jdbcType=VARCHAR},
+      JKZ_F = #{jkzF,jdbcType=VARCHAR},
+      JKXMBH_S = #{jkxmbhS,jdbcType=VARCHAR},
+      JKFLBH_S = #{jkflbhS,jdbcType=VARCHAR},
+      JKZ_S = #{jkzS,jdbcType=VARCHAR},
+      JKXMBH_T = #{jkxmbhT,jdbcType=VARCHAR},
+      JKFLBH_T = #{jkflbhT,jdbcType=VARCHAR},
+      JKZ_T = #{jkzT,jdbcType=VARCHAR},
+      XH = #{xh,jdbcType=DECIMAL},
+      GDH = #{gdh,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = sysdate,
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

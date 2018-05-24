@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.StoreMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Store" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CKH" property="ckh" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="CKMC" property="ckmc" jdbcType="VARCHAR" />
+    <result column="CKDZ" property="ckdz" jdbcType="VARCHAR" />
+    <result column="CKLB" property="cklb" jdbcType="DECIMAL" />
+    <result column="KGYID" property="kgyid" jdbcType="VARCHAR" />
+    <result column="JD" property="jd" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="BMID" property="bmid" jdbcType="VARCHAR" />
+    <result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+    <result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" />
+    <result column="KGYREALNAME" property="kgyrealname" jdbcType="VARCHAR" />
+    <result column="KGYUSERNAME" property="kgyusername" jdbcType="VARCHAR" />
+    <result column="STOLEID" property="selectId" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  	<!-- 配置仓库与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.aerialmaterial.po.Store" id="StoreToUserMap" extends="BaseResultMap">  
+	  	<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="userId" property="id"/>  
+	        <result column="USERNAME" property="username"/>  
+	        <result column="REALNAME" property="realname"/>  
+	    </association>  
+	</resultMap>
+	
+	<resultMap type="com.eray.thjw.aerialmaterial.po.Store" id="RoleStoreMap" extends="BaseResultMap"> 
+		<collection property="storageList" ofType="com.eray.thjw.aerialmaterial.po.Storage">
+			<id column="s_ID" jdbcType="VARCHAR" property="id" />
+			<result column="s_MAINID" jdbcType="VARCHAR" property="mainid" />
+			<result column="s_KWH" jdbcType="VARCHAR" property="kwh" />
+			<result column="s_DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+			<result column="s_CKH" jdbcType="VARCHAR" property="ckh" />
+			<result column="s_CKLB" jdbcType="DECIMAL" property="cklb" />
+			<result column="s_BZ" jdbcType="VARCHAR" property="bz" />
+			<result column="s_ZT" jdbcType="DECIMAL" property="zt" />
+			<result column="s_BMID" jdbcType="VARCHAR" property="bmid" />
+			<result column="s_CJRID" jdbcType="VARCHAR" property="cjrid" />
+			<result column="s_CJSJ" jdbcType="TIMESTAMP" property="cjsj" />
+		</collection> 
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, CKH, DPRTCODE, CKMC, CKDZ, CKLB, KGYID,JD, BZ, ZT, BMID, CJRID, CJSJ
+  </sql>
+
+  <sql id="Store_User_List" >
+    D.ID, D.CKH, D.DPRTCODE, D.CKMC, D.CKDZ, D.CKLB, D.KGYID,D.JD, D.BZ, D.ZT, D.BMID, D.CJRID, D.CJSJ,U.ID AS userId,U.USERNAME,U.REALNAME,U2.USERNAME AS KGYUSERNAME,U2.REALNAME AS KGYREALNAME
+  </sql>
+  
+ 	 <!-- 搜索参数 -->
+	<sql id="Store_User_Param">
+		<!--id-->
+		<if test="id != null and id != ''">
+			and D.ID = #{id}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	lower(D.CKH) like lower('%'||#{keyword}||'%')
+		    	or lower(D.CKMC) like lower('%'||#{keyword}||'%')
+		    	or lower(D.CKDZ) like lower('%'||#{keyword}||'%')
+		    	or lower(D.BZ) like lower('%'||#{keyword}||'%')
+		    	or lower(U.USERNAME) like lower('%'||#{keyword}||'%')
+		    	or lower(U.REALNAME) like lower('%'||#{keyword}||'%')
+		    	or lower(U2.USERNAME) like lower('%'||#{keyword}||'%')
+		    	or lower(U2.REALNAME) like lower('%'||#{keyword}||'%')
+		    )
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.whrname != null and paramsMap.whrname != ''">
+		    and lower(U.REALNAME) like lower('%'||#{paramsMap.whrname}||'%')
+		    or lower(U.USERNAME) like lower('%'||#{paramsMap.whrname}||'%')
+		    )
+		</if>
+		
+		<if test="kgyrealname != null and kgyrealname != ''">
+		    and (lower(U2.REALNAME) like lower('%'||#{kgyrealname}||'%')
+		    or lower(U2.USERNAME) like lower('%'||#{kgyrealname}||'%')
+		    )
+		</if>
+		
+		<if test="cklb != null">
+		    and D.CKLB = #{cklb}
+		</if>
+		<if test="zt != null">
+		    and D.ZT = #{zt}
+		</if>
+		<if test="bz != null and bz != ''">
+		    and lower(D.BZ) like lower('%'||#{bz}||'%')
+		</if>
+		<if test="dprtcode != null">
+		    and D.DPRTCODE = #{dprtcode}
+		</if>
+		
+		<!--如果是仓库主数据查询  -->
+		<if test="paramsMap != null and paramsMap.isStoreData != null and paramsMap.isStoreData ==false">
+		    and D.CKLB in (0,1,2,3,4,5,6,7,8)
+		</if>
+		<!--如果是仓库数据管理查询  -->
+		<if test="paramsMap != null and paramsMap.isStoreData != null and paramsMap.isStoreData ==true">
+		    and D.CKLB in (11,12,13,14)
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.whrqBegin != null and paramsMap.whrqBegin != ''">
+		    and D.CJSJ &gt;= to_date(#{paramsMap.whrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqEnd != null and paramsMap.whrqEnd != ''">
+		    and D.CJSJ &lt;= to_date(#{paramsMap.whrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		
+	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPrimaryCkh" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_009
+    where  ZT=1 AND CKH = #{0,jdbcType=VARCHAR} AND dprtcode = #{1,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据id查询仓库及用户信息 -->
+	<select id="selectJoinUserById" parameterType="java.lang.String" resultMap="StoreToUserMap">
+
+				select 
+	            	<include refid="Store_User_List" />
+	            from D_009 D
+	            LEFT JOIN T_USER U
+	            ON D.CJRID = U.ID
+	            LEFT JOIN T_USER U2
+	            ON D.KGYID = U2.ID
+	            where D.ID = #{id,jdbcType=VARCHAR}
+		
+	</select>
+  
+  <select id="checkStore" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_009
+    where ZT=1 AND DPRTCODE = #{dprtcode} AND (CKH = #{ckh} OR CKMC = #{ckmc})
+  </select>
+  
+  <select id="findAllByRoleIdtive" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   	select D.ID, D.CKH, D.DPRTCODE, D.CKMC, D.CKDZ, D.CKLB, D.KGYID,D.JD, D.BZ, D.ZT, D.BMID, D.CJRID, D.CJSJ,R.CK_ID AS STOLEID from D_009 D
+	left join t_role2wh R
+	on D.id = R.CK_ID and R.ROLE_ID=#{roleId}
+	where D.ZT = 1 
+	<if test="dprtcode != null and dprtcode != ''">
+	    and D.DPRTCODE = #{dprtcode}
+	</if>
+  </select>
+  	<!-- 查询所有仓库信息 -->
+  	<select id="findAll" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include> FROM D_009
+	</select>
+  	<!-- 查询所有有效仓库信息 -->
+	<select id="findAlltive" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include> FROM D_009 WHERE ZT = 1
+	</select>
+	
+	<!-- 根据操作人的机构代码查询有效仓库数据 -->
+	<select id="selectByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="Base_Column_List"></include> FROM D_009 WHERE ZT = 1 and DPRTCODE = #{dprtcode}
+	</select>
+	
+		<!--根据条件 查询所有有效仓库信息 -->
+	<select id="findAlltives" parameterType="com.eray.thjw.aerialmaterial.po.Store" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include> FROM D_009 WHERE  cklb in (5,6,7,8)
+		
+		<include refid="Store_User_Param1"></include>
+	</select>
+	
+	<!-- 搜索参数 -->
+	<sql id="Store_User_Param1">
+		<!--id-->
+		<if test="zt != null and zt != ''">
+			and zt = #{zt}
+		</if>
+		<if test="dprtcode != null">
+		    and DPRTCODE = #{dprtcode}
+		</if>
+	</sql>
+	
+	<!-- 根据用户查询仓库信息 -->
+  <select id="findStoreByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+	select distinct d.id, d.ckh, d.dprtcode, d.ckmc, d.ckdz, d.cklb, d.kgyid, d.jd,d.bz, d.zt, d.bmid, d.cjrid, d.cjsj
+        from t_user2role ur
+        left join t_role2wh rw
+        on rw.role_id = ur.role_id
+        left join d_009 d
+        on d.id = rw.ck_id
+	where ur.user_id = #{userId,jdbcType=VARCHAR} and d.id is not null
+  </select>
+  
+  	<!-- 根据查询条件分页查询仓库信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.Store" resultMap="StoreToUserMap">
+		select 
+           	<include refid="Store_User_List" />
+           	,t.dprtname
+           from D_009 D
+           LEFT JOIN T_USER U
+           ON D.CJRID = U.ID
+           LEFT JOIN T_USER U2
+           ON D.KGYID = U2.ID
+           left join t_department t on d.dprtcode = t.id
+           where D.ZT = 1
+           	<include refid="Store_User_Param"></include>
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by D.CJSJ DESC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+		
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Store" >
+    insert into D_009 (ID, CKH, DPRTCODE, 
+      CKMC, CKDZ, CKLB, KGYID, 
+      JD, BZ, ZT, BMID, CJRID, 
+      CJSJ)
+    values (#{id,jdbcType=VARCHAR}, #{ckh,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{ckmc,jdbcType=VARCHAR}, #{ckdz,jdbcType=VARCHAR}, #{cklb,jdbcType=DECIMAL}, #{kgyid,jdbcType=VARCHAR}, 
+      #{jd,jdbcType=VARCHAR},#{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{bmid,jdbcType=VARCHAR}, #{cjrid,jdbcType=VARCHAR}, 
+      sysdate)
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Store" >
+    insert into D_009
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="ckh != null" >
+        CKH,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="ckmc != null" >
+        CKMC,
+      </if>
+      <if test="ckdz != null" >
+        CKDZ,
+      </if>
+      <if test="cklb != null" >
+        CKLB,
+      </if>
+      <if test="kgyid != null" >
+        KGYID,
+      </if>
+      <if test="jd != null" >
+        JD,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="bmid != null" >
+        BMID,
+      </if>
+      <if test="cjrid != null" >
+        CJRID,
+      </if>
+        CJSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null" >
+        #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null" >
+        #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdz != null" >
+        #{ckdz,jdbcType=VARCHAR},
+      </if>
+      <if test="cklb != null" >
+        #{cklb,jdbcType=DECIMAL},
+      </if>
+      <if test="kgyid != null" >
+        #{kgyid,jdbcType=VARCHAR},
+      </if>
+      <if test="jd != null" >
+        #{jd,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bmid != null" >
+        #{bmid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjrid != null" >
+        #{cjrid,jdbcType=VARCHAR},
+      </if>
+        sysdate,
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Store" >
+    update D_009
+    <set >
+      <if test="ckh != null" >
+        CKH = #{ckh,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="ckmc != null" >
+        CKMC = #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdz != null" >
+        CKDZ = #{ckdz,jdbcType=VARCHAR},
+      </if>
+      <if test="cklb != null" >
+        CKLB = #{cklb,jdbcType=DECIMAL},
+      </if>
+      <if test="kgyid != null" >
+        KGYID = #{kgyid,jdbcType=VARCHAR},
+      </if>
+      <if test="jd != null" >
+        JD = #{jd,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bmid != null" >
+        BMID = #{bmid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjrid != null" >
+        CJRID = #{cjrid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjrid != null" >
+        CJSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.Store" >
+    update D_009
+    set CKH = #{ckh,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      CKMC = #{ckmc,jdbcType=VARCHAR},
+      CKDZ = #{ckdz,jdbcType=VARCHAR},
+      CKLB = #{cklb,jdbcType=DECIMAL},
+      KGYID = #{kgyid,jdbcType=VARCHAR},
+      JD = #{jd,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BMID = #{bmid,jdbcType=VARCHAR},
+      CJRID = #{cjrid,jdbcType=VARCHAR},
+      CJSJ = #{cjsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <sql id="Store_Columns" >
+     D9.ID, D9.CKH, D9.DPRTCODE, D9.CKMC, D9.CKLB, D9.KGYID, D9.JD, D9.ZT, D9.BMID, D9.CJRID, D9.CJSJ
+  </sql>
+  <sql id="Storage_Columns" >
+     D901.ID as s_id, D901.MAINID as s_mainid, D901.KWH as s_KWH 
+  </sql>
+  
+  <!--根据用户ID查询用户角色用户拥有的仓库 start-->
+  <select id="selectByUserId" parameterType="string" resultMap="RoleStoreMap">
+  	select 
+  		<include refid="Store_Columns"></include>,
+  		<include refid="Storage_Columns"></include>
+  	 from 
+       d_009 d9
+       left join d_00901 d901 on d9.id = d901.mainid and d901.zt =1
+       where d9.zt =1 and d9.id in (select rw.ck_id from V_ROLE_WH rw where rw.user_id = #{1, jdbcType=VARCHAR})
+       order by ckh,kwh
+  </select>
+  
+    <!--根据用户ID查询用户角色用户拥有的仓库 start-->
+  <select id="selectByUserIdJgdm" parameterType="string" resultMap="RoleStoreMap">
+  	select 
+  		<include refid="Store_Columns"></include>,
+  		<include refid="Storage_Columns"></include>
+  	 from 
+       d_009 d9
+       left join d_00901 d901 on d9.id = d901.mainid and d901.zt =1
+       where d9.zt =1 and d9.dprtcode=#{0,jdbcType=VARCHAR} and d9.id in (select rw.ck_id from V_ROLE_WH rw where rw.user_id = #{1, jdbcType=VARCHAR})
+  </select>
+  
+  <select id="selectAll" parameterType="string" resultMap="RoleStoreMap">
+  	select 
+  		<include refid="Store_Columns"></include>,
+  		<include refid="Storage_Columns"></include>
+  	 from 
+       d_009 d9
+       left join d_00901 d901 on d9.id = d901.mainid and d901.zt =1
+       where d9.zt =1 order by ckh,kwh
+  </select>
+  <!--根据用户ID查询用户角色用户拥有的仓库 end-->
+  
+</mapper>

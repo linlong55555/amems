@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.TakeStockMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.TakeStock">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="PDDH" jdbcType="VARCHAR" property="pddh" />
+    <result column="CKLB" jdbcType="DECIMAL" property="cklb" />
+    <result column="CKID" jdbcType="VARCHAR" property="ckid" />
+    <result column="CKH" jdbcType="VARCHAR" property="ckh" />
+    <result column="CKMC" jdbcType="VARCHAR" property="ckmc" />
+    <result column="PDBMID" jdbcType="VARCHAR" property="pdbmid" />
+    <result column="PDRID" jdbcType="VARCHAR" property="pdrid" />
+    <result column="KSRQ" jdbcType="TIMESTAMP" property="ksrq" />
+    <result column="JSRQ" jdbcType="TIMESTAMP" property="jsrq" />
+    <result column="ZDBMID" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="SHBMID" jdbcType="VARCHAR" property="shbmid" />
+    <result column="SHRID" jdbcType="VARCHAR" property="shrid" />
+    <result column="SHSJ" jdbcType="TIMESTAMP" property="shsj" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+  </resultMap>
+  
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.aerialmaterial.po.TakeStock" id="TakeStockJoinMap" extends="BaseResultMap">  
+     	<association property="zdr" javaType="com.eray.thjw.po.User">
+			<id column="ZZDRID" property="id"/>
+       	  	<result column="ZZDRUSERNAME" property="username"/>
+       	  	<result column="ZZDRREALNAME" property="realname"/>
+      	</association>
+      	
+      	<association property="pdr" javaType="com.eray.thjw.po.User">
+			<id column="PPDRID" property="id"/>
+       	  	<result column="PZDRUSERNAME" property="username"/>
+       	  	<result column="PZDRREALNAME" property="realname"/>
+      	</association>
+      	
+      	<association property="shr" javaType="com.eray.thjw.po.User">
+			<id column="SSHRID" property="id"/>
+       	  	<result column="SZDRUSERNAME" property="username"/>
+       	  	<result column="SZDRREALNAME" property="realname"/>
+      	</association>
+      	
+      	<collection property="takeStockScopeList" ofType="com.eray.thjw.aerialmaterial.po.TakeStockScope" >  
+           	<id column="TSSID" property="id"/>
+       	  	<result column="TSSMAINID" property="mainid"/>
+       	  	<result column="TSSPDLX" property="pdlx"/>
+       	  	<result column="TSSDXID" property="dxid"/>
+       	  	<result column="TSSZT" property="zt"/>
+       </collection> 
+      	
+   	</resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, PDDH, CKLB, CKID, CKH, CKMC, PDBMID, PDRID, KSRQ, JSRQ, ZDBMID, ZDRID, 
+    ZDSJ, SHBMID, SHRID, SHSJ, ZT, BZ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_016
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据id查询盘点单 -->
+  <select id="getById" parameterType="java.lang.String" resultMap="TakeStockJoinMap">
+    select 
+    	B016.ID, B016.DPRTCODE, B016.PDDH, B016.CKLB, B016.CKID, B016.CKH, B016.CKMC, B016.PDBMID, B016.PDRID, B016.KSRQ, B016.JSRQ, B016.ZDBMID, B016.ZDRID, 
+		B016.ZDSJ, B016.SHBMID, B016.SHRID, B016.SHSJ, B016.ZT, B016.BZ,
+		UZ.ID AS ZZDRID,UZ.USERNAME AS ZZDRUSERNAME,UZ.REALNAME AS ZZDRREALNAME,
+		UP.ID AS PPDRID,UP.USERNAME AS PZDRUSERNAME,UP.REALNAME AS PZDRREALNAME,
+		US.ID AS SSHRID,US.USERNAME AS SZDRUSERNAME,US.REALNAME AS SZDRREALNAME
+    from B_H_016 B016
+    left join T_USER UZ
+    on B016.ZDRID = UZ.ID
+    left join T_USER US
+    on B016.SHRID = US.ID
+    left join T_USER UP
+    on B016.PDRID = UP.ID
+    where B016.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <!-- 根据仓库id查询盘点单列表 -->
+  <select id="queryListByCkid" parameterType="java.lang.String" resultMap="TakeStockJoinMap">
+    select 
+	    B016.ID, B016.DPRTCODE, B016.PDDH, B016.CKLB, B016.CKID, B016.CKH, B016.CKMC, B016.PDBMID, B016.PDRID, B016.KSRQ, B016.JSRQ, B016.ZDBMID, B016.ZDRID, 
+	    B016.ZDSJ, B016.SHBMID, B016.SHRID, B016.SHSJ, B016.ZT, B016.BZ,
+	    B01602.ID AS TSSID,B01602.MAINID AS TSSMAINID,B01602.PDLX AS TSSPDLX,B01602.DXID AS TSSDXID,B01602.ZT AS TSSZT
+    from B_H_016 B016
+    left join B_H_01602 B01602
+    on B016.ID = B01602.MAINID AND B01602.ZT = 1
+    where B016.CKID = #{ckid,jdbcType=VARCHAR} AND B016.ZT IN (1,2)
+  </select>
+  
+    <!-- 根据查询条件分页查询盘点单信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.TakeStock" resultMap="TakeStockJoinMap">
+		select 
+           	B016.ID, B016.DPRTCODE, B016.PDDH, B016.CKLB, B016.CKID, B016.CKH, B016.CKMC, B016.PDBMID, B016.PDRID, B016.KSRQ, B016.JSRQ, B016.ZDBMID, B016.ZDRID, 
+  				B016.ZDSJ, B016.SHBMID, B016.SHRID, B016.SHSJ, B016.ZT, B016.BZ,
+  				UZ.ID AS ZZDRID,UZ.USERNAME AS ZZDRUSERNAME,UZ.REALNAME AS ZZDRREALNAME,
+  				UP.ID AS PPDRID,UP.USERNAME AS PZDRUSERNAME,UP.REALNAME AS PZDRREALNAME,
+  				US.ID AS SSHRID,US.USERNAME AS SZDRUSERNAME,US.REALNAME AS SZDRREALNAME
+           from B_H_016 B016
+           left join T_USER UZ
+           on B016.ZDRID = UZ.ID
+           left join T_USER US
+           on B016.SHRID = US.ID
+           left join T_USER UP
+           on B016.PDRID = UP.ID
+           where B016.ZT NOT IN (8)
+           	<include refid="Take_Stock_Param"></include>
+           	<include refid="Take_Stock_Join_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B016.KSRQ DESC,B016.PDDH DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+		
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_016
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.TakeStock">
+    insert into B_H_016 (ID, DPRTCODE, PDDH, 
+      CKLB, CKID, CKH, CKMC, 
+      PDBMID, PDRID, KSRQ, 
+      JSRQ, ZDBMID, ZDRID, 
+      ZDSJ, SHBMID, SHRID, 
+      SHSJ, ZT, BZ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{pddh,jdbcType=VARCHAR}, 
+      #{cklb,jdbcType=DECIMAL}, #{ckid,jdbcType=VARCHAR}, #{ckh,jdbcType=VARCHAR}, #{ckmc,jdbcType=VARCHAR}, 
+      #{pdbmid,jdbcType=VARCHAR}, #{pdrid,jdbcType=VARCHAR}, #{ksrq,jdbcType=TIMESTAMP}, 
+      #{jsrq,jdbcType=TIMESTAMP}, #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      #{zdsj,jdbcType=TIMESTAMP}, #{shbmid,jdbcType=VARCHAR}, #{shrid,jdbcType=VARCHAR}, 
+      #{shsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.TakeStock">
+    insert into B_H_016
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="pddh != null">
+        PDDH,
+      </if>
+      <if test="cklb != null">
+        CKLB,
+      </if>
+      <if test="ckid != null">
+        CKID,
+      </if>
+      <if test="ckh != null">
+        CKH,
+      </if>
+      <if test="ckmc != null">
+        CKMC,
+      </if>
+      <if test="pdbmid != null">
+        PDBMID,
+      </if>
+      <if test="pdrid != null">
+        PDRID,
+      </if>
+      <if test="ksrq != null">
+        KSRQ,
+      </if>
+      <if test="jsrq != null">
+        JSRQ,
+      </if>
+      <if test="zdbmid != null">
+        ZDBMID,
+      </if>
+      <if test="zdrid != null">
+        ZDRID,
+      </if>
+      <if test="zdrid != null">
+        ZDSJ,
+      </if>
+      <if test="shbmid != null">
+        SHBMID,
+      </if>
+      <if test="shrid != null">
+        SHRID,
+      </if>
+      <if test="shrid != null">
+        SHSJ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pddh != null">
+        #{pddh,jdbcType=VARCHAR},
+      </if>
+      <if test="cklb != null">
+        #{cklb,jdbcType=DECIMAL},
+      </if>
+      <if test="ckid != null">
+        #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null">
+        #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null">
+        #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="pdbmid != null">
+        #{pdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pdrid != null">
+        #{pdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="ksrq != null">
+        #{ksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jsrq != null">
+        #{jsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdbmid != null">
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        sysdate,
+      </if>
+      <if test="shbmid != null">
+        #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        sysdate,
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.TakeStock">
+    update B_H_016
+    <set>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="pddh != null">
+        PDDH = #{pddh,jdbcType=VARCHAR},
+      </if>
+      <if test="cklb != null">
+        CKLB = #{cklb,jdbcType=DECIMAL},
+      </if>
+      <if test="ckid != null">
+        CKID = #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null">
+        CKH = #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null">
+        CKMC = #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="pdbmid != null">
+        PDBMID = #{pdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pdrid != null">
+        PDRID = #{pdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="ksrq != null">
+        KSRQ = #{ksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jsrq != null">
+        JSRQ = #{jsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdbmid != null">
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDSJ = sysdate,
+      </if>
+      <if test="shbmid != null">
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        SHRID = #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        SHSJ = sysdate,
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.TakeStock">
+    update B_H_016
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set PDDH = #{pddh,jdbcType=VARCHAR},
+      CKLB = #{cklb,jdbcType=DECIMAL},
+      CKID = #{ckid,jdbcType=VARCHAR},
+      CKH = #{ckh,jdbcType=VARCHAR},
+      CKMC = #{ckmc,jdbcType=VARCHAR},
+      PDBMID = #{pdbmid,jdbcType=VARCHAR},
+      PDRID = #{pdrid,jdbcType=VARCHAR},
+      KSRQ = #{ksrq,jdbcType=TIMESTAMP},
+      JSRQ = #{jsrq,jdbcType=TIMESTAMP},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      SHBMID = #{shbmid,jdbcType=VARCHAR},
+      SHRID = #{shrid,jdbcType=VARCHAR},
+      SHSJ = #{shsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 搜索参数 -->
+	<sql id="Take_Stock_Param">
+		<if test="keyword != null and keyword != ''">
+		    and (lower(B016.PDDH) like lower('%'||#{keyword}||'%')
+		    	OR lower(B016.CKH) like lower('%'||#{keyword}||'%')
+		    	OR lower(B016.CKMC) like lower('%'||#{keyword}||'%')
+		    	OR lower(UP.REALNAME) like lower('%'||#{keyword}||'%')
+		    	OR lower(UP.USERNAME) like lower('%'||#{keyword}||'%')
+		    	OR lower(UZ.REALNAME) like lower('%'||#{keyword}||'%')
+		    	OR lower(UZ.USERNAME) like lower('%'||#{keyword}||'%')
+		    )
+		</if>
+		
+		<if test="dprtcode != null">
+		    and B016.DPRTCODE = #{dprtcode}
+		</if>
+		
+		<choose>
+			<when test="ckid != null and ckid != ''">
+             	and B016.CKID = #{ckid}
+         	</when>
+         	<when test="paramsMap != null and paramsMap.userId != null and paramsMap.userId != ''">
+             	and B016.CKID <include refid="userStoreParam"></include>
+         	</when>
+        </choose>
+		
+		<if test="zt != null and zt != ''">
+		    and B016.ZT = #{zt}
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.ksrqBegin != null and paramsMap.ksrqBegin != ''">
+		    and B016.KSRQ &gt;= to_date(#{paramsMap.ksrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.ksrqEnd != null and paramsMap.ksrqEnd != ''">
+		    and B016.KSRQ &lt;= to_date(#{paramsMap.ksrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.zdrqBegin != null and paramsMap.zdrqBegin != ''">
+		    and B016.ZDSJ &gt;= to_date(#{paramsMap.zdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqEnd != null and paramsMap.zdrqEnd != ''">
+		    and B016.ZDSJ &lt;= to_date(#{paramsMap.zdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		
+		<if test="id != null and id != ''">
+		    and B016.ID = #{id}
+		</if>
+		
+	</sql>
+	<sql id="Take_Stock_Join_Param">
+		<if test="paramsMap != null and paramsMap.pdrname != null and paramsMap.pdrname != ''">
+		    and (lower(UP.REALNAME) like lower('%'||#{paramsMap.pdrname}||'%')
+		    or lower(UP.USERNAME) like lower('%'||#{paramsMap.pdrname}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrname != null and paramsMap.zdrname != ''">
+		    and (lower(UZ.REALNAME) like lower('%'||#{paramsMap.zdrname}||'%')
+		    or lower(UZ.USERNAME) like lower('%'||#{paramsMap.zdrname}||'%')
+		    )
+		</if>
+	</sql>
+	
+	<sql id="userStoreParam">
+	   in (select d9.id from 
+       d_009 d9
+       left join d_00901 d901 on d9.id = d901.mainid
+       where d9.zt =1 and d901.zt=1 and d9.id in (select rw.ck_id from V_ROLE_WH rw where rw.user_id = #{paramsMap.userId, jdbcType=VARCHAR}))
+	</sql>
+  
+</mapper>

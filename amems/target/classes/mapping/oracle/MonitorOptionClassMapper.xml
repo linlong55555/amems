@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.MonitorClassMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.MonitorOptionClass" >
+    <id column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="MS" property="ms" jdbcType="VARCHAR" />
+    <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <resultMap id="JoinResultMap" type="com.eray.thjw.po.MonitorOptionClass" extends="BaseResultMap" >
+     <collection property="itemList" ofType="com.eray.thjw.po.MonitorOptionItem">  
+           <id property="jklbh" column="I_JKLBH" />  
+		    <result column="I_MS" property="ms" jdbcType="VARCHAR" />
+		    <result column="I_PXH" property="pxh" jdbcType="DECIMAL" />
+		    <result column="I_JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+       </collection> 
+  </resultMap>
+  
+   <sql id="Base_Column_List" >
+    JKFLBH
+    , MS
+    , PXH
+  </sql>
+  
+  <sql id="Join_Column_List" >
+    m.JKFLBH
+    , m.MS
+    , m.PXH
+    
+    , i.JKLBH I_JKLBH
+    , i.MS I_MS
+    , i.PXH I_PXH
+    , i.JKFLBH I_JKFLBH
+    
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_006
+    where JKFLBH = #{jkflbh,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="JoinResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Join_Column_List" />
+    from D_006 m inner join d_00601 i
+    on m.jkflbh  = i.jkflbh
+    order by i.pxh,m.pxh
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_006
+    where JKFLBH = #{jkflbh,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.MonitorOptionClass" >
+    insert into D_006 (JKFLBH, MS, PXH
+      )
+    values (#{jkflbh,jdbcType=VARCHAR}, #{ms,jdbcType=VARCHAR}, #{pxh,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.MonitorOptionClass" >
+    insert into D_006
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="jkflbh != null" >
+        JKFLBH,
+      </if>
+      <if test="ms != null" >
+        MS,
+      </if>
+      <if test="pxh != null" >
+        PXH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="jkflbh != null" >
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ms != null" >
+        #{ms,jdbcType=VARCHAR},
+      </if>
+      <if test="pxh != null" >
+        #{pxh,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.MonitorOptionClass" >
+    update D_006
+    <set >
+      <if test="ms != null" >
+        MS = #{ms,jdbcType=VARCHAR},
+      </if>
+      <if test="pxh != null" >
+        PXH = #{pxh,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where JKFLBH = #{jkflbh,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.MonitorOptionClass" >
+    update D_006
+    set MS = #{ms,jdbcType=VARCHAR},
+      PXH = #{pxh,jdbcType=DECIMAL}
+    where JKFLBH = #{jkflbh,jdbcType=VARCHAR}
+  </update>
+</mapper>

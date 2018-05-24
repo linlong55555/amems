@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.ReportMapper" >
+	<select id="query" parameterType="java.util.Map" resultType="java.util.Map">
+		select b2.id, 
+	       b2.fxjldh, 
+	       b2.fjzch, <!-- 飞行注册号 -->
+	       to_char(b2.fxrq, 'yyyy-mm-dd') fxrq, <!-- 飞行日期 -->
+	       b1.hc, 
+	       (select (sum(t1.fxsj_xs) + (CASE WHEN b3.init_fxsj_xs IS NULL THEN '0' ELSE b3.init_fxsj_xs END)) || ':' ||
+	               (sum(t1.fxsj_fz) + (CASE WHEN b3.init_fxsj_fz IS NULL THEN '0' ELSE b3.init_fxsj_fz END)) fxsj
+	          from b_s_00601 t1
+	          join b_s_006 t2
+	            on t2.id = t1.fxjldid
+	           and t2.zt in (2, 12, 99)
+	           and t1.zt = 1
+   			   and t1.xdbs = 0
+	         where ((t2.fxrq &lt; b2.fxrq) or
+	               (t2.fxrq = b2.fxrq and t2.zdsj &lt; b2.zdsj) or
+	               (t2.fxrq = b2.fxrq and t2.zdsj = b2.zdsj and
+	               t1.hc &lt;= b1.hc))
+	           and t2.fjzch = b2.fjzch
+	           and t2.dprtcode = b2.dprtcode) fxsj, <!-- 飞行时间 -->
+	       b1.mgb, <!-- MGB -->
+	       b1.igb, <!-- IGB -->
+	       b1.tgb, <!-- TGB -->
+	       b1.jh_f1, <!-- 1#左发-件号 -->
+	       b1.xlh_f1, <!-- 1#左发-序列号 -->
+	       b1.f1_hy, <!-- 1#左发-滑油 -->
+	       b1.f1_wdyd, <!-- 1#左发-温度余度 -->
+	       b1.f1_glyd, <!-- 1#左发-功率余度 -->
+	       b1.jh_f2, <!-- 2#右发-件号 -->
+	       b1.xlh_f2,<!--  2#右发-序列号 -->
+	       b1.f2_hy, <!-- 2#右发-滑油 -->
+	       b1.f2_wdyd, <!-- 2#右发-温度余度 -->
+	       b1.f2_glyd <!-- 2#右发-功率余度 -->
+		 from b_s_00601 b1
+		 join b_s_006 b2
+		   on b1.fxjldid = b2.id
+		  and b2.zt in (2, 12, 99)
+		  and b1.zt = 1
+   		  and b1.xdbs = 0
+		  and b2.fxrq &gt;= to_date(#{dateBegin, jdbcType=VARCHAR}, 'yyyy-mm-dd')
+		  and b2.fxrq &lt;= to_date(#{dateEnd, jdbcType=VARCHAR}, 'yyyy-mm-dd')
+		  and b2.fjzch = #{fjzch, jdbcType=VARCHAR}
+		  and b2.dprtcode = #{dprtcode, jdbcType=VARCHAR}
+		 left join (select t.fjzch,t.dprtcode,
+		                   CASE
+		                     WHEN INSTR(t.init_value, ':') &gt; 0 THEN
+		                      SUBSTR(t.init_value, 0, INSTR(t.init_value, ':') - 1)
+		                     WHEN INSTR(t.init_value, '.') &gt; 0 THEN
+		                      SUBSTR(t.init_value, 0, INSTR(t.init_value, '.') - 1)
+		                     ELSE
+		                      t.init_value
+		                   END init_fxsj_xs,
+		                   CASE
+		                     WHEN INSTR(t.init_value, ':') &gt; 0 THEN
+		                      SUBSTR(t.init_value, INSTR(t.init_value, ':') + 1)
+		                     WHEN INSTR(t.init_value, '.') &gt; 0 THEN
+		                      SUBSTR(t.init_value, INSTR(t.init_value, '.') + 1)
+		                     ELSE
+		                      NULL
+		                   END init_fxsj_fz
+		              from d_00701 t
+		             where t.init_xmbh = 'init_time_jsfx') b3
+		   on b3.fjzch = b2.fjzch and b3.dprtcode = b2.dprtcode
+		order by b2.fxrq asc,b2.zdsj asc, b1.hc asc
+	</select> 
+</mapper>

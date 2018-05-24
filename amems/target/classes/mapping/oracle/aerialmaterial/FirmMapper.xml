@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.FirmMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Firm" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="GYSLB" property="gyslb" jdbcType="VARCHAR" />
+    <result column="GYSBM" property="gysbm" jdbcType="VARCHAR" />
+    <result column="GYSMC" property="gysmc" jdbcType="VARCHAR" />
+    <result column="GYSJC" property="gysjc" jdbcType="VARCHAR" />
+    <result column="DZ" property="dz" jdbcType="VARCHAR" />
+    <result column="PZH" property="pzh" jdbcType="VARCHAR" />
+    <result column="SQKSSJ" property="sqkssj" jdbcType="TIMESTAMP" />
+    <result column="SQJSSJ" property="sqjssj" jdbcType="TIMESTAMP" />
+    <result column="SQFW" property="sqfw" jdbcType="VARCHAR" />
+    <result column="ZSSM" property="zssm" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="BQYDM" property="bqydm" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+    <result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" />
+    <result column="SYTS" property="paramsMap.syts" jdbcType="DECIMAL" />
+   	<result column="JG_DPRTNAME"       property="paramsMap.dprtname"   jdbcType="VARCHAR" />
+  </resultMap>
+  
+  	<!-- 配置厂商与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.aerialmaterial.po.Firm" id="FirmToUserMap" extends="BaseResultMap">  
+	  	<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZDRID" property="id"/>  
+	        <result column="ZDRUSERNAME" property="username"/>  
+	        <result column="ZDRREALNAME" property="realname"/>  
+	    </association>  
+	</resultMap> 
+	
+	<!-- 配置厂商和联系人一对多关系 -->
+	<resultMap type="com.eray.thjw.aerialmaterial.po.Firm" id="FrimToContactPersonMap" extends="BaseResultMap">  
+		<collection property="contactPersonList" ofType="com.eray.thjw.system.po.ContactPerson">  
+		    <id column="PID" property="id" jdbcType="VARCHAR" />
+		    <result column="PDPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+		    <result column="PCSID" jdbcType="VARCHAR" property="csid" />
+		    <result column="PGYSMC" jdbcType="VARCHAR" property="gysmc" />
+		    <result column="PLXR" jdbcType="VARCHAR" property="lxr" />
+		    <result column="PZW" jdbcType="VARCHAR" property="zw" />
+		    <result column="PSJ" jdbcType="VARCHAR" property="sj" />
+		    <result column="PZJ" jdbcType="VARCHAR" property="zj" />
+		    <result column="PCZ" jdbcType="VARCHAR" property="cz" />
+		    <result column="PYXDZ" jdbcType="VARCHAR" property="yxdz" />
+		    <result column="PQQ" jdbcType="VARCHAR" property="qq" />
+		    <result column="PWX" jdbcType="VARCHAR" property="wx" />
+		    <result column="PBZ" jdbcType="VARCHAR" property="bz" />
+		    <result column="PZT" jdbcType="DECIMAL" property="zt" />
+		    <result column="PWHRID" jdbcType="VARCHAR" property="whrid" />
+		    <result column="PWHSJ" jdbcType="TIMESTAMP" property="whsj" />
+       </collection> 
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, GYSLB, GYSBM, GYSMC,GYSJC, DZ, PZH, SQKSSJ, SQJSSJ, SQFW, ZSSM, BZ, ZT, CJRID,BQYDM, 
+    CJSJ
+  </sql>
+  
+  <sql id="Firm_User_List" >
+    D.ID, D.GYSBM, D.DPRTCODE, D.GYSMC,D.GYSJC,D.DZ, D.PZH, D.SQKSSJ, D.SQJSSJ, D.GYSLB, D.SQFW, D.BZ, D.ZT,D.BQYDM, D.ZSSM, D.CJRID, D.CJSJ,U.ID AS ZDRID,U.USERNAME AS ZDRUSERNAME,U.REALNAME AS ZDRREALNAME
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_015
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  	<!-- 检查厂商是否存在 -->
+	<select id="checkFirm" parameterType="com.eray.thjw.aerialmaterial.po.Firm" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+           from D_015
+           where ZT = 1 and GYSLB = #{gyslb} and DPRTCODE = #{dprtcode} and (GYSBM = #{gysbm} OR GYSMC = #{gysmc})
+	</select>
+	
+	<!-- 根据查询条件查询供应商信息 -->
+	<select id="queryFirmList" parameterType="com.eray.thjw.aerialmaterial.po.Firm" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+           from D_015 D
+           where D.ZT = 1
+           and (D.SQKSSJ is null or trunc(D.SQKSSJ) &lt;= trunc(sysdate) )
+           and (D.SQJSSJ is null or trunc(D.SQJSSJ) &gt;= trunc(sysdate))
+           <!-- and trunc(D.SQKSSJ) &lt;= trunc(sysdate) 
+           and trunc(D.SQJSSJ) &gt;= trunc(sysdate) -->
+           <if test="gyslb != null and gyslb != '' and gyslb==1 ">
+		    and D.GYSLB = #{gyslb}
+			</if>
+           <if test="dprtcode != null">
+		    and D.DPRTCODE = #{dprtcode}
+		</if>
+	</select>
+	
+	<!-- 根据查询条件分页查询供应商信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.Firm" resultMap="FirmToUserMap">
+	
+		select 
+			to_date(to_char(D.SQJSSJ, 'YYYY-MM-DD'), 'YYYY-MM-DD') -
+			to_date(to_char(current_timestamp, 'YYYY-MM-DD'), 'YYYY-MM-DD') as SYTS,
+			B5.DPRTNAME AS JG_DPRTNAME,
+           	<include refid="Firm_User_List" />
+           from D_015 D
+           LEFT JOIN T_USER U
+           ON D.CJRID = U.ID
+           LEFT JOIN T_DEPARTMENT B5 ON D.DPRTCODE=B5.ID
+           where D.ZT = 1
+           	<include refid="FirmParam"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by D.GYSBM ASC,ID ASC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order},ID ASC
+		    	</otherwise>
+			</choose>
+		
+	</select>
+	
+	<!-- 根据查询条件分页查询供应商信息 POP -->
+	<select id="queryPageListPop" parameterType="com.eray.thjw.aerialmaterial.po.Firm" resultMap="FirmToUserMap">
+	
+		select 
+			to_date(to_char(D.SQJSSJ, 'YYYY-MM-DD'), 'YYYY-MM-DD') -
+			to_date(to_char(current_timestamp, 'YYYY-MM-DD'), 'YYYY-MM-DD') as SYTS,
+           	<include refid="Firm_User_List" />
+           from D_015 D
+           LEFT JOIN T_USER U
+           ON D.CJRID = U.ID
+           where D.ZT = 1
+            <include refid="FirmParam4Pop"></include>  
+           	
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by D.CJSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+		
+	</select>
+	
+	<!-- 根据查询条件分页查询供应商信息(弹窗) -->
+	<select id="queryWinAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.Firm" resultType="Map">
+		select D015.ID,D015.GYSBM,D015.GYSMC,D015.GYSLB,D013.BJ_CLF,D013.BJ_GSF,D013.BJ_QTF,D013.YXQ_KS,D013.YXQ_JS
+			from D_015 D015
+		  	left join (select D0.GYSID,D0.BJ_CLF,D0.BJ_GSF,D0.BJ_QTF,D0.YXQ_KS,D0.YXQ_JS
+		               	from D_013 D0
+		              	where D0.ZT = 1
+		                <if test="gyslb != null and gyslb != ''">
+							and D0.BJLB = #{gyslb}
+						</if>
+		                <if test="paramsMap != null and paramsMap.bjid != null and paramsMap.bjid != ''">
+						    and D0.BJID = #{paramsMap.bjid}
+						</if>
+		                and D0.DPRTCODE = #{dprtcode}
+		                and D0.YXQ_KS &lt;= sysdate
+		                and (D0.YXQ_JS &gt; sysdate or D0.YXQ_JS is null)) D013
+		    on D015.ID = D013.GYSID
+			where D015.DPRTCODE = #{dprtcode}
+		   	<if test="gyslb != null and gyslb != ''">
+				and D015.GYSLB = #{gyslb}
+			</if>
+           	and D015.ZT = 1
+           	and (D015.SQKSSJ is null or trunc(D015.SQKSSJ) &lt;= trunc(sysdate) )
+            and (D015.SQJSSJ is null or trunc(D015.SQJSSJ) &gt;= trunc(sysdate))
+           	<include refid="FirmWinParam"></include>
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by D015.GYSBM ${pagination.order},ID ASC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order},ID ASC 
+	    	</otherwise>
+		</choose>
+	</select>
+	
+	
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_015
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Firm" >
+    insert into D_015 (ID, DPRTCODE, GYSLB, 
+      GYSBM, GYSMC,GYSJC, DZ, PZH, 
+      SQKSSJ, SQJSSJ, SQFW, 
+      ZSSM, BZ, ZT, CJRID, 
+      CJSJ,BQYDM)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{gyslb,jdbcType=VARCHAR}, 
+      #{gysbm,jdbcType=VARCHAR}, #{gysmc,jdbcType=VARCHAR},#{gysjc,jdbcType=VARCHAR}, #{dz,jdbcType=VARCHAR}, #{pzh,jdbcType=VARCHAR}, 
+      #{sqkssj,jdbcType=TIMESTAMP}, #{sqjssj,jdbcType=TIMESTAMP}, #{sqfw,jdbcType=VARCHAR}, 
+      #{zssm,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{cjrid,jdbcType=VARCHAR}, 
+      #{cjsj,jdbcType=TIMESTAMP},#{bqydm,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Firm" >
+    insert into D_015
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="gyslb != null" >
+        GYSLB,
+      </if>
+      <if test="gysbm != null" >
+        GYSBM,
+      </if>
+      <if test="gysmc != null" >
+        GYSMC,
+      </if>
+      <if test="gysjc != null" >
+        GYSJC,
+      </if>
+      <if test="dz != null" >
+        DZ,
+      </if>
+      <if test="pzh != null" >
+        PZH,
+      </if>
+      <if test="sqkssj != null" >
+        SQKSSJ,
+      </if>
+      <if test="sqjssj != null" >
+        SQJSSJ,
+      </if>
+      <if test="sqfw != null" >
+        SQFW,
+      </if>
+      <if test="zssm != null" >
+        ZSSM,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="cjrid != null" >
+        CJRID,
+        CJSJ,
+      </if>
+      <if test="bqydm != null" >
+        BQYDM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="gyslb != null" >
+        #{gyslb,jdbcType=VARCHAR},
+      </if>
+      <if test="gysbm != null" >
+        #{gysbm,jdbcType=VARCHAR},
+      </if>
+      <if test="gysmc != null" >
+        #{gysmc,jdbcType=VARCHAR},
+      </if>
+        <if test="gysjc != null" >
+        #{gysjc,jdbcType=VARCHAR},
+      </if>
+      <if test="dz != null" >
+        #{dz,jdbcType=VARCHAR},
+      </if>
+      <if test="pzh != null" >
+        #{pzh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqkssj != null" >
+        #{sqkssj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sqjssj != null" >
+        #{sqjssj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sqfw != null" >
+        #{sqfw,jdbcType=VARCHAR},
+      </if>
+      <if test="zssm != null" >
+        #{zssm,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="cjrid != null" >
+        #{cjrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+       <if test="bqydm != null" >
+        #{bqydm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Firm" >
+    update D_015
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="gyslb != null" >
+        GYSLB = #{gyslb,jdbcType=VARCHAR},
+      </if>
+      <if test="gysbm != null" >
+        GYSBM = #{gysbm,jdbcType=VARCHAR},
+      </if>
+      <if test="gysmc != null" >
+        GYSMC = #{gysmc,jdbcType=VARCHAR},
+      </if>
+      <if test="gysjc != null" >
+        GYSJC = #{gysjc,jdbcType=VARCHAR},
+      </if>
+      <if test="dz != null" >
+        DZ = #{dz,jdbcType=VARCHAR},
+      </if>
+      <if test="pzh != null" >
+        PZH = #{pzh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqfw != null" >
+        SQFW = #{sqfw,jdbcType=VARCHAR},
+      </if>
+      <if test="zssm != null" >
+        ZSSM = #{zssm,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="cjrid != null" >
+        CJRID = #{cjrid,jdbcType=VARCHAR},
+        CJSJ = sysdate,
+        SQKSSJ = #{sqkssj,jdbcType=TIMESTAMP},
+        SQJSSJ = #{sqjssj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bqydm != null" >
+        BQYDM = #{bqydm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.Firm" >
+    update D_015
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      GYSLB = #{gyslb,jdbcType=VARCHAR},
+      GYSBM = #{gysbm,jdbcType=VARCHAR},
+      GYSMC = #{gysmc,jdbcType=VARCHAR},
+      GYSJC = #{gysjc,jdbcType=VARCHAR},
+      DZ = #{dz,jdbcType=VARCHAR},
+      PZH = #{pzh,jdbcType=VARCHAR},
+      SQKSSJ = #{sqkssj,jdbcType=TIMESTAMP},
+      SQJSSJ = #{sqjssj,jdbcType=TIMESTAMP},
+      SQFW = #{sqfw,jdbcType=VARCHAR},
+      ZSSM = #{zssm,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      CJRID = #{cjrid,jdbcType=VARCHAR},
+      CJSJ = #{cjsj,jdbcType=TIMESTAMP},
+      BQYDM = #{bqydm,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="cancel" parameterType="com.eray.thjw.aerialmaterial.po.Firm" >
+    update D_015
+    set 
+      ZT = 0,
+      CJRID = #{cjrid,jdbcType=VARCHAR},
+      CJSJ = sysdate
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 搜索参数 -->
+	<sql id="FirmParam">
+		<if test="gyslb == 1 and keyword != null and keyword != ''">
+		    and (
+		    	UPPER(D.GYSBM) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.GYSMC) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.GYSJC) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.SQFW) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.PZH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.ZSSM) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.BZ) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.DZ) like UPPER('%'||#{keyword}||'%')	    	
+		    	or UPPER(U.USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(U.REALNAME) like UPPER('%'||#{keyword}||'%')
+		    	
+		    )
+		</if>
+		<if test="gyslb == 2 and keyword != null and keyword != ''">
+		    and (
+		    	UPPER(D.GYSBM) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.GYSMC) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.PZH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.DZ) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.SQFW) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.BZ) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.ZSSM) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(U.USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(U.REALNAME) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="gyslb != null">
+		    and D.GYSLB = #{gyslb}
+		</if>
+		<if test="dprtcode != null">
+		    and D.DPRTCODE = #{dprtcode}
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.sqksrqBegin != null and paramsMap.sqksrqBegin != ''">
+		    and D.SQKSSJ &gt;= to_date(#{paramsMap.sqksrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sqksrqEnd != null and paramsMap.sqksrqEnd != ''">
+		    and D.SQKSSJ &lt;= to_date(#{paramsMap.sqksrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.sqjsrqBegin != null and paramsMap.sqjsrqBegin != ''">
+		    and D.SQJSSJ &gt;= to_date(#{paramsMap.sqjsrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sqjsrqEnd != null and paramsMap.sqjsrqEnd != ''">
+		    and D.SQJSSJ &lt;= to_date(#{paramsMap.sqjsrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.whrqBegin != null and paramsMap.whrqBegin != ''">
+		    and D.CJSJ &gt;= to_date(#{paramsMap.whrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqEnd != null and paramsMap.whrqEnd != ''">
+		    and D.CJSJ &lt;= to_date(#{paramsMap.whrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+
+		<!--id-->
+		<if test="id != null and id != ''">
+			and D.ID = #{id}
+		</if>
+	</sql>
+	
+	<!-- 弹窗查寻条件 -->
+	<sql id="FirmParam4Pop">
+		 
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	UPPER(D.GYSBM) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D.GYSMC) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="gyslb != null and gyslb != ''">
+		    and D.GYSLB = #{gyslb}
+		</if>
+		<if test="dprtcode != null and dprtcode != ''">
+		    and D.DPRTCODE = #{dprtcode}
+		</if>
+		 
+		<!-- 当前时间 在开始时间与结束时间范围内的供应商 -->
+	     and D.SQKSSJ &lt;= to_date(#{paramsMap.currentDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+	    and D.SQJSSJ &gt;= to_date(#{paramsMap.currentDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')    
+		 
+	</sql>
+	
+	
+	
+	<!-- 搜索参数(弹窗) -->
+	<sql id="FirmWinParam">
+		<!--id-->
+		<if test="id != null and id != ''">
+			and D015.ID = #{id}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	UPPER(D015.GYSBM) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D015.GYSMC) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		    and D015.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.gyslbList != null and paramsMap.gyslbList != ''">
+		    and D015.GYSLB in
+     			 <foreach item="item" index="index" collection="paramsMap.gyslbList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		
+	</sql>
+	
+  <!-- 批量插入供应商 -->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into D_015 (ID, DPRTCODE, GYSLB, GYSBM, GYSMC,GYSJC,DZ, PZH, 
+      SQKSSJ, SQJSSJ, SQFW, ZSSM, BZ, ZT, CJRID, CJSJ)
+     <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		select
+		  #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.gyslb,jdbcType=VARCHAR}, 
+	      #{item.gysbm,jdbcType=VARCHAR}, #{item.gysmc,jdbcType=VARCHAR},#{item.gysjc,jdbcType=VARCHAR}, #{item.dz,jdbcType=VARCHAR}, #{item.pzh,jdbcType=VARCHAR}, 
+	      #{item.sqkssj,jdbcType=TIMESTAMP}, #{item.sqjssj,jdbcType=TIMESTAMP}, #{item.sqfw,jdbcType=VARCHAR}, 
+	      #{item.zssm,jdbcType=VARCHAR}, #{item.bz,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, #{item.cjrid,jdbcType=VARCHAR}, 
+	      current_timestamp
+		from dual 
+	 </foreach> 
+  </insert>
+  
+  <!-- 批量修改供应商-->
+  <update id="batchUpdate" parameterType="java.util.List" >
+  		<foreach collection="list" item="item" index="index" separator="" open="begin" close="end;"> 
+            UPDATE D_015 
+            <set>       
+			      GYSLB = #{item.gyslb,jdbcType=VARCHAR},
+			      GYSBM = #{item.gysbm,jdbcType=VARCHAR},
+			      GYSMC = #{item.gysmc,jdbcType=VARCHAR},
+			      GYSJC = #{item.gysjc,jdbcType=VARCHAR},
+			      DZ = #{item.dz,jdbcType=VARCHAR},
+			      PZH = #{item.pzh,jdbcType=VARCHAR},
+			      SQKSSJ = #{item.sqkssj,jdbcType=TIMESTAMP},
+			      SQJSSJ = #{item.sqjssj,jdbcType=TIMESTAMP},
+			      SQFW = #{item.sqfw,jdbcType=VARCHAR},
+			      ZSSM = #{item.zssm,jdbcType=VARCHAR},
+			      BZ = #{item.bz,jdbcType=VARCHAR},
+			      ZT = #{item.zt,jdbcType=DECIMAL},
+			      CJRID = #{item.cjrid,jdbcType=VARCHAR},
+			      CJSJ = current_timestamp
+            </set>
+            where ID = #{item.id,jdbcType=VARCHAR};
+        </foreach>
+  </update>
+  <select id="getwwFirmList" parameterType="String" resultMap="BaseResultMap">
+  	select 
+           	<include refid="Base_Column_List" />
+           from D_015 D
+           where D.ZT = 1
+           and (D.SQKSSJ is null or trunc(D.SQKSSJ) &lt;= trunc(sysdate) )
+           and (D.SQJSSJ is null or trunc(D.SQJSSJ) &gt;= trunc(sysdate))    
+		    and D.GYSLB = 2
+		    and D.DPRTCODE = #{dprtcode}
+  </select>
+  <select id="queryAllFirmList" parameterType="com.eray.thjw.aerialmaterial.po.Firm" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+           from D_015 D
+           where D.ZT = 1
+           <if test="gyslb != null and gyslb != '' ">
+		    and D.GYSLB = #{gyslb}
+			</if>
+           <if test="dprtcode != null">
+		    and D.DPRTCODE = #{dprtcode}
+		</if>
+	</select>
+</mapper>

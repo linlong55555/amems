@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.baseinfo.dao.ProjectAircraftMapper">
+   <resultMap id="projectaircraft" type="com.eray.thjw.baseinfo.po.ProjectAircraft">
+      <result column="FJZCH" jdbcType="VARCHAR" property="fjzch"/>
+      <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode"/>
+      <result column="FJJX" jdbcType="VARCHAR" property="fjjx"/>
+      <result column="XLH" jdbcType="VARCHAR" property="xlh"/>
+      <result column="BZM" jdbcType="VARCHAR" property="bzm"/>
+      <result column="RHYZPH" jdbcType="VARCHAR" property="rhyzph"/>
+      <result column="YYYPH" jdbcType="VARCHAR" property="yyyph"/>
+      <result column="FJMS" jdbcType="VARCHAR" property="fjms"/>  
+      <result column="IPCYXXH" jdbcType="VARCHAR" property="ipcyxxh"/>  
+      <result column="ZT" jdbcType="INTEGER" property="zt"/>  
+      <result column="WHBMID" jdbcType="VARCHAR" property="whbmid"/>  
+      <result column="WHRID" jdbcType="VARCHAR" property="whrid"/> 
+      <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj"/>                
+   </resultMap>
+   
+   <select id="findProjectAircraft" parameterType="com.eray.thjw.baseinfo.po.ProjectAircraft" resultMap="projectaircraft">
+      SELECT FJZCH, DPRTCODE, FJJX, XLH, BZM, RHYZPH, YYYPH, FJMS, IPCYXXH, ZT
+      FROM D_010
+      WHERE 1 = 1
+      <if test="fjzch != null and fjzch !=''">
+         AND FJZCH = #{fjzch, jdbcType=VARCHAR}
+      </if>
+      <if test="dprtcode != null and dprtcode !=''">
+         AND DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+      </if>
+      <if test="fjjx != null and fjjx !=''">
+         AND FJJX = #{fjjx, jdbcType=VARCHAR}
+      </if>
+   </select>
+   
+   <insert id="addProjectAircraft" parameterType="com.eray.thjw.baseinfo.po.ProjectAircraft">
+    insert into D_010(FJZCH, DPRTCODE, FJJX, XLH, BZM, RHYZPH, YYYPH, FJMS, IPCYXXH, ZT, WHBMID, WHRID, WHSJ)
+    values(#{fjzch, jdbcType=VARCHAR}, #{dprtcode, jdbcType=VARCHAR}, #{fjjx, jdbcType=VARCHAR}, #{xlh, jdbcType=VARCHAR}, 
+           #{bzm, jdbcType=VARCHAR}, #{rhyzph, jdbcType=VARCHAR}, #{yyyph, jdbcType=VARCHAR}, #{fjms, jdbcType=VARCHAR},
+           #{ipcyxxh, jdbcType=VARCHAR}, #{zt, jdbcType=INTEGER}, #{whbmid, jdbcType=VARCHAR}, #{whrid, jdbcType=VARCHAR}, 
+           #{whsj, jdbcType=TIMESTAMP})
+   </insert>
+   
+   <update id="updateProjectAircraft" parameterType="com.eray.thjw.baseinfo.po.ProjectAircraft">
+    update D_010
+     set  FJJX = #{fjjx, jdbcType=VARCHAR}, XLH = #{xlh, jdbcType=VARCHAR},
+          BZM = #{bzm, jdbcType=VARCHAR}, YYYPH = #{yyyph, jdbcType=VARCHAR},
+        RHYZPH = #{rhyzph, jdbcType=VARCHAR}, FJMS = #{fjms, jdbcType=VARCHAR}, IPCYXXH = #{ipcyxxh, jdbcType=VARCHAR}
+     WHERE 1 = 1
+      <if test="fjzch != null and fjzch !=''">
+         AND FJZCH = #{fjzch, jdbcType=VARCHAR}
+      </if>
+      <if test="dprtcode != null and dprtcode !=''">
+         AND DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+      </if>
+      <if test="fjjx != null and fjjx !=''">
+         AND FJJX = #{fjjx, jdbcType=VARCHAR}
+      </if>
+         
+   </update>
+
+</mapper>

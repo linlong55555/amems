@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.RoleToModelMapper">
+     
+	<resultMap id="RoleToModelMap" type="com.eray.thjw.po.RoleToModel">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+		<result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+		<result column="LX" property="lx" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="roleToModelColumn">
+		ID,ROLE_ID,DPRTCODE,FJJX,FJZCH,LX
+	</sql>
+	
+	
+	<select id="selectByRoleId" resultMap="RoleToModelMap">
+		select <include refid="roleToModelColumn"></include> 
+		 from t_role2jx where role_id = #{roleId}
+		
+	</select>
+	
+	
+	<!-- 搜索参数 -->
+	<sql id="roleToModelParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="roleId != null and roleId != ''">
+             and ROLE_ID = #{roleId}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and DPRTCODE = #{dprtcode}
+         </if>
+         <if test="lx != null and lx != ''">
+             and lx = #{lx}
+         </if>
+         <if test="fjjx != null and fjjx != ''">
+             and fjjx = #{fjjx}
+         </if>
+	</sql>
+	
+	<!-- 添加组织机构角色关系 -->
+	<insert id="save"  parameterType="com.eray.thjw.po.RoleToModel" >
+		insert into   
+		t_role2jx
+		(<include refid="roleToModelColumn"></include>)
+		 values
+		 (#{id},#{roleId},#{dprtcode},#{fjjx},#{fjzch},#{lx})
+	</insert>
+	
+	 <select id="queryCount" parameterType="com.eray.thjw.po.RoleToModel" resultType="int">
+		select count(*) FROM t_role2jx <include refid="roleToModelParam"></include>
+ 	 </select>
+	
+	<!-- 根据条件查询机型角色集合 -->
+	<select id="queryAll" resultMap="RoleToModelMap"  parameterType="com.eray.thjw.po.RoleToModel">
+		select <include refid="roleToModelColumn"></include>  from t_role2jx
+		<include refid="roleToModelParam"></include>
+	</select>
+	<!-- 根据条件查询机型角色集合 -->
+	<select id="selectFjzch" resultMap="RoleToModelMap"  parameterType="com.eray.thjw.po.RoleToModel">
+		select <include refid="roleToModelColumn"></include>  from t_role2jx
+		<include refid="roleToModelParam"></include>
+	</select>
+	
+	 <delete id="delete" parameterType="com.eray.thjw.po.RoleToModel" >
+    	delete from t_role2jx
+  	<include refid="roleToModelParam"></include>
+  </delete>
+	
+</mapper>

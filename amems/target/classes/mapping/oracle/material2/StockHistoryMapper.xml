@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.StockHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.StockHistory" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+    <result column="CZRBMID" property="czrbmid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+    <result column="CZR" property="czr" jdbcType="VARCHAR" />
+    <result column="CZLX" property="czlx" jdbcType="DECIMAL" />
+    <result column="CZZLX" property="czzlx" jdbcType="DECIMAL" />
+    <result column="CZSM" property="czsm" jdbcType="VARCHAR" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="YWBH" property="ywbh" jdbcType="VARCHAR" />
+    <result column="YWMXID" property="ywmxid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, CZSJ, CZRBMID, CZRID, CZR, CZLX, CZZLX, CZSM, KCID, YWID, YWBH, YWMXID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_025
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_025
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.StockHistory" >
+    insert into B_H_025 (ID, DPRTCODE, CZSJ, 
+      CZRBMID, CZRID, CZR, 
+      CZLX, CZZLX, CZSM, 
+      KCID, YWID, YWBH, YWMXID
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{czsj,jdbcType=TIMESTAMP}, 
+      #{czrbmid,jdbcType=VARCHAR}, #{czrid,jdbcType=VARCHAR}, #{czr,jdbcType=VARCHAR}, 
+      #{czlx,jdbcType=DECIMAL}, #{czzlx,jdbcType=DECIMAL}, #{czsm,jdbcType=VARCHAR}, 
+      #{kcid,jdbcType=VARCHAR}, #{ywid,jdbcType=VARCHAR}, #{ywbh,jdbcType=VARCHAR}, #{ywmxid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.StockHistory" >
+    insert into B_H_025
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="czrid != null" >
+        CZSJ,
+      </if>
+      <if test="czrbmid != null" >
+        CZRBMID,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+      <if test="czr != null" >
+        CZR,
+      </if>
+      <if test="czlx != null" >
+        CZLX,
+      </if>
+      <if test="czzlx != null" >
+        CZZLX,
+      </if>
+      <if test="czsm != null" >
+        CZSM,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="ywbh != null" >
+        YWBH,
+      </if>
+      <if test="ywmxid != null" >
+        YWMXID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        sysdate,
+      </if>
+      <if test="czrbmid != null" >
+        #{czrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czr != null" >
+        #{czr,jdbcType=VARCHAR},
+      </if>
+      <if test="czlx != null" >
+        #{czlx,jdbcType=DECIMAL},
+      </if>
+      <if test="czzlx != null" >
+        #{czzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="czsm != null" >
+        #{czsm,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywbh != null" >
+        #{ywbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ywmxid != null" >
+        #{ywmxid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.StockHistory" >
+    update B_H_025
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null" >
+        CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czrbmid != null" >
+        CZRBMID = #{czrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czr != null" >
+        CZR = #{czr,jdbcType=VARCHAR},
+      </if>
+      <if test="czlx != null" >
+        CZLX = #{czlx,jdbcType=DECIMAL},
+      </if>
+      <if test="czzlx != null" >
+        CZZLX = #{czzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="czsm != null" >
+        CZSM = #{czsm,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywbh != null" >
+        YWBH = #{ywbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ywmxid != null" >
+        YWMXID = #{ywmxid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.StockHistory" >
+    update B_H_025
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      CZRBMID = #{czrbmid,jdbcType=VARCHAR},
+      CZRID = #{czrid,jdbcType=VARCHAR},
+      CZR = #{czr,jdbcType=VARCHAR},
+      CZLX = #{czlx,jdbcType=DECIMAL},
+      CZZLX = #{czzlx,jdbcType=DECIMAL},
+      CZSM = #{czsm,jdbcType=VARCHAR},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      YWID = #{ywid,jdbcType=VARCHAR},
+      YWBH = #{ywbh,jdbcType=VARCHAR},
+      YWMXID = #{ywmxid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

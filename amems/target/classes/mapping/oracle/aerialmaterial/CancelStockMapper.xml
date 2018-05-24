@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.CancelStockMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.CancelStock">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="XGDJID" jdbcType="VARCHAR" property="xgdjid" />
+    <result column="TKSL" jdbcType="DECIMAL" property="tksl" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="XGTKMXID" jdbcType="VARCHAR" property="xgtkmxid" />
+    <result column="ZDBMID" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, XGDJID, TKSL, ZT, XGTKMXID, ZDBMID, ZDRID, ZDSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_019
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_019
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.CancelStock">
+    insert into B_H_019 (ID, DPRTCODE, XGDJID, 
+      TKSL, ZT, XGTKMXID, 
+      ZDBMID, ZDRID, ZDSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{xgdjid,jdbcType=VARCHAR}, 
+      #{tksl,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{xgtkmxid,jdbcType=VARCHAR}, 
+      #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.CancelStock">
+    insert into B_H_019
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="xgdjid != null">
+        XGDJID,
+      </if>
+      <if test="tksl != null">
+        TKSL,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="xgtkmxid != null">
+        XGTKMXID,
+      </if>
+      <if test="zdbmid != null">
+        ZDBMID,
+      </if>
+      <if test="zdrid != null">
+        ZDRID,
+      </if>
+      <if test="zdsj != null">
+        ZDSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null">
+        #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="tksl != null">
+        #{tksl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="xgtkmxid != null">
+        #{xgtkmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null">
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+       sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.CancelStock">
+    update B_H_019
+    <set>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="xgdjid != null">
+        XGDJID = #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="tksl != null">
+        TKSL = #{tksl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="xgtkmxid != null">
+        XGTKMXID = #{xgtkmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null">
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.CancelStock">
+    update B_H_019
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      set XGDJID = #{xgdjid,jdbcType=VARCHAR},
+      TKSL = #{tksl,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      XGTKMXID = #{xgtkmxid,jdbcType=VARCHAR},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

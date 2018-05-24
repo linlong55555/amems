@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.PostApplicationSQJXMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.PostApplicationSQJX" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="LB" property="lb" jdbcType="VARCHAR" />
+    <result column="YXQ_KS" property="yxqKs" jdbcType="TIMESTAMP" />
+    <result column="YXQ_JS" property="yxqJs" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, WHBMID, WHRID, WHSJ, ZT, FJJX, LB, YXQ_KS, YXQ_JS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00503
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00503
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据mainid集合获取岗位授权-申请机型 -->
+  	<select id="queryByMainidList" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    	<include refid="Base_Column_List" />
+    	from B_Z_00503
+    	where MAINID in
+			<foreach collection="list" item="mainid" index="index" open="(" close=")" separator=",">
+				#{mainid,jdbcType=VARCHAR}
+		 	</foreach>
+ 	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_Z_00503
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.PostApplicationSQJX" >
+    insert into B_Z_00503 (ID, MAINID, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      FJJX, LB, YXQ_KS, 
+      YXQ_JS)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{fjjx,jdbcType=VARCHAR}, #{lb,jdbcType=VARCHAR}, #{yxqKs,jdbcType=TIMESTAMP}, 
+      #{yxqJs,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.PostApplicationSQJX" >
+    insert into B_Z_00503
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="lb != null" >
+        LB,
+      </if>
+      <if test="yxqKs != null" >
+        YXQ_KS,
+      </if>
+      <if test="yxqJs != null" >
+        YXQ_JS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="lb != null" >
+        #{lb,jdbcType=VARCHAR},
+      </if>
+      <if test="yxqKs != null" >
+        #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null" >
+        #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.PostApplicationSQJX" >
+    update B_Z_00503
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="lb != null" >
+        LB = #{lb,jdbcType=VARCHAR},
+      </if>
+      <if test="yxqKs != null" >
+        YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null" >
+        YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.PostApplicationSQJX" >
+    update B_Z_00503
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      FJJX = #{fjjx,jdbcType=VARCHAR},
+      LB = #{lb,jdbcType=VARCHAR},
+      YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

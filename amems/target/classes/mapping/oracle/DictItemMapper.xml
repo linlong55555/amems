@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.system.dao.DictItemMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.DictItem" >
+      <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="LXID" property="lxid" jdbcType="DECIMAL" />
+    <result column="MC" property="mc" jdbcType="VARCHAR" />
+    <result column="SZ" property="sz" jdbcType="VARCHAR" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DISPLAYNAME" property="displayname" jdbcType="VARCHAR" />
+  </resultMap>
+   
+  <sql id="Base_Column_List" >
+    ID, LXID, MC, SZ,XC, WHRID, WHSJ,DPRTCODE
+  </sql>
+	
+    <!-- 根据条件查询信息 -->
+	<select id="getDictItemList"  parameterType="com.eray.thjw.system.po.DictItem"  resultMap="BaseResultMap">
+       select  t.ID, t.LXID, t.MC, t.SZ,t.XC, t.WHRID,t.WHSJ, t.DPRTCODE,t1.username||' '||t1.realname displayname
+       from D_00101  t left join t_user t1 on t1.id=t.whrid
+       where (t.dprtcode =#{dprtcode,jdbcType=VARCHAR}
+			    or ( not EXISTS ( select 1 from D_00101 where  lxid=t.lxid  and dprtcode = #{dprtcode,jdbcType=VARCHAR}) and dprtcode = '-1')
+     		  )  and t.lxid = #{lxid,jdbcType=DECIMAL}  
+     		  
+     		  <if test="keyword != null and keyword != '' ">
+			    and (
+			    (UPPER(t.sz) like UPPER('%'||#{keyword}||'%') ) or (UPPER(t.mc) like UPPER('%'||#{keyword}||'%') )
+			    )
+			  </if>
+    	<choose>
+			<when test='pagination.sort == "auto"'>
+				order by t.WHSJ DESC
+			</when>
+			<otherwise>
+				order by t.${pagination.sort} ${pagination.order}
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 验证重复的参数 -->
+	<sql id="getCountParam">
+	   where 
+	   1=1
+	  <!-- 字典类型id-->
+	     <if test="lxid != null and lxid != ''">
+            and  a.lxid = #{lxid}
+         </if>
+          <if test="dprtcode != null and dprtcode != ''">
+            and  a.dprtcode = #{dprtcode}
+         </if>
+	     <if test="sz != null and sz != ''">
+            and  a.sz = #{sz}
+         </if>
+	     <if test="id != null and id != ''">
+           and a.id != #{id} 
+         </if>
+         
+    </sql>
+     <!--    验证增加字典项明细是否重复 -->
+	<select id="getDictItemCount" parameterType="com.eray.thjw.system.po.DictItem" resultType="int">
+
+		select count(1) from (
+		
+		     select a.ID, a.LXID, a.MC, a.SZ, a.dprtcode  from d_00101 a 
+		     
+		     <include refid="getCountParam"></include>
+		     
+		     <!--
+		       and a.dprtcode !='-1'
+		      -->
+		      
+		     ) 
+ 	 </select>
+ 	 
+ 	 
+ 	<!--  新增字典项明细 -->
+  <insert id="insertDictItem" parameterType="com.eray.thjw.system.po.DictItem" >
+   
+    INSERT INTO d_00101 (ID, LXID, MC, SZ,XC, WHRID, WHSJ,DPRTCODE)
+   
+   (select  sys_guid(), LXID, MC, SZ, XC, WHRID, WHSJ,#{dprtcode,jdbcType=VARCHAR} dprtcode from d_00101 
+   
+    where lxid=#{lxid,jdbcType=DECIMAL} and dprtcode='-1')
+  </insert>
+  
+  <!--  新增字典项明细 -->
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.DictItem" >
+    insert into D_00101
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        ID,
+      <if test="lxid != null" >
+        LXID,
+      </if>
+      <if test="mc != null" >
+        MC,
+      </if>
+      <if test="sz != null" >
+        SZ,
+      </if>
+      <if test="xc != null" >
+        XC,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+        WHSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=VARCHAR},
+      <if test="lxid != null" >
+        #{lxid,jdbcType=DECIMAL},
+      </if>
+      <if test="mc != null" >
+        #{mc,jdbcType=VARCHAR},
+      </if>
+      <if test="sz != null" >
+        #{sz,jdbcType=VARCHAR},  
+      </if>
+      <if test="xc != null" >
+        #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+       sysdate,
+    </trim> 
+  </insert>
+  
+  <!--  修改字典明细 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.DictItem" >
+    update D_00101
+    <set >
+      <if test="lxid != null" >
+        LXID = #{lxid,jdbcType=DECIMAL},
+      </if>
+      <if test="mc != null" >
+        MC = #{mc,jdbcType=VARCHAR},
+      </if>
+      <if test="sz != null" >
+        SZ = #{sz,jdbcType=VARCHAR},
+      </if>
+         <if test="xc != null" >
+        XC=#{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+        WHSJ = sysdate,
+    </set>
+    where LXID = #{lxid,jdbcType=DECIMAL} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and SZ=#{zdrrealname,jdbcType=VARCHAR}
+  </update>
+  
+   <!-- 删除字典明细 -->
+  <delete id="delete" parameterType="com.eray.thjw.system.po.DictItem" >
+    delete from D_00101
+    where LXID = #{lxid,jdbcType=DECIMAL}  and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and SZ=#{sz,jdbcType=VARCHAR}
+  </delete>
+     <!-- 同步批量删除字典明细 -->
+  <delete id="deleteByKey" >
+    delete from D_00101
+    where LXID = #{0,jdbcType=DECIMAL} AND DPRTCODE = #{1,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectByLxidAndDprtcode" parameterType="String" resultType="com.eray.thjw.system.po.DictItem">
+  		select <include refid="Base_Column_List"/>
+  		from D_00101  where LXID = #{0,jdbcType=DECIMAL} AND DPRTCODE = #{1,jdbcType=VARCHAR}
+  </select>
+</mapper>

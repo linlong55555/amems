@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.StorageMapper" >
+	<resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Storage">
+		<id column="ID" jdbcType="VARCHAR" property="id" />
+		<result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+		<result column="KWH" jdbcType="VARCHAR" property="kwh" />
+		<result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+		<result column="CKH" jdbcType="VARCHAR" property="ckh" />
+		<result column="CKLB" jdbcType="DECIMAL" property="cklb" />
+		<result column="BZ" jdbcType="VARCHAR" property="bz" />
+		<result column="ZT" jdbcType="DECIMAL" property="zt" />
+		<result column="BMID" jdbcType="VARCHAR" property="bmid" />
+		<result column="CJRID" jdbcType="VARCHAR" property="cjrid" />
+		<result column="CJSJ" jdbcType="TIMESTAMP" property="cjsj" />
+	</resultMap>
+	<resultMap id="ResultMap" type="com.eray.thjw.aerialmaterial.po.Storage" extends="BaseResultMap">
+		<association property="store" javaType="com.eray.thjw.aerialmaterial.po.Store">
+			<id column="S_ID" jdbcType="VARCHAR" property="id" />
+			<result column="S_CKMC" jdbcType="VARCHAR" property="ckmc" />
+			<result column="S_CKH" jdbcType="VARCHAR" property="ckh" />
+			<result column="S_CKLB" jdbcType="DECIMAL" property="cklb" />
+		</association>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+	  	ID, MAINID, KWH, DPRTCODE, CKH, CKLB, BZ, ZT, BMID, CJRID, CJSJ
+	</sql>
+	<sql id="Column_List">
+	  	T.ID, T.MAINID, T.KWH, T.DPRTCODE, T.CKH, T.CKLB, T.BZ, T.ZT, T.BMID, T.CJRID, T.CJSJ
+	</sql>
+	
+	  <select id="selectByPrimarykwh" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_00901
+    where  ZT=1 AND CKH = #{0,jdbcType=VARCHAR} AND KWH = #{1,jdbcType=VARCHAR} and DPRTCODE = #{2,jdbcType=VARCHAR}
+  </select>
+	
+	<select id="selectByIdWithRel" resultMap="ResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Column_List" />
+	    ,T1.ID as S_ID, T1.CKMC as S_CKMC, T1.CKH as S_CKH, T1.CKLB as S_CKLB
+	    from D_00901 T
+	    left join D_009 T1 on T.MAINID = T1.ID
+	    where T.ID = #{id,jdbcType=VARCHAR} 
+  	</select>
+	
+	<select id="queryStorageListByStoreId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from D_00901
+	    where MAINID = #{storeId,jdbcType=VARCHAR} and ZT = 1
+	    order by KWH asc
+  	</select>
+  	<!-- 根据盘点id查询仓库库位(新增盘点范围) -->
+  	<select id="queryStorageListByPdid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    	D009.ID, D009.MAINID, D009.KWH, D009.DPRTCODE, D009.CKH, D009.CKLB, D009.BZ, D009.ZT, D009.BMID, D009.CJRID, D009.CJSJ
+	    from D_00901 D009
+	    where MAINID = (select ckid from B_H_016 where ID = #{pdid}) 
+	    	and not exists(
+	    		select 1 from B_H_01602
+	    		where ZT = 1 and PDLX = 2 and MAINID = #{pdid} and D009.ID = DXID
+	    		) 
+	    	and ZT = 1
+	    order by KWH asc
+  	</select>
+  	
+  	<!-- 根据盘点id查询仓库库位(新增盘点差异) -->
+  	<select id="queryStorageSelectByPdid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    	D009.ID, D009.MAINID, D009.KWH, D009.DPRTCODE, D009.CKH, D009.CKLB, D009.BZ, D009.ZT, D009.BMID, D009.CJRID, D009.CJSJ
+	    from D_00901 D009
+	    where MAINID = (select ckid from B_H_016 where ID = #{pdid}) 
+	    	and (exists (select 1 from B_H_01602 B01602 where B01602.MAINID= #{pdid} 
+    	 	and (B01602.PDLX = 2 AND B01602.DXID = D009.ID)) 
+    	 	or not exists(select 1 from b_h_01602 B01602 where B01602.MAINID= #{pdid}))
+	    	and ZT = 1
+	    order by D009.KWH asc
+  	</select>
+  	
+  	<select id="queryStorageListByStoreCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from D_00901
+	    where CKH = #{0,jdbcType=VARCHAR} and DPRTCODE = #{1,jdbcType=VARCHAR} and ZT = 1
+	    order by KWH asc
+  	</select>
+	
+	<insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Storage">
+		insert into D_00901
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+			  	ID,
+			</if>
+			<if test="mainid != null">
+			 	 MAINID,
+			</if>
+			<if test="kwh != null">
+			 	 KWH,
+			</if>
+			<if test="dprtcode != null">
+			 	 DPRTCODE,
+			</if>
+			<if test="ckh != null">
+			  	CKH,
+			</if>
+			<if test="cklb != null">
+			 	 CKLB,
+			</if>
+			<if test="bz != null">
+			 	 BZ,
+			</if>
+			<if test="zt != null">
+			 	 ZT,
+			</if>
+			<if test="bmid != null">
+				  BMID,
+			</if>
+			<if test="cjrid != null">
+				  CJRID,
+			</if>
+			  CJSJ,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="id != null">
+		   	   #{id,jdbcType=VARCHAR},
+		    </if>
+		    <if test="mainid != null">
+		    	  #{mainid,jdbcType=VARCHAR},
+		    </if>
+		    <if test="kwh != null">
+		   	   #{kwh,jdbcType=VARCHAR},
+		    </if>
+		    <if test="dprtcode != null">
+		    	  #{dprtcode,jdbcType=VARCHAR},
+		    </if>
+		    <if test="ckh != null">
+		    	  #{ckh,jdbcType=VARCHAR},
+		    </if>
+		    <if test="cklb != null">
+		    	  #{cklb,jdbcType=DECIMAL},
+		    </if>
+		    <if test="bz != null">
+		    	  #{bz,jdbcType=VARCHAR},
+		    </if>
+		    <if test="zt != null">
+		    	  #{zt,jdbcType=DECIMAL},
+		    </if>
+		    <if test="bmid != null">
+		    	  #{bmid,jdbcType=VARCHAR},
+		    </if>
+		    <if test="cjrid != null">
+		    	  #{cjrid,jdbcType=VARCHAR},
+		    </if>
+		      sysdate,
+		</trim>
+	</insert>
+	
+	<update id="updateByMainid" parameterType="java.lang.String">
+		update D_00901 set ZT = 0 where MAINID = #{mainid,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Storage">
+		update D_00901
+	    <set>
+	      <if test="mainid != null">
+	        MAINID = #{mainid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kwh != null">
+	        KWH = #{kwh,jdbcType=VARCHAR},
+	      </if>
+<!-- 	      <if test="dprtcode != null"> -->
+<!-- 	        DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!-- 	      </if> -->
+	      <if test="ckh != null">
+	        CKH = #{ckh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="cklb != null">
+	        CKLB = #{cklb,jdbcType=DECIMAL},
+	      </if>
+	       <!--备注可以为null  -->
+	        BZ = #{bz,jdbcType=VARCHAR},
+	      <if test="zt != null">
+	        ZT = #{zt,jdbcType=DECIMAL},
+	      </if>
+	      <if test="bmid != null">
+	        BMID = #{bmid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="cjrid != null">
+	        CJRID = #{cjrid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="cjrid != null">
+	        CJSJ = sysdate,
+	      </if>
+	    </set>
+	    where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="batchMerge" parameterType="com.eray.thjw.aerialmaterial.po.Storage" >
+	  MERGE INTO D_00901 D1
+		USING (
+		<foreach collection="list" item="item" index="index" separator="union all" > 
+			SELECT #{item.id,jdbcType=VARCHAR} AS ID ,
+					  #{item.mainid,jdbcType=VARCHAR} AS MAINID,
+					  #{item.kwh,jdbcType=VARCHAR} AS KWH,
+				      #{item.dprtcode,jdbcType=VARCHAR} AS DPRTCODE,
+				      #{item.ckh,jdbcType=VARCHAR} AS CKH,
+				      #{item.cklb,jdbcType=INTEGER} AS CKLB,
+				      #{item.bz,jdbcType=VARCHAR} AS BZ,
+				      #{item.bmid,jdbcType=VARCHAR} AS BMID,
+				      #{item.cjrid,jdbcType=VARCHAR} AS CJRID
+		FROM dual
+		</foreach>
+		) D2
+		ON ( D1.MAINID=D2.MAINID AND  D1.KWH=D2.KWH )
+		WHEN MATCHED THEN
+		  UPDATE SET  
+		  			  D1.BZ=D2.BZ ,
+		  			  D1.ZT=1
+		WHEN NOT MATCHED THEN 
+		  INSERT (ID, MAINID, KWH, DPRTCODE, CKH, CKLB, BZ, ZT, BMID, CJRID, CJSJ) 
+		  VALUES (D2.ID, D2.MAINID, D2.KWH, D2.DPRTCODE, D2.CKH, D2.CKLB, D2.BZ, 1, D2.BMID, D2.CJRID, SYSDATE)
+  </insert>
+  <select id="getId" resultType="java.lang.String" parameterType="java.lang.String" >
+    select id
+    from D_00901
+    where  ZT=1 AND mainid = #{0,jdbcType=VARCHAR} AND dprtcode = #{1,jdbcType=VARCHAR} AND KWH=#{2,jdbcType=VARCHAR}
+  </select> 
+  <select id="selectByMainidAndKwh" parameterType="com.eray.thjw.aerialmaterial.po.Storage" resultType="java.lang.String">
+  		select id from D_00901 where mainid=#{mainid,jdbcType=VARCHAR} and kwh=#{kwh,jdbcType=VARCHAR}
+  </select>
+  <select id="getByMainidList" resultMap="BaseResultMap" parameterType="String">
+   select 
+	    <include refid="Base_Column_List" />
+	    from D_00901
+	    where MAINID in 
+	    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+	    	#{item}
+	    </foreach>
+	     and ZT = 1
+	    order by KWH asc
+  </select>
+</mapper>

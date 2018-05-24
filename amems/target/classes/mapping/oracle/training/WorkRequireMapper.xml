@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.WorkRequireMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.WorkRequire" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="GWYQ" property="gwyq" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+   
+   
+   <!-- 扩充字段 -->
+   <result column="PGNR" property="paramsMap.pgnr" jdbcType="VARCHAR" /><!-- 培训评估结果 -->
+   <result column="PGJG" property="paramsMap.pgjg" jdbcType="DECIMAL" /><!-- 评估结果 -->
+   <result column="PGYJ" property="paramsMap.pgyj" jdbcType="VARCHAR" /><!-- 培训评估意见 -->
+   
+  </resultMap>
+  
+   
+  <sql id="Base_Column_List" >
+    ID, MAINID, XC, GWYQ, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  	<!-- 查询岗位要求 -->
+  	<select id="queryWorkRequireEval" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.WorkRequire" >
+	    select 
+	    	BP00101.ID,
+	    	BP00101.XC,
+	    	BP00101.GWYQ,
+	    	BZ00502.KCID AS PGNR,
+	    	BZ00502.PGJG,
+	    	BZ00502.PGYJ
+	    from B_P_00101 BP00101
+	    LEFT JOIN B_Z_00502 BZ00502
+	    ON BZ00502.ZT = 1 AND BZ00502.GWYQID = BP00101.ID AND BZ00502.MAINID = #{paramsMap.sqid,jdbcType=VARCHAR} 
+	    where BP00101.ZT = 1 AND BP00101.MAINID = #{mainid,jdbcType=VARCHAR} 
+	    order by BP00101.XC asc
+  	</select>
+  
+  <select id="queryWorkRequiresAllByGwid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_00101
+    where MAINID = #{id,jdbcType=VARCHAR} order by  XC desc
+  </select>
+  
+  
+  <select id="queryXc" resultMap="BaseResultMap" parameterType="java.lang.String">
+  select NVL(max(XC),0)+1 XC 
+  from B_P_00101 where MAINID=#{mainid,jdbcType=VARCHAR}
+  </select>
+  
+
+  <delete id="deleteWorkRequiresByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_00101
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  <insert id="saveWorkRequires" parameterType="com.eray.thjw.po.WorkRequire" >
+    insert into B_P_00101 ( ID, MAINID, XC, GWYQ, ZT, WHBMID, WHRID, WHSJ )
+    values ( #{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{xc,jdbcType=DECIMAL}, 
+      #{gwyq,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.WorkRequire" >
+	    insert into B_P_00101
+	   <trim prefix="(" suffix=")" suffixOverrides=","> 
+	      <if test="id != null">
+	        ID,
+	      </if>
+	      <if test="mainid != null">
+	        MAINID,
+	      </if>
+	      <if test="xc != null">
+	        XC,
+	      </if>
+	      <if test="gwyq != null">
+	        GWYQ,
+	      </if>
+	      <if test="zt != null">
+	        ZT,
+	      </if>
+	      <if test="whbmid != null">
+	        WHBMID,
+	      </if>
+	      <if test="whrid != null">
+	        WHRID,
+	      </if>
+	        WHSJ,
+	   
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	      <if test="id != null">
+	        #{id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="mainid != null">
+	        #{mainid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xc != null">
+	        #{xc,jdbcType=VARCHAR},
+	      </if>
+	      <if test="gwyq != null">
+	        #{gwyq,jdbcType=DECIMAL},
+	      </if>
+	      <if test="zt != null">
+	        #{zt,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whbmid != null">
+	        #{whbmid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whrid != null">
+	        #{whrid,jdbcType=VARCHAR},
+	      </if>
+	        sysdate,
+	      
+	    </trim>
+  </insert>
+  
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.WorkRequire" >
+    update B_P_00101
+     <set>
+     <if test="mainid != null">
+	       mainid = #{mainid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xc != null">
+	       XC = #{xc,jdbcType=VARCHAR},
+	      </if>
+	      <if test="gwyq != null">
+	      GWYQ = #{gwyq,jdbcType=DECIMAL},
+	      </if>
+	      <if test="zt != null">
+	       ZT = #{zt,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whbmid != null">
+	       WHBMID = #{whbmid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whrid != null">
+	      WHRID = #{whrid,jdbcType=VARCHAR},
+	      </if>
+	      WHSJ = sysdate,
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>	
+  
+  
+  <update id="updateWorkRequiresByPrimaryKey" parameterType="com.eray.thjw.po.WorkRequire" >
+    update B_P_00101
+    set GWYQ = #{gwyq,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>	
+  
+  <select id="getWorkRequyireByKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+      select 
+    <include refid="Base_Column_List" />
+    from B_P_00101
+    where ID=#{id,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

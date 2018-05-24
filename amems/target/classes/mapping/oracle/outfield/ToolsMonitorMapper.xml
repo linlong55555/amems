@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.outfield.dao.ToolsMonitorMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.outfield.po.ToolsMonitor">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="BJXLH" jdbcType="VARCHAR" property="bjxlh" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="IS_JL" jdbcType="DECIMAL" property="isJl" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, BJID, BJXLH, ZT, IS_JL, WHBMID, WHRID, WHSJ,DPRTCODE
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_W_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据条件部件id和序列号获取数据 -->
+  <select id="getByBjidAndBjxlh" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_W_001
+    where ZT = 1 and BJID = #{bjid,jdbcType=VARCHAR} and BJXLH = #{bjxlh,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据id获取计量工具监控map -->
+  <select id="getToolsMonitorMap" parameterType="java.lang.String" resultType="Map">
+    select 
+    	BW001.ID,BW001.IS_JL,BW00101.JY_SCRQ
+    from B_W_001 BW001
+    left join (select MAINID,MAX(JY_SCRQ) AS JY_SCRQ from B_W_00101 where ZT = 1 group by MAINID) BW00101
+    on BW00101.MAINID = BW001.ID
+    where BW001.ZT = 1 AND BW001.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+      <!-- 根据条件分页查询库存及外场虚拟库存列表 -->
+	<select id="queryAllStockPageList" parameterType="com.eray.thjw.outfield.po.ToolsMonitor" resultType="Map">
+	
+		SELECT * FROM (
+
+			SELECT B.ID,
+		       B.SN,
+		       B.BJID,
+		       B.BJH,
+		       (CASE WHEN D008.ZWMS IS NULL THEN B.ZWMS ELSE D008.ZWMS END) ZWMS,
+		       (CASE WHEN D008.YWMS IS NULL THEN B.YWMS ELSE D008.YWMS END) YWMS,
+		       (CASE WHEN D008.GG IS NULL THEN B.GG ELSE D008.GG END) GG,
+		       (CASE WHEN D008.XINGH IS NULL THEN B.XH ELSE D008.XINGH END) XH,
+		       B.CKH,
+		       B.CKMC,
+		       B.KWH,
+		       B.WZ,
+		       B.RKSJ,
+		       B.DPRTCODE,
+		       D008.HCLX,
+		       W.ID AS JLID,
+		       W.IS_JL AS ISJL,
+		       W.JY_SCRQ AS JYSCRQ
+		  FROM (select B001.ID,
+		  			   B001.CKLB,
+		               B001.SN,
+		               B001.BJID,
+		               B001.BJH,
+		               B001.ZWMS,
+		               B001.YWMS,
+		               B001.GG,
+		               B001.XH,
+		               B001.CKH,
+		               B001.CKMC,
+		               B001.KWH,
+		               '闲置' AS WZ,
+		               B001.RKSJ,
+		               B001.DPRTCODE
+		          from B_H_001 B001) B
+		  left join D_008 D008
+		    on D008.ID = B.BJID
+		  left join (select BW001.ID,
+		                    BW001.BJID,
+		                    BW001.BJXLH,
+		                    BW001.IS_JL,
+		                    BW00101.JY_SCRQ
+		               from B_W_001 BW001
+		               left join (select MAINID, MAX(JY_SCRQ) AS JY_SCRQ
+		                           from B_W_00101
+		                          where ZT = 1
+		                          group by MAINID) BW00101
+		                 on BW00101.MAINID = BW001.ID
+		              where BW001.ZT = 1) W
+		    on W.BJID = B.BJID
+		   and W.BJXLH = B.SN
+		 where B.SN is not null
+		   and B.CKLB in (0,3,4,5,6,7,8)
+		   and D008.HCLX in (2, 3)
+
+         		 <include refid="Stock_OutStock_Param"></include>
+           ) A
+           
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by SN DESC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+	</select>
+	
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_W_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.outfield.po.ToolsMonitor">
+    insert into B_W_001 (ID, BJID, BJXLH, 
+      ZT, IS_JL,DPRTCODE, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, #{bjxlh,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{isJl,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR} , #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.outfield.po.ToolsMonitor">
+    insert into B_W_001
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="bjxlh != null">
+        BJXLH,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="isJl != null">
+        IS_JL,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null">
+        WHBMID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whrid != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjxlh != null">
+        #{bjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="isJl != null">
+        #{isJl,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.outfield.po.ToolsMonitor">
+    update B_W_001
+    <set>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjxlh != null">
+        BJXLH = #{bjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="isJl != null">
+        IS_JL = #{isJl,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.outfield.po.ToolsMonitor">
+    update B_W_001
+    set BJID = #{bjid,jdbcType=VARCHAR},
+      BJXLH = #{bjxlh,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      IS_JL = #{isJl,jdbcType=DECIMAL},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 修改计量工具监控为计量或非计量  -->
+  <update id="updateByIdAndIsJl" parameterType="com.eray.thjw.outfield.po.ToolsMonitor">
+    update B_W_001 set 
+    	IS_JL = #{isJl,jdbcType=DECIMAL},
+    	WHRID = #{whrid,jdbcType=VARCHAR},
+    	WHBMID = #{whbmid,jdbcType=VARCHAR},
+    	WHSJ = sysdate
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <sql id="Stock_OutStock_Param">
+  
+    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+	   and (
+	       UPPER(B.SN) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    or UPPER(B.BJH) like UPPER('%'||#{paramsMap.keyword}||'%')
+    	or UPPER(B.ZWMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+    	or UPPER(B.YWMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+    	or UPPER(B.GG) like UPPER('%'||#{paramsMap.keyword}||'%')
+    	or UPPER(B.XH) like UPPER('%'||#{paramsMap.keyword}||'%')
+    	or B.ID = #{paramsMap.keyword}
+    )
+	</if>
+	<if test="paramsMap != null and paramsMap.hclx != null and paramsMap.hclx != ''">
+	    and D008.HCLX = #{paramsMap.hclx}
+	</if>
+	<if test="isJl == 1">
+	    and W.IS_JL = #{isJl}
+	</if>
+	<if test="isJl == 0">
+	    and (W.IS_JL = #{isJl} or W.IS_JL is null)
+	</if>
+	<if test="paramsMap != null and paramsMap.dprtcode != null">
+	    and B.DPRTCODE = #{paramsMap.dprtcode}
+	</if>
+  
+</sql>
+  
+</mapper>

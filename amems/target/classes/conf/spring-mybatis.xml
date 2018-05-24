@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+ 
+ 
+ <bean id="DS_BUSINESS" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+    destroy-method="close" >
+    <property name="driverClassName">
+      <value>${jdbc_driverClassName}</value>
+    </property>
+    <property name="url">
+      <value>${jdbc_url}</value>
+    </property>
+    <property name="username">
+      <value>${jdbc_username}</value>
+    </property>
+    <property name="password">
+      <value>${jdbc_password}</value>
+    </property>
+    <property name="maxActive">
+      <value>20</value>
+    </property>
+    <property name="initialSize">
+      <value>1</value>
+    </property>
+    <property name="maxWait">
+      <value>60000</value>
+    </property>
+    <!-- <property name="maxIdle">
+      <value>20</value>
+    </property> -->
+    <property name="minIdle">
+      <value>3</value>
+    </property>
+    <property name="removeAbandoned">
+      <value>true</value>
+    </property>
+    <property name="removeAbandonedTimeout">
+      <value>180</value>
+    </property>
+    <property name="connectionProperties">
+      <value>clientEncoding=UTF-8</value>
+    </property>
+  </bean> 
+  
+  
+  <bean id="DS_AUTH" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+    destroy-method="close" >
+    <property name="driverClassName">
+      <value>${auth_jdbc_driverClassName}</value>
+    </property>
+    <property name="url">
+      <value>${auth_jdbc_url}</value>
+    </property>
+    <property name="username">
+      <value>${auth_jdbc_username}</value>
+    </property>
+    <property name="password">
+      <value>${auth_jdbc_password}</value>
+    </property>
+    <property name="maxActive">
+      <value>20</value>
+    </property>
+    <property name="initialSize">
+      <value>1</value>
+    </property>
+    <property name="maxWait">
+      <value>60000</value>
+    </property>
+    <!-- <property name="maxIdle">
+      <value>20</value>
+    </property> -->
+    <property name="minIdle">
+      <value>3</value>
+    </property>
+    <property name="removeAbandoned">
+      <value>true</value>
+    </property>
+    <property name="removeAbandonedTimeout">
+      <value>180</value>
+    </property>
+    <property name="connectionProperties">
+      <value>clientEncoding=UTF-8</value>
+    </property>
+  </bean> 
+  
+   <bean id="DS_UP" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+    destroy-method="close" >
+    <property name="driverClassName">
+      <value>${up_jdbc_driverClassName}</value>
+    </property>
+    <property name="url">
+      <value>${up_jdbc_url}</value>
+    </property>
+    <property name="username">
+      <value>${up_jdbc_username}</value>
+    </property>
+    <property name="password">
+      <value>${up_jdbc_password}</value>
+    </property>
+    <property name="maxActive">
+      <value>20</value>
+    </property>
+    <property name="initialSize">
+      <value>1</value>
+    </property>
+    <property name="maxWait">
+      <value>60000</value>
+    </property>
+    <!-- <property name="maxIdle">
+      <value>20</value>
+    </property> -->
+    <property name="minIdle">
+      <value>3</value>
+    </property>
+    <property name="removeAbandoned">
+      <value>true</value>
+    </property>
+    <property name="removeAbandonedTimeout">
+      <value>180</value>
+    </property>
+    <property name="connectionProperties">
+      <value>clientEncoding=UTF-8</value>
+    </property>
+  </bean> 
+	 <bean id="dataSource" class="com.eray.thjw.ds.DynamicDataSource">  
+	    <property name="targetDataSources">  
+	        <map key-type="java.lang.String">  
+	            <entry value-ref="DS_BUSINESS" key="DS_BUSINESS"></entry>  
+	            <entry value-ref="DS_AUTH" key="DS_AUTH"></entry>  
+	            <entry value-ref="DS_UP" key="DS_UP"></entry>  
+	        </map>  
+	    </property>  
+	    <property name="defaultTargetDataSource" ref="DS_BUSINESS"></property> 
+	</bean>  
+ 
+    <!-- mybatis文件配置，扫描所有mapper文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:conf/mybatis-config.xml" />
+		<property name="typeAliasesPackage" value="com.eray.**.po" />
+		<property name="mapperLocations" value="classpath*:mapping/**/*.xml" />
+		<property name="plugins">
+		    <array>
+		      <bean class="com.github.pagehelper.PageInterceptor">
+		        <property name="properties">
+		          <value>
+		          	helperDialect=${helper_dialect}
+		            params=pageNum=page;pageSize=rows;
+		          </value>
+		        </property>
+		      </bean>
+		    </array>
+		</property>
+	</bean>       
+       
+   <!-- spring与mybatis整合配置，扫描所有mapper -->
+   <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.eray.**.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+	<!-- Mybatis 事务配置 -->
+	<bean id="sqlTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>  
+	
+	<!-- 拦截器方式配置事物 -->
+	<tx:advice id="transactionAdvice" transaction-manager="sqlTransactionManager" >
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="append*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Exception" />
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="modify*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="edit*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="remove*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="repair" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="delAndRepair" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="do*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+			<tx:method name="generate*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="load*" read-only="true" />
+			<tx:method name="search*" read-only="true" />
+			
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+	    <aop:pointcut id="transactionPointcut" expression="execution(* com.eray.*.*.service.*.*(..)) or execution(* com.eray.*.service.*.*(..)) or execution(* com.eray.*.excelimport.*.*(..))" />
+		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
+	</aop:config> 
+	
+</beans>

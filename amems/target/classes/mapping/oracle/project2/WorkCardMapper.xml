@@ -1,0 +1,1368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.WorkCardMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.WorkCard" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="GKH" property="gkh" jdbcType="VARCHAR" />
+    <result column="BB" property="bb" jdbcType="DECIMAL" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="IS_BJ" property="isBj" jdbcType="DECIMAL" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="WXXMBH" property="wxxmbh" jdbcType="VARCHAR" />
+    <result column="RWDH" property="rwdh" jdbcType="VARCHAR" />
+    <result column="KZH" property="kzh" jdbcType="VARCHAR" />
+    <result column="CMPH" property="cmph" jdbcType="VARCHAR" />
+    <result column="GZDH" property="gzdh" jdbcType="VARCHAR" />
+    <result column="GKFJID" property="gkfjid" jdbcType="VARCHAR" />
+    <result column="GZBT" property="gzbt" jdbcType="VARCHAR" />
+    <result column="GZLX" property="gzlx" jdbcType="VARCHAR" />
+    <result column="ZY" property="zy" jdbcType="VARCHAR" />
+    <result column="GZZID" property="gzzid" jdbcType="VARCHAR" />
+    <result column="JHGS_RS" property="jhgsRs" jdbcType="DECIMAL" />
+    <result column="JHGS_XSS" property="jhgsXss" jdbcType="DECIMAL" />
+    <result column="YJWJ" property="yjwj" jdbcType="VARCHAR" />
+    <result column="TBSYSM" property="tbsysm" jdbcType="VARCHAR" />
+    <result column="GZGS" property="gzgs" jdbcType="VARCHAR" />
+    <result column="GZNRFJID" property="gznrfjid" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="ZXBS" property="zxbs" jdbcType="DECIMAL" />
+    <result column="F_BBID" property="fBbid" jdbcType="VARCHAR" />
+    <result column="B_BBID" property="bBbid" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="SHBMID" property="shbmid" jdbcType="VARCHAR" />
+    <result column="SHRID" property="shrid" jdbcType="VARCHAR" />
+    <result column="SHSJ" property="shsj" jdbcType="TIMESTAMP" />
+    <result column="SHYJ" property="shyj" jdbcType="VARCHAR" />
+    <result column="PFBMID" property="pfbmid" jdbcType="VARCHAR" />
+    <result column="PFRID" property="pfrid" jdbcType="VARCHAR" />
+    <result column="PFSJ" property="pfsj" jdbcType="TIMESTAMP" />
+    <result column="PFYJ" property="pfyj" jdbcType="VARCHAR" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBRQ" property="gbrq" jdbcType="TIMESTAMP" />
+    <result column="GBYY" property="gbyy" jdbcType="VARCHAR" />
+    <result column="PFJL" property="pfjl" jdbcType="DECIMAL" />
+    <result column="SHJL" property="shjl" jdbcType="DECIMAL" />
+    <result column="GKLX" property="gklx" jdbcType="VARCHAR" />
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+    <result column="OLDID" property="paramsMap.oldId" jdbcType="VARCHAR" />
+    <result column="OLDBB" property="paramsMap.oldBb" jdbcType="VARCHAR" />
+    <result column="WORKTYPE" property="worktype" jdbcType="DECIMAL" /><!-- 是否清洁-->
+    
+    <result column="ZZJG" property="paramsMap.dprtname" jdbcType="VARCHAR" /><!-- 组织机构-->
+    
+  </resultMap>
+  
+  	<!-- 配置工卡关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.project2.po.WorkCard" id="WorkCardWithRelMap" extends="BaseResultMap">  
+		<!-- 配置工卡与用户关系 -->
+	  	<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZDR_ID" property="id"/>  
+	        <result column="ZDR_USERNAME" property="username"/>  
+	        <result column="ZDR_REALNAME" property="realname"/>  
+	    </association>  
+	  	<association property="shr" javaType="com.eray.thjw.po.User">  
+	        <id column="SHR_ID" property="id"/>  
+	        <result column="SHR_USERNAME" property="username"/>  
+	        <result column="SHR_REALNAME" property="realname"/>  
+	    </association> 
+	  	<association property="pfr" javaType="com.eray.thjw.po.User">  
+	        <id column="PFR_ID" property="id"/>  
+	        <result column="PFR_USERNAME" property="username"/>  
+	        <result column="PFR_REALNAME" property="realname"/>  
+	    </association> 
+	    <!-- 配置工卡与章节号关系 -->
+	    <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+	    	<id column="F_ZJH" property="zjh"/>
+	     	<result column="F_ZWMS" property="zwms"/>
+	        <result column="F_YWMS" property="ywms"/>
+	    </association>
+	    <!-- 配置工卡与工作组关系 -->
+	    <association property="workGroup" javaType="com.eray.thjw.system.po.WorkGroup">
+	        <id column="WG_ID" property="id"/>
+	     	<result column="WG_GZZDM" property="gzzdm"/>
+	        <result column="WG_GZZMC" property="gzzmc"/>
+	    </association>
+	    
+	    <!-- 配置工卡与维修项目关系 -->
+	    <association property="maintenanceProject" javaType="com.eray.thjw.project2.po.MaintenanceProject">
+	    	<id column="MP_ID" property="id"/>
+	     	<result column="MP_RWH" property="rwh"/>
+	        <result column="MP_BB" property="bb"/>
+	        <result column="MP_RWMS" property="rwms"/>
+	    </association>
+	    
+	    <!-- 配置工卡与工卡附件关系 -->
+	    <association property="workCardAttachment" javaType="com.eray.thjw.flightdata.po.Attachment">  
+	        <id column="WCA_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="WCA_MAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="WCA_DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="WCA_YSWJM" property="yswjm" jdbcType="VARCHAR" />
+		    <result column="WCA_WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+		    <result column="WCA_NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+		    <result column="WCA_WJDX" property="wjdx" jdbcType="DECIMAL" />
+		    <result column="WCA_CFLJ" property="cflj" jdbcType="VARCHAR" />
+		    <result column="WCA_HZM" property="hzm" jdbcType="VARCHAR" />
+	    </association>
+	    
+	     <!-- 配置工卡与工作内容附件关系 -->
+	    <association property="workContentAttachment" javaType="com.eray.thjw.flightdata.po.Attachment">  
+	        <id column="WTA_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="WTA_MAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="WTA_DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="WTA_YSWJM" property="yswjm" jdbcType="VARCHAR" />
+		    <result column="WTA_WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+		    <result column="WTA_NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+		    <result column="WTA_WJDX" property="wjdx" jdbcType="DECIMAL" />
+		    <result column="WTA_CFLJ" property="cflj" jdbcType="VARCHAR" />
+		    <result column="WTA_HZM" property="hzm" jdbcType="VARCHAR" />
+	    </association>
+	    
+	    <collection property="coverPlateList" ofType="com.eray.thjw.project2.po.CoverPlate">  
+		    <id column="CP_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="CP_LX" property="lx" jdbcType="DECIMAL" />
+		    <result column="CP_GBID" property="gbid" jdbcType="VARCHAR" />
+		    <result column="CP_GBH" property="gbh" jdbcType="VARCHAR" />
+		    <association property="coverPlateInformation" javaType="com.eray.thjw.basic.po.CoverPlateInformation">
+		    	<id column="CPI_ID" property="id"/>
+		     	<result column="CPI_GBBH" property="gbbh"/>
+		        <result column="CPI_GBMC" property="gbmc"/>
+		    </association>
+        </collection>
+        
+        <collection property="applicableUnitList" ofType="com.eray.thjw.project2.po.ApplicableUnit">  
+		    <id column="AU_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="AU_SYDWID" property="sydwid" jdbcType="VARCHAR" />
+		    <result column="AU_SYDW" property="sydw" jdbcType="VARCHAR" />
+        </collection>
+        
+        <collection property="materialToolList" ofType="com.eray.thjw.project2.po.MaterialTool">  
+		    <id column="MT_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="MT_YWLX" property="ywlx" jdbcType="DECIMAL" />
+		    <result column="MT_YWID" property="ywid" jdbcType="VARCHAR" />
+		    <result column="MT_XC" property="xc" jdbcType="DECIMAL" />
+		    <result column="MT_BJLX" property="bjlx" jdbcType="DECIMAL" />
+		    <result column="MT_BJID" property="bjid" jdbcType="VARCHAR" />
+		    <result column="MT_JH" property="jh" jdbcType="VARCHAR" />
+		    <result column="MT_SL" property="sl" jdbcType="DECIMAL" />
+		    <result column="MT_HHXX" property="hhxx" jdbcType="VARCHAR" />
+		    <result column="MT_JHLY" property="jhly" jdbcType="VARCHAR" />
+		    <result column="MT_BXX" property="bxx" jdbcType="VARCHAR" />
+		    <result column="MT_QCDH" property="qcdh" jdbcType="VARCHAR" />
+		    <result column="MT_BZ" property="bz" jdbcType="VARCHAR" />
+		    <result column="MT_ZT" property="zt" jdbcType="DECIMAL" />
+		    <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">
+		    	<id column="MTM_ID" property="id"/>
+		     	<result column="MTM_BJH" property="bjh" jdbcType="VARCHAR" />
+		        <result column="MTM_ZWMS" property="zwms" jdbcType="VARCHAR" />
+    			<result column="MTM_YWMS" property="ywms" jdbcType="VARCHAR" />
+    			<result column="MTM_HCLX" property="hclx" jdbcType="DECIMAL" />
+    			<result column="MTM_HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+    			<result column="MTM_JLDW" property="jldw" jdbcType="VARCHAR" />
+    			<result column="MTM_JHLY" property="jhly" jdbcType="VARCHAR" />
+    			<result column="MTM_XINGH" property="xingh" jdbcType="VARCHAR" />
+		    </association>
+        </collection>
+	</resultMap> 
+  
+  	<sql id="Base_Column_List" >
+	    ID, DPRTCODE, GKH, BB, JX, IS_BJ, ZJH, WXXMBH, RWDH, KZH, CMPH, GZDH, GKFJID, GZBT, 
+	    GZLX, ZY, GZZID, JHGS_RS, JHGS_XSS, YJWJ, TBSYSM, GZGS, GZNRFJID, BZ, ZT, ZXBS, F_BBID, 
+	    B_BBID, WHBMID, WHRID, WHSJ, SHBMID, SHRID, SHSJ, SHYJ, PFBMID, PFRID, PFSJ, PFYJ, 
+	    GBRID, GBRQ, GBYY, PFJL, SHJL, GKLX,WORKTYPE
+  	</sql>
+  	
+  	<sql id="work_card_List" >
+   		B.ID, B.DPRTCODE, B.GKH, B.BB, B.JX, B.IS_BJ, B.ZJH, B.WXXMBH, B.RWDH, B.KZH, B.CMPH, B.GZDH, B.GKFJID, B.GZBT, 
+	    B.GZLX, B.ZY, B.GZZID, B.JHGS_RS, B.JHGS_XSS, B.YJWJ, B.TBSYSM, B.GZGS, B.GZNRFJID, B.BZ, B.ZT, B.ZXBS, B.F_BBID, 
+	    B.B_BBID, B.WHBMID, B.WHRID, B.WHSJ, B.SHBMID, B.SHRID, B.SHSJ, B.SHYJ, B.PFBMID, B.PFRID, B.PFSJ, B.PFYJ, 
+	    B.GBRID, B.GBRQ, B.GBYY, B.PFJL, B.SHJL, B.GKLX,B.WORKTYPE
+	</sql>
+  	
+  	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from B_G2_013
+	    where ID = #{id,jdbcType=VARCHAR}
+  	</select>
+	<!-- 根据工卡号、机型、机构代码检查工卡是否存在 -->
+	<select id="getCount4CheckExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    select 
+	    	count(1)
+	    from B_G2_013
+	    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR} and GKH = #{gkh,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据工卡号、机型、机构代码、维修项目编号检查工卡是否存在 -->
+	<select id="query4CheckExistWithWxxm" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    select g2013.GKH, g2013.BB
+  		from B_G2_013 g2013
+ 		where g2013.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+   		and g2013.GKH != #{gkh,jdbcType=VARCHAR}
+   		and g2013.ZT != 8
+   		and g2013.ZXBS in (1, 2)
+   		and g2013.JX = #{jx,jdbcType=VARCHAR}
+   		and g2013.WXXMBH = #{wxxmbh,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据工卡id查询工卡信息 -->
+	<select id="selectById" resultMap="WorkCardWithRelMap" parameterType="java.lang.String" >
+	    select 
+	    	<include refid="work_card_List" />
+	    	,ZDR.ID as ZDR_ID
+        	,ZDR.USERNAME as ZDR_USERNAME
+        	,ZDR.REALNAME as ZDR_REALNAME
+        	,SHR.ID as SHR_ID
+        	,SHR.USERNAME as SHR_USERNAME
+        	,SHR.REALNAME as SHR_REALNAME
+        	,PFR.ID as PFR_ID
+        	,PFR.USERNAME as PFR_USERNAME
+        	,PFR.REALNAME as PFR_REALNAME
+        	,D005.ZJH AS F_ZJH
+        	,D005.ZWMS AS F_ZWMS
+        	,D005.YWMS AS F_YWMS
+        	,BG2995.ID AS CP_ID
+        	,BG2995.LX AS CP_LX
+        	,BG2995.GBID AS CP_GBID
+        	,BG2995.GBH AS CP_GBH
+        	,BG201302.ID AS AU_ID
+        	,BG201302.SYDWID AS AU_SYDWID
+        	,BG201302.SYDW AS AU_SYDW
+        	,D021.ID AS CPI_ID
+        	,D021.GBBH AS CPI_GBBH
+        	,D021.GBMC AS CPI_GBMC
+        	, WCA.ID AS WCA_ID
+		    , WCA.MAINID AS WCA_MAINID
+		    , WCA.DPRTCODE AS WCA_DPRTCODE
+		    , WCA.YSWJM AS WCA_YSWJM
+		    , WCA.WBWJM AS WCA_WBWJM
+		    , WCA.NBWJM AS WCA_NBWJM
+		    , WCA.WJDX AS WCA_WJDX
+		    , WCA.CFLJ AS WCA_CFLJ
+		    , WCA.HZM AS WCA_HZM
+		    , WTA.ID AS WTA_ID
+		    , WTA.MAINID AS WTA_MAINID
+		    , WTA.DPRTCODE AS WTA_DPRTCODE
+		    , WTA.YSWJM AS WTA_YSWJM
+		    , WTA.WBWJM AS WTA_WBWJM
+		    , WTA.NBWJM AS WTA_NBWJM
+		    , WTA.WJDX AS WTA_WJDX
+		    , WTA.CFLJ AS WTA_CFLJ
+		    , WTA.HZM AS WTA_HZM
+		    , MP.ID AS MP_ID
+		    , MP.BB AS MP_BB
+		    , MP.RWH AS MP_RWH
+		    , MP.RWMS AS MP_RWMS
+		    , MP.JX AS MP_JX
+		    , WG.ID AS WG_ID
+		    , WG.GZZDM AS WG_GZZDM
+		    , WG.GZZMC AS WG_GZZMC
+		    , B2.ID AS OLDID
+		    , B2.BB AS OLDBB
+	    from B_G2_013 B
+	    LEFT JOIN B_G2_013 B2 ON B.F_BBID = B2.ID
+	    LEFT JOIN T_USER ZDR ON B.WHRID = ZDR.ID
+        LEFT JOIN T_USER SHR ON B.SHRID = SHR.ID
+        LEFT JOIN T_USER PFR ON B.PFRID = PFR.ID
+        LEFT JOIN D_005 D005 on B.DPRTCODE = D005.DPRTCODE and B.ZJH = D005.ZJH
+	    LEFT JOIN B_G2_995 BG2995 on BG2995.YWLX = 8 and BG2995.YWID = B.ID
+	    LEFT JOIN B_G2_01302 BG201302 on BG201302.MAINID = B.ID and BG201302.ZT = 1
+	    LEFT JOIN D_021 D021 on BG2995.GBID = D021.ID
+	    LEFT JOIN D_011 WCA ON B.GKFJID = WCA.MAINID and WCA.YXZT = 1
+	    LEFT JOIN D_011 WTA ON B.GZNRFJID = WTA.MAINID and WTA.YXZT = 1
+	    LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+		LEFT JOIN (           
+              SELECT ID, RWH, BB, RWMS, JX, DPRTCODE FROM (
+                SELECT ROW_NUMBER() OVER(PARTITION BY JX, RWH, DPRTCODE ORDER BY BB DESC) RNO , ID, RWH, BB, RWMS, JX, DPRTCODE
+                  FROM B_G2_012
+                  WHERE ZT = 3
+              ) WHERE 1 = RNO                        
+            ) MP 
+		ON MP.RWH = B.WXXMBH AND MP.JX = B.JX AND MP.DPRTCODE = B.DPRTCODE
+	    
+	    where B.ID = #{id,jdbcType=VARCHAR}
+	    ORDER BY BG2995.XC asc, BG201302.SYDW asc
+  	</select>
+  	<!-- 根据id集合获取工卡 -->
+  	<select id="queryByIdList" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+		<include refid="Base_Column_List" />
+    	from B_G2_013
+    	where ID in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id,jdbcType=VARCHAR}
+		 </foreach>
+ 	</select>
+ 	
+  	<!-- 根据查询条件分页查询工卡信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.project2.po.WorkCard" resultMap="WorkCardWithRelMap">
+	
+		select 
+           	<include refid="work_card_List" />
+           	,U.ID as ZDR_ID
+           	,U.USERNAME as ZDR_USERNAME
+           	,U.REALNAME as ZDR_REALNAME
+           	,D005.ZJH AS F_ZJH
+        	,D005.ZWMS AS F_ZWMS
+        	,D005.YWMS AS F_YWMS
+        	,WG.ID AS WG_ID
+		    ,WG.GZZDM AS WG_GZZDM
+		    ,WG.GZZMC AS WG_GZZMC
+		    ,D011.ATTACHCOUNT
+		    ,t.DPRTNAME ZZJG<!-- 组织机构 -->
+        from B_G2_013 B
+        LEFT JOIN T_USER U ON B.WHRID = U.ID
+        LEFT JOIN D_005 D005 ON B.ZJH = D005.ZJH and B.DPRTCODE = D005.DPRTCODE
+	   	LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+	   	LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011
+        ON D011.MAINID = B.ID
+        LEFT JOIN T_DEPARTMENT t ON t.id = B.dprtcode
+        where 1 = 1
+           	<include refid="Work_Card_Param"></include>
+           	<if test="paramsMap != null and paramsMap.current != null and paramsMap.current != ''">
+           and 	B.zt != 8
+           	</if>
+           	
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B.WHSJ DESC,B.BB DESC, B.ID
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}, B.ID
+		    	</otherwise>
+			</choose>
+		
+	</select>
+	
+	<!-- 根据工卡id查询工卡信息 -->
+	<select id="doExportExcel"  parameterType="com.eray.thjw.project2.po.WorkCard" resultMap="WorkCardWithRelMap" >
+	    
+	    select 
+           	<include refid="work_card_List" />
+           	,D005.ZJH AS F_ZJH
+        	,D005.ZWMS AS F_ZWMS
+        	,D005.YWMS AS F_YWMS
+        	,BG2995.ID AS CP_ID
+        	,BG2995.LX AS CP_LX
+        	,BG2995.GBID AS CP_GBID
+        	,BG2995.GBH AS CP_GBH
+        	,D021.ID AS CPI_ID
+        	,D021.GBBH AS CPI_GBBH
+        	,D021.GBMC AS CPI_GBMC
+        	,WG.ID AS WG_ID
+		    ,WG.GZZDM AS WG_GZZDM
+		    ,WG.GZZMC AS WG_GZZMC
+		    ,t.DPRTNAME ZZJG<!-- 组织机构 -->
+		    <!-- ,G2997.ID MT_ID
+		    ,G2997.BJID MT_BJID
+		    ,G2997.JH MT_JH
+		    ,COALESCE(G2997.SL, 0) MT_SL
+		    ,G2997.BJLX MT_BJLX
+		    ,G2997.BZ MT_BZ
+		    ,G2997.BXX MT_BXX
+		    ,G2997.QCDH MT_QCDH
+		    ,D008.ID AS MTM_ID
+	        ,D008.BJH AS MTM_BJH
+	        ,D008.ZWMS AS MTM_ZWMS
+	        ,D008.YWMS AS MTM_YWMS
+	        ,D008.JLDW AS MTM_JLDW
+	        ,D008.HCLX AS MTM_HCLX
+	        ,D008.HCLX_EJ AS MTM_HCLX_EJ
+	        ,D008.JHLY AS MTM_JHLY
+	        ,D008.XINGH AS MTM_XINGH -->
+	        <!-- ,D017.TDJXX --> <!-- 替代件信息：替代件号+库存数量+冻结数量+替代件描述   可用数量=库存数量-冻结数量 -->
+        from B_G2_013 B
+        LEFT JOIN D_005 D005 ON B.ZJH = D005.ZJH and B.DPRTCODE = D005.DPRTCODE
+	   	LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+        LEFT JOIN T_DEPARTMENT t ON t.id = B.dprtcode
+        LEFT JOIN B_G2_995 BG2995 on BG2995.YWLX = 8 and BG2995.YWID = B.ID
+        LEFT JOIN D_021 D021 on BG2995.GBID = D021.ID
+        <!-- LEFT JOIN B_G2_997 G2997 on G2997.YWLX = 8 and G2997.YWID = B.ID and G2997.ZT = 1
+        LEFT JOIN D_008 D008 ON D008.DPRTCODE = G2997.DPRTCODE AND D008.BJH = G2997.JH -->
+        where 1 = 1
+           	<include refid="Work_Card_Param"></include>
+            order by B.WHSJ DESC,B.BB DESC
+	    
+  	</select>
+	
+	<!-- 根据查询条件分页查询工卡信息(弹窗需要的数据) -->
+	<select id="queryWinAllPageList" parameterType="com.eray.thjw.project2.po.WorkCard" resultMap="WorkCardWithRelMap">
+		select 
+           	<include refid="work_card_List" />
+           	,D005.ZJH AS F_ZJH
+        	,D005.ZWMS AS F_ZWMS
+        	,D005.YWMS AS F_YWMS
+        	, WG.ID AS WG_ID
+		    , WG.GZZDM AS WG_GZZDM
+		    , WG.GZZMC AS WG_GZZMC
+        from B_G2_013 B
+        LEFT JOIN D_005 D005 ON B.ZJH = D005.ZJH and B.DPRTCODE = D005.DPRTCODE
+	   	LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+        where B.DPRTCODE = #{dprtcode,jdbcType=VARCHAR} 
+          and B.ZT = 7
+          and B.ZXBS = 2
+          and B.JX = #{jx,jdbcType=VARCHAR}
+           	<include refid="Work_Card__Win_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B.WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+		
+	</select>
+	
+	<!-- 获取最大版本 -->
+	<select id="getMaxBb" resultType="BigDecimal" parameterType="java.lang.String" >
+	    select MAX(BB) from B_G2_013 
+	    where JX = #{jx,jdbcType=VARCHAR} 
+	          and GKH = #{gkh,jdbcType=VARCHAR}
+	          and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	          <if test="id != null and id != ''">
+			       and ID != #{id,jdbcType=VARCHAR}
+			  </if>
+  	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_013
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.WorkCard" >
+    insert into B_G2_013 (ID, DPRTCODE, GKH, 
+      BB, JX, IS_BJ, ZJH, 
+      WXXMBH, RWDH, KZH, 
+      CMPH, GZDH, GKFJID, 
+      GZBT, GZLX, ZY, GZZID, 
+      JHGS_RS, JHGS_XSS, YJWJ, 
+      TBSYSM, GZGS, GZNRFJID, 
+      BZ, ZT, ZXBS, F_BBID, 
+      B_BBID, WHBMID, WHRID, 
+      WHSJ, SHBMID, SHRID, 
+      SHSJ, SHYJ, PFBMID, 
+      PFRID, PFSJ, PFYJ, 
+      GBRID, GBRQ, GBYY, 
+      PFJL, SHJL, GKLX,WORKTYPE)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{gkh,jdbcType=VARCHAR}, 
+      #{bb,jdbcType=DECIMAL}, #{jx,jdbcType=VARCHAR}, #{isBj,jdbcType=DECIMAL}, #{zjh,jdbcType=VARCHAR}, 
+      #{wxxmbh,jdbcType=VARCHAR}, #{rwdh,jdbcType=VARCHAR}, #{kzh,jdbcType=VARCHAR}, 
+      #{cmph,jdbcType=VARCHAR}, #{gzdh,jdbcType=VARCHAR}, #{gkfjid,jdbcType=VARCHAR}, 
+      #{gzbt,jdbcType=VARCHAR}, #{gzlx,jdbcType=VARCHAR}, #{zy,jdbcType=VARCHAR}, #{gzzid,jdbcType=VARCHAR}, 
+      #{jhgsRs,jdbcType=DECIMAL}, #{jhgsXss,jdbcType=DECIMAL}, #{yjwj,jdbcType=VARCHAR}, 
+      #{tbsysm,jdbcType=VARCHAR}, #{gzgs,jdbcType=VARCHAR}, #{gznrfjid,jdbcType=VARCHAR}, 
+      #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{zxbs,jdbcType=DECIMAL}, #{fBbid,jdbcType=VARCHAR}, 
+      #{bBbid,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{shbmid,jdbcType=VARCHAR}, #{shrid,jdbcType=VARCHAR}, 
+      #{shsj,jdbcType=TIMESTAMP}, #{shyj,jdbcType=VARCHAR}, #{pfbmid,jdbcType=VARCHAR}, 
+      #{pfrid,jdbcType=VARCHAR}, #{pfsj,jdbcType=TIMESTAMP}, #{pfyj,jdbcType=VARCHAR}, 
+      #{gbrid,jdbcType=VARCHAR}, #{gbrq,jdbcType=TIMESTAMP}, #{gbyy,jdbcType=VARCHAR}, 
+      #{pfjl,jdbcType=DECIMAL}, #{shjl,jdbcType=DECIMAL}, #{gklx,jdbcType=VARCHAR}, #{worktype,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.WorkCard" >
+    insert into B_G2_013
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="gkh != null" >
+        GKH,
+      </if>
+      <if test="bb != null" >
+        BB,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="isBj != null" >
+        IS_BJ,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="wxxmbh != null" >
+        WXXMBH,
+      </if>
+      <if test="rwdh != null" >
+        RWDH,
+      </if>
+      <if test="kzh != null" >
+        KZH,
+      </if>
+      <if test="cmph != null" >
+        CMPH,
+      </if>
+      <if test="gzdh != null" >
+        GZDH,
+      </if>
+      <if test="gkfjid != null" >
+        GKFJID,
+      </if>
+      <if test="gzbt != null" >
+        GZBT,
+      </if>
+      <if test="gzlx != null" >
+        GZLX,
+      </if>
+      <if test="zy != null" >
+        ZY,
+      </if>
+      <if test="gzzid != null" >
+        GZZID,
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS,
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS,
+      </if>
+      <if test="yjwj != null" >
+        YJWJ,
+      </if>
+      <if test="tbsysm != null" >
+        TBSYSM,
+      </if>
+      <if test="gzgs != null" >
+        GZGS,
+      </if>
+      <if test="gznrfjid != null" >
+        GZNRFJID,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="zxbs != null" >
+        ZXBS,
+      </if>
+      <if test="fBbid != null" >
+        F_BBID,
+      </if>
+      <if test="bBbid != null" >
+        B_BBID,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="shbmid != null" >
+        SHBMID,
+      </if>
+      <if test="shrid != null" >
+        SHRID,
+        SHSJ,
+      </if>
+      <if test="shyj != null" >
+        SHYJ,
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID,
+      </if>
+      <if test="pfrid != null" >
+        PFRID,
+        PFSJ,
+      </if>
+      <if test="pfyj != null" >
+        PFYJ,
+      </if>
+      <if test="gbrid != null" >
+        GBRID,
+      </if>
+      <if test="gbrq != null" >
+        GBRQ,
+      </if>
+      <if test="gbyy != null" >
+        GBYY,
+      </if>
+      <if test="pfjl != null" >
+        PFJL,
+      </if>
+      <if test="shjl != null" >
+        SHJL,
+      </if>
+      <if test="gklx != null" >
+        GKLX,
+      </if>
+      <if test="worktype != null" >
+        WORKTYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="gkh != null" >
+        #{gkh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="isBj != null" >
+        #{isBj,jdbcType=DECIMAL},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmbh != null" >
+        #{wxxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="rwdh != null" >
+        #{rwdh,jdbcType=VARCHAR},
+      </if>
+      <if test="kzh != null" >
+        #{kzh,jdbcType=VARCHAR},
+      </if>
+      <if test="cmph != null" >
+        #{cmph,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdh != null" >
+        #{gzdh,jdbcType=VARCHAR},
+      </if>
+      <if test="gkfjid != null" >
+        #{gkfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="gzbt != null" >
+        #{gzbt,jdbcType=VARCHAR},
+      </if>
+      <if test="gzlx != null" >
+        #{gzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzid != null" >
+        #{gzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null" >
+        #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="yjwj != null" >
+        #{yjwj,jdbcType=VARCHAR},
+      </if>
+      <if test="tbsysm != null" >
+        #{tbsysm,jdbcType=VARCHAR},
+      </if>
+      <if test="gzgs != null" >
+        #{gzgs,jdbcType=VARCHAR},
+      </if>
+      <if test="gznrfjid != null" >
+        #{gznrfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zxbs != null" >
+        #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="shbmid != null" >
+        #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        #{shrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="shyj != null" >
+        #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfbmid != null" >
+        #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        #{pfrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="pfyj != null" >
+        #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        #{gbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="pfjl != null" >
+        #{pfjl,jdbcType=DECIMAL},
+      </if>
+      <if test="shjl != null" >
+        #{shjl,jdbcType=DECIMAL},
+      </if>
+      <if test="gklx != null" >
+        #{gklx,jdbcType=VARCHAR},
+      </if>
+      <if test="worktype != null" >
+        #{worktype,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.WorkCard" >
+    update B_G2_013
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="gkh != null" >
+        GKH = #{gkh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="isBj != null" >
+        IS_BJ = #{isBj,jdbcType=DECIMAL},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmbh != null" >
+        WXXMBH = #{wxxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="rwdh != null" >
+        RWDH = #{rwdh,jdbcType=VARCHAR},
+      </if>
+      <if test="kzh != null" >
+        KZH = #{kzh,jdbcType=VARCHAR},
+      </if>
+      <if test="cmph != null" >
+        CMPH = #{cmph,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdh != null" >
+        GZDH = #{gzdh,jdbcType=VARCHAR},
+      </if>
+      <if test="gkfjid != null" >
+        GKFJID = #{gkfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="gzbt != null" >
+        GZBT = #{gzbt,jdbcType=VARCHAR},
+      </if>
+      <if test="gzlx != null" >
+        GZLX = #{gzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        ZY = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzid != null" >
+        GZZID = #{gzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="yjwj != null" >
+        YJWJ = #{yjwj,jdbcType=VARCHAR},
+      </if>
+      <if test="tbsysm != null" >
+        TBSYSM = #{tbsysm,jdbcType=VARCHAR},
+      </if>
+      <if test="gzgs != null" >
+        GZGS = #{gzgs,jdbcType=VARCHAR},
+      </if>
+      <if test="gznrfjid != null" >
+        GZNRFJID = #{gznrfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zxbs != null" >
+        ZXBS = #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        F_BBID = #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        B_BBID = #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="shbmid != null" >
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHRID = #{shrid,jdbcType=VARCHAR},
+        SHSJ = sysdate,
+      </if>
+      <if test="shyj != null" >
+        SHYJ = #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        PFRID = #{pfrid,jdbcType=VARCHAR},
+        PFSJ = sysdate,
+      </if>
+      <if test="pfyj != null" >
+        PFYJ = #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+        GBRQ = sysdate,
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="pfjl != null" >
+        PFJL = #{pfjl,jdbcType=DECIMAL},
+      </if>
+      <if test="shjl != null" >
+        SHJL = #{shjl,jdbcType=DECIMAL},
+      </if>
+      <if test="gklx != null" >
+        GKLX = #{gklx,jdbcType=VARCHAR},
+      </if>
+      <if test="worktype != null" >
+        WORKTYPE = #{worktype,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateById" parameterType="com.eray.thjw.project2.po.WorkCard" >
+    update B_G2_013
+    <set >
+      <if test="gkh != null" >
+        GKH = #{gkh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="isBj != null" >
+        IS_BJ = #{isBj,jdbcType=DECIMAL},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmbh != null" >
+        WXXMBH = #{wxxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="rwdh != null" >
+        RWDH = #{rwdh,jdbcType=VARCHAR},
+      </if>
+      <if test="kzh != null" >
+        KZH = #{kzh,jdbcType=VARCHAR},
+      </if>
+      <if test="cmph != null" >
+        CMPH = #{cmph,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdh != null" >
+        GZDH = #{gzdh,jdbcType=VARCHAR},
+      </if>
+      <if test="gkfjid != null" >
+        GKFJID = #{gkfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="gzbt != null" >
+        GZBT = #{gzbt,jdbcType=VARCHAR},
+      </if>
+      <if test="gzlx != null" >
+        GZLX = #{gzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        ZY = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzid != null" >
+        GZZID = #{gzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="yjwj != null" >
+        YJWJ = #{yjwj,jdbcType=VARCHAR},
+      </if>
+      <if test="tbsysm != null" >
+        TBSYSM = #{tbsysm,jdbcType=VARCHAR},
+      </if>
+      <if test="gzgs != null" >
+        GZGS = #{gzgs,jdbcType=VARCHAR},
+      </if>
+      <if test="gznrfjid != null" >
+        GZNRFJID = #{gznrfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zxbs != null" >
+        ZXBS = #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        F_BBID = #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        B_BBID = #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="shbmid != null" >
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHRID = #{shrid,jdbcType=VARCHAR},
+        SHSJ = sysdate,
+      </if>
+      <if test="shyj != null" >
+        SHYJ = #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        PFRID = #{pfrid,jdbcType=VARCHAR},
+        PFSJ = sysdate,
+      </if>
+      <if test="pfyj != null" >
+        PFYJ = #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+        GBRQ = sysdate,
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="pfjl != null" >
+        PFJL = #{pfjl,jdbcType=DECIMAL},
+      </if>
+      <if test="shjl != null" >
+        SHJL = #{shjl,jdbcType=DECIMAL},
+      </if>
+      <if test="gklx != null" >
+        GKLX = #{gklx,jdbcType=VARCHAR},
+      </if>
+      <if test="worktype != null" >
+        WORKTYPE = #{worktype,jdbcType=DECIMAL},
+      </if>
+      JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 批量审核 -->
+	<update id="updateBatchAudit" parameterType="Map" >
+    	update B_G2_013
+    	set 
+    		ZT = 3,
+    		SHRID = #{shrid,jdbcType=VARCHAR},
+    		SHBMID = #{shbmid,jdbcType=VARCHAR},
+    		SHYJ = #{shyj,jdbcType=VARCHAR},
+      		SHSJ = sysdate,
+      		SHJL = 3
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 批量批准 -->
+	<update id="updateBatchApprove" parameterType="Map" >
+    	update B_G2_013
+    	set 
+    		ZT = 4,
+    		PFRID = #{pfrid,jdbcType=VARCHAR},
+    		PFBMID = #{pfbmid,jdbcType=VARCHAR},
+    		PFYJ = #{pfyj,jdbcType=VARCHAR},
+      		PFSJ = sysdate,
+      		PFJL = 4
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 查询指定工卡的版本集合 -->
+	<select id="queryVersionList" resultMap="WorkCardWithRelMap" parameterType="com.eray.thjw.project2.po.WorkCard" >
+	    SELECT 
+	    <include refid="work_card_List" />
+	    , WG.ID AS WG_ID
+	    , WG.GZZDM AS WG_GZZDM
+	    , WG.GZZMC AS WG_GZZMC
+	    ,D011.ATTACHCOUNT
+	    FROM B_G2_013 B
+	    LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+	    LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011
+	    	ON D011.MAINID = B.ID
+	    WHERE B.GKH = #{gkh,jdbcType=VARCHAR}
+	      AND B.JX = #{jx,jdbcType=VARCHAR}
+	      AND B.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	      AND B.ZXBS != 1
+	    ORDER BY B.BB DESC
+    </select>
+    
+    <!-- 根据工卡id查询当前工卡的历史版本集合 -->
+	<select id="queryHistoryListById" resultMap="WorkCardWithRelMap" parameterType="java.lang.String" >
+	    SELECT 
+	    <include refid="work_card_List" />
+	    FROM B_G2_013 B
+	    JOIN B_G2_013 B2
+	    ON B.GKH = B2.GKH AND B.JX = B2.JX AND B.DPRTCODE = B2.DPRTCODE
+	    WHERE B2.ID = #{id,jdbcType=VARCHAR}
+	    ORDER BY B.BB DESC
+    </select>
+  
+  <!-- ******************************************搜素条件区域 start********************************************************** -->
+  
+  	<!-- 工卡列表查询 start -->
+	<sql id="Work_Card_Param">
+		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (
+		    	UPPER(B.GKH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(B.GZBT) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(B.WXXMBH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	<!-- or (B.BZ) like ('%'||#{paramsMap.keyword}||'%') -->
+		    )
+		</if>
+		
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode}
+		</if>
+		<if test="zjh != null">
+		    and B.ZJH = #{zjh}
+		</if>
+		<if test="jx != null">
+		    and B.JX = #{jx}
+		</if>
+		<if test="gzlx != null">
+		    and B.GZLX = #{gzlx}
+		</if>
+		<if test="gklx != null" >
+			and B.GKLX = #{gklx}
+      	</if>
+		<if test="zy != null">
+		    and B.ZY = #{zy}
+		</if>
+		<if test="isBj != null">
+		    and B.IS_BJ = #{isBj}
+		</if>
+		<if test="bz != null">
+		    and UPPER(B.BZ) like UPPER('%'||#{bz}||'%')
+		</if>
+		<!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+	    <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    			B.jx = FJJX
+	    		AND B.dprtcode = DPRTCODE
+	    		AND zt = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+	    		 AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    			B.jx= FJJX
+	    		AND B.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    	</when>
+	   	</choose>
+		<if test="paramsMap != null and paramsMap.whrqBegin != null and paramsMap.whrqBegin != ''">
+		    and B.WHSJ &gt;= to_date(#{paramsMap.whrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqEnd != null and paramsMap.whrqEnd != ''">
+		    and B.WHSJ &lt;= to_date(#{paramsMap.whrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.qy != null and paramsMap.qy != ''">
+		    and exists (select 1 from B_G2_995 BG2995 where BG2995.YWLX = 8 and BG2995.YWID = B.ID AND BG2995.GBID = #{paramsMap.qy, jdbcType=VARCHAR})
+		</if>
+		<if test="paramsMap != null and paramsMap.accessIdList != null and paramsMap.accessIdList != ''">
+		    and exists (
+		    		select 1 from B_G2_995 BG2995 
+		    		where BG2995.YWLX = 8 and BG2995.YWID = B.ID 
+		    		AND BG2995.GBID in 
+		    			<foreach item="item" index="index" collection="paramsMap.accessIdList" open="(" separator="," close=")">  
+		          			#{item}  
+		     			</foreach> 
+		    	)
+		</if>
+		<if test="paramsMap != null and paramsMap.isFxList != null and paramsMap.isFxList != ''">
+		    and B.IS_FX in
+     			 <foreach item="item" index="index" collection="paramsMap.isFxList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		<if test="paramsMap != null and paramsMap.current != null and paramsMap.current != ''">
+		    and B.B_BBID is null
+		</if>
+		<if test="paramsMap != null and paramsMap.history != null and paramsMap.history != ''">
+		    and B.B_BBID is not null
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B.ID = #{id}
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		    and B.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+	</sql>
+	<!-- 工卡列表查询 end -->
+	
+	<!-- 工卡列表查询(弹窗需要的数据) start -->
+	<sql id="Work_Card__Win_Param">
+		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (
+		    	UPPER(B.GKH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(B.GZBT) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(B.WXXMBH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.existsGkhList != null and paramsMap.existsGkhList != ''">
+		    and B.GKH not in
+     			 <foreach item="item" index="index" collection="paramsMap.existsGkhList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		<if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		    and B.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+	</sql>
+	<!-- 工卡列表查询(弹窗需要的数据) end -->
+	
+	<!-- ******************************************搜素条件区域 end****************************************************** -->
+  	
+  	
+  	<select id="getWorkCardByjxAndGkbh" parameterType="java.lang.String" resultType="com.eray.thjw.project2.po.WorkCard">
+	    select 
+	    	<include refid="Base_Column_List" />
+	    from B_G2_013
+	    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR} and GKH = #{gkh,jdbcType=VARCHAR}
+	    and zxbs=2 and zt=7
+	</select>
+  	<select id="getWorkCardByjxAndWxxmbh" parameterType="java.lang.String" resultType="com.eray.thjw.project2.po.WorkCard">
+	    select 
+	    	<include refid="Base_Column_List" />
+	    from B_G2_013
+	    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR} and wxxmbh = #{wxxmbh,jdbcType=VARCHAR}
+	    and zxbs =2 and zt =7  and ROWNUM=1
+	</select>
+  
+    <!-- Start:工单135:获取工卡来源信息-->
+	<select id="queryOriginatingCardList" parameterType="com.eray.thjw.project2.po.WorkCard" resultMap="WorkCardWithRelMap">
+		select 
+           	<include refid="work_card_List" />
+           	,D005.ZJH AS F_ZJH
+        	,D005.ZWMS AS F_ZWMS
+        	,D005.YWMS AS F_YWMS
+        	,WG.ID AS WG_ID
+		    ,WG.GZZDM AS WG_GZZDM
+		    ,WG.GZZMC AS WG_GZZMC
+		    ,D011.ATTACHCOUNT
+        from B_G2_013 B
+        LEFT JOIN D_005 D005 ON B.ZJH = D005.ZJH and B.DPRTCODE = D005.DPRTCODE
+	   	LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+	   	LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011
+        ON D011.MAINID = B.ID
+        where 1 = 1
+        <if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode}
+		</if>
+        <if test="gklx != null and gklx != ''">
+		    and B.GKLX = #{gklx}
+		</if>
+		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (
+		    	UPPER(B.GKH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(B.GZBT) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    )
+		</if>
+		
+		 <!-- 135工单：获取来源工卡 -->
+		 <if test="paramsMap != null and paramsMap.widType != null and paramsMap.widType != '' and paramsMap.widType == '135'">
+			and exists (select 1
+				            from d_007 d007
+				            where d007.dprtcode = B.dprtcode
+					         <if test="paramsMap.fjzch != null and paramsMap.fjzch != ''">
+					            and d007.fjzch = #{paramsMap.fjzch,jdbcType=VARCHAR}
+							 </if>
+				           and d007.fjjx = B.jx)
+		 </if>
+		 
+		  <!-- 145工单：获取来源工卡 -->
+		  <if test="paramsMap != null and paramsMap.widType != null and paramsMap.widType != '' and paramsMap.widType == '145'">
+		  		<if test="paramsMap.jx != null and paramsMap.jx != ''">
+           			and B.jx= #{paramsMap.jx,jdbcType=VARCHAR}
+		     	</if>
+		  </if>
+			   and B.zxbs = 2
+			   and B.zt = 7
+		order by B.gkh
+	</select>
+	<!-- End:工单135:获取工卡来源信息-->
+	
+	<!-- 根据组织机构查询所有有效的工卡数据-->
+  	<select id="findByDprtcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+ 		select id, gkh
+		  from b_g2_013
+		 where dprtcode = #{dprtcode, jdbcType = VARCHAR}
+		   and zt != 8
+		   and zxbs = 2
+		 order by gkh asc
+ 	</select>
+  
+    <!-- 导入专用: 根据版本、机型、工卡编号、机构代码  -->
+  	<select id="getWorkCardByBbAndjxAndGkbh" parameterType="java.lang.String" resultType="com.eray.thjw.project2.po.WorkCard">
+	    select 
+	    	<include refid="Base_Column_List" />
+	    from B_G2_013
+	    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR} and GKH = #{gkh,jdbcType=VARCHAR} and BB = #{bb,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 导入专用: 根据机构代码、工卡编号、机型、排除自身版本号   -->
+  	<select id="getWorkCardByNotBbAndjxAndGkbh" parameterType="java.lang.String"  resultMap="BaseResultMap">
+	    select 
+	    	<include refid="Base_Column_List" />
+	    from B_G2_013
+	    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR} and GKH = #{gkh,jdbcType=VARCHAR} and BB != #{bb,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 导入专用: 获取前版本工卡,根据机构代码、工卡编号、机型、后版本id is null -->
+  	<select id="getPreWorkCardByjxAndGkbh" parameterType="java.lang.String" resultType="com.eray.thjw.project2.po.WorkCard">
+	    select 
+	    	<include refid="Base_Column_List" />
+	    from B_G2_013
+	    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR} and GKH = #{gkh,jdbcType=VARCHAR} and B_BBID is null
+	</select>
+  
+	  <!-- 批量新增:导入专用 -->
+	  <insert id="insert4Batch" parameterType="java.util.List" >
+		    INSERT INTO B_G2_013 (ID, DPRTCODE, GKH, 
+							      BB, JX, IS_BJ, ZJH, 
+							      WXXMBH, RWDH, KZH, 
+							      CMPH, GZDH, GKFJID, 
+							      GZBT, GZLX, ZY, GZZID, 
+							      JHGS_RS, JHGS_XSS, YJWJ, 
+							      TBSYSM, GZGS, GZNRFJID, 
+							      BZ, ZT, ZXBS, F_BBID, 
+							      B_BBID, WHBMID, WHRID, 
+							      WHSJ, SHBMID, SHRID, 
+							      SHSJ, SHYJ, PFBMID, 
+							      PFRID, PFSJ, PFYJ, 
+							      GBRID, GBRQ, GBYY, 
+							      PFJL, SHJL, GKLX, WORKTYPE)
+		      <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+			    select 
+			     	  #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.gkh,jdbcType=VARCHAR}, 
+				      #{item.bb,jdbcType=DECIMAL}, #{item.jx,jdbcType=VARCHAR}, #{item.isBj,jdbcType=DECIMAL}, #{item.zjh,jdbcType=VARCHAR}, 
+				      #{item.wxxmbh,jdbcType=VARCHAR}, #{item.rwdh,jdbcType=VARCHAR}, #{item.kzh,jdbcType=VARCHAR}, 
+				      #{item.cmph,jdbcType=VARCHAR}, #{item.gzdh,jdbcType=VARCHAR}, #{item.gkfjid,jdbcType=VARCHAR}, 
+				      #{item.gzbt,jdbcType=VARCHAR}, #{item.gzlx,jdbcType=VARCHAR}, #{item.zy,jdbcType=VARCHAR}, #{item.gzzid,jdbcType=VARCHAR}, 
+				      #{item.jhgsRs,jdbcType=DECIMAL}, #{item.jhgsXss,jdbcType=DECIMAL}, #{item.yjwj,jdbcType=VARCHAR}, 
+				      #{item.tbsysm,jdbcType=VARCHAR}, #{item.gzgs,jdbcType=VARCHAR}, #{item.gznrfjid,jdbcType=VARCHAR}, 
+				      #{item.bz,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, #{item.zxbs,jdbcType=DECIMAL}, #{item.fBbid,jdbcType=VARCHAR}, 
+				      #{item.bBbid,jdbcType=VARCHAR}, #{item.whbmid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, 
+				      #{item.whsj,jdbcType=TIMESTAMP}, #{item.shbmid,jdbcType=VARCHAR}, #{item.shrid,jdbcType=VARCHAR}, 
+				      #{item.shsj,jdbcType=TIMESTAMP}, #{item.shyj,jdbcType=VARCHAR}, #{item.pfbmid,jdbcType=VARCHAR}, 
+				      #{item.pfrid,jdbcType=VARCHAR}, #{item.pfsj,jdbcType=TIMESTAMP}, #{item.pfyj,jdbcType=VARCHAR}, 
+				      #{item.gbrid,jdbcType=VARCHAR}, #{item.gbrq,jdbcType=TIMESTAMP}, #{item.gbyy,jdbcType=VARCHAR}, 
+				      #{item.pfjl,jdbcType=DECIMAL}, #{item.shjl,jdbcType=DECIMAL}, #{item.gklx,jdbcType=VARCHAR}, #{item.worktype,jdbcType=DECIMAL}
+			  	from dual
+		    </foreach>
+	  </insert>
+	  
+	  <!-- 批量修改: 导入专用 -->
+	  <update id="update4Batch" parameterType="java.util.List">
+	  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+	       update B_G2_013 
+	       set
+			      IS_BJ = #{item.isBj,jdbcType=DECIMAL},
+			        ZJH = #{item.zjh,jdbcType=VARCHAR}, 
+			     WXXMBH = #{item.wxxmbh,jdbcType=VARCHAR},
+			       RWDH = #{item.rwdh,jdbcType=VARCHAR},
+			        KZH = #{item.kzh,jdbcType=VARCHAR},
+			       CMPH = #{item.cmph,jdbcType=VARCHAR}, 
+			       GZDH = #{item.gzdh,jdbcType=VARCHAR},
+			       GZBT = #{item.gzbt,jdbcType=VARCHAR},
+			       GKLX = #{item.gklx,jdbcType=VARCHAR},
+			       GZLX = #{item.gzlx,jdbcType=VARCHAR},
+			         ZY = #{item.zy,jdbcType=VARCHAR},
+			      GZZID = #{item.gzzid,jdbcType=VARCHAR},
+			    JHGS_RS = #{item.jhgsRs,jdbcType=DECIMAL},
+			   JHGS_XSS = #{item.jhgsXss,jdbcType=DECIMAL},
+			       YJWJ = #{item.yjwj,jdbcType=VARCHAR},
+			     TBSYSM = #{item.tbsysm,jdbcType=VARCHAR},
+			       GZGS = #{item.gzgs,jdbcType=VARCHAR},
+			         BZ = #{item.bz,jdbcType=VARCHAR},
+			     WHBMID = #{item.whbmid,jdbcType=VARCHAR},
+			      WHRID = #{item.whrid,jdbcType=VARCHAR},
+			       WHSJ = #{item.whsj,jdbcType=TIMESTAMP},
+			       WORKTYPE = #{item.worktype,jdbcType=DECIMAL}
+	      where ID = #{item.id,jdbcType=VARCHAR}
+	    </foreach>
+	  </update>
+	  
+	   <!-- 批量修改前版本的后版本ID: 导入专用 -->
+	  <update id="updatePreBb4Batch" parameterType="java.util.List">
+	  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+	       update B_G2_013 
+	       set
+			       B_BBID = #{item.bBbid,jdbcType=VARCHAR}
+	      where ID = #{item.id,jdbcType=VARCHAR}
+	    </foreach>
+	  </update>
+	  
+</mapper>

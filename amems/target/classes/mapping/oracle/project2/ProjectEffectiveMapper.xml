@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.ProjectEffectiveMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.ProjectEffective" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="WXXMID" property="wxxmid" jdbcType="VARCHAR" />
+    <result column="RWH" property="rwh" jdbcType="VARCHAR" />
+    <result column="GKID" property="gkid" jdbcType="VARCHAR" />
+    <result column="GKBH" property="gkbh" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, JX, WXXMID, RWH, GKID, GKBH
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_01102
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_01102
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.ProjectEffective" >
+    insert into B_G2_01102 (ID, MAINID, JX, 
+      WXXMID, RWH, GKID, 
+      GKBH)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{jx,jdbcType=VARCHAR}, 
+      #{wxxmid,jdbcType=VARCHAR}, #{rwh,jdbcType=VARCHAR}, #{gkid,jdbcType=VARCHAR}, 
+      #{gkbh,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.ProjectEffective" >
+    insert into B_G2_01102
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="wxxmid != null" >
+        WXXMID,
+      </if>
+      <if test="rwh != null" >
+        RWH,
+      </if>
+      <if test="gkid != null" >
+        GKID,
+      </if>
+      <if test="gkbh != null" >
+        GKBH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmid != null" >
+        #{wxxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rwh != null" >
+        #{rwh,jdbcType=VARCHAR},
+      </if>
+      <if test="gkid != null" >
+        #{gkid,jdbcType=VARCHAR},
+      </if>
+      <if test="gkbh != null" >
+        #{gkbh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.ProjectEffective" >
+    update B_G2_01102
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmid != null" >
+        WXXMID = #{wxxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rwh != null" >
+        RWH = #{rwh,jdbcType=VARCHAR},
+      </if>
+      <if test="gkid != null" >
+        GKID = #{gkid,jdbcType=VARCHAR},
+      </if>
+      <if test="gkbh != null" >
+        GKBH = #{gkbh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.ProjectEffective" >
+    update B_G2_01102
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      JX = #{jx,jdbcType=VARCHAR},
+      WXXMID = #{wxxmid,jdbcType=VARCHAR},
+      RWH = #{rwh,jdbcType=VARCHAR},
+      GKID = #{gkid,jdbcType=VARCHAR},
+      GKBH = #{gkbh,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 维修项目同步到生效区 -->
+  <update id="synchronize" parameterType="com.eray.thjw.project2.po.ProjectEffective" >
+    INSERT INTO B_G2_01102(
+    	ID, MAINID, JX, WXXMID, RWH, GKID, GKBH) 
+      
+    SELECT SYS_GUID(),#{id,jdbcType=VARCHAR},B1.JX,B1.ID,B1.RWH,B2.ID,B2.GKH 
+    	FROM B_G2_012 B1
+     	  LEFT JOIN B_G2_013 B2 ON B1.GKBH = B2.GKH AND B1.JX = B2.JX AND B2.ZT = 7 AND B2.ZXBS = 2
+	    WHERE B1.WXFABH = #{wxfabh,jdbcType=VARCHAR} 
+	      AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR} 
+	      AND B1.JX = #{jx,jdbcType=VARCHAR} 
+	      AND B1.B_BBID IS NULL
+	      AND ((B1.BB &lt; #{bb,jdbcType=DECIMAL} AND B1.ZT = 3 AND B1.YXBS = 1) 
+	        OR (B1.BB = #{bb,jdbcType=DECIMAL}))
+  </update>
+  
+  	<!-- 将维修方案生效区-维修项目关系工卡设为空 -->
+  	<update id="updateGk2Null" parameterType="java.lang.String" >
+		UPDATE B_G2_01102 B SET B.GKBH = NULL,B.GKID = NULL
+	    WHERE B.GKBH = #{gkbh,jdbcType=VARCHAR}
+	      AND B.MAINID in (SELECT ID FROM B_G2_011 WHERE DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND JX = #{jx,jdbcType=VARCHAR} AND ZXBS = 2)
+  	</update>
+  	
+  	<!-- 修改维修方案生效区-维修项目关系工卡编号、工卡id -->
+  	<update id="updateGk" parameterType="java.lang.String" >
+		UPDATE B_G2_01102 B 
+		SET B.GKBH = #{gkbh,jdbcType=VARCHAR},
+		    B.GKID = #{gkid,jdbcType=VARCHAR}
+	    WHERE 
+	      B.RWH = #{wxxmbh,jdbcType=VARCHAR}
+	      AND B.MAINID in (SELECT ID FROM B_G2_011 WHERE DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND JX = #{jx,jdbcType=VARCHAR} AND ZXBS = 2)
+  	</update>
+  
+</mapper>

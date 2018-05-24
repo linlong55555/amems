@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.PlaneFaultMonitoringInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.PlaneFaultMonitoringInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />   
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />   
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="FXJLDID" property="fxjldid" jdbcType="VARCHAR" />
+    <result column="HBH" property="hbh" jdbcType="VARCHAR" />
+    <result column="HBRQ" property="hbrq" jdbcType="TIMESTAMP" />   
+    <result column="ZLH" property="zlh" jdbcType="VARCHAR" />
+    <result column="PGSL" property="pgsl" jdbcType="VARCHAR" />
+    <result column="CLJG" property="cljg" jdbcType="VARCHAR" />  
+    <result column="CXJXX" property="cxjxx" jdbcType="VARCHAR" />  
+    <result column="ZSJXX" property="zsjxx" jdbcType="VARCHAR" />  
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />  
+    <result column="ZT" property="zt" jdbcType="INTEGER" />  
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" /> 
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  	<select id="getInfoList" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select b.id,b.mainid,b.hbh,b.hbrq,b.pgsl,b.cljg,b.zlh,b.cxjxx,b.zsjxx,b.bz,D011.ATTACHCOUNT from b_s_01901 b
+  			LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011 ON D011.MAINID=b.id
+  		 where b.mainid=#{mainid,jdbcType=VARCHAR} and b.zt=1  order by b.hbrq desc	
+  	</select>
+  	<insert id="insertInfo" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoringInfo">
+  		insert into b_s_01901 (id,mainid,dprtcode,fjzch,fxjldid,hbh,hbrq,zlh,pgsl,cljg,cxjxx,zsjxx,bz,zt,whdwid,whrid,whsj)
+  		values (#{id,jdbcType=VARCHAR},#{mainid,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},#{fjzch,jdbcType=VARCHAR},
+  		#{fxjldid,jdbcType=VARCHAR},#{hbh,jdbcType=VARCHAR},#{hbrq,jdbcType=TIMESTAMP},#{zlh,jdbcType=VARCHAR},#{pgsl,jdbcType=VARCHAR},
+  		#{cljg,jdbcType=VARCHAR},#{cxjxx,jdbcType=VARCHAR},#{zsjxx,jdbcType=VARCHAR},#{bz,jdbcType=VARCHAR},#{zt,jdbcType=INTEGER},
+  		#{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR},sysdate
+  		)
+  	</insert>
+  	<select id="getInfoById" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select id,mainid,hbh,hbrq,pgsl,cljg,zlh,cxjxx,zsjxx,bz from b_s_01901 where id=#{id,jdbcType=VARCHAR} and zt=1  	
+  	</select>
+  	
+  	<update id="updateById" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoringInfo">
+  		update b_s_01901 set hbh=#{hbh,jdbcType=VARCHAR},hbrq=#{hbrq,jdbcType=TIMESTAMP},zlh=#{zlh,jdbcType=VARCHAR},
+  		pgsl=#{pgsl,jdbcType=VARCHAR},cljg=#{cljg,jdbcType=VARCHAR},cxjxx=#{cxjxx,jdbcType=VARCHAR},bz=#{bz,jdbcType=VARCHAR},zsjxx=#{zsjxx,jdbcType=VARCHAR},
+  		whdwid=#{whdwid,jdbcType=VARCHAR},whrid=#{whrid,jdbcType=VARCHAR},whsj=sysdate where id=#{id,jdbcType=VARCHAR}
+  	</update>
+  	<update id="deleteById" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoringInfo">
+  		update b_s_01901 set zt=0,whdwid=#{whdwid,jdbcType=VARCHAR},whrid=#{whrid,jdbcType=VARCHAR},whsj=sysdate where id=#{id,jdbcType=VARCHAR}
+  	</update>
+  	<select id="getCountByMainidAndZt" parameterType="java.lang.String" resultType="int">
+  		select count(1) from b_s_01901 where mainid=#{mainid,jdbcType=VARCHAR} and zt=1
+  	</select>
+  	<select id="getNearTime" parameterType="java.lang.String" resultType="Date">
+  		select whsj from (select whsj from b_s_01901 where mainid=#{mainid,jdbcType=VARCHAR} and zt=1  order by whsj desc) where rownum=1
+  	</select>
+</mapper>

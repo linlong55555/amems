@@ -1,0 +1,831 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.PortalBlockMapper">
+
+<select id="selectMsg" parameterType="java.lang.String" resultType="java.util.HashMap">
+	select b1.lx, <!-- 类型：1提订单、2送修单、3采购合同、4送修合同 -->
+	   (CASE 
+           WHEN b1.lx = 1 THEN '提订单'
+           WHEN b1.lx = 2 THEN '送修单'
+           WHEN b1.lx = 3 THEN '采购合同'
+           WHEN b1.lx = 4 THEN '送修合同'
+       END 
+ 	   ) lxm,
+	   b1.djid,
+	   bh002.sqdh,
+	   bh002.tdmc,
+	   bh004.hth,
+	   b3.username lyu, <!-- 留言人账号 -->
+       b3.realname lyr, <!-- 留言人 -->
+       to_char(b1.wbwjm, 'yyyy-mm-dd hh24:mi') lysj, <!-- 留言时间 -->
+       b1.nbwjm lynr <!-- 留言内容 -->
+  from b_h_005 b1
+  join b_h_00501 b2
+    on b1.id = b2.mainid
+   and b2.zt = 0  <!-- 状态：0未接收、1已接收 -->
+   and b1.yxzt = 1 <!-- 有效状态 0无效 1有效 -->
+   and b2.jsrid = #{userId,jdbcType=VARCHAR}
+  left join t_user b3
+    on b1.yswjm = b3.id
+  left join B_H_002 bh002
+  on bh002.id = b1.djid and (b1.lx = 2 or b1.lx = 1)
+  left join B_H_004 bh004
+  on bh004.id = b1.djid and (b1.lx = 3 or b1.lx = 4)
+ order by b1.wbwjm desc
+  </select>
+
+	<!--指派给我的技术评估单（未评估） -->
+  <select id="selectBlock1" parameterType="java.lang.String" resultType="java.util.HashMap">
+	select 
+		   B1.ID,
+		   B1.PGDH,  <!-- 评估单号 -->
+	       B1.LY, <!-- 来源 -->
+	       B1.JX, <!-- 机型 -->
+	       B1.WJLX, <!-- 文件类型 -->
+	       TO_CHAR(B1.PGQX, 'YYYY-MM-DD') AS PGQX, <!-- 评估期限 -->
+	       ceil(B1.PGQX - SYSDATE) AS SY <!-- 剩余 -->
+	  from B_G_001 B1
+	 where B1.ZT in (0, 5, 6) <!-- 0未评估、5审核驳回、6审批驳回 -->
+	   and B1.PGRID = #{userId,jdbcType=VARCHAR}
+	 order by B1.PGQX asc
+  </select>
+	<!--指派给我的技术通告（未阅） -->
+  <select id="selectBlock2" parameterType="java.lang.String" resultType="java.util.HashMap">
+	select 
+		 b.ID, b.DPRTCODE, b.JSTGH, b.BB, b.TGQX, b.JX, b.BFRQ,
+		b.SXRQ, b.ZHUT, b.SJ, b.YXX, b.LYSM, b.CKZL, b.BJ, b.MS,
+		b.CS, b.TGLB, b.GBYY, b.IS_FJXX, b.IS_WCFJPC, b.EO_MAO, b.IS_FJ_SYXBJ,
+		b.SYXBJ_FJ, b.IS_BJZJHS, b.IS_BJ_SYXBJ, b.SYXBJ_BJ, b.IS_WPC,
+		ceil(b.tgqx - sysdate) as syts,
+		b.BZ, b.ZT,jg.dprtname jg_dprtname 
+		from b_g2_002 b left
+		join b_g2_998 b2 on b.id=B2.ywid and B2.zt=1
+		left join t_department jg on b.dprtcode=jg.id
+		where b.zt=4 and
+		(select count(1) from b_g2_994 where b_g2_994.ywid=b.id and B_G2_994.JSRID=#{userId})= 0
+		<if test="jgbm !=null and jgbm !='' ">
+		and b2.dxid = #{jgbm}
+		</if>
+		
+  </select>
+  
+  <!--指派给我的技术指令（未阅） -->
+  <select id="selectBlock3" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select b1.id, b1.dprtcode,
+			b1.jszlh, <!-- 技术指令号 -->
+	       b1.zhut, <!-- 主题 -->
+	       b1.zt, <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+	       b1.jx <!-- 机型 -->
+	  from b_g_004 b1
+	 where b1.zt in (1, 2, 3) <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+	   and b1.jszt = 0 <!-- 状态：0未接收、1已接收 -->
+	   and b1.jsrid = #{userId,jdbcType=VARCHAR}
+	 order by b1.zdsj desc
+  </select>
+  
+   <!--指派给我的修订通知书（未阅） -->
+  <select id="selectBlock4" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select b1.id,
+			b1.dprtcode,
+			b1.jszlh, <!-- 修订通知书号 -->
+		       b1.xdzt, <!-- 修订主题 -->
+		       b1.zt, <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+		       b1.tzslx, <!-- 通知书类型 -->
+		       b1.jx, <!-- 机型 -->
+		       to_char(b1.xdqx, 'yyyy-mm-dd') xdqx, <!-- 修订期限 -->
+		       ceil(b1.xdqx - sysdate) sy <!-- 剩余 -->
+		  from b_g_005 b1
+		 where b1.zt in (1, 2, 3) <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+		   and b1.jszt = 0 <!-- 状态：0未接收、1已接收 -->
+		   and b1.xdrid = #{userId,jdbcType=VARCHAR}
+		 order by b1.xdqx asc
+  </select>
+  
+  <!--指派给我培训通知 -->
+  <select id="selectBlock5" parameterType="java.lang.String" resultType="java.util.HashMap">
+ <!-- select t1.id PXJHID, 
+		       case
+		         when t5.wxryid = #{userId, jdbcType=VARCHAR} then
+		          2
+		         when t2.wxryid = #{userId, jdbcType=VARCHAR} then
+		          1
+		         else
+		          0
+		       end TZLX,
+		       t3.id as cid,
+		       t3.kcbh as CKCBH,
+		       t3.kcmc as CKCMC,
+		       t3.fjjx,
+		       t1.jh_ksrq, 
+		       t1.jh_kssj, 
+		       t1.jh_jsrq,
+		       t1.jh_jssj, 
+		       t1.kcdd, 
+		       t1.pxlb,
+		       t1.pxjg,
+		       t1.zrr,
+		       t1.pxdx,
+		       t1.jsxm,
+		       t1.fxbs, 
+		       t1.pxxs,
+		       t1.ksxs,
+		       t1.ks,
+		       t1.whsj,
+		       t1.dprtcode,
+		       t1.zt,
+		       t1.jsid
+		  from b_p_002 t1
+		  join b_p_003 t3 on t1.kcid = t3.id
+		                 and t3.zt = 1
+		  left join (select b_p_00201.pxjhid, b_z_001.wxryid
+		               from b_p_00201
+		               join b_z_001 on b_p_00201.zt = 1
+		                           and b_p_00201.is_yc = 1
+		                           and b_z_001.id = b_p_00201.wxrydaid
+		                           and b_z_001.wxryid =
+		                               #{userId, jdbcType=VARCHAR}) t2 on t1.id =t2.pxjhid
+		  left join b_p_008 t5 on t1.jsid = t5.wxryid 
+		 where t1.dprtcode = #{jgbm,jdbcType=VARCHAR}
+		   and (t5.wxryid = #{userId, jdbcType=VARCHAR} or t1.whrid = #{userId, jdbcType=VARCHAR} or
+		       t2.wxryid = #{userId, jdbcType=VARCHAR})  and t1.zt = 1
+		        -->
+		       
+		       
+		       
+	 select t1.id,
+       case
+         when t5.wxryid = #{userId, jdbcType=VARCHAR} then
+          2
+         when t2.wxryid = #{userId, jdbcType=VARCHAR} then
+          1
+         else
+          0
+       end TZLX,
+       t3.id as cid,
+	   t3.kcbh as CKCBH,
+	   t3.kcmc as CKCMC,
+       t3.fjjx,
+       t1.jh_ksrq,
+       t1.jh_kssj,
+       t1.jh_jsrq,
+       t1.jh_jssj,
+       t1.kcdd,
+       t1.pxlb,
+       t1.pxjg,
+       t1.zrr,
+       t1.pxdx,
+       t1.jsxm,
+       t1.fxbs,
+       t1.pxxs,
+       t1.ksxs,
+       t1.ks,
+       t1.whsj,
+       t1.dprtcode,
+       t1.zt,
+       t1.jsid
+  from b_p_002 t1
+  join b_p_003 t3 on t1.kcid = t3.id
+                 and t3.zt = 1
+  left join (select b_p_00201.pxjhid, b_z_001.wxryid
+               from b_p_00201
+               join b_z_001 on b_p_00201.zt = 1
+                           and b_p_00201.is_yc = 1
+                           and b_z_001.id = b_p_00201.wxrydaid
+                           and b_z_001.wxryid =
+                               #{userId, jdbcType=VARCHAR}) t2 on t1.id =  t2.pxjhid
+  left join b_p_008 t5 on t1.jsid = t5.id
+ where t1.dprtcode = #{jgbm, jdbcType=VARCHAR}
+   and (t5.wxryid = #{userId, jdbcType=VARCHAR} or t1.whrid = #{userId, jdbcType=VARCHAR} or
+       t2.wxryid = #{userId, jdbcType=VARCHAR})  and t1.zt = 1
+       
+       
+ 		 order by  t1.jh_ksrq DESC 
+  </select>
+  
+    <!--我的提订单-->
+  <select id="selectBlock6" parameterType="java.lang.String" resultType="java.util.HashMap">
+     select 
+	    B00201.ID, B00201.MAINID, B00201.BJID, B00201.BJH, B00201.SQSL, B00201.SHSL, B00201.SL, B00201.YT, B00201.ZT, B00201.BZ, B00201.XJZT, B00201.XJDH, B00201.WHDWID, B00201.WHRID,
+	    B00201.WHSJ,D.ZWMS,D.YWMS,D.CJJH,D.XH,D.ZJH,D.HCLX,D.JLDW,B002.SQDH,B002.TDMC,B002.YQQX,(B002.YQQX - sysdate) as SYTS,B002.ZT AS RESERVEZT,HT.HTH,HT.DHSL,HT.RKSL,HT.HTSL,HT.HTDHRQ
+	    from B_H_00201 B00201
+	    left join D_008 D  on D.ID = B00201.BJID
+	    left join b_h_002 B002  on B00201.MAINID = B002.ID
+	    left join (select B004.HTH,B00401.TDDHCID,B00401.DHSL,B00401.RKSL,B00401.HT_SL AS HTSL,B00401.HT_DHRQ AS HTDHRQ from b_h_00401 B00401,b_h_004 B004 where B00401.MAINID = B004.ID AND B004.ZT NOT IN(8) AND B00401.ZT = 1) HT
+	    on HT.TDDHCID = B00201.ID
+	where B00201.ZT = 1  AND B002.ZT in(1, 2, 3, 4) AND B002.SQRID = #{userId,jdbcType=VARCHAR} 
+		AND (HT.HTSL is null or (HT.HTSL is not null and HT.RKSL &lt; HT.HTSL) )
+  </select>
+  <!--MCC 135工单预警（完工未关闭）-->
+  <select id="selectBlock7" parameterType="com.eray.thjw.po.User" resultType="java.util.HashMap">
+	select s2008.gdbh, --工单编号
+	   s2008.id, --工单id
+       s2008.gdlx, --工单类型：1RTN（维修项目）、2EO、3NRC、9FLB
+       s2008.dprtcode, --组织机构
+       s2008.gdbt, --工单标题
+       s2008.fjzch, --飞机注册号
+       s2901.bjh, --部件号
+       s2901.xlh --序列号
+  from b_s2_008 s2008
+  left join b_s2_901 s2901
+    on s2901.id = s2008.jksjid
+ where 1 = 1
+   and s2008.dprtcode = #{jgdm,jdbcType=VARCHAR}
+   and s2008.zt = 7 --状态：7生效（下发）
+   and s2008.wgbs = 1 --完工标识：1已完工
+   <choose>                                                                 
+    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+    		AND exists 
+    		( SELECT 1 from D_007 where 
+    			s2008.FJZCH = FJZCH
+    		AND s2008.dprtcode = DPRTCODE
+    		AND zt = 1
+    		)
+    	</when>
+    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+    		AND (exists 
+    		( SELECT 1 from V_ROLE_JX where 
+    			s2008.FJZCH = FJZCH
+    		AND s2008.dprtcode = DPRTCODE
+    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+    		)
+    		or s2008.FJZCH='-'
+    		)
+    	</when>
+   	</choose>
+ order by s2008.fjzch asc, s2008.gdlx asc
+  </select>
+  <!--MCC 145工单预警（完工未关闭）-->
+  <select id="selectBlock8" parameterType="com.eray.thjw.po.User" resultType="java.util.HashMap">
+	SELECT S2014.GDBH, --工单编号
+	   S2014.ID, --工单id
+       S2014.GDLX, --工单类型：1RTN（维修项目）、2EO、3NRC、9FLB
+       S2014.DPRTCODE, --组织机构
+       S2014.GDBT, --工单标题
+       S2014.FJZCH --飞机注册号
+  FROM B_S2_014 S2014
+ WHERE 1 = 1
+   AND S2014.DPRTCODE = #{jgdm,jdbcType=VARCHAR}
+   AND S2014.ZT = 7 --状态：7生效（下发）
+   AND S2014.WGBS = 1 --完工标识：1已完工
+   <choose>                                                                 
+    	<when test='paramsMap != null and paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+    		 AND exists 
+    		( SELECT 1 from D_007 where 
+    			S2014.fjjx = FJJX
+    		AND S2014.dprtcode = DPRTCODE
+    		AND zt = 1
+    		)
+    	</when>
+    	<when test='paramsMap != null and paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+    		 AND exists 
+    		( SELECT 1 from V_ROLE_JX where 
+    			S2014.fjjx= FJJX
+    		AND S2014.dprtcode = DPRTCODE
+    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+    		)
+    	</when>
+   	</choose>
+ ORDER BY S2014.FJZCH ASC, S2014.GDLX ASC
+  </select>
+  <!--待办工作-->
+  <select id="selectBlock9" parameterType="java.lang.String" resultType="java.util.HashMap">
+	SELECT TTODO.ID, --待办工作ID
+       TTODO.LYID, --来源ID
+       TTODO.LYBH, --来源编号
+       TTODO.BB, --来源编号版本
+       TTODO.FJJX, --飞机机型
+       TTODO.DBGZLX, --待办工作类型：1技术通告、2技术指令、3维修方案、4非例行工单、6工程指令EO、7MEL、8工卡、9技术评估单
+       TTODO.SM, --说明
+       TTODO.BLQX --办理期限：YYYY-MM-DD
+  FROM T_TODO TTODO
+ WHERE 1 = 1
+   AND TTODO.YXZT = 1 --有效状态：1有效
+   AND TTODO.ZT = 1 --状态：1待处理
+   AND TTODO.BLRID = #{userId,jdbcType=VARCHAR} 
+ ORDER BY TTODO.BLQX ASC, TTODO.DBGZLX ASC
+  </select>
+  
+   <!--待办工作-->
+  <select id="selectBlock10" parameterType="java.lang.String" resultType="java.util.HashMap">
+	select b.* 
+	
+		  from (select b.ID,
+		               b.DPRTCODE,
+		               b.JSTGH,
+		               b.BB,
+		               b.JX,
+		               b.TGQX,
+		               ceil(b.tgqx - sysdate) as syts,
+		               b.ZHUT,
+		               b.LYSM,
+		          
+                   b.zdrid,
+              
+                   1 ywlx
+           
+              from b_g2_002 b where b.zt=4
+            union all
+            select bg2010.ID,
+                   bg2010.DPRTCODE,
+                   bg2010.eobh,
+                   bg2010.BB,
+                   bg2010.JX,
+                   null,
+                   null,
+                   bg2010.eozt,
+                   null,
+              
+                   bg2010.whrid,
+                
+                   6 ywlx
+              
+              from b_g2_010 bg2010 where bg2010.zt=7) b
+      join b_g2_998 b2
+        on b.id = b2.ywid
+       and b2.zt = 1
+      left join b_g2_994 t1
+        on b.id = t1.ywid
+         and t1.jsrid = #{userId, jdbcType=VARCHAR}
+      left join t_department jg
+        on b.dprtcode = jg.id
+      left join t_user zdr
+        on (b.zdrid = zdr.id)
+        where 1=1 and t1.id is null  and b2.dxid = #{bmId,jdbcType=VARCHAR} 
+ ORDER BY b.TGQX ASC 
+  </select>
+  
+  <!--待办工作-->
+  <select id="selectBlock11" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT TTODO.ID, --待办工作ID
+	       TTODO.LYID, --来源ID
+	       TTODO.LYBH, --来源编号
+	       TTODO.BB, --来源编号版本
+	       TTODO.FJJX, --飞机机型
+	       TTODO.DBGZLX, --待办工作类型：1技术通告、2技术指令、3维修方案、4非例行工单、6工程指令EO、7MEL、8工卡、9技术评估单
+	       TTODO.SM, --说明
+	       TTODO.JD, --节点
+	       TTODO.DBYWID, --待办业务id
+	       TTODO.BLQX, --办理期限：YYYY-MM-DD
+	       TODO_RS.DBSTR --待办业务id、业务编号、业务版本
+	  FROM T_TODO TTODO
+	  LEFT JOIN (SELECT TODO_RS.MAINID,
+                    WM_CONCAT(TODO_RS.YWID || '#_#' || TODO_RS.YWBH || '#_#' ||
+                              TODO_RS.YWBB) DBSTR
+               FROM T_TODO_RS TODO_RS
+              GROUP BY TODO_RS.MAINID) TODO_RS
+     ON TTODO.ID = TODO_RS.MAINID
+	 WHERE TTODO.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND TTODO.YXZT = 1 --有效状态：1有效
+	   AND TTODO.ZT = 1 --状态：1待处理
+      AND ((EXISTS (SELECT 1
+                  FROM (SELECT RB.ROLE_ID, B.BUTTONCODE GNCODE
+                          FROM T_BUTTON B
+                          JOIN T_ROLE2BTN RB
+                            ON B.ID = RB.BUTTON_ID
+                        UNION ALL
+                        SELECT RM.ROLE_ID, M.MENUCODE GNCODE
+                          FROM T_MENU M
+                          JOIN T_ROLE2MENU RM
+                            ON M.ID = RM.MENU_ID) MB
+                  JOIN T_USER2ROLE UR
+                    ON UR.ROLE_ID = MB.ROLE_ID
+                   AND UR.USER_ID = #{userId,jdbcType=VARCHAR}
+                 WHERE MB.GNCODE = TTODO.GNBM) AND TTODO.BLRID is null) OR
+       TTODO.BLRID = #{userId,jdbcType=VARCHAR})
+	 ORDER BY TTODO.BLQX ASC, TTODO.DBGZLX ASC
+  </select>
+  
+  <!--飞机监控135-->
+  <select id="selectBlock12" parameterType="java.lang.String" resultType="java.util.HashMap">
+  
+  	SELECT D007.DPRTCODE, --组织机构
+       	   D007.FJZCH, --飞机注册号
+	       D007.XLH, --MSN
+	       TRUNC(D007.GJDJZYXQ) - TRUNC(SYSDATE) GJDJZYXQ_SY, --国籍登记证有效期剩余
+	       TRUNC(D007.SHZZJKRQ) - TRUNC(SYSDATE) SHZYXQ_SY, --适航证有效期剩余
+	       TRUNC(D007.DTZZJKRQ) - TRUNC(SYSDATE) DTZZYXQ_SY, --无线电台执照有效期剩余
+	       CASE
+	         WHEN TRUNC(D007.GJDJZYXQ) &lt; SYSDATE THEN
+	          2
+	         WHEN CEIL(TRUNC(D007.GJDJZYXQ) - SYSDATE) &lt;=
+	              COALESCE(THRESHOLD.YJTS_JB1, 0) THEN
+	          2
+	         WHEN CEIL(TRUNC(D007.GJDJZYXQ) - SYSDATE) &gt;
+	              COALESCE(THRESHOLD.YJTS_JB1, 0) AND
+	              CEIL(TRUNC(D007.GJDJZYXQ) - SYSDATE) &lt;=
+	              COALESCE(THRESHOLD.YJTS_JB2, 0) THEN
+	          1
+	         ELSE
+	          -1
+	       END GJDJZYXQ_WARN, --国籍登记证有效期预警:-1 无、1 预警、2 超期
+	       CASE
+	         WHEN TRUNC(D007.SHZZJKRQ) &lt; SYSDATE THEN
+	          2
+	         WHEN CEIL(TRUNC(D007.SHZZJKRQ) - SYSDATE) &lt;=
+	              COALESCE(THRESHOLD.YJTS_JB1, 0) THEN
+	          2
+	         WHEN CEIL(TRUNC(D007.SHZZJKRQ) - SYSDATE) &gt;
+	              COALESCE(THRESHOLD.YJTS_JB1, 0) AND
+	              CEIL(TRUNC(D007.SHZZJKRQ) - SYSDATE) &lt;=
+	              COALESCE(THRESHOLD.YJTS_JB2, 0) THEN
+	          1
+	         ELSE
+	          -1
+	       END SHZYXQ_WARN, --适航证有效期预警:-1 无、1 预警、2 超期
+	       CASE
+	         WHEN TRUNC(D007.DTZZJKRQ) &lt; SYSDATE THEN
+	          2
+	         WHEN CEIL(TRUNC(D007.DTZZJKRQ) - SYSDATE) &lt;=
+	              COALESCE(THRESHOLD.YJTS_JB1, 0) THEN
+	          2
+	         WHEN CEIL(TRUNC(D007.DTZZJKRQ) - SYSDATE) &gt;
+	              COALESCE(THRESHOLD.YJTS_JB1, 0) AND
+	              CEIL(TRUNC(D007.DTZZJKRQ) - SYSDATE) &lt;=
+	              COALESCE(THRESHOLD.YJTS_JB2, 0) THEN
+	          1
+	         ELSE
+	          -1
+	       END DTZZYXQ_WARN, --无线电台执照有效期预警:-1 无、1 预警、2 超期
+	       S2911.FJSJ, --飞机数据：位置+件号+序列号+监控项目编号+实际发生值
+	       COALESCE(S2013.GZBL_NUM, 0) GZBL_NUM, --故障保留数量
+	       COALESCE(S2011.XMBL_NUM, 0) XMBL_NUM, --项目保留数量
+	       COALESCE(S2012.QXBL_NUM, 0) QXBL_NUM, --缺陷保留数量
+	       COALESCE(S2008.GD_NUM, 0) GD_NUM, --已下发的工单数量
+	       S014.SHZT, --适航状态：0适航、1表示不适航
+	       THRESHOLD.YJTS_JB1,
+	       THRESHOLD.YJTS_JB2
+	  FROM D_007 D007
+	  LEFT JOIN (SELECT DPRTCODE, YJTS_JB2, YJTS_JB1
+	               FROM T_THRESHOLD THRESHOLD
+	              WHERE THRESHOLD.DPRTCODE =
+	                    COALESCE((SELECT DPRTCODE
+	                               FROM T_THRESHOLD
+	                              WHERE KEY = 'DTZZ'
+	                                AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}),
+	                             '-1')
+	                AND THRESHOLD.KEY = 'DTZZ') THRESHOLD
+	    ON 1 = 1
+   	    LEFT JOIN (SELECT S212.DPRTCODE,
+		       S212.FJZCH,
+		       max(S212.FJSJ) FJSJ    
+		       from (
+		            SELECT S211.DPRTCODE,
+		                   S211.FJZCH,
+		                   WM_CONCAT(S211.WZ || '#_#' || S211.JH || '#_#' ||
+		                                S211.XLH || '#_#' || S211.JKLBH || '#_#' ||
+		                                (COALESCE(S211.LJZ, 0) +
+		                                COALESCE(S211.CSZ, 0))) over(PARTITION BY S211.DPRTCODE, S211.FJZCH order by S211.WZ, S211.JKLBH) FJSJ
+		                 FROM B_S2_911 S211
+			       ) S212
+			     	GROUP BY S212.DPRTCODE, S212.FJZCH
+			        order by S212.FJZCH  
+              ) S2911
+       ON S2911.DPRTCODE = D007.DPRTCODE
+	   AND S2911.FJZCH = D007.FJZCH
+	  LEFT JOIN (SELECT CASE
+	                      WHEN COUNT(1) = 0 THEN
+	                       0
+	                      ELSE
+	                       1
+	                    END SHZT,
+	                    T.DPRTCODE,
+	                    T.FJZCH
+	               FROM B_S_014 T
+	              WHERE T.ZT = 1
+	                AND T.BSH_RQ &lt;= SYSDATE
+	                AND T.SH_RQ &gt;= SYSDATE
+	              GROUP BY T.DPRTCODE, T.FJZCH) S014
+	    ON S014.DPRTCODE = D007.DPRTCODE
+	   AND S014.FJZCH = D007.FJZCH
+	  LEFT JOIN (SELECT S2013.DPRTCODE, S2013.FJZCH, COUNT(1) GZBL_NUM
+	               FROM B_S2_013 S2013
+	              WHERE S2013.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2013.ZT IN (2, 4, 6)
+	              GROUP BY S2013.DPRTCODE, S2013.FJZCH) S2013
+	    ON S2013.DPRTCODE = D007.DPRTCODE
+	   AND S2013.FJZCH = D007.FJZCH
+	  LEFT JOIN (SELECT S2011.DPRTCODE, S2011.FJZCH, COUNT(1) XMBL_NUM
+	               FROM B_S2_011 S2011
+	              WHERE S2011.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2011.ZT IN (2)
+	              GROUP BY S2011.DPRTCODE, S2011.FJZCH) S2011
+	    ON S2011.DPRTCODE = D007.DPRTCODE
+	   AND S2011.FJZCH = D007.FJZCH
+	  LEFT JOIN (SELECT S2012.DPRTCODE, S2012.FJZCH, COUNT(1) QXBL_NUM
+	               FROM B_S2_012 S2012
+	              WHERE S2012.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2012.ZT IN (2, 4, 6)
+	              GROUP BY S2012.DPRTCODE, S2012.FJZCH) S2012
+	    ON S2012.DPRTCODE = D007.DPRTCODE
+	   AND S2012.FJZCH = D007.FJZCH
+	  LEFT JOIN (SELECT S2008.DPRTCODE, S2008.FJZCH, COUNT(1) GD_NUM
+	               FROM B_S2_008 S2008
+	              WHERE S2008.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2008.ZT IN (2, 7)
+	              GROUP BY S2008.DPRTCODE, S2008.FJZCH) S2008
+	    ON S2008.DPRTCODE = D007.DPRTCODE
+	   AND S2008.FJZCH = D007.FJZCH
+	 WHERE D007.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND D007.ZT = 1
+	   AND EXISTS
+	 (SELECT 1
+	          FROM V_ROLE_JX VJX
+	         WHERE VJX.DPRTCODE = D007.DPRTCODE
+	           AND VJX.USER_ID = #{userId,jdbcType=VARCHAR} 
+	           AND (VJX.FJZCH = D007.FJZCH OR
+	               (VJX.FJZCH = '-' AND VJX.FJJX = D007.FJJX)))
+	 ORDER BY D007.FJZCH ASC
+  
+  </select>
+  
+  <!--飞机监控145-->
+  <select id="selectBlock13" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT D010.DPRTCODE, --组织机构
+	       D010.FJZCH, --飞机注册号
+	       D010.XLH, --MSN
+	       COALESCE(S2013.GZBL_NUM, 0) GZBL_NUM, --故障保留数量
+	       COALESCE(S2011.XMBL_NUM, 0) XMBL_NUM, --项目保留数量
+	       COALESCE(S2012.QXBL_NUM, 0) QXBL_NUM, --缺陷保留数量
+	       COALESCE(S2014.GD_NUM, 0) GD_NUM --已下发的工单数量
+	  FROM D_010 D010
+	  LEFT JOIN (SELECT S2013.DPRTCODE, S2013.FJZCH, COUNT(1) GZBL_NUM
+	               FROM B_S2_013 S2013
+	              WHERE S2013.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2013.ZT IN (2, 4, 6)
+	              GROUP BY S2013.DPRTCODE, S2013.FJZCH) S2013
+	    ON S2013.DPRTCODE = D010.DPRTCODE
+	   AND S2013.FJZCH = D010.FJZCH
+	  LEFT JOIN (SELECT S2011.DPRTCODE, S2011.FJZCH, COUNT(1) XMBL_NUM
+	               FROM B_S2_011 S2011
+	              WHERE S2011.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2011.ZT IN (2)
+	              GROUP BY S2011.DPRTCODE, S2011.FJZCH) S2011
+	    ON S2011.DPRTCODE = D010.DPRTCODE
+	   AND S2011.FJZCH = D010.FJZCH
+	  LEFT JOIN (SELECT S2012.DPRTCODE, S2012.FJZCH, COUNT(1) QXBL_NUM
+	               FROM B_S2_012 S2012
+	              WHERE S2012.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2012.ZT IN (2, 4, 6)
+	              GROUP BY S2012.DPRTCODE, S2012.FJZCH) S2012
+	    ON S2012.DPRTCODE = D010.DPRTCODE
+	   AND S2012.FJZCH = D010.FJZCH
+	  LEFT JOIN (SELECT S2014.DPRTCODE, S2014.FJZCH, COUNT(1) GD_NUM
+	               FROM B_S2_014 S2014
+	              WHERE S2014.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND S2014.ZT IN (2, 7)
+	              GROUP BY S2014.DPRTCODE, S2014.FJZCH) S2014
+	    ON S2014.DPRTCODE = D010.DPRTCODE
+	   AND S2014.FJZCH = D010.FJZCH
+	 WHERE D010.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND D010.ZT = 1
+	   AND EXISTS
+	 (SELECT 1
+	          FROM V_ROLE_JX VJX
+	         WHERE VJX.DPRTCODE = D010.DPRTCODE
+	           AND VJX.USER_ID = #{userId,jdbcType=VARCHAR} 
+	           AND (VJX.FJZCH = D010.FJZCH OR
+	               (VJX.FJZCH = '-' AND VJX.FJJX = D010.FJJX)))
+	 ORDER BY D010.FJZCH ASC
+  </select>
+  
+  <!--个人执照/课程到期提醒-->
+  <select id="selectBlock14" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select xxlx, ms, dqrq, syts  from (
+			select xxlx,  -- 21维修执照，22机型执照
+			       case xxlx
+			         when 21 then
+			          zjbh
+			         else
+			          fjjx
+			       end ms,
+			       yxq_js dqrq,
+			       ceil(yxq_js - sysdate) syts
+			  from b_z_00101 bz00101
+			  join b_z_001 bz001 on bz00101.mainid = bz001.id
+			                    and bz001.zt = 1
+			                    and bz00101.zt = 1
+			 where ceil(bz00101.yxq_js - sysdate) &lt;=
+			       (select coalesce(yjts_jb3, yjts_jb2, yjts_jb1) yjts
+			          from t_threshold
+			         where dprtcode = coalesce((select dprtcode
+			                                     from t_threshold
+			                                    where key = (case xxlx when 21 then
+			                                           'SQZZ' else 'JXDQJK' end)
+			                                      and dprtcode = #{dprtcode,jdbcType=VARCHAR}),
+			                                   '-1')
+			           and key = (case xxlx when 21 then 'SQZZ' else 'JXDQJK' end))
+			   and COALESCE(bz00101.is_jk, 1) = 1
+			   and bz00101.yxq_js is not null
+			   and bz00101.xxlx in (21, 22)
+			   and bz001.wxryid = #{userId,jdbcType=VARCHAR} 
+			union all
+			select 23 xxlx, t1.kcmc,(case
+	             when coalesce(t1.xcpxrq, to_date('9999-12-31', 'YYYY-MM-DD'))&lt; t1.fxqx then
+	              t1.xcpxrq
+	             else
+	              t1.fxqx
+	           end) dqrq, (case
+	             when coalesce(t1.xcpxrq, to_date('9999-12-31', 'YYYY-MM-DD'))&lt; t1.fxqx then
+	              t1.xcpxrq - sysdate
+	             else
+	              t1.fxqx - sysdate
+	           end) syts  from (
+					select bp003.kcmc,
+					       bp00201.xcpxrq,
+					        (case
+				                 when bp003.zqdw = 1 then
+				                  (case
+				                    when bp00201.sj_ksrq is null then
+				                     sysdate
+				                    else
+				                     bp00201.sj_ksrq + bp003.zqz
+				                  end)
+				                 when bp003.zqdw = 2 then
+				                  (case
+				                    when bp00201.sj_ksrq is null then
+				                     sysdate
+				                    else
+				                     add_months(bp00201.sj_ksrq, bp003.zqz)
+				                  end)
+				                 when bp003.zqdw = 3 then
+				                  (case
+				                    when bp00201.sj_ksrq is null then
+				                     sysdate
+				                    else
+				                     add_months(bp00201.sj_ksrq, (bp003.zqz * 12))
+				                  end)
+				               end) as fxqx
+					  from b_p_004 bp004
+					  join b_z_001 bz001 on bp004.wxrydaid = bz001.id
+					                    and bz001.zt = 1
+					  join b_p_003 bp003 on bp004.kcid = bp003.id
+					                    and bp003.zt = 1
+					  join b_p_00201 bp00201 on bp004.pxjlid = bp00201.id
+					                        and bp00201.zt = 1
+					 where bz001.wxryid = #{userId,jdbcType=VARCHAR} 
+				   ) t1 where (case
+			             when coalesce(t1.xcpxrq, to_date('9999-12-31', 'YYYY-MM-DD'))&lt; t1.fxqx then
+			              t1.xcpxrq - sysdate
+			             else
+			              t1.fxqx - sysdate
+			           end) &lt;=
+					       (select coalesce(yjts_jb3, yjts_jb2, yjts_jb1) yjts
+					          from t_threshold
+					         where dprtcode = coalesce((select dprtcode
+					                                     from t_threshold
+					                                    where key = 'RYKCPX'
+					                                      and dprtcode = #{dprtcode,jdbcType=VARCHAR}),
+					                                   '-1')
+					           and key = 'RYKCPX')
+					   and coalesce(t1.xcpxrq, t1.fxqx) is not null
+			) order by syts
+  </select>
+  
+  <!--执照到期提醒-->
+  <select id="selectBlock15" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select bz00101.xxlx,  -- 21维修执照，22机型执照
+	       bz001.rybh ||' '|| bz001.xm ry,
+	       bz00101.fjjx,
+	       bz00101.zy,    
+	       bz00101.zjbh,  -- 执照号
+	       yxq_js dqrq,
+	       ceil(yxq_js - sysdate) syts -- 剩余天数
+	  from b_z_00101 bz00101
+	  join b_z_001 bz001 on bz00101.mainid = bz001.id
+	                    and bz001.zt = 1
+	                    and bz00101.zt = 1
+	 where ceil(bz00101.yxq_js - sysdate) &lt;=
+	       (select coalesce(yjts_jb3, yjts_jb2, yjts_jb1) yjts
+	          from t_threshold
+	         where dprtcode = coalesce((select dprtcode
+	                                     from t_threshold
+	                                    where key = (case xxlx when 21 then
+	                                           'SQZZ' else 'JXDQJK' end)
+	                                      and dprtcode = #{dprtcode,jdbcType=VARCHAR}),
+	                                   '-1')
+	           and key = (case xxlx when 21 then 'SQZZ' else 'JXDQJK' end))
+	   and COALESCE(bz00101.is_jk, 1) = 1
+	   and bz00101.yxq_js is not null
+	   and bz00101.xxlx in (21, 22)
+	   and bz001.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	   order by bz00101.yxq_js
+  </select>
+  
+  <!--工具/设备校验提醒-->
+  <select id="selectBlock16" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT 
+			   W00101.ID, --工具/设备id
+			   W00101.BJXLH GJBH, --工具/设备编号
+		       W00101.YWMS || ' ' || W00101.ZWMS GJMC, --工具/设备名称
+		       W00101.JY_XCRQ JYRQ, --校验日期
+		       CASE
+		         WHEN W00101.JY_XCRQ &gt;= SYSDATE THEN
+		          1
+		         ELSE
+		          2
+		       END CQBS --超期标识：1预警、2超期
+		  FROM B_W_00101 W00101
+		  JOIN B_W_001 W001
+		    ON W001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		   AND W001.ZT = 1
+		   AND W00101.ZT = 1
+		   AND W00101.MAINID = W001.ID
+		 WHERE CEIL(W00101.JY_XCRQ - SYSDATE) &lt;=
+		       (SELECT COALESCE(YJTS_JB3, YJTS_JB2, YJTS_JB1) YJTS
+		          FROM T_THRESHOLD THRESHOLD
+		         WHERE THRESHOLD.DPRTCODE = COALESCE((SELECT DPRTCODE
+		                                               FROM T_THRESHOLD
+		                                              WHERE KEY = 'GJJK'
+		                                                AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}),
+		                                             '-1')
+		           AND THRESHOLD.KEY = 'GJJK')
+		 ORDER BY W00101.JY_XCRQ ASC
+  </select>
+  
+  <!--人员培训提醒-->
+  <select id="selectBlock17" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select t1.ry, t1.kcbh, t1.kcmc, t1.fjjx, 
+			(case
+	             when coalesce(t1.xcpxrq, to_date('9999-12-31', 'YYYY-MM-DD'))&lt; t1.fxqx then
+	              t1.xcpxrq
+	             else
+	              t1.fxqx
+	           end) dqrq, 
+	           (case
+	             when coalesce(t1.xcpxrq, to_date('9999-12-31', 'YYYY-MM-DD'))&lt; t1.fxqx then
+	              t1.xcpxrq - sysdate
+	             else
+	              t1.fxqx - sysdate
+	           end) syts from (
+			select bz001.rybh ||' '|| bz001.xm ry,
+		       bp003.kcbh,
+		       bp003.kcmc,
+		       bp003.fjjx,
+		       bp00201.xcpxrq,
+		        (case
+	                 when bp003.zqdw = 1 then
+	                  (case
+	                    when bp00201.sj_ksrq is null then
+	                     sysdate
+	                    else
+	                     bp00201.sj_ksrq + bp003.zqz
+	                  end)
+	                 when bp003.zqdw = 2 then
+	                  (case
+	                    when bp00201.sj_ksrq is null then
+	                     sysdate
+	                    else
+	                     add_months(bp00201.sj_ksrq, bp003.zqz)
+	                  end)
+	                 when bp003.zqdw = 3 then
+	                  (case
+	                    when bp00201.sj_ksrq is null then
+	                     sysdate
+	                    else
+	                     add_months(bp00201.sj_ksrq, (bp003.zqz * 12))
+	                  end)
+	               end) as fxqx
+		  from b_p_004 bp004
+		  join b_z_001 bz001 on bp004.wxrydaid = bz001.id
+		                    and bz001.zt = 1
+		  join b_p_003 bp003 on bp004.kcid = bp003.id
+		                    and bp003.zt = 1
+		  join b_p_00201 bp00201 on bp004.pxjlid = bp00201.id
+		                        and bp00201.zt = 1
+		 where  bz001.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		)  t1 where 
+			(case
+	             when coalesce(t1.xcpxrq, to_date('9999-12-31', 'YYYY-MM-DD'))&lt; t1.fxqx then
+	              t1.xcpxrq - sysdate
+	             else
+	              t1.fxqx - sysdate
+	           end) &lt;=
+			       (select coalesce(yjts_jb3, yjts_jb2, yjts_jb1) yjts
+			          from t_threshold
+			         where dprtcode = coalesce((select dprtcode
+			                                     from t_threshold
+			                                    where key = 'RYKCPX'
+			                                      and dprtcode = #{dprtcode,jdbcType=VARCHAR}),
+			                                   '-1')
+			           and key = 'RYKCPX')
+			   and coalesce(t1.xcpxrq, t1.fxqx) is not null
+		order by syts
+  </select>
+  
+  <!--审核通知单-->
+  <select id="selectBlock18" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT Z007.ID,--审核通知单ID
+	       Z007.JCDBH,--检查单编号
+	       Z007.SHLB,--审核类别：11初审、12复审、21转向审核
+	       Z007.JH_SHRQ,--计划审核日期YYYYMMDD
+	       Z007.JCNR--检查内容
+	  FROM B_Z_007 Z007
+	 WHERE Z007.ZT = 1 
+		   and Z007.DPRTCODE = #{dprtcode,jdbcType=VARCHAR} 
+           and Z007.JH_SHRQ &lt;= add_months(sysdate,6)
+		   and Z007.SHDXID = #{shdxid,jdbcType=VARCHAR}
+	   ORDER BY Z007.JH_SHRQ DESC
+  </select>
+  
+  
+</mapper>

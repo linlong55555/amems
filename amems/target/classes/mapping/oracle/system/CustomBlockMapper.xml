@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.CustomBlockMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.CustomBlock">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="KBM" jdbcType="VARCHAR" property="kbm" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, MAINID, KBM, ZT, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_CUSTOM_BLOCK
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByMainId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_CUSTOM_BLOCK
+    where ZT = 1 and MAINID = #{mainId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_CUSTOM_BLOCK
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByMainId" parameterType="java.lang.String">
+    delete from T_CUSTOM_BLOCK
+    where MAINID = #{mainId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.CustomBlock">
+    insert into T_CUSTOM_BLOCK (ID, MAINID, KBM, 
+      ZT, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kbm,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, sysdate)
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.CustomBlock">
+    insert into T_CUSTOM_BLOCK
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="kbm != null">
+        KBM, ZT, WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kbm != null">
+        #{kbm,jdbcType=VARCHAR},1,sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.CustomBlock">
+    update T_CUSTOM_BLOCK
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kbm != null">
+        KBM = #{kbm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.CustomBlock">
+    update T_CUSTOM_BLOCK
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KBM = #{kbm,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

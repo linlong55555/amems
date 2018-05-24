@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.CoverPlateMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.CoverPlate" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YWLX" property="ywlx" jdbcType="DECIMAL" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="LX" property="lx" jdbcType="DECIMAL" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="GBID" property="gbid" jdbcType="VARCHAR" />
+    <result column="GBH" property="gbh" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap type="com.eray.thjw.project2.po.CoverPlate" id="ResultMap" extends="BaseResultMap">
+		<association property="coverPlateInformation" javaType="com.eray.thjw.basic.po.CoverPlateInformation">
+			<id column="gbid" property="id" />
+			<result column="gbbh" property="gbmc" />
+			<result column="gbmc" property="gbmc" />
+		</association>
+	</resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, YWLX, YWID, LX, XC, GBID, GBH, WHDWID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_995
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据业务id集合获取接近/盖板 -->
+  	<select id="queryByYwidList" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+		<include refid="Base_Column_List" />
+    	from B_G2_995
+    	where YWID in
+		<foreach collection="list" item="ywid" index="index" open="(" close=")" separator=",">
+			#{ywid,jdbcType=VARCHAR}
+		 </foreach>
+ 	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_995
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByYwid" parameterType="java.lang.String" >
+    delete from B_G2_995
+    where YWID = #{ywid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.CoverPlate" >
+    insert into B_G2_995 (ID, DPRTCODE, YWLX, 
+      YWID, LX, XC, GBID, 
+      GBH, WHDWID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{ywlx,jdbcType=DECIMAL}, 
+      #{ywid,jdbcType=VARCHAR}, #{lx,jdbcType=DECIMAL}, #{xc,jdbcType=DECIMAL}, #{gbid,jdbcType=VARCHAR}, 
+      #{gbh,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.CoverPlate" >
+    insert into B_G2_995
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="ywlx != null" >
+        YWLX,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="lx != null" >
+        LX,
+      </if>
+      <if test="xc != null" >
+        XC,
+      </if>
+      <if test="gbid != null" >
+        GBID,
+      </if>
+      <if test="gbh != null" >
+        GBH,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="lx != null" >
+        #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="xc != null" >
+        #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="gbid != null" >
+        #{gbid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbh != null" >
+        #{gbh,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  	<!-- 批量插入接近/盖板 -->
+  	<insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+			<include refid="insert_cover_plate"></include>
+		</foreach>
+		select 1 from dual
+	</insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.CoverPlate" >
+    update B_G2_995
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="ywlx != null" >
+        YWLX = #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="lx != null" >
+        LX = #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="gbid != null" >
+        GBID = #{gbid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbh != null" >
+        GBH = #{gbh,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.CoverPlate" >
+    update B_G2_995
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      YWLX = #{ywlx,jdbcType=DECIMAL},
+      YWID = #{ywid,jdbcType=VARCHAR},
+      LX = #{lx,jdbcType=DECIMAL},
+      XC = #{xc,jdbcType=DECIMAL},
+      GBID = #{gbid,jdbcType=VARCHAR},
+      GBH = #{gbh,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+	<!-- 插入接近/盖板 start -->
+	<sql id="insert_cover_plate">
+		into B_G2_995 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+	      	<if test="item.id != null" >
+	        	ID,
+	      	</if>
+	      	<if test="item.dprtcode != null" >
+	        	DPRTCODE,
+	      	</if>
+	      	<if test="item.ywlx != null" >
+	        	YWLX,
+	      	</if>
+	      	<if test="item.ywid != null" >
+	        	YWID,
+	      	</if>
+	      	<if test="item.lx != null" >
+	        	LX,
+	      	</if>
+	      	<if test="item.xc != null" >
+	        	XC,
+	      	</if>
+	      	<if test="item.gbid != null" >
+	        	GBID,
+	      	</if>
+	      	<if test="item.gbh != null" >
+	        	GBH,
+	      	</if>
+	      	<if test="item.whdwid != null" >
+	        	WHDWID,
+	      	</if>
+	      	<if test="item.whrid != null" >
+	        	WHRID,
+	        	WHSJ,
+	      	</if>
+	    </trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+	      	<if test="item.id != null" >
+	        	#{item.id,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.dprtcode != null" >
+	        	#{item.dprtcode,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.ywlx != null" >
+	        	#{item.ywlx,jdbcType=DECIMAL},
+	      	</if>
+	      	<if test="item.ywid != null" >
+	        	#{item.ywid,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.lx != null" >
+	        	#{item.lx,jdbcType=DECIMAL},
+	      	</if>
+	      	<if test="item.xc != null" >
+	        	#{item.xc,jdbcType=DECIMAL},
+	      	</if>
+	      	<if test="item.gbid != null" >
+	        	#{item.gbid,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.gbh != null" >
+	        	#{item.gbh,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.whdwid != null" >
+	        	#{item.whdwid,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.whrid != null" >
+	        	#{item.whrid,jdbcType=VARCHAR},
+	        	sysdate,
+	      	</if>
+	    </trim>
+	</sql>
+	<!-- 插入接近/盖板  end -->
+  	<insert id="insertByCopyCoverPlate" parameterType="com.eray.thjw.project2.po.CoverPlate">
+  		INSERT INTO B_G2_995(
+    	 ID, DPRTCODE, YWLX, YWID, LX, XC, GBID, GBH, WHDWID, WHRID, WHSJ)      
+    SELECT SYS_GUID(),#{dprtcode,jdbcType=VARCHAR}, YWLX, #{id,jdbcType=VARCHAR}, LX, XC, GBID, GBH, 
+   #{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR}, sysdate
+    	FROM B_G2_995 
+	    WHERE ywid=#{ywid,jdbcType=VARCHAR}
+  	</insert>
+  	
+  	<!-- 同步接近/盖板 -->
+  	<insert id="insertByCopy" parameterType="com.eray.thjw.project2.po.CoverPlate">
+  		INSERT INTO B_G2_995(
+    	 ID, DPRTCODE, YWLX, YWID, LX, XC, GBID, GBH, WHDWID, WHRID, WHSJ)      
+    SELECT SYS_GUID(), dprtcode, #{ywlx,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, LX, XC, GBID, GBH, 
+   #{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR}, sysdate
+    	FROM B_G2_995 
+	    WHERE ywid=#{ywid,jdbcType=VARCHAR}
+  	</insert>
+  	
+  	<!-- 根据业务id集合获取接近/盖板 -->
+  	<select id="queryBylist" resultMap="ResultMap" parameterType="java.lang.String" >
+		select 
+		BG2995.ID, BG2995.DPRTCODE, BG2995.YWLX, BG2995.YWID, BG2995.LX, BG2995.XC, BG2995.GBID, 
+		BG2995.GBH, BG2995.WHDWID, BG2995.WHRID, BG2995.WHSJ,
+		D021.gbmc,D021.GBBH
+    	from B_G2_995 BG2995 left join d_021 d021 on BG2995.GBID = d021.id
+    	where YWID in
+		<foreach collection="list" item="ywid" index="index" open="(" close=")" separator=",">
+			#{ywid,jdbcType=VARCHAR}
+		 </foreach>
+ 	</select>
+ 	
+ 	<!-- 批量删除:导入专用 -->
+	<delete id="delete4BatchImpl" parameterType="java.util.List" >
+	 		<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+			  	delete from B_G2_995
+			   	where YWID = #{item,jdbcType=VARCHAR} and LX in(1,2,3)
+			</foreach>
+	</delete>
+		
+	<!-- 批量新增:导入专用 -->
+	<insert id="insert4BatchImpl" parameterType="java.util.List" >
+	   INSERT INTO B_G2_995 (ID, DPRTCODE, YWLX, 
+						      YWID, LX, XC, GBID, 
+						      GBH, WHDWID, WHRID, 
+						      WHSJ)
+	     <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		    select 
+		     	  #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.ywlx,jdbcType=DECIMAL}, 
+			      #{item.ywid,jdbcType=VARCHAR}, #{item.lx,jdbcType=DECIMAL}, #{item.xc,jdbcType=DECIMAL}, #{item.gbid,jdbcType=VARCHAR}, 
+			      #{item.gbh,jdbcType=VARCHAR}, #{item.whdwid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, 
+			      #{item.whsj,jdbcType=TIMESTAMP}
+		  	from dual
+	   </foreach>
+	</insert>
+	
+</mapper>

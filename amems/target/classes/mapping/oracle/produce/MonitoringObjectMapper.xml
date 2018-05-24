@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.MonitoringObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.MonitoringObject" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="F_JKSJID" property="fJksjid" jdbcType="VARCHAR" />
+    <result column="B_JKSJID" property="bJksjid" jdbcType="VARCHAR" />
+    <result column="LYLX" property="lylx" jdbcType="DECIMAL" />
+    <result column="LYID" property="lyid" jdbcType="VARCHAR" />
+    <result column="LYBH" property="lybh" jdbcType="VARCHAR" />
+    <result column="WXFAID" property="wxfaid" jdbcType="VARCHAR" />
+    <result column="WXFABH" property="wxfabh" jdbcType="VARCHAR" />
+    <result column="EOXC" property="eoxc" jdbcType="DECIMAL" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="FJXLH" property="fjxlh" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="JSSJ" property="jssj" jdbcType="TIMESTAMP" />
+    <result column="BYXJKSJID" property="byxjksjid" jdbcType="VARCHAR" />
+    <result column="WZ" property="wz" jdbcType="DECIMAL" />
+    <result column="HDWZ" property="hdwz" jdbcType="DECIMAL" />
+    <result column="JSGS" property="jsgs" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <!-- 配置监控对象关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.produce.po.MonitoringObject" id="MonitoringObjectWithRelMap" extends="BaseResultMap">  
+	    <!-- 监控对象与监控数据-上次执行数据关系 -->
+	    <collection property="monitoringLastList" ofType="com.eray.thjw.produce.po.MonitoringLast">  
+		    <id column="ML_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="ML_JKSJID" property="jksjid" jdbcType="DECIMAL" />
+		    <result column="ML_JKLBH" property="jklbh" jdbcType="VARCHAR" />
+		    <result column="ML_JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+		    <result column="ML_SCJHZ" property="scjhz" jdbcType="VARCHAR" />
+		    <result column="ML_SCSJZ" property="scsjz" jdbcType="VARCHAR" />
+        </collection>
+        <!-- 监控对象与(计划)执行数据关系 -->
+        <collection property="monitoringPlanList" ofType="com.eray.thjw.produce.po.MonitoringPlan">  
+		    <id column="MP_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="MP_JKSJID" property="jksjid" jdbcType="VARCHAR" />
+		    <result column="MP_JKLBH" property="jklbh" jdbcType="VARCHAR" />
+		    <result column="MP_JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+		    <result column="MP_JHQSZ" property="jhqsz" jdbcType="VARCHAR" />
+		    <result column="MP_JHZ" property="jhz" jdbcType="VARCHAR" />
+		    <result column="MP_SJZ" property="sjz" jdbcType="VARCHAR" />
+		    <result column="MP_CSZ" property="csz" jdbcType="VARCHAR" />
+		    <result column="MP_WZ" property="wz" jdbcType="VARCHAR" />
+		    <result column="MP_SCZ" property="scz" jdbcType="VARCHAR" />
+		    <result column="MP_DWSCZ" property="dwScz" jdbcType="DECIMAL" />
+		    <result column="MP_ZQZ" property="zqz" jdbcType="VARCHAR" />
+		    <result column="MP_DWZQZ" property="dwZqz" jdbcType="DECIMAL" />
+		    <result column="MP_YDZQ" property="ydzQ" jdbcType="VARCHAR" />
+		    <result column="MP_YDZQDW" property="ydzQdw" jdbcType="DECIMAL" />
+		    <result column="MP_YDZH" property="ydzH" jdbcType="VARCHAR" />
+		    <result column="MP_YDZHDW" property="ydzHdw" jdbcType="DECIMAL" />
+        </collection>
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, F_JKSJID, B_JKSJID, LYLX, LYID, LYBH, WXFAID, 
+    WXFABH, EOXC, FJZCH, FJXLH, ZJQDID, BJH, XLH, JSSJ, BYXJKSJID, WZ, HDWZ, JSGS
+  </sql>
+  
+  <sql id="Monitoring_Column_List" >
+    B.ID, B.DPRTCODE, B.WHBMID, B.WHRID, B.WHSJ, B.ZT, B.F_JKSJID, B.B_JKSJID, B.LYLX, B.LYID, B.LYBH, B.WXFAID, 
+    B.WXFABH, B.EOXC, B.FJZCH, B.FJXLH, B.ZJQDID, B.BJH, B.XLH, B.JSSJ, B.BYXJKSJID, B.WZ, B.HDWZ, B.JSGS
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_901
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selecyById" resultMap="MonitoringObjectWithRelMap" parameterType="java.lang.String" >
+   select 
+    	<include refid="Monitoring_Column_List" />
+	    ,BS2903.ID as ML_ID
+	    ,BS2903.JKSJID as ML_JKSJID
+	    ,BS2903.JKLBH as ML_JKLBH
+	    ,BS2903.JKFLBH as ML_JKFLBH 
+	    ,BS2903.SCJHZ as ML_SCJHZ 
+	    ,BS2903.SCSJZ as ML_SCSJZ 
+	    ,BS2904.ID as MP_ID
+	    ,BS2904.JKSJID as MP_JKSJID
+	    ,BS2904.JKLBH as MP_JKLBH
+	    ,BS2904.JKFLBH as MP_JKFLBH 
+	    ,BS2904.JHQSZ as MP_JHQSZ 
+	    ,BS2904.JHZ as MP_JHZ 
+	    ,BS2904.SJZ as MP_SJZ 
+	    ,BS2904.CSZ as MP_CSZ 
+	    ,BS2904.WZ as MP_WZ 
+	    ,BS2904.SCZ as MP_SCZ 
+	    ,BS2904.DW_SCZ as MP_DWSCZ 
+	    ,BS2904.ZQZ as MP_ZQZ
+	    ,BS2904.DW_ZQZ as MP_DWZQZ
+	    ,BS2904.YDZ_Q as MP_YDZQ 
+	    ,BS2904.YDZ_QDW as MP_YDZQDW
+	    ,BS2904.YDZ_H as MP_YDZH
+	    ,BS2904.YDZ_HDW as MP_YDZHDW
+    from B_S2_901 B
+    LEFT JOIN B_S2_903 BS2903
+    ON BS2903.JKSJID = B.ID and BS2903.ZT = 1
+    LEFT JOIN B_S2_904 BS2904
+    	ON BS2904.JKSJID = B.ID and BS2904.ZT = 1
+    where B.ID = #{id,jdbcType=VARCHAR}
+    ORDER BY BS2903.JKLBH
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S2_901
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.MonitoringObject" >
+    insert into B_S2_901 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      F_JKSJID, B_JKSJID, LYLX, 
+      LYID, LYBH, WXFAID, 
+      WXFABH, EOXC, FJZCH, 
+      FJXLH, ZJQDID, BJH, 
+      XLH, JSSJ, BYXJKSJID, 
+      WZ, HDWZ, JSGS)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, sysdate, #{zt,jdbcType=DECIMAL}, 
+      #{fJksjid,jdbcType=VARCHAR}, #{bJksjid,jdbcType=VARCHAR}, #{lylx,jdbcType=DECIMAL}, 
+      #{lyid,jdbcType=VARCHAR}, #{lybh,jdbcType=VARCHAR}, #{wxfaid,jdbcType=VARCHAR}, 
+      #{wxfabh,jdbcType=VARCHAR}, #{eoxc,jdbcType=DECIMAL}, #{fjzch,jdbcType=VARCHAR}, 
+      #{fjxlh,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, 
+      #{xlh,jdbcType=VARCHAR}, #{jssj,jdbcType=TIMESTAMP}, #{byxjksjid,jdbcType=VARCHAR}, 
+      #{wz,jdbcType=DECIMAL},#{hdwz,jdbcType=DECIMAL},#{jsgs,jdbcType=DECIMAL})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.MonitoringObject" >
+    insert into B_S2_901
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="fJksjid != null" >
+        F_JKSJID,
+      </if>
+      <if test="bJksjid != null" >
+        B_JKSJID,
+      </if>
+      <if test="lylx != null" >
+        LYLX,
+      </if>
+      <if test="lyid != null" >
+        LYID,
+      </if>
+      <if test="lybh != null" >
+        LYBH,
+      </if>
+      <if test="wxfaid != null" >
+        WXFAID,
+      </if>
+      <if test="wxfabh != null" >
+        WXFABH,
+      </if>
+      <if test="eoxc != null" >
+        EOXC,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="fjxlh != null" >
+        FJXLH,
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="jssj != null" >
+        JSSJ,
+      </if>
+      <if test="byxjksjid != null" >
+        BYXJKSJID,
+      </if>
+      <if test="wz != null" >
+        WZ,
+      </if>
+      <if test="hdwz != null" >
+        HDWZ,
+      </if>
+      <if test="jsgs != null" >
+        JSGS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fJksjid != null" >
+        #{fJksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bJksjid != null" >
+        #{bJksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="lylx != null" >
+        #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfaid != null" >
+        #{wxfaid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfabh != null" >
+        #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="eoxc != null" >
+        #{eoxc,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="fjxlh != null" >
+        #{fjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jssj != null" >
+        #{jssj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="byxjksjid != null" >
+        #{byxjksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="hdwz != null" >
+        #{hdwz,jdbcType=DECIMAL},
+      </if>
+      <if test="jsgs != null" >
+        #{jsgs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.MonitoringObject" >
+    update B_S2_901
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fJksjid != null" >
+        F_JKSJID = #{fJksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bJksjid != null" >
+        B_JKSJID = #{bJksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="lylx != null" >
+        LYLX = #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        LYID = #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        LYBH = #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfaid != null" >
+        WXFAID = #{wxfaid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfabh != null" >
+        WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="eoxc != null" >
+        EOXC = #{eoxc,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="fjxlh != null" >
+        FJXLH = #{fjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jssj != null" >
+        JSSJ = #{jssj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="byxjksjid != null" >
+        BYXJKSJID = #{byxjksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        WZ = #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="hdwz != null" >
+        HDWZ = #{hdwz,jdbcType=DECIMAL},
+      </if>
+      <if test="jsgs != null" >
+        JSGS = #{jsgs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据维修方案ID查询未执行的监控数据 -->
+  <select id="selectNotExeMonitorDataListByWxfaid" resultMap="MonitoringObjectWithRelMap" parameterType="java.lang.String" >
+   select 
+    	<include refid="Monitoring_Column_List" />
+	    ,BS2903.ID as ML_ID
+	    ,BS2903.JKSJID as ML_JKSJID
+	    ,BS2903.JKLBH as ML_JKLBH
+	    ,BS2903.JKFLBH as ML_JKFLBH 
+	    ,BS2903.SCJHZ as ML_SCJHZ 
+	    ,BS2903.SCSJZ as ML_SCSJZ 
+	    ,BS2904.ID as MP_ID
+	    ,BS2904.JKSJID as MP_JKSJID
+	    ,BS2904.JKLBH as MP_JKLBH
+	    ,BS2904.JKFLBH as MP_JKFLBH 
+	    ,BS2904.JHQSZ as MP_JHQSZ 
+	    ,BS2904.JHZ as MP_JHZ 
+	    ,BS2904.SJZ as MP_SJZ 
+	    ,BS2904.CSZ as MP_CSZ 
+	    ,BS2904.WZ as MP_WZ 
+	    ,BS2904.SCZ as MP_SCZ 
+	    ,BS2904.DW_SCZ as MP_DWSCZ 
+	    ,BS2904.ZQZ as MP_ZQZ
+	    ,BS2904.DW_ZQZ as MP_DWZQZ
+	    ,BS2904.YDZ_Q as MP_YDZQ 
+	    ,BS2904.YDZ_QDW as MP_YDZQDW
+	    ,BS2904.YDZ_H as MP_YDZH
+	    ,BS2904.YDZ_HDW as MP_YDZHDW
+    from B_S2_901 B
+    LEFT JOIN B_S2_903 BS2903
+    	ON BS2903.JKSJID = B.ID and BS2903.ZT = 1
+    LEFT JOIN B_S2_904 BS2904
+    	ON BS2904.JKSJID = B.ID and BS2904.ZT = 1
+    where FJZCH is not null and JSSJ is null and B.WXFAID = #{wxfaid, jdbcType=VARCHAR}
+    ORDER BY BS2903.JKLBH, BS2904.JKLBH
+  </select>
+  <!-- 批量更新监控数据来源信息 -->
+  <update id="updateSource4Batch" parameterType="java.util.List" >
+  		<foreach collection="list" item="item" index="index" separator="" open="begin" close="end;"> 
+            UPDATE B_S2_901 
+            <set>       
+			      <if test="item.whbmid != null" >
+			        WHBMID = #{item.whbmid,jdbcType=VARCHAR},
+			      </if>
+			      <if test="item.whrid != null" >
+			        WHRID = #{item.whrid,jdbcType=VARCHAR},
+			        WHSJ = sysdate,
+			      </if>
+			      <if test="item.lyid != null" >
+			        LYID = #{item.lyid,jdbcType=VARCHAR},
+			      </if>
+			      <if test="item.wxfaid != null" >
+			        WXFAID = #{item.wxfaid,jdbcType=VARCHAR},
+			      </if>
+			      <if test="item.byxjksjid != null" >
+			        BYXJKSJID = #{item.byxjksjid,jdbcType=VARCHAR},
+			      </if>
+			        WZ = #{item.wz,jdbcType=DECIMAL},
+			        HDWZ = #{item.hdwz,jdbcType=DECIMAL},
+			        JSGS = #{item.jsgs,jdbcType=DECIMAL},
+            </set>
+            where ID = #{item.id,jdbcType=VARCHAR};
+        </foreach>
+  </update>
+  <!-- 批量新增监控数据 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+  	insert into B_S2_901 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      F_JKSJID, B_JKSJID, LYLX, 
+      LYID, LYBH, WXFAID, 
+      WXFABH, EOXC, FJZCH, 
+      FJXLH, ZJQDID, BJH, 
+      XLH, JSSJ, BYXJKSJID, 
+      WZ,HDWZ,JSGS)
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+	    select #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.whbmid,jdbcType=VARCHAR}, 
+	      #{item.whrid,jdbcType=VARCHAR}, sysdate, 1, 
+	      #{item.fJksjid,jdbcType=VARCHAR}, #{item.bJksjid,jdbcType=VARCHAR}, #{item.lylx,jdbcType=DECIMAL}, 
+	      #{item.lyid,jdbcType=VARCHAR}, #{item.lybh,jdbcType=VARCHAR}, #{item.wxfaid,jdbcType=VARCHAR}, 
+	      #{item.wxfabh,jdbcType=VARCHAR}, #{item.eoxc,jdbcType=DECIMAL}, #{item.fjzch,jdbcType=VARCHAR}, 
+	      #{item.fjxlh,jdbcType=VARCHAR}, #{item.zjqdid,jdbcType=VARCHAR}, #{item.bjh,jdbcType=VARCHAR}, 
+	      #{item.xlh,jdbcType=VARCHAR}, #{item.jssj,jdbcType=TIMESTAMP}, #{item.byxjksjid,jdbcType=VARCHAR}, 
+	      #{item.wz,jdbcType=DECIMAL},#{item.hdwz,jdbcType=DECIMAL}, #{item.jsgs,jdbcType=DECIMAL}
+	  	from dual
+    </foreach>
+  </insert>
+  
+  <!-- 查询工单对应的监控数据 -->
+  <select id="selectByWorkOrder" resultMap="MonitoringObjectWithRelMap">
+	  	SELECT S2901.ID,
+	       S2901.DPRTCODE,      
+	       S2901.ZT,
+	       S2901.LYLX,
+	       S2901.LYID,
+	       S2901.LYBH,
+	       S2901.WXFAID,
+	       S2901.WXFABH,
+	       S2901.EOXC,
+	       S2901.FJZCH,
+	       S2901.FJXLH,
+	       S2901.ZJQDID,
+	       S2901.BJH,
+	       S2901.XLH,
+	       S2008.SJ_JSRQ JSSJ,
+	       S2901.WZ
+	       ,S2901.BYXJKSJID
+	       ,S2901.JSGS
+	       ,S2901.HDWZ
+	       ,BS2904.ID as MP_ID
+		    ,BS2904.JKSJID as MP_JKSJID
+		    ,BS2904.JKLBH as MP_JKLBH
+		    ,BS2904.JKFLBH as MP_JKFLBH 
+		    ,BS2904.JHQSZ as MP_JHQSZ 
+		    ,BS2904.JHZ as MP_JHZ 
+		    ,BS2904.SJZ as MP_SJZ 
+		    ,BS2904.CSZ as MP_CSZ 
+		    ,BS2904.WZ as MP_WZ 
+		    ,BS2904.SCZ as MP_SCZ 
+		    ,BS2904.DW_SCZ as MP_DWSCZ 
+		    ,BS2904.ZQZ as MP_ZQZ
+		    ,BS2904.DW_ZQZ as MP_DWZQZ
+		    ,BS2904.YDZ_Q as MP_YDZQ 
+		    ,BS2904.YDZ_QDW as MP_YDZQDW
+		    ,BS2904.YDZ_H as MP_YDZH
+		    ,BS2904.YDZ_HDW as MP_YDZHDW
+	  FROM B_S2_901 S2901
+	  JOIN B_S2_008 S2008
+	    ON S2901.ID = S2008.JKSJID
+	    AND S2901.ZT = 1
+	   AND S2008.ID = #{workOrderId, jdbcType=VARCHAR}
+	  LEFT JOIN B_S2_904 BS2904 on S2901.ID = BS2904.JKSJID
+  </select>
+  
+  <!-- 根据维修项目id查询可取代的数据 -->
+  <select id="selectReplaceByLyid" resultMap="MonitoringObjectWithRelMap">
+  	SELECT S2901.ID,
+	       S2901.DPRTCODE,      
+	       S2901.ZT,
+	       S2901.LYLX,
+	       S2901.LYID,
+	       S2901.LYBH,
+	       S2901.WXFAID,
+	       S2901.WXFABH,
+	       S2901.EOXC,
+	       S2901.FJZCH,
+	       S2901.FJXLH,
+	       S2901.ZJQDID,
+	       S2901.BJH,
+	       S2901.XLH,
+	       S2901.WZ
+	       ,S2901.BYXJKSJID
+	       ,S2901.JSGS
+	       ,S2901.HDWZ
+	       ,BS2904.ID as MP_ID
+		    ,BS2904.JKSJID as MP_JKSJID
+		    ,BS2904.JKLBH as MP_JKLBH
+		    ,BS2904.JKFLBH as MP_JKFLBH 
+		    ,BS2904.JHQSZ as MP_JHQSZ 
+		    ,BS2904.JHZ as MP_JHZ 
+		    ,BS2904.SJZ as MP_SJZ 
+		    ,BS2904.CSZ as MP_CSZ 
+		    ,BS2904.WZ as MP_WZ 
+		    ,BS2904.SCZ as MP_SCZ 
+		    ,BS2904.DW_SCZ as MP_DWSCZ 
+		    ,BS2904.ZQZ as MP_ZQZ
+		    ,BS2904.DW_ZQZ as MP_DWZQZ
+		    ,BS2904.YDZ_Q as MP_YDZQ 
+		    ,BS2904.YDZ_QDW as MP_YDZQDW
+		    ,BS2904.YDZ_H as MP_YDZH
+		    ,BS2904.YDZ_HDW as MP_YDZHDW
+	  FROM B_S2_902 S2902
+	  JOIN B_S2_901 S2901 on S2902.id = S2901.id
+	  JOIN B_G2_012 G2012
+	    ON S2902.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND S2902.LYLX = 2
+	   AND S2902.LYBH = G2012.EOBH
+	   AND S2902.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	   AND G2012.ID = #{lyid, jdbcType=VARCHAR}
+	   LEFT JOIN B_S2_904 BS2904 on S2901.ID = BS2904.JKSJID
+	UNION
+	SELECT S2901.ID,
+		       S2901.DPRTCODE,      
+		       S2901.ZT,
+		       S2901.LYLX,
+		       S2901.LYID,
+		       S2901.LYBH,
+		       S2901.WXFAID,
+		       S2901.WXFABH,
+		       S2901.EOXC,
+		       S2901.FJZCH,
+		       S2901.FJXLH,
+		       S2901.ZJQDID,
+		       S2901.BJH,
+		       S2901.XLH,
+		       S2901.WZ
+		       ,S2901.BYXJKSJID
+		       ,S2901.JSGS
+	       		,S2901.HDWZ
+		       ,BS2904.ID as MP_ID
+			    ,BS2904.JKSJID as MP_JKSJID
+			    ,BS2904.JKLBH as MP_JKLBH
+			    ,BS2904.JKFLBH as MP_JKFLBH 
+			    ,BS2904.JHQSZ as MP_JHQSZ 
+			    ,BS2904.JHZ as MP_JHZ 
+			    ,BS2904.SJZ as MP_SJZ 
+			    ,BS2904.CSZ as MP_CSZ 
+			    ,BS2904.WZ as MP_WZ 
+			    ,BS2904.SCZ as MP_SCZ 
+			    ,BS2904.DW_SCZ as MP_DWSCZ 
+			    ,BS2904.ZQZ as MP_ZQZ
+			    ,BS2904.DW_ZQZ as MP_DWZQZ
+			    ,BS2904.YDZ_Q as MP_YDZQ 
+			    ,BS2904.YDZ_QDW as MP_YDZQDW
+			    ,BS2904.YDZ_H as MP_YDZH
+			    ,BS2904.YDZ_HDW as MP_YDZHDW
+	  FROM B_S2_902 S2902
+	  JOIN B_S2_901 S2901 on S2902.id = S2901.id
+	  JOIN B_G2_01202 G201202
+	    ON S2902.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND G201202.ZT = 1
+	   AND S2902.LYLX = 1
+	   AND S2902.LYBH = G201202.WXXMBH
+	   AND S2902.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	   AND G201202.MAINID = #{lyid, jdbcType=VARCHAR}
+	  JOIN B_G2_012 G2012
+	    ON G2012.ID = G201202.MAINID
+	   AND G2012.WXXMLX IN (1, 2, 3)
+	  LEFT JOIN B_S2_904 BS2904 on S2901.ID = BS2904.JKSJID
+  </select>
+  <!-- 根据装机清单ID删除监控数据 (监控数据未执行且不存在非指定结束的工单) -->
+  <delete id="deleteByZjqdid"> 
+	DELETE FROM B_S2_901 S2901
+	 WHERE S2901.ZT = 1
+	   AND S2901.JSSJ IS NULL
+	   AND S2901.ZJQDID = #{zjqdid, jdbcType=VARCHAR}
+	   AND NOT EXISTS (SELECT 1
+	          FROM B_S2_008 S2008
+	         WHERE S2008.ZT IN (1, 2, 7, 10)
+	           AND S2008.JKSJID = S2901.ID)  
+  </delete>
+  
+  <!-- 根据被影响监控数据id查询  -->
+  <select id="selecyByByxjksjid" resultMap="MonitoringObjectWithRelMap" parameterType="java.lang.String" >
+   select 
+    	<include refid="Monitoring_Column_List" />
+	    ,BS2903.ID as ML_ID
+	    ,BS2903.JKSJID as ML_JKSJID
+	    ,BS2903.JKLBH as ML_JKLBH
+	    ,BS2903.JKFLBH as ML_JKFLBH 
+	    ,BS2903.SCJHZ as ML_SCJHZ 
+	    ,BS2903.SCSJZ as ML_SCSJZ 
+	    ,BS2904.ID as MP_ID
+	    ,BS2904.JKSJID as MP_JKSJID
+	    ,BS2904.JKLBH as MP_JKLBH
+	    ,BS2904.JKFLBH as MP_JKFLBH 
+	    ,BS2904.JHQSZ as MP_JHQSZ 
+	    ,BS2904.JHZ as MP_JHZ 
+	    ,BS2904.SJZ as MP_SJZ 
+	    ,BS2904.CSZ as MP_CSZ 
+	    ,BS2904.WZ as MP_WZ 
+	    ,BS2904.SCZ as MP_SCZ 
+	    ,BS2904.DW_SCZ as MP_DWSCZ 
+	    ,BS2904.ZQZ as MP_ZQZ
+	    ,BS2904.DW_ZQZ as MP_DWZQZ
+	    ,BS2904.YDZ_Q as MP_YDZQ 
+	    ,BS2904.YDZ_QDW as MP_YDZQDW
+	    ,BS2904.YDZ_H as MP_YDZH
+	    ,BS2904.YDZ_HDW as MP_YDZHDW
+    from B_S2_901 B
+    LEFT JOIN B_S2_903 BS2903
+    ON BS2903.JKSJID = B.ID and BS2903.ZT = 1
+    LEFT JOIN B_S2_904 BS2904
+    ON BS2904.JKSJID = B.ID and BS2904.ZT = 1
+    where B.JSSJ is not null and B.byxjksjid = #{byxjksjid, jdbcType=VARCHAR}
+  </select>
+  <!-- 根据装机清单id更新序列号 -->
+  <update id="updateXlhByZjqdid">
+  	UPDATE B_S2_901 SET XLH = #{xlh, jdbcType=VARCHAR} WHERE ZJQDID = #{zjqdid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据装机清单查询每个来源最后的一次监控数据 -->
+  <select id="selectLastMonitorByZjqdid" resultMap="MonitoringObjectWithRelMap">
+	  	SELECT S2901.ID,
+	       S2901.DPRTCODE,
+	       S2901.WHBMID,
+	       S2901.WHRID,
+	       S2901.WHSJ,
+	       S2901.ZT,
+	       S2901.F_JKSJID,
+	       S2901.B_JKSJID,
+	       S2901.LYLX,
+	       S2901.LYID,
+	       S2901.LYBH,
+	       S2901.WXFAID,
+	       S2901.WXFABH,
+	       S2901.EOXC,
+	       S2901.FJZCH,
+	       S2901.FJXLH,
+	       S2901.ZJQDID,
+	       S2901.BJH,
+	       S2901.XLH,
+	       S2901.JSSJ,
+	       S2901.BYXJKSJID,
+	       S2901.WZ,
+	       BS2903.ID AS ML_ID,
+	       BS2903.JKSJID AS ML_JKSJID,
+	       BS2903.JKLBH AS ML_JKLBH,
+	       BS2903.JKFLBH AS ML_JKFLBH,
+	       BS2903.SCJHZ AS ML_SCJHZ,
+	       BS2903.SCSJZ AS ML_SCSJZ,
+	       BS2904.ID AS MP_ID,
+	       BS2904.JKSJID AS MP_JKSJID,
+	       BS2904.JKLBH AS MP_JKLBH,
+	       BS2904.JKFLBH AS MP_JKFLBH,
+	       BS2904.JHQSZ AS MP_JHQSZ,
+	       BS2904.JHZ AS MP_JHZ,
+	       BS2904.SJZ AS MP_SJZ,
+	       BS2904.CSZ AS MP_CSZ,
+	       BS2904.WZ AS MP_WZ,
+	       BS2904.SCZ AS MP_SCZ,
+	       BS2904.DW_SCZ AS MP_DWSCZ,
+	       BS2904.ZQZ AS MP_ZQZ,
+	       BS2904.DW_ZQZ AS MP_DWZQZ,
+	       BS2904.YDZ_Q AS MP_YDZQ,
+	       BS2904.YDZ_QDW AS MP_YDZQDW,
+	       BS2904.YDZ_H AS MP_YDZH,
+	       BS2904.YDZ_HDW AS MP_YDZHDW
+	  FROM (SELECT ID,
+	               DPRTCODE,
+	               WHBMID,
+	               WHRID,
+	               WHSJ,
+	               ZT,
+	               F_JKSJID,
+	               B_JKSJID,
+	               LYLX,
+	               LYID,
+	               LYBH,
+	               WXFAID,
+	               WXFABH,
+	               EOXC,
+	               FJZCH,
+	               FJXLH,
+	               ZJQDID,
+	               BJH,
+	               XLH,
+	               JSSJ,
+	               BYXJKSJID,
+	               WZ,
+	               ROW_NUMBER() OVER(PARTITION BY LYID, ZJQDID ORDER BY WHSJ DESC) RN
+	          FROM B_S2_901
+	         WHERE ZT = 1
+	           AND ZJQDID = #{zjqdid, jdbcType=VARCHAR}
+	           AND B_JKSJID IS NULL) S2901
+	  LEFT JOIN B_S2_903 BS2903 ON S2901.ID = BS2903.JKSJID
+	  LEFT JOIN B_S2_904 BS2904 ON S2901.ID = BS2904.JKSJID
+	 WHERE S2901.RN = 1
+  </select>
+   
+   <!-- 根据飞机查询未执行的监控数据 -->
+  <select id="selectNotExeMonitorDataListByFjzch" resultMap="MonitoringObjectWithRelMap" parameterType="java.lang.String" >
+   select 
+    	<include refid="Monitoring_Column_List" />
+	    ,BS2903.ID as ML_ID
+	    ,BS2903.JKSJID as ML_JKSJID
+	    ,BS2903.JKLBH as ML_JKLBH
+	    ,BS2903.JKFLBH as ML_JKFLBH 
+	    ,BS2903.SCJHZ as ML_SCJHZ 
+	    ,BS2903.SCSJZ as ML_SCSJZ 
+	    ,BS2904.ID as MP_ID
+	    ,BS2904.JKSJID as MP_JKSJID
+	    ,BS2904.JKLBH as MP_JKLBH
+	    ,BS2904.JKFLBH as MP_JKFLBH 
+	    ,BS2904.JHQSZ as MP_JHQSZ 
+	    ,BS2904.JHZ as MP_JHZ 
+	    ,BS2904.SJZ as MP_SJZ 
+	    ,BS2904.CSZ as MP_CSZ 
+	    ,BS2904.WZ as MP_WZ 
+	    ,BS2904.SCZ as MP_SCZ 
+	    ,BS2904.DW_SCZ as MP_DWSCZ 
+	    ,BS2904.ZQZ as MP_ZQZ
+	    ,BS2904.DW_ZQZ as MP_DWZQZ
+	    ,BS2904.YDZ_Q as MP_YDZQ 
+	    ,BS2904.YDZ_QDW as MP_YDZQDW
+	    ,BS2904.YDZ_H as MP_YDZH
+	    ,BS2904.YDZ_HDW as MP_YDZHDW
+    from B_S2_901 B
+    LEFT JOIN B_S2_903 BS2903
+    	ON BS2903.JKSJID = B.ID and BS2903.ZT = 1
+    LEFT JOIN B_S2_904 BS2904
+    	ON BS2904.JKSJID = B.ID and BS2904.ZT = 1
+    where JSSJ is null and B.ZT=1 AND B.DPRTCODE=#{dprtcode,jdbcType=VARCHAR} AND B.FJZCH=#{fjzch,jdbcType=VARCHAR}
+    ORDER BY BS2903.JKLBH, BS2904.JKLBH
+  </select>
+  
+  <!-- 根据来源ID查询未执行的监控数据 -->
+  <select id="selectNotExeMonitorDataListByLyid" resultMap="MonitoringObjectWithRelMap" parameterType="java.lang.String" >
+   select 
+    	<include refid="Monitoring_Column_List" />
+	    ,BS2903.ID as ML_ID
+	    ,BS2903.JKSJID as ML_JKSJID
+	    ,BS2903.JKLBH as ML_JKLBH
+	    ,BS2903.JKFLBH as ML_JKFLBH 
+	    ,BS2903.SCJHZ as ML_SCJHZ 
+	    ,BS2903.SCSJZ as ML_SCSJZ 
+	    ,BS2904.ID as MP_ID
+	    ,BS2904.JKSJID as MP_JKSJID
+	    ,BS2904.JKLBH as MP_JKLBH
+	    ,BS2904.JKFLBH as MP_JKFLBH 
+	    ,BS2904.JHQSZ as MP_JHQSZ 
+	    ,BS2904.JHZ as MP_JHZ 
+	    ,BS2904.SJZ as MP_SJZ 
+	    ,BS2904.CSZ as MP_CSZ 
+	    ,BS2904.WZ as MP_WZ 
+	    ,BS2904.SCZ as MP_SCZ 
+	    ,BS2904.DW_SCZ as MP_DWSCZ 
+	    ,BS2904.ZQZ as MP_ZQZ
+	    ,BS2904.DW_ZQZ as MP_DWZQZ
+	    ,BS2904.YDZ_Q as MP_YDZQ 
+	    ,BS2904.YDZ_QDW as MP_YDZQDW
+	    ,BS2904.YDZ_H as MP_YDZH
+	    ,BS2904.YDZ_HDW as MP_YDZHDW
+    from B_S2_901 B
+    LEFT JOIN B_S2_903 BS2903
+    	ON BS2903.JKSJID = B.ID and BS2903.ZT = 1
+    LEFT JOIN B_S2_904 BS2904
+    	ON BS2904.JKSJID = B.ID and BS2904.ZT = 1
+    where FJZCH is not null and JSSJ is null and B.LYID = #{lyid, jdbcType=VARCHAR}
+    ORDER BY BS2903.JKLBH, BS2904.JKLBH
+  </select>
+</mapper>

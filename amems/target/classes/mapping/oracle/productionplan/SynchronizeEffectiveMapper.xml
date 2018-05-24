@@ -1,0 +1,1182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.SynchronizeEffectiveMapper" >
+
+   <!-- 获取未完成的时控件数据 -->
+   <select id="findUnfinishedTimeMonitorData" resultType="com.eray.thjw.productionplan.po.LoadingList" 
+   		parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+    SELECT B1.ID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.NBSBM, B1.ZJH, B1.CJJH, B1.ZWMC, B1.YWMC, B1.BJGZJL,
+    B1.ZJSL, B1.WZ, B1.ZT, B1.SCRQ, B1.BZ, B1.AZRQ, B1.AZJLDH, B1.CCRQ, B1.CCJLDH, B1.LLKLX, B1.LLKBH, B1.KZLX,
+    B1.IS_DJ, B1.TSN, B1.TSO, B1.CJ, B1.FJDID, B1.SXRQ, B1.SXZT, B1.TBBS, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.DPRTCODE, B1.KBS
+	  FROM B_S_001 B1
+	 WHERE B1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	   AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND B1.ZT = 1
+	   AND B1.KZLX IN (1, 2)
+	   AND B1.SXZT IN (0, 1)
+	   AND NOT EXISTS (SELECT 1
+	          FROM B_S_00101 B2
+	         WHERE B2.ZJQDID = B1.ID
+	           AND B2.ZT = 1)
+  </select>
+  
+  <!-- 获取未完成的定检件数据 -->
+  <select id="findUnfinishedFixedMonitorData" resultType="com.eray.thjw.productionplan.po.LoadingList" 
+  		parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+    SELECT B1.ID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.NBSBM, B1.ZJH, B1.CJJH, B1.ZWMC, B1.YWMC, B1.BJGZJL,
+    B1.ZJSL, B1.WZ, B1.ZT, B1.SCRQ, B1.BZ, B1.AZRQ, B1.AZJLDH, B1.CCRQ, B1.CCJLDH, B1.LLKLX, B1.LLKBH, B1.KZLX,
+    B1.IS_DJ, B1.TSN, B1.TSO, B1.CJ, B1.FJDID, B1.SXRQ, B1.SXZT, B1.TBBS, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.DPRTCODE, B1.KBS
+	  FROM B_S_001 B1
+	 WHERE B1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	   AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND B1.ZT = 1
+	   AND B1.IS_DJ = 1
+	   AND B1.SXZT IN (0, 1)
+	   AND NOT EXISTS (SELECT 1
+	          FROM B_S_00103 B2
+	         WHERE B2.ZJQDID = B1.ID
+	           AND B2.ZT = 1)
+  </select>
+  
+  <!-- 获取未完成的时控件计划 -->
+  <select id="findUnfinishedTimeMonitorPlan" resultType="com.eray.thjw.productionplan.po.LoadingList" 
+  		parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+  	SELECT B1.ID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.NBSBM, B1.ZJH, B1.CJJH, B1.ZWMC, B1.YWMC, B1.BJGZJL,
+    B1.ZJSL, B1.WZ, B1.ZT, B1.SCRQ, B1.BZ, B1.AZRQ, B1.AZJLDH, B1.CCRQ, B1.CCJLDH, B1.LLKLX, B1.LLKBH, B1.KZLX,
+    B1.IS_DJ, B1.TSN, B1.TSO, B1.CJ, B1.FJDID, B1.SXRQ, B1.SXZT, B1.WHSJ, B1.DPRTCODE, B1.KBS
+    FROM B_S_003 B1
+    LEFT JOIN B_G_007 B2 ON B1.GDID = B2.ID AND B2.ZT NOT IN (8,9,10)
+    LEFT JOIN B_S_009 B3 ON B1.RWID = B3.ID AND B3.ZT NOT IN (9,10)
+   WHERE B1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+     AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+     AND B1.KZLX IN (1, 2)
+     AND B1.SXZT IN (0, 1)
+     AND B1.ZT = 1
+     AND (B2.ID IS NOT NULL OR B3.ID IS NOT NULL)
+     AND EXISTS (SELECT 1 FROM B_S_00101 B2 WHERE B2.ZJQDID = B1.ID AND B2.TBBS = 1)
+  </select>
+  
+  
+  <!-- 获取未完成的定检件计划 -->
+  <select id="findUnfinishedFixedMonitorPlan" resultType="com.eray.thjw.productionplan.po.LoadingList" 
+  		parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+  	SELECT B1.ID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.NBSBM, B1.ZJH, B1.CJJH, B1.ZWMC, B1.YWMC, B1.BJGZJL,
+    B1.ZJSL, B1.WZ, B1.ZT, B1.SCRQ, B1.BZ, B1.AZRQ, B1.AZJLDH, B1.CCRQ, B1.CCJLDH, B1.LLKLX, B1.LLKBH, B1.KZLX,
+    B1.IS_DJ, B1.TSN, B1.TSO, B1.CJ, B1.FJDID, B1.SXRQ, B1.SXZT, B1.WHSJ, B1.DPRTCODE, B1.KBS
+	    FROM B_S_003 B1
+	   WHERE B1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	     AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	     AND B1.ZT = 1
+	     AND B1.SXZT IN (0, 1)
+	     AND EXISTS (SELECT 1
+	            FROM B_S_00303 B2
+	    	 	LEFT JOIN B_S_009 B4 ON B2.RWID = B4.ID AND B4.ZT NOT IN (9,10)
+	           WHERE B2.ZJQDID = B1.ID
+		           <!-- AND B2.ZT = 1 -->
+		           AND B4.ID IS NOT NULL
+		           AND EXISTS (SELECT 1 FROM B_S_00103 B3 WHERE B2.ID = B3.ID AND B3.TBBS = 1))
+  </select>
+  
+  
+  <!-- 获取废弃的定检监控项目 -->
+  <select id="findScrapFixedMonitor" resultType="com.eray.thjw.productionplan.po.LoadingList" 
+  		parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+    SELECT B1.ID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.NBSBM, B1.ZJH, B1.CJJH, B1.ZWMC, B1.YWMC, B1.BJGZJL,
+    B1.ZJSL, B1.WZ, B1.ZT, B1.SCRQ, B1.BZ, B1.AZRQ, B1.AZJLDH, B1.CCRQ, B1.CCJLDH, B1.LLKLX, B1.LLKBH, B1.KZLX,
+    B1.IS_DJ, B1.TSN, B1.TSO, B1.CJ, B1.FJDID, B1.SXRQ, B1.SXZT, B1.WHSJ, B1.DPRTCODE, B1.KBS
+    FROM B_S_001 B1
+    INNER JOIN B_S_00103 B2 ON B2.ZJQDID = B1.ID AND B2.ZT = 1 AND B2.TBBS = 1
+    INNER JOIN (SELECT A.WXFABH,A.DJBH,A.ID,A.ZWMS,A.BZ,A.BB,A.ZT,A.MAXBB,A.ZXBS,A.DPRTCODE FROM (SELECT B_G_012.WXFABH,
+                                      B_G_012.DJBH,
+                                      B_G_012.ID,
+                                      B_G_012.ZWMS,
+                                      B_G_012.BZ,
+                                      B_G_012.BB,
+                                      B_G_012.ZT,
+                                      B_G_012.ZXBS,
+                                      B_G_012.DPRTCODE,
+                                      MAX(BB) OVER(PARTITION BY WXFABH, DJBH, DPRTCODE) MAXBB
+                                 FROM B_G_012) A
+                        WHERE A.BB = A.MAXBB)B3 ON B3.DJBH = B2.DJBH AND B3.WXFABH = B2.WXFABH AND B3.DPRTCODE = B2.DPRTCODE AND B3.ZT IN (1,2) AND B3.ZXBS = 1
+   WHERE B1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+     AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+     AND B1.ZT = 1
+     AND B1.IS_DJ = 1
+     AND B1.SXZT IN (0, 1)
+  </select>
+  
+  
+  <!-- 获取未配置完全的定检监控项目（由于升版导致） -->
+  <select id="findNotFinishedFixedMonitor" resultType="com.eray.thjw.productionplan.po.LoadingList"
+  		parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+    	<!-- 配置的定检监控项目比最新的定检监控项目多 -->
+	    SELECT B0.ID,
+		       B0.FJZCH,
+		       B0.BJLX,
+		       B0.JH,
+		       B0.XLH,
+		       B0.NBSBM,
+		       B0.ZJH,
+		       B0.CJJH,
+		       B0.ZWMC,
+		       B0.YWMC,
+		       B0.BJGZJL,
+		       B0.ZJSL,
+		       B0.WZ,
+		       B0.ZT,
+		       B0.SCRQ,
+		       B0.BZ,
+		       B0.AZRQ,
+		       B0.AZJLDH,
+		       B0.CCRQ,
+		       B0.CCJLDH,
+		       B0.LLKLX,
+		       B0.LLKBH,
+		       B0.KZLX,
+		       B0.IS_DJ,
+		       B0.TSN,
+		       B0.TSO,
+		       B0.CJ,
+		       B0.FJDID,
+		       B0.SXRQ,
+		       B0.SXZT,
+		       B0.TBBS,
+		       B0.WHDWID,
+		       B0.WHRID,
+		       B0.WHSJ,
+		       B0.DPRTCODE,
+		       B0.KBS
+		  FROM B_S_001 B0
+		  LEFT JOIN B_S_00103 B1
+		    ON B1.ZJQDID = B0.ID
+		   AND B1.ZT = 1
+		  LEFT JOIN B_S_0010301 B2
+		    ON B2.MAINID = B1.ID
+		   AND B2.ZT = 1
+		  LEFT JOIN B_G_012 B3
+		    ON B3.DJBH = B1.DJBH
+		   AND B3.WXFABH = B1.WXFABH
+		   AND B3.DPRTCODE = B1.DPRTCODE
+		   AND B3.ZT = 3
+		   AND B3.ZXBS = 1
+		  LEFT JOIN B_G_01201 B4
+		    ON B4.DJXMID = B3.ID
+		   AND B4.ZT = 1
+		   AND B2.JKLBH = B4.JKLBH
+		   AND B2.JKFLBH = B4.JKFLBH
+		 WHERE B0.FJZCH = #{fjzch,jdbcType=VARCHAR}
+		   AND B0.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		   AND B0.ZT = 1
+		   AND B0.IS_DJ = 1
+		   AND B0.SXZT IN (0, 1)
+		   AND B4.ID IS NULL
+		
+		UNION
+		<!-- 配置的定检监控项目比最新的定检监控项目少 -->
+		SELECT B0.ID,
+		       B0.FJZCH,
+		       B0.BJLX,
+		       B0.JH,
+		       B0.XLH,
+		       B0.NBSBM,
+		       B0.ZJH,
+		       B0.CJJH,
+		       B0.ZWMC,
+		       B0.YWMC,
+		       B0.BJGZJL,
+		       B0.ZJSL,
+		       B0.WZ,
+		       B0.ZT,
+		       B0.SCRQ,
+		       B0.BZ,
+		       B0.AZRQ,
+		       B0.AZJLDH,
+		       B0.CCRQ,
+		       B0.CCJLDH,
+		       B0.LLKLX,
+		       B0.LLKBH,
+		       B0.KZLX,
+		       B0.IS_DJ,
+		       B0.TSN,
+		       B0.TSO,
+		       B0.CJ,
+		       B0.FJDID,
+		       B0.SXRQ,
+		       B0.SXZT,
+		       B0.TBBS,
+		       B0.WHDWID,
+		       B0.WHRID,
+		       B0.WHSJ,
+		       B0.DPRTCODE,
+		       B0.KBS
+		  FROM B_S_001 B0
+		  LEFT JOIN B_S_00103 B1
+		    ON B1.ZJQDID = B0.ID
+		   AND B1.ZT = 1
+		  LEFT JOIN B_G_012 B2
+		    ON B2.DJBH = B1.DJBH
+		   AND B2.WXFABH = B1.WXFABH
+		   AND B2.DPRTCODE = B1.DPRTCODE
+		   AND B2.ZT = 3
+		   AND B2.ZXBS = 1
+		  LEFT JOIN B_G_01201 B3
+		    ON B3.DJXMID = B2.ID
+		   AND B3.ZT = 1
+		  LEFT JOIN B_S_0010301 B4
+		    ON B4.MAINID = B1.ID
+		   AND B4.ZT = 1
+		   AND B4.JKLBH = B3.JKLBH
+		   AND B4.JKFLBH = B3.JKFLBH
+		 WHERE B0.FJZCH = #{fjzch,jdbcType=VARCHAR}
+		   AND B0.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		   AND B0.ZT = 1
+		   AND B0.IS_DJ = 1
+		   AND B0.SXZT IN (0, 1)
+		   AND B4.ID IS NULL
+  </select>
+  
+
+
+  <!-- 同步装机清单数据 -->
+  <insert id="synchronizeLoadingList" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+	  merge into b_s_003 b2
+		USING (SELECT * FROM B_S_001 WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} 
+				AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND TBBS = 1) B1
+		ON (B1.ID = B2.ID)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET B2.FJZCH    = B1.FJZCH,
+		         B2.BJLX     = B1.BJLX,
+		         B2.JH       = B1.JH,
+		         B2.XLH      = B1.XLH,
+		         B2.NBSBM    = B1.NBSBM,
+		         B2.ZJH      = B1.ZJH,
+		         B2.CJJH     = B1.CJJH,
+		         B2.ZWMC     = B1.ZWMC,
+		         B2.YWMC     = B1.YWMC,
+		         B2.BJGZJL   = B1.BJGZJL,
+		         B2.ZJSL     = B1.ZJSL,
+		         B2.WZ       = B1.WZ,
+		         B2.ZT       = B1.ZT,
+		         B2.SCRQ     = B1.SCRQ,
+		         B2.BZ       = B1.BZ,
+		         B2.AZRQ     = B1.AZRQ,
+		         B2.AZJLDH   = B1.AZJLDH,
+		         B2.CCRQ     = B1.CCRQ,
+		         B2.CCJLDH   = B1.CCJLDH,
+		         B2.LLKLX    = B1.LLKLX,
+		         B2.LLKBH    = B1.LLKBH,
+		         B2.KZLX     = B1.KZLX,
+		         B2.IS_DJ    = B1.IS_DJ,
+		         B2.TSN      = B1.TSN,
+		         B2.TSO      = B1.TSO,
+		         B2.CJ       = B1.CJ,
+		         B2.FJDID    = B1.FJDID,
+		         B2.KBS      = B1.KBS,
+		         B2.WHSJ     = B1.WHSJ,
+		         B2.SXRQ     = SYSDATE,
+		         B2.SXZT     = 1,
+		         B2.XKZH     = B1.XKZH,
+		         B2.SHZH     = B1.SHZH,
+		         B2.PCH      = B1.PCH
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID,
+		     B2.FJZCH,
+		     B2.BJLX,
+		     B2.JH,
+		     B2.XLH,
+		     B2.NBSBM,
+		     B2.ZJH,
+		     B2.CJJH,
+		     B2.ZWMC,
+		     B2.YWMC,
+		     B2.BJGZJL,
+		     B2.ZJSL,
+		     B2.WZ,
+		     B2.ZT,
+		     B2.SCRQ,
+		     B2.BZ,
+		     B2.AZRQ,
+		     B2.AZJLDH,
+		     B2.CCRQ,
+		     B2.CCJLDH,
+		     B2.LLKLX,
+		     B2.LLKBH,
+		     B2.KZLX,
+		     B2.IS_DJ,
+		     B2.TSN,
+		     B2.TSO,
+		     B2.CJ,
+		     B2.FJDID,
+		     B2.KBS,
+		     B2.SXRQ,
+		     B2.SXZT,
+		     B2.WHSJ,
+		     B2.DPRTCODE,
+		     B2.XKZH,
+		     B2.SHZH,
+		     B2.PCH)
+		  VALUES
+		    (B1.ID,
+		     B1.FJZCH,
+		     B1.BJLX,
+		     B1.JH,
+		     B1.XLH,
+		     B1.NBSBM,
+		     B1.ZJH,
+		     B1.CJJH,
+		     B1.ZWMC,
+		     B1.YWMC,
+		     B1.BJGZJL,
+		     B1.ZJSL,
+		     B1.WZ,
+		     B1.ZT,
+		     B1.SCRQ,
+		     B1.BZ,
+		     B1.AZRQ,
+		     B1.AZJLDH,
+		     B1.CCRQ,
+		     B1.CCJLDH,
+		     B1.LLKLX,
+		     B1.LLKBH,
+		     B1.KZLX,
+		     B1.IS_DJ,
+		     B1.TSN,
+		     B1.TSO,
+		     B1.CJ,
+		     B1.FJDID,
+		     B1.KBS,
+		     SYSDATE,
+		     1,
+		     B1.WHSJ,
+		     B1.DPRTCODE,
+		     B1.XKZH,
+		     B1.SHZH,
+		     B1.PCH)
+  </insert>
+  
+  <!-- 更新装机清单编辑区的同步标识 -->
+  <update id="updateLoadingListTbbs" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_001
+    SET SXRQ = SYSDATE,
+      SXZT = 1,
+      TBBS = 0
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND TBBS = 1
+  </update>
+  
+  
+  <!-- 同步时控件监控设置数据 -->
+  <insert id="synchronizeTimeMonitor" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+	  MERGE INTO B_S_00301 B2
+		USING (SELECT *
+		         FROM B_S_00101
+		        WHERE FJZCH = #{fjzch,jdbcType=VARCHAR}
+		          AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		          AND TBBS = 1
+		          AND ZT = 1) B1
+		ON (B1.ZJQDID = B2.ZJQDID AND B1.JKLBH = B2.JKLBH AND B1.JKFLBH = B2.JKFLBH)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET B2.FJZCH    = B1.FJZCH,
+		         B2.BJLX     = B1.BJLX,
+		         B2.JH       = B1.JH,
+		         B2.XLH      = B1.XLH,
+		         B2.GDSX     = B1.GDSX,
+		         B2.GDSX_DW  = B1.GDSX_DW,
+		         B2.ZJYY     = B1.ZJYY,
+		         B2.ZJYY_DW  = B1.ZJYY_DW,
+		         B2.BJYY     = B1.BJYY,
+		         B2.BJYY_DW  = B1.BJYY_DW,
+		         B2.BJYC     = B1.BJYC,
+		         B2.BJYC_DW  = B1.BJYC_DW,
+		         B2.ZJHYY    = B1.ZJHYY,
+		         B2.ZJHYY_DW = B1.ZJHYY_DW,
+		         B2.PXH      = B1.PXH,
+		         B2.WHSJ     = B1.WHSJ,
+		         B2.ZT       = B1.ZT
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID,
+		     B2.ZJQDID,
+		     B2.FJZCH,
+		     B2.BJLX,
+		     B2.JH,
+		     B2.XLH,
+		     B2.JKLBH,
+		     B2.JKFLBH,
+		     B2.GDSX,
+		     B2.GDSX_DW,
+		     B2.ZJYY,
+		     B2.ZJYY_DW,
+		     B2.BJYY,
+		     B2.BJYY_DW,
+		     B2.BJYC,
+		     B2.BJYC_DW,
+		     B2.ZJHYY,
+		     B2.ZJHYY_DW,
+		     B2.PXH,
+		     B2.WHSJ,
+		     B2.ZT,
+		     B2.DPRTCODE)
+		  VALUES
+		    (B1.ID,
+		     B1.ZJQDID,
+		     B1.FJZCH,
+		     B1.BJLX,
+		     B1.JH,
+		     B1.XLH,
+		     B1.JKLBH,
+		     B1.JKFLBH,
+		     B1.GDSX,
+		     B1.GDSX_DW,
+		     B1.ZJYY,
+		     B1.ZJYY_DW,
+		     B1.BJYY,
+		     B1.BJYY_DW,
+		     B1.BJYC,
+		     B1.BJYC_DW,
+		     B1.ZJHYY,
+		     B1.ZJHYY_DW,
+		     B1.PXH,
+		     B1.WHSJ,
+		     B1.ZT,
+		     B1.DPRTCODE)
+  </insert>
+  
+  
+  <!-- 同步时控件监控设置中的删除数据 -->
+  <update id="synchronizeTimeMonitorDeleteData" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_00301 B2
+	   SET B2.ZT = 0,
+	   	   B2.WHSJ = SYSDATE
+	 WHERE B2.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	   AND B2.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND NOT EXISTS (SELECT 1
+	          FROM B_S_00101 B1
+	         WHERE B1.ZJQDID = B2.ZJQDID
+	           AND B1.JKLBH = B2.JKLBH
+	           AND B1.JKFLBH = B2.JKFLBH
+	           AND B1.ZT = 1)
+  </update>
+  
+  <!-- 更新时控件监控编辑区的同步标识 -->
+  <update id="updateTimeMonitorTbbs" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_00101
+	    SET TBBS = 0
+	    where FJZCH = #{fjzch,jdbcType=VARCHAR} AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND TBBS = 1
+  </update>
+  
+  
+  
+  <!-- 同步特殊飞行设置数据 -->
+  <insert id="synchronizeSpecialFlightSetting" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    MERGE INTO B_S_00302 B2
+		USING (SELECT A1.*
+		         FROM B_S_00102 A1
+		        INNER JOIN B_S_003 A2
+		           ON A1.ZJQDID = A2.ID
+		        WHERE A1.ZT = 1
+		          AND A1.TBBS = 1
+		          AND A2.FJZCH = #{fjzch,jdbcType=VARCHAR}
+		          AND A2.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}) B1
+		ON (B1.ZJQDID = B2.ZJQDID AND B1.TSFXPZID = B2.TSFXPZID)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET B2.XSZ      = B1.XSZ,
+		         B2.ZT       = B1.ZT,
+		         B2.WHSJ     = B1.WHSJ
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID, B2.ZJQDID, B2.TSFXPZID, B2.XSZ, B2.ZT, B2.WHSJ, B2.DPRTCODE)
+		  VALUES
+		    (B1.ID, B1.ZJQDID, B1.TSFXPZID, B1.XSZ, B1.ZT, B1.WHSJ, B1.DPRTCODE)
+  </insert>
+  
+  
+  <!-- 同步特殊飞行设置中的删除数据 -->
+  <update id="synchronizeSpecialFlightSettingDeleteData" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_00302 B2
+	   SET B2.ZT = 0
+	 WHERE EXISTS (SELECT 1
+	          FROM B_S_001 B3
+	         WHERE B3.ID = B2.ZJQDID
+	           AND B3.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	           AND B3.DPRTCODE = #{dprtcode,jdbcType=VARCHAR})
+	   AND NOT EXISTS (SELECT 1
+	          FROM B_S_00102 B1
+	         WHERE B1.ZJQDID = B2.ZJQDID
+	           AND B1.TSFXPZID = B2.TSFXPZID
+	           AND B1.ZT = 1)
+  </update>
+  
+  
+  <!-- 更新特殊飞行设置编辑区的同步标识 -->
+  <update id="updateSpecialFlightSettingTbbs" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_00102 B2
+      SET B2.TBBS = 0
+      WHERE B2.TBBS = 1 AND EXISTS (SELECT 1
+            FROM B_S_001 B3
+           WHERE B3.ID = B2.ZJQDID
+             AND B3.FJZCH = #{fjzch,jdbcType=VARCHAR}
+             AND B3.DPRTCODE = #{dprtcode,jdbcType=VARCHAR})
+  </update>
+  
+  
+  <!-- 同步定检项目数据 -->
+  <insert id="synchronizeFixedItem" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+	MERGE INTO B_S_00303 B2
+		USING (SELECT A1.*, A2.ID AS DJXMID
+		         FROM B_S_00103 A1
+		        LEFT JOIN (SELECT *
+		                     FROM (SELECT B_G_012.WXFABH,
+		                                  B_G_012.DJBH,
+		                                  B_G_012.ID,
+		                                  B_G_012.ZWMS,
+		                                  B_G_012.BZ,
+		                                  B_G_012.BB,
+		                                  B_G_012.DPRTCODE,
+		                                  MAX(BB) OVER(PARTITION BY WXFABH, DJBH, DPRTCODE) MAXBB
+		                             FROM B_G_012
+		                            WHERE ZT = 3) A
+		                    WHERE A.BB = A.MAXBB) A2
+		           ON A1.DJBH = A2.DJBH AND A1.WXFABH = A2.WXFABH AND A1.DPRTCODE = A2.DPRTCODE
+		        WHERE A1.FJZCH = #{fjzch,jdbcType=VARCHAR} AND A1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		          ) B1
+		ON (B1.ID = B2.ID)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET B2.JH       = B1.JH,
+		         B2.XLH      = B1.XLH,
+		         B2.NBSBM    = B1.NBSBM,
+		         B2.DJXMID   = B1.DJXMID,
+		         B2.DJBH     = B1.DJBH,
+		         B2.ZWMS     = B1.ZWMS,
+		         B2.ZT       = B1.ZT,
+		         B2.WHSJ     = B1.WHSJ
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID,
+		     B2.ZJQDID,
+		     B2.FJZCH,
+		     B2.BJLX,
+		     B2.JH,
+		     B2.XLH,
+		     B2.NBSBM,
+		     B2.DJXMID,
+		     B2.DJBH,
+		     B2.ZWMS,
+		     B2.ZT,
+		     B2.WHSJ,
+		     B2.DPRTCODE)
+		  VALUES
+		    (B1.ID,
+		     B1.ZJQDID,
+		     B1.FJZCH,
+		     B1.BJLX,
+		     B1.JH,
+		     B1.XLH,
+		     B1.NBSBM,
+		     B1.DJXMID,
+		     B1.DJBH,
+		     B1.ZWMS,
+		     B1.ZT,
+		     B1.WHSJ,
+		     B1.DPRTCODE)
+  </insert>
+  
+  <!-- 更新定检项目编辑区的同步标识-->
+  <update id="updateFixedItemTbbs" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_00103 B2
+	   SET B2.TBBS = 0
+	 WHERE B2.TBBS = 1
+	   AND B2.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	   AND B2.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 同步定检监控项数据 -->
+  <insert id="synchronizeFixedMonitor" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+	MERGE INTO B_S_00304 B2
+		USING (SELECT A1.*, A2.ID AS DJXMID
+		         FROM B_S_0010301 A1
+		        INNER JOIN B_S_00103 A3 ON A1.MAINID = A3.ID
+		        INNER JOIN (SELECT *
+		                     FROM (SELECT B_G_012.WXFABH,
+		                                  B_G_012.DJBH,
+		                                  B_G_012.ID,
+		                                  B_G_012.ZWMS,
+		                                  B_G_012.BZ,
+		                                  B_G_012.BB,
+		                                  B_G_012.DPRTCODE,
+		                                  MAX(BB) OVER(PARTITION BY WXFABH, DJBH, DPRTCODE) MAXBB
+		                             FROM B_G_012
+		                            WHERE ZT = 3) A
+		                    WHERE A.BB = A.MAXBB) A2
+		           ON A1.DJBH = A2.DJBH AND A3.WXFABH = A2.WXFABH AND A1.DPRTCODE = A2.DPRTCODE 
+		         
+		        WHERE A1.FJZCH = #{fjzch,jdbcType=VARCHAR} AND A1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+
+		          AND A1.ZT = 1) B1
+		ON (B1.MAINID = B2.MAINID AND B1.JKLBH = B2.JKLBH AND B1.JKFLBH = B2.JKFLBH)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET B2.BJLX     = B1.BJLX,
+		         B2.JH       = B1.JH,
+		         B2.XLH      = B1.XLH,
+		         B2.DJXMID   = B1.DJXMID,
+		         B2.DJBH     = B1.DJBH,
+		         B2.ZWMS     = B1.ZWMS,
+		         B2.JK_SZ    = B1.JK_SZ,
+		         B2.JK_DW    = B1.JK_DW,
+		         B2.BJYY     = B1.BJYY,
+		         B2.BJYY_DW  = B1.BJYY_DW,
+		         B2.ZJHYY    = B1.ZJHYY,
+		         B2.ZJHYY_DW = B1.ZJHYY_DW,
+		         B2.WHSJ     = B1.WHSJ,
+		         B2.ZT       = B1.ZT
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID,
+		     B2.MAINID,
+		     B2.ZJQDID,
+		     B2.FJZCH,
+		     B2.BJLX,
+		     B2.JH,
+		     B2.XLH,
+		     B2.DJXMID,
+		     B2.DJBH,
+		     B2.ZWMS,
+		     B2.JKFLBH,
+		     B2.JKLBH,
+		     B2.JK_SZ,
+		     B2.JK_DW,
+		     B2.BJYY,
+		     B2.BJYY_DW,
+		     B2.ZJHYY,
+		     B2.ZJHYY_DW,
+		     B2.WHSJ,
+		     B2.ZT,
+		     B2.DPRTCODE)
+		  VALUES
+		    (B1.ID,
+		     B1.MAINID,
+		     B1.ZJQDID,
+		     B1.FJZCH,
+		     B1.BJLX,
+		     B1.JH,
+		     B1.XLH,
+		     B1.DJXMID,
+		     B1.DJBH,
+		     B1.ZWMS,
+		     B1.JKFLBH,
+		     B1.JKLBH,
+		     B1.JK_SZ,
+		     B1.JK_DW,
+		     B1.BJYY,
+		     B1.BJYY_DW,
+		     B1.ZJHYY,
+		     B1.ZJHYY_DW,
+		     B1.WHSJ,
+		     B1.ZT,
+		     B1.DPRTCODE)
+  </insert>
+  
+  
+  <!-- 同步定检监控项数据中的删除数据 -->
+  <update id="synchronizeFixedMonitorDeleteData" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_00304 B2
+	   SET B2.ZT = 0
+	 WHERE fjzch = #{fjzch,jdbcType=VARCHAR}
+	   AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   and NOT EXISTS (SELECT 1
+	          FROM B_S_0010301 B1
+	         WHERE B1.MAINID = B2.MAINID
+	           AND B1.JKLBH = B2.JKLBH
+	           AND B1.JKFLBH = B2.JKFLBH
+	           AND B1.ZJQDID = B2.ZJQDID
+	           AND B1.DJBH = B2.DJBH
+	           AND B1.ZT = 1)
+  </update>
+  
+  <!-- 更新定检监控项数据编辑区的同步标识-->
+  <update id="updateFixedMonitorTbbs" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_0010301 B2
+	   SET B2.TBBS = 0
+	 WHERE B2.TBBS = 1
+	   AND B2.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	   AND B2.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!-- 同步定检件监控计划数据-->
+  <insert id="synchronizeFixedMonitorPlan" parameterType="java.util.HashMap">
+    MERGE INTO B_S_008 B2
+		USING (SELECT *
+		         FROM B_S_00304
+		        WHERE FJZCH = #{fjzch,jdbcType=VARCHAR}
+		          AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		          AND ZT = 1) B1
+		ON (B1.ZJQDID = B2.ZJQDID AND B1.DJXMID = B2.DJXMID AND B1.JKLBH = B2.JKLBH AND B1.JKFLBH = B2.JKFLBH AND B2.CSBJ = 1 AND B2.ZT = 1)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET B2.JKJHZ    = B1.JK_SZ,
+		         B2.JKSJZ    = B1.JK_SZ,
+		         B2.DW       = B1.JK_DW,
+		         B2.ZDRID    = #{zdrid,jdbcType=VARCHAR},
+		         B2.ZDSJ     = SYSDATE,
+		         B2.IS_CYJS  = CASE WHEN 
+		         	(SELECT MAX(IS_CYJS) FROM B_S_008 WHERE ZJQDID = B1.ZJQDID AND DJXMID = B1.DJXMID 
+			         AND JKLBH = B1.JKLBH AND JKFLBH = B1.JKFLBH AND CSBJ != 1 AND ZT = 1) = 1 THEN 0 
+			         	ELSE 1 END
+		   <!-- 只更新初始标记为1的数据 -->
+		   WHERE B2.CSBJ = 1
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID,
+		     B2.ZJQDID,
+		     B2.DJXMID,
+		     B2.DJXMBH,
+		     B2.JKFLBH,
+		     B2.JKLBH,
+		     B2.JKJHZ,
+		     B2.JKSJZ,
+		     B2.DW,
+		     B2.IS_CYJS,
+		     B2.ZDRID,
+		     B2.ZDSJ,
+		     B2.ZT,
+		     B2.DPRTCODE,
+		     B2.CSBJ)
+		  VALUES
+		    (SYS_GUID(),
+		     B1.ZJQDID,
+		     B1.DJXMID,
+		     B1.DJBH,
+		     B1.JKFLBH,
+		     B1.JKLBH,
+		     B1.JK_SZ,
+		     B1.JK_SZ,
+		     B1.JK_DW,
+		     1,
+		     #{zdrid,jdbcType=VARCHAR},
+		     SYSDATE,
+		     B1.ZT,
+		     B1.DPRTCODE,
+		     1)
+  </insert>
+  
+  
+  <!-- 同步定检件监控计划数据中的删除数据-->
+  <update id="synchronizeFixedMonitorPlanDeleteData" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    UPDATE B_S_008 B2
+	   SET B2.ZT = 0
+	 WHERE EXISTS (SELECT 1
+	          FROM B_S_001 B3
+	         WHERE B3.ID = B2.ZJQDID
+	           AND B3.FJZCH = #{fjzch,jdbcType=VARCHAR}
+	           AND B3.DPRTCODE = #{dprtcode,jdbcType=VARCHAR})
+	   AND NOT EXISTS (SELECT 1
+	          FROM B_S_00304 B1
+	         WHERE B1.ZJQDID = B2.ZJQDID
+	           AND B1.DJXMID = B2.DJXMID
+	           AND B1.JKLBH = B2.JKLBH
+	           AND B1.JKFLBH = B2.JKFLBH
+	           AND B1.ZT = 1)
+  </update>
+  
+  
+  <!-- 同步航材主数据-->
+  <insert id="synchronizeAerialMaterialMainData" parameterType="java.util.HashMap">
+    MERGE INTO D_008 D2
+		USING (SELECT *
+		         FROM (SELECT A.*,
+		                      ROW_NUMBER() OVER(PARTITION BY A.JH, A.DPRTCODE ORDER BY A.ID) RN
+		                 FROM B_S_001 A
+		                WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} 
+		                  AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND TBBS = 1 AND CJ != 0 AND ZT IN (1,2)) B
+		        WHERE B.RN = 1) D1
+		ON (D2.BJH = D1.JH AND D2.DPRTCODE = D1.DPRTCODE AND D2.ZT = 1)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET D2.ZWMS = D1.ZWMC,
+		         D2.YWMS = D1.YWMC,
+		         D2.CJJH = D1.CJJH,
+		         D2.ZJH  = D1.ZJH,
+		         D2.HCLX = 1,
+		         D2.CJRID = #{cjrid,jdbcType=VARCHAR},
+		         D2.CJSJ = SYSDATE,
+		         D2.GLJB = CASE 
+		                 WHEN D1.XLH IS NOT NULL
+		                   THEN 3
+		                 WHEN D1.PCH IS NOT NULL
+		                   THEN 2
+		                 ELSE 1
+		                       END
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (D2.ID,
+		     D2.BJH,
+		     D2.DPRTCODE,
+		     D2.ZWMS,
+		     D2.YWMS,
+		     D2.CJJH,
+		     D2.ZJH,
+		     D2.ZT,
+		     D2.BMID,
+		     D2.CJRID,
+		     D2.CJSJ,
+		     D2.HCLX,
+		     D2.GLJB,
+		     D2.SXKZ)
+		  VALUES
+		    (SYS_GUID(),
+		     D1.JH,
+		     D1.DPRTCODE,
+		     D1.ZWMC,
+		     D1.YWMC,
+		     D1.CJJH,
+		     D1.ZJH,
+		     1,
+		     #{bmid,jdbcType=VARCHAR},
+		     #{cjrid,jdbcType=VARCHAR},
+		     SYSDATE,
+		     1,
+		     CASE 
+             WHEN D1.XLH IS NOT NULL
+               THEN 3
+             WHEN D1.PCH IS NOT NULL
+               THEN 2
+             ELSE 1
+                   END,
+             0)
+  </insert>
+  
+  
+  <!-- 同步部件数据-->
+  <insert id="synchronizeComponent" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    MERGE INTO B_H_010 B2
+		USING (SELECT *
+		         FROM B_S_001
+		        WHERE FJZCH = #{fjzch,jdbcType=VARCHAR}
+		          AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		          AND XLH IS NOT NULL
+		          AND TBBS = 1
+		          AND ZT = 1) B1
+		ON (B2.DPRTCODE = B1.DPRTCODE AND B2.JH = B1.JH AND B2.XLH = B1.XLH)
+		WHEN MATCHED THEN
+		  UPDATE SET B2.WZZT = (CASE WHEN B1.ZT = 1 THEN 1 ELSE 0 END)
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID, B2.DPRTCODE, B2.JH, B2.XLH, B2.WZZT)
+		  VALUES
+		    (SYS_GUID(), B1.DPRTCODE, B1.JH, B1.XLH, (CASE WHEN B1.ZT = 1 THEN 1 ELSE 0 END))
+  </insert>
+  
+  <!-- 同步部件拆解记录-->
+  <insert id="synchronizeComponentDisassembleRecord" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+    MERGE INTO B_H_01002 B2
+		USING (SELECT A1.*, A2.ID AS MAINID
+		         FROM B_S_001 A1
+		         LEFT JOIN B_H_010 A2
+		           ON A1.DPRTCODE = A2.DPRTCODE
+		          AND A1.JH = A2.JH
+		          AND A1.XLH = A2.XLH
+		        WHERE A1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+		          AND A1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		          AND A1.XLH IS NOT NULL
+		          AND A1.BJLX = 1
+		          AND A1.TBBS = 1) B1
+		ON (B2.ZJQDID = B1.ID)
+		WHEN MATCHED THEN
+		  UPDATE
+		     SET B2.MAINID  = B1.MAINID,
+		         B2.ZT      = (CASE WHEN B1.ZT = 3 THEN 0 ELSE 1 END),
+		         B2.AZ_JLD  = B1.AZJLDH,
+		         B2.AZ_ZXRQ = B1.AZRQ,
+		         B2.CJ_JLD  = (CASE WHEN B1.ZT = 2 THEN B1.CCJLDH ELSE NULL END),
+		         B2.CJ_ZXRQ = (CASE WHEN B1.ZT = 2 THEN B1.CCRQ ELSE NULL END),
+		         B2.WHSJ    = SYSDATE
+		WHEN NOT MATCHED THEN
+		  INSERT
+		    (B2.ID,
+		     B2.MAINID,
+		     B2.DPRTCODE,
+		     B2.JH,
+		     B2.XLH,
+		     B2.ZT,
+		     B2.FJZCH,
+		     B2.AZ_JLD,
+		     B2.AZ_ZXRQ,
+		     B2.WHSJ,
+		     B2.IS_CX,
+		     B2.AZ_SJ,
+		     B2.CJ_JLD,
+		     B2.CJ_ZXRQ,
+		     B2.CJ_SJ,
+		     B2.ZJQDID)
+		  VALUES
+		    (SYS_GUID(),
+		     B1.MAINID,
+		     B1.DPRTCODE,
+		     B1.JH,
+		     B1.XLH,
+		     (CASE WHEN B1.ZT = 3 THEN 0 ELSE 1 END),
+		     B1.FJZCH,
+		     B1.AZJLDH,
+		     B1.AZRQ,
+		     SYSDATE,
+		     (CASE WHEN B1.ZT = 2 THEN 1 ELSE 0 END),
+		     SYSDATE,
+		     (CASE WHEN B1.ZT = 2 THEN B1.CCJLDH ELSE NULL END),
+		     (CASE WHEN B1.ZT = 2 THEN B1.CCRQ ELSE NULL END),
+		     (CASE WHEN B1.ZT = 2 THEN SYSDATE ELSE NULL END),
+		     B1.ID)
+  </insert>
+  
+  <!-- 同步部件使用情况-->
+  <insert id="synchronizeComponentUsage" parameterType="java.util.HashMap">
+  	MERGE INTO B_H_01001 B2 
+		USING (SELECT A1.DPRTCODE,A1.JH,A1.XLH,A1.FJZCH,A1.WZ,A1.ZT,A2.*,A3.ID AS MAINID FROM B_S_001 A1
+		        INNER JOIN (
+		        <!-- 将时间拆分为小时和分钟 -->
+		        SELECT ZJQDID, LANDING_GEAR_CYCLE  AS QLJXH, WINCH_CYCLE AS JCXH, EXT_SUSPENSION_LOOP AS DGXH,
+		        N1 AS FDJ_N1, N2 AS FDJ_N2, N3 AS FDJ_N3, N4 AS FDJ_N4, N5 AS FDJ_N5, N6 AS FDJ_N6, SPECIAL_FIRST AS TS1, SPECIAL_SECOND AS TS2,
+		               CASE 
+		                 WHEN INSTR(FUSELAGE_FLIGHT_TIME, ':') > 0
+		                   THEN SUBSTR(FUSELAGE_FLIGHT_TIME, 0, INSTR(FUSELAGE_FLIGHT_TIME,':')-1)
+		                   	 WHEN INSTR(FUSELAGE_FLIGHT_TIME, '.') > 0
+                               THEN SUBSTR(FUSELAGE_FLIGHT_TIME, 0, INSTR(FUSELAGE_FLIGHT_TIME,'.')-1)
+		                     ELSE FUSELAGE_FLIGHT_TIME
+		                       END FXSJ_XS,
+		               CASE
+		                 WHEN INSTR(FUSELAGE_FLIGHT_TIME, ':') > 0
+		                   THEN SUBSTR(FUSELAGE_FLIGHT_TIME, INSTR(FUSELAGE_FLIGHT_TIME,':')+1)
+		                   	 WHEN INSTR(FUSELAGE_FLIGHT_TIME, '.') > 0
+                                 THEN SUBSTR(FUSELAGE_FLIGHT_TIME, INSTR(FUSELAGE_FLIGHT_TIME,'.')+1)
+		                     ELSE NULL
+		                       END FXSJ_FZ,
+		               CASE 
+		                 WHEN INSTR(WINCH_TIME, ':') > 0
+		                   THEN SUBSTR(WINCH_TIME, 0, INSTR(WINCH_TIME,':')-1)
+		                   	 WHEN INSTR(WINCH_TIME, '.') > 0
+		                   		THEN SUBSTR(WINCH_TIME, 0, INSTR(WINCH_TIME,'.')-1)
+		                     ELSE WINCH_TIME
+		                       END JCSJ_XS,
+		               CASE
+		                 WHEN INSTR(WINCH_TIME, ':') > 0
+		                   THEN SUBSTR(WINCH_TIME, INSTR(WINCH_TIME,':')+1)
+		                   	 WHEN INSTR(WINCH_TIME, '.') > 0
+		                   		THEN SUBSTR(WINCH_TIME, INSTR(WINCH_TIME,'.')+1)
+		                     ELSE NULL
+		                       END JCSJ_FZ,
+		               CASE 
+		                 WHEN INSTR(SEARCH_LIGHT_TIME, ':') > 0
+		                   THEN SUBSTR(SEARCH_LIGHT_TIME, 0, INSTR(SEARCH_LIGHT_TIME,':')-1)
+		                   	 WHEN INSTR(SEARCH_LIGHT_TIME, '.') > 0
+		                   		THEN SUBSTR(SEARCH_LIGHT_TIME, 0, INSTR(SEARCH_LIGHT_TIME,'.')-1)
+		                     ELSE SEARCH_LIGHT_TIME
+		                       END SSDSJ_XS,
+		               CASE
+		                 WHEN INSTR(SEARCH_LIGHT_TIME, ':') > 0
+		                   THEN SUBSTR(SEARCH_LIGHT_TIME, INSTR(SEARCH_LIGHT_TIME,':')+1)
+		                     WHEN INSTR(SEARCH_LIGHT_TIME, '.') > 0
+		                   		THEN SUBSTR(SEARCH_LIGHT_TIME, INSTR(SEARCH_LIGHT_TIME,'.')+1)
+		                     ELSE NULL
+		                       END SSDSJ_FZ
+		
+		         FROM (
+		        SELECT 
+		        (CASE WHEN I1.ZJQDID IS NULL THEN I2.ZJQDID ELSE I1.ZJQDID END) ZJQDID, 
+		        (CASE WHEN I1.CALENDAR IS NULL THEN I2.CALENDAR ELSE I1.CALENDAR END) CALENDAR,
+		        (CASE WHEN I1.FUSELAGE_FLIGHT_TIME IS NULL THEN I2.FUSELAGE_FLIGHT_TIME ELSE I1.FUSELAGE_FLIGHT_TIME END) FUSELAGE_FLIGHT_TIME,
+		        (CASE WHEN I1.SEARCH_LIGHT_TIME IS NULL THEN I2.SEARCH_LIGHT_TIME ELSE I1.SEARCH_LIGHT_TIME END) SEARCH_LIGHT_TIME,
+		        (CASE WHEN I1.WINCH_TIME IS NULL THEN I2.WINCH_TIME ELSE I1.WINCH_TIME END) WINCH_TIME,
+		        (CASE WHEN I1.LANDING_GEAR_CYCLE IS NULL THEN I2.LANDING_GEAR_CYCLE ELSE I1.LANDING_GEAR_CYCLE END) LANDING_GEAR_CYCLE,
+		        (CASE WHEN I1.WINCH_CYCLE IS NULL THEN I2.WINCH_CYCLE ELSE I1.WINCH_CYCLE END) WINCH_CYCLE,
+		        (CASE WHEN I1.EXT_SUSPENSION_LOOP IS NULL THEN I2.EXT_SUSPENSION_LOOP ELSE I1.EXT_SUSPENSION_LOOP END) EXT_SUSPENSION_LOOP,
+		        (CASE WHEN I1.SEARCH_LIGHT_CYCLE IS NULL THEN I2.SEARCH_LIGHT_CYCLE ELSE I1.SEARCH_LIGHT_CYCLE END) SEARCH_LIGHT_CYCLE,
+		        (CASE WHEN I1.SPECIAL_FIRST IS NULL THEN I2.SPECIAL_FIRST ELSE I1.SPECIAL_FIRST END) SPECIAL_FIRST,
+		        (CASE WHEN I1.SPECIAL_SECOND IS NULL THEN I2.SPECIAL_SECOND ELSE I1.SPECIAL_SECOND END) SPECIAL_SECOND,
+		        (CASE WHEN I1.N1 IS NULL THEN I2.N1 ELSE I1.N1 END) N1,
+		        (CASE WHEN I1.N2 IS NULL THEN I2.N2 ELSE I1.N2 END) N2,
+		        (CASE WHEN I1.N3 IS NULL THEN I2.N3 ELSE I1.N3 END) N3,
+		        (CASE WHEN I1.N4 IS NULL THEN I2.N4 ELSE I1.N4 END) N4,
+		        (CASE WHEN I1.N5 IS NULL THEN I2.N5 ELSE I1.N5 END) N5,
+		        (CASE WHEN I1.N6 IS NULL THEN I2.N6 ELSE I1.N6 END) N6
+		        FROM
+		        <!-- 获取时控件的部件使用情况 -->
+		        (SELECT ZJQDID,
+		        MAX((CASE WHEN JKLBH = 'calendar' THEN ${type} ELSE NULL END)) CALENDAR,
+		        MAX((CASE WHEN JKLBH = 'fuselage_flight_time' THEN ${type} ELSE NULL END)) FUSELAGE_FLIGHT_TIME,
+		        MAX((CASE WHEN JKLBH = 'search_light_time' THEN ${type} ELSE NULL END)) SEARCH_LIGHT_TIME,
+		        MAX((CASE WHEN JKLBH = 'winch_time' THEN ${type} ELSE NULL END)) WINCH_TIME,
+		        MAX((CASE WHEN JKLBH = 'landing_gear_cycle' THEN ${type} ELSE NULL END)) LANDING_GEAR_CYCLE,
+		        MAX((CASE WHEN JKLBH = 'winch_cycle' THEN ${type} ELSE NULL END)) WINCH_CYCLE,
+		        MAX((CASE WHEN JKLBH = 'ext_suspension_loop' THEN ${type} ELSE NULL END)) EXT_SUSPENSION_LOOP,
+		        MAX((CASE WHEN JKLBH = 'search_light_cycle' THEN ${type} ELSE NULL END)) SEARCH_LIGHT_CYCLE,
+		        MAX((CASE WHEN JKLBH = 'special_first' THEN ${type} ELSE NULL END)) SPECIAL_FIRST,
+		        MAX((CASE WHEN JKLBH = 'special_second' THEN ${type} ELSE NULL END)) SPECIAL_SECOND,
+		        MAX((CASE WHEN JKLBH = 'N1' THEN ${type} ELSE NULL END)) N1,
+		        MAX((CASE WHEN JKLBH = 'N2' THEN ${type} ELSE NULL END)) N2,
+		        MAX((CASE WHEN JKLBH = 'N3' THEN ${type} ELSE NULL END)) N3,
+		        MAX((CASE WHEN JKLBH = 'N4' THEN ${type} ELSE NULL END)) N4,
+		        MAX((CASE WHEN JKLBH = 'N5' THEN ${type} ELSE NULL END)) N5,
+		        MAX((CASE WHEN JKLBH = 'N6' THEN ${type} ELSE NULL END)) N6
+		        FROM B_S_00101
+		        WHERE ZT = 1 AND ZJQDID = #{zjqdid,jdbcType=VARCHAR}
+		        GROUP BY ZJQDID) I1
+		
+		        FULL JOIN 
+				<!-- 获取定检件的部件使用情况 -->
+		        (SELECT ZJQDID,
+		        MAX((CASE WHEN JKLBH = 'calendar' THEN ${type} ELSE NULL END)) CALENDAR,
+		        MAX((CASE WHEN JKLBH = 'fuselage_flight_time' THEN ${type} ELSE NULL END)) FUSELAGE_FLIGHT_TIME,
+		        MAX((CASE WHEN JKLBH = 'search_light_time' THEN ${type} ELSE NULL END)) SEARCH_LIGHT_TIME,
+		        MAX((CASE WHEN JKLBH = 'winch_time' THEN ${type} ELSE NULL END)) WINCH_TIME,
+		        MAX((CASE WHEN JKLBH = 'landing_gear_cycle' THEN ${type} ELSE NULL END)) LANDING_GEAR_CYCLE,
+		        MAX((CASE WHEN JKLBH = 'winch_cycle' THEN ${type} ELSE NULL END)) WINCH_CYCLE,
+		        MAX((CASE WHEN JKLBH = 'ext_suspension_loop' THEN ${type} ELSE NULL END)) EXT_SUSPENSION_LOOP,
+		        MAX((CASE WHEN JKLBH = 'search_light_cycle' THEN ${type} ELSE NULL END)) SEARCH_LIGHT_CYCLE,
+		        MAX((CASE WHEN JKLBH = 'special_first' THEN ${type} ELSE NULL END)) SPECIAL_FIRST,
+		        MAX((CASE WHEN JKLBH = 'special_second' THEN ${type} ELSE NULL END)) SPECIAL_SECOND,
+		        MAX((CASE WHEN JKLBH = 'N1' THEN ${type} ELSE NULL END)) N1,
+		        MAX((CASE WHEN JKLBH = 'N2' THEN ${type} ELSE NULL END)) N2,
+		        MAX((CASE WHEN JKLBH = 'N3' THEN ${type} ELSE NULL END)) N3,
+		        MAX((CASE WHEN JKLBH = 'N4' THEN ${type} ELSE NULL END)) N4,
+		        MAX((CASE WHEN JKLBH = 'N5' THEN ${type} ELSE NULL END)) N5,
+		        MAX((CASE WHEN JKLBH = 'N6' THEN ${type} ELSE NULL END)) N6
+		        FROM B_S_0010301
+		        WHERE ZT = 1 AND ZJQDID = #{zjqdid,jdbcType=VARCHAR}
+		        GROUP BY ZJQDID) I2 ON I1.ZJQDID = I2.ZJQDID
+		        )
+		        )A2 ON A1.ID = A2.ZJQDID
+		        LEFT JOIN B_H_010 A3 ON A1.JH = A3.JH AND A1.XLH = A3.XLH AND A1.DPRTCODE = A3.DPRTCODE
+		        WHERE A1.ID = #{zjqdid,jdbcType=VARCHAR} AND A1.XLH IS NOT NULL ) B1
+
+	ON (B1.DPRTCODE = B2.DPRTCODE AND B1.JH = B2.JH AND B1.XLH = B2.XLH AND B2.CSBJ = #{csbj,jdbcType=DECIMAL})
+	WHEN MATCHED THEN
+	  UPDATE 
+	     SET B2.ZT = (CASE WHEN B1.ZT = 1 THEN 1 ELSE 0 END),
+	         B2.WHSJ = SYSDATE,
+	         B2.FJZCH = B1.FJZCH,
+	         B2.FXSJ_XS = B1.FXSJ_XS,
+	         B2.FXSJ_FZ = B1.FXSJ_FZ,
+	         B2.FXSJ_XS_SKJ = B1.FXSJ_XS,
+	         B2.FXSJ_FZ_SKJ = B1.FXSJ_FZ,
+	         B2.FSJ_XS = (CASE WHEN B1.WZ = 1 THEN B1.FXSJ_XS WHEN B1.WZ = 2 THEN B1.FXSJ_XS ELSE NULL END),
+	         B2.FSJ_FZ = (CASE WHEN B1.WZ = 1 THEN B1.FXSJ_FZ WHEN B1.WZ = 2 THEN B1.FXSJ_FZ ELSE NULL END),
+	         B2.QLJXH = B1.QLJXH,
+	         B2.QLJXH_SKJ = B1.QLJXH,
+	         B2.JCSJ_XS = B1.JCSJ_XS,
+	         B2.JCSJ_FZ = B1.JCSJ_FZ,
+	         B2.JCXH = B1.JCXH,
+	         B2.FDJ_N1 = B1.FDJ_N1,
+	         B2.FDJ_N2 = B1.FDJ_N2,
+	         B2.FDJ_N3 = B1.FDJ_N3,
+	         B2.FDJ_N4 = B1.FDJ_N4,
+	         B2.FDJ_N5 = B1.FDJ_N5,
+	         B2.FDJ_N6 = B1.FDJ_N6,
+	         B2.SSDSJ_XS = B1.SSDSJ_XS,
+	         B2.SSDSJ_FZ = B1.SSDSJ_FZ,
+	         B2.DGXH = B1.DGXH,
+	         B2.TS1 = B1.TS1,
+	         B2.TS2 = B1.TS2
+	         WHERE CSBJ = #{csbj,jdbcType=DECIMAL}
+	WHEN NOT MATCHED THEN
+	  INSERT (B2.ID, B2.MAINID, B2.DPRTCODE, 
+	      B2.JH, B2.XLH, B2.ZT, B2.IS_CYJS, 
+	      B2.CSBJ, B2.WHSJ, B2.XDBS, 
+	      B2.FJZCH, 
+	      B2.FXSJ_XS, B2.FXSJ_FZ, 
+	      B2.FSJ_XS, B2.FSJ_FZ, B2.QLJXH, 
+	      B2.JCSJ_XS, B2.JCSJ_FZ, B2.JCXH, 
+	      B2.FDJ_N1, B2.FDJ_N2, B2.FDJ_N3, 
+	      B2.FDJ_N4, B2.FDJ_N5, B2.FDJ_N6, 
+	      B2.SSDSJ_XS, B2.SSDSJ_FZ, B2.DGXH, 
+	      B2.TS1, B2.TS2, B2.FXSJ_XS_SKJ, B2.FXSJ_FZ_SKJ, 
+	      B2.QLJXH_SKJ)
+	  VALUES (SYS_GUID(), B1.MAINID, B1.DPRTCODE, 
+	      B1.JH, B1.XLH, (CASE WHEN B1.ZT = 1 THEN 1 ELSE 0 END), 1, 
+	      #{csbj,jdbcType=DECIMAL},SYSDATE, 0, 
+	      B1.FJZCH, 
+	      B1.FXSJ_XS, B1.FXSJ_FZ, 
+	      (CASE WHEN B1.WZ = 1 THEN B1.FXSJ_XS WHEN B1.WZ = 2 THEN B1.FXSJ_XS ELSE NULL END),
+	      (CASE WHEN B1.WZ = 1 THEN B1.FXSJ_FZ WHEN B1.WZ = 2 THEN B1.FXSJ_FZ ELSE NULL END),
+	      B1.QLJXH, 
+	      B1.JCSJ_XS, B1.JCSJ_FZ, B1.JCXH, 
+	      B1.FDJ_N1, B1.FDJ_N2, B1.FDJ_N3, 
+	      B1.FDJ_N4, B1.FDJ_N5, B1.FDJ_N6, 
+	      B1.SSDSJ_XS, B1.SSDSJ_FZ, B1.DGXH, 
+	      B1.TS1, B1.TS2, B1.FXSJ_XS, B1.FXSJ_FZ, 
+	      B1.QLJXH)
+      
+  </insert>
+  
+  <!-- 删除无效的定检项目 -->
+  <delete id="deleteInvalidFixedItem" parameterType="com.eray.thjw.productionplan.po.PlaneData">
+  	DELETE FROM B_S_00303 WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND ZT = 0
+  </delete>
+  
+  <!-- 获取部件累积使用量-->
+	<select id="getComponentUsage" parameterType="com.eray.thjw.productionplan.po.PlaneData" 
+		resultType="com.eray.thjw.aerialmaterial.po.ComponentUsage">
+		select b1.jh,
+		       b1.xlh,
+		       b1.wz,
+		       b1.id zjqdid,
+		       b1.dprtcode,
+		       sum(b2.fxsj_xs) fxsj_xs,
+		       sum(b2.fxsj_fz) fxsj_fz,
+		       sum(b2.fsj_xs) fsj_xs,
+		       sum(b2.fsj_fz) fsj_fz,
+		       sum(b2.qljxh) qljxh,
+		       sum(b2.jcsj_xs) jcsj_xs,
+		       sum(b2.jcsj_fz) jcsj_fz,
+		       sum(b2.jcxh) jcxh,
+		       sum(b2.fdj_n1) fdj_n1,
+		       sum(b2.fdj_n2) fdj_n2,
+		       sum(b2.fdj_n3) fdj_n3,
+		       sum(b2.fdj_n4) fdj_n4,
+		       sum(b2.fdj_n5) fdj_n5,
+		       sum(b2.fdj_n6) fdj_n6,
+		       sum(b2.ssdsj_xs) ssdsj_xs,
+		       sum(b2.ssdsj_fz) ssdsj_fz,
+		       sum(b2.dgxh) dgxh,
+		       sum(b2.ts1) ts1,
+		       sum(b2.ts2) ts2
+		  from b_s_001 b1
+		  left join b_h_01001 b2
+		    on b1.jh = b2.jh
+		   and b2.jh = b2.xlh
+		   and b2.is_cyjs = 1
+		   and b2.zt = 1
+		   and b2.xdbs = 0
+		 where b1.fjzch = #{fjzch,jdbcType=VARCHAR}
+		   AND b1.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		   and b1.xlh is not null
+		   and b1.zt = 1
+		 group by b1.jh, b1.xlh, b1.wz, b1.id, b1.dprtcode
+    </select>
+    
+    <!-- 根据部件拆解记录，判断该部件是否曾经装过飞机 -->
+    <select id="isEverDisassembled" parameterType="com.eray.thjw.aerialmaterial.po.ComponentUsage"
+  		 resultType="boolean">
+  		SELECT COUNT(1) FROM B_H_01002 
+  			WHERE JH = #{jh,jdbcType=VARCHAR} AND XLH = #{xlh,jdbcType=VARCHAR} AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  		AND IS_CX = 1 AND ZT = 1 AND ROWNUM = 1
+    </select>
+    
+    <!-- 获取未关联部件 -->
+    <select id="findNoParentData" resultType="com.eray.thjw.productionplan.po.LoadingList" 
+    	parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+	    SELECT B1.ID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.NBSBM, B1.ZJH, B1.CJJH, B1.ZWMC, B1.YWMC, B1.BJGZJL,
+	    B1.ZJSL, B1.WZ, B1.ZT, B1.SCRQ, B1.BZ, B1.AZRQ, B1.AZJLDH, B1.CCRQ, B1.CCJLDH, B1.LLKLX, B1.LLKBH, B1.KZLX,
+	    B1.IS_DJ, B1.TSN, B1.TSO, B1.CJ, B1.FJDID, B1.SXRQ, B1.SXZT, B1.TBBS, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.DPRTCODE, B1.KBS
+		  FROM B_S_001 B1
+		 WHERE B1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+		   AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		   AND B1.ZT = 1
+		   AND B1.FJDID = '0'
+    </select>
+
+</mapper>

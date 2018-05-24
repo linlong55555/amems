@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.ProcessRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.ProcessRecord" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="CZRMC" property="czrmc" jdbcType="VARCHAR" />
+    <result column="BMMC" property="bmmc" jdbcType="VARCHAR" />
+    <result column="CZSM" property="czsm" jdbcType="VARCHAR" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, DPRTCODE, CZRMC, BMMC, CZSM, CZSJ
+  </sql>
+   <select id="selectByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_025 
+    where mainid = #{mainid,jdbcType=VARCHAR}
+    order by CZSJ
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_025
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_025
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.ProcessRecord" >
+    insert into D_025 (ID, MAINID, DPRTCODE, 
+      CZRMC, BMMC, CZSM, 
+      CZSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{czrmc,jdbcType=VARCHAR}, #{bmmc,jdbcType=VARCHAR}, #{czsm,jdbcType=VARCHAR}, 
+      #{czsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.ProcessRecord" >
+    insert into D_025
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="czrmc != null" >
+        CZRMC,
+      </if>
+      <if test="bmmc != null" >
+        BMMC,
+      </if>
+      <if test="czsm != null" >
+        CZSM,
+      </if>
+      <if test="czsj != null" >
+        CZSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="czrmc != null" >
+        #{czrmc,jdbcType=VARCHAR},
+      </if>
+      <if test="bmmc != null" >
+        #{bmmc,jdbcType=VARCHAR},
+      </if>
+      <if test="czsm != null" >
+        #{czsm,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null" >
+        #{czsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.ProcessRecord" >
+    update D_025
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="czrmc != null" >
+        CZRMC = #{czrmc,jdbcType=VARCHAR},
+      </if>
+      <if test="bmmc != null" >
+        BMMC = #{bmmc,jdbcType=VARCHAR},
+      </if>
+      <if test="czsm != null" >
+        CZSM = #{czsm,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null" >
+        CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.ProcessRecord" >
+    update D_025
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      CZRMC = #{czrmc,jdbcType=VARCHAR},
+      BMMC = #{bmmc,jdbcType=VARCHAR},
+      CZSM = #{czsm,jdbcType=VARCHAR},
+      CZSJ = #{czsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询流程记录合集 -->
+  <select id="queryList" resultMap="BaseResultMap" parameterType="com.eray.thjw.quality.po.ProcessRecord" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_025
+    <include refid="Common_Param"></include>
+    order by czsj
+  </select>
+  
+  <!-- 通用查询条件 -->
+  <sql id="Common_Param">
+	   WHERE 1=1
+	   <!-- 有效标识 -->
+	   <if test="dprtcode != null and dprtcode != ''" >
+       	   AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+       </if>
+	   <if test="mainid != null and mainid != ''" >
+       	   AND mainid = #{mainid,jdbcType=VARCHAR}
+       </if>
+  </sql>
+  <insert id="batchInsert" parameterType="com.eray.thjw.quality.po.ProcessRecord">
+  	insert all
+		<foreach collection="paramsMap.list" item="item" index="index" >
+		into D_025 (
+		ID, MAINID, DPRTCODE, CZRMC, BMMC, CZSM, CZSJ
+		)
+		values
+			(
+			SYS_GUID(),
+			#{item,jdbcType=VARCHAR},
+			 #{dprtcode,jdbcType=VARCHAR}, 
+      		#{czrmc,jdbcType=VARCHAR}, #{bmmc,jdbcType=VARCHAR}, #{czsm,jdbcType=VARCHAR}, 
+      		sysdate
+			)
+		</foreach>
+		select 1 from dual
+  	
+  </insert>
+  <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from D_025
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

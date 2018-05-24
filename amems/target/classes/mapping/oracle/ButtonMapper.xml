@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.ButtonMapper">
+
+  <resultMap id="buttonMap" type="com.eray.thjw.po.Button" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="BUTTONCODE" property="buttonCode" jdbcType="VARCHAR" />
+    <result column="BUTTONNAME" property="buttonName" jdbcType="VARCHAR" />
+    <result column="MENUID" property="menuId" jdbcType="DECIMAL" />
+    <result column="PATH" property="path" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+     <sql id="buttonfields">
+          id,buttonCode,buttonName,menuId,path,remark
+     </sql>
+	  
+	  <!-- 增加一个按钮 -->
+    
+    <insert id="addButton" parameterType="com.eray.thjw.po.Button" >
+    insert into t_button
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+          id,
+      <if test="buttonCode != null" >
+        buttonCode,
+      </if>
+      <if test="buttonName != null" >
+        buttonName,
+      </if>
+      <if test="menuId != null" >
+        menuId,
+      </if>
+      <if test="path != null" >
+        path,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=VARCHAR},
+      <if test="buttonCode != null" >
+        #{buttonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonName != null" >
+        #{buttonName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=DECIMAL},
+      </if>
+      <if test="path != null" >
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+    
+      <!-- 查询一个按钮的信息 -->
+    <select id="selectButton"  parameterType="com.eray.thjw.po.Button"  resultMap="buttonMap">
+		select <include refid="buttonfields"></include>  from t_button
+		<include refid="buttonParam"></include>
+	</select>
+    
+    
+    <!-- 修改一个按钮的信息 -->
+	<update  id="updateButton" parameterType="com.eray.thjw.po.Button" >
+	update t_button 
+	<set>
+	 <if test="buttonCode != null" >
+        buttonCode = #{buttonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="buttonName != null" >
+        buttonName = #{buttonName,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null" >
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        menuId = #{menuId,jdbcType=DECIMAL},
+      </if>
+       <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      </set>
+		  where id = #{id,jdbcType=DECIMAL}
+	</update>
+	
+      <!-- 查询按钮参数 -->
+	<sql id="buttonParam">
+	   where 
+	   1=1
+	     <if test="keyword != null and keyword != ''">
+		    and (UPPER(buttonCode) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(buttonName) like UPPER('%'||#{keyword}||'%'))              <!-- 左右匹配 查询关键字 -->
+		</if>
+	    <if test="menuId != null and menuId != ''">
+         	and  menuId = #{menuId}
+         </if>
+	     <!-- 按钮id-->
+	     <if test="id != null and id != ''">
+            and  id = #{id}
+         </if>
+         
+	</sql>
+    
+    
+    
+    <!-- 查询按钮参数 -->
+	<sql id="buttonParam2">
+	   where 
+	   1=1
+	    <if test="keyword != null and keyword != ''">
+		    and (UPPER(b.buttonCode) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(b.buttonName) like UPPER('%'||#{keyword}||'%'))              <!-- 左右匹配 查询关键字 -->
+		</if>
+	    <if test="menuId != null and menuId != ''">
+         	and  b.menuId = #{menuId}
+         </if>
+	     <!-- 按钮id-->
+	     <if test="id != null and id != ''">
+            and  b.id = #{id}
+         </if>
+         
+	</sql>
+	
+	<select id="selectButtonCount"  parameterType="java.lang.String" resultType="int">
+		select count(1) FROM t_button where buttonCode =#{buttonCode,jdbcType=VARCHAR}
+ 	 </select> 
+ 	 
+	
+    <!-- 根据条件查询按钮信息 -->
+	<select id="selectButtonList"  parameterType="com.eray.thjw.po.Button"  resultMap="buttonMap">
+		select b.id,b.buttonCode,b.buttonName,b.menuId,b.path,b.remark ,m.menuname 
+		from t_button b  
+		left join t_menu m  on b.menuId = m.id 
+	    <include refid="buttonParam2"></include> 
+		<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		order by b.menuId asc , b.buttonCode asc
+	    	</when>
+	    	<otherwise>
+			    order by b.${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		 </choose>
+	</select>
+	
+	<!-- 获取用户拥有的按钮权限 -->
+ 	 <select id="findButtonByUserId" resultMap="buttonMap">
+		SELECT
+			b.ID,
+			b.buttoncode,
+			b.buttonname,
+			b.menuid,
+			b.PATH
+		FROM
+			t_button b
+		JOIN t_menu M ON b.menuid = M.ID
+		JOIN (
+			SELECT DISTINCT
+				button_id
+			FROM
+				t_user2role ur
+			JOIN t_role2btn rb ON rb.role_id = ur.role_id AND ur.user_id = #{0,jdbcType=VARCHAR}
+		) T ON b. ID = T .button_id
+ 	 </select>
+ 	 
+ 	 	<!-- 获取用户拥有的按钮权限 -->
+ 	 <select id="findButtonByUserId4Login" resultType="INTEGER" resultMap="buttonMap">
+		SELECT
+			b.ID,
+			b.buttoncode,
+			b.buttonname,
+			b.menuid,
+			b.PATH
+		FROM
+			t_button b
+		JOIN t_menu M ON b.menuid = M.ID AND M.xtlx = #{1,jdbcType=VARCHAR}
+		JOIN (
+			SELECT DISTINCT
+				button_id
+			FROM
+				t_user2role ur
+			JOIN t_role2btn rb ON rb.role_id = ur.role_id AND ur.user_id = #{0,jdbcType=VARCHAR}
+		) T ON b. ID = T .button_id
+		
+ 	 </select>
+ 	 
+ 	 <!-- 获取所有按钮权限 -->
+ 	 <select id="findAllButtonList" resultMap="buttonMap">
+
+		select b.id,b.buttoncode,b.buttonname,b.menuid,b.path,b.remark from t_button b
+ 	 </select>
+ 	 <!-- 获取所有按钮权限 -->
+ 	 <select id="findAllButtonList4Login" resultMap="buttonMap">
+
+		select b.id,b.buttoncode,b.buttonname,b.menuid,b.path from t_button b  left join  t_menu m on b.menuid=m.id
+ 		where  m.xtlx  = #{0,jdbcType=VARCHAR} 
+ 	 </select>
+	
+	    <!-- 删除按钮信息 -->
+	<delete id="deleteButtonByPrimaryKey" parameterType="java.lang.String" >
+       delete from t_button
+      where id = #{id,jdbcType=VARCHAR}
+  </delete>
+	
+</mapper>

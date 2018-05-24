@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.TrainingPlanRecMapper" >
+   
+	<!-- 培训计划日志列表 开始 -->
+  
+	<select id="queryList_BP002_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+				SELECT B.* ,      
+		        	WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME,
+		        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+		        	WHDW.DPRTNAME WHDW_DRPTNAME,
+		        	(
+	         		CASE 
+	          			WHEN B.ZT = 0 THEN '保存'
+			          	WHEN B.ZT = 1 THEN '下发'
+			          	WHEN B.ZT = 8 THEN '作废'
+			          	WHEN B.ZT = 9 THEN '指定结束'
+			          	WHEN B.ZT = 10 THEN '完成'
+	         		END 
+	     	   		) ZT_NAME,
+	     	   		BP003.KCBH REC_HD
+				FROM B_P_002_REC B 
+				JOIN B_P_003 BP003
+           		ON B.KCID = BP003.ID
+	        	LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+	        	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	        	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.WHBMID
+		        WHERE 1 = 1
+				<if test='paramsMap!=null and paramsMap.REC_CZLS!=null and paramsMap.REC_CZLS!=""'>
+					and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	       	 	</if>
+	        	<if test='paramsMap!=null and paramsMap.ID!=null and paramsMap.ID!=""'>
+	        		and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	        	</if>
+	        	<if test='paramsMap!=null and paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		       		and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		        </if>
+		        <if test='paramsMap!=null and paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and (
+		                UPPER(BP003.KCBH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+		           	)
+		    	</if>
+				order by B.REC_CZSJ DESC
+	   
+	</select>
+  
+	<select id="queryDiff_BP002_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT * FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+            	B.*,
+            	WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME,
+	        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+	        	WHDW.DPRTNAME WHDW_DRPTNAME,
+	        	BP003.KCBH,
+	        	BP003.KCMC,
+	        	to_char(B.JH_KSRQ,'YYYY-MM-DD') JHKSRQ,
+	        	to_char(B.JH_JSRQ,'YYYY-MM-DD') JHJSRQ,
+	        	to_char(B.SJ_KSRQ,'YYYY-MM-DD') SJKSRQ,
+	        	to_char(B.SJ_JSRQ,'YYYY-MM-DD') SJJSRQ,
+            	(
+         		CASE 
+          			WHEN B.ZT = 0 THEN '保存'
+		          	WHEN B.ZT = 1 THEN '下发'
+		          	WHEN B.ZT = 8 THEN '作废'
+		          	WHEN B.ZT = 9 THEN '指定结束'
+		          	WHEN B.ZT = 10 THEN '完成'
+         		END 
+     	   		) ZT_NAME,
+     	   		(
+         		CASE 
+          			WHEN B.JHLX = 1 THEN '年度培训计划'
+		          	WHEN B.JHLX = 2 THEN '临时培训计划'
+         		END 
+     	   		) JHLX_VALUE,
+     	   		(
+         		CASE 
+          			WHEN B.FXBS = 1 THEN '初训'
+		          	WHEN B.FXBS = 2 THEN '复训'
+         		END 
+     	   		) FXBS_VALUE,
+     	   		(
+         		CASE 
+          			WHEN B.JS_BZ = 1 THEN '是'
+		          	WHEN B.JS_BZ = 0 THEN '否'
+         		END 
+     	   		) BZ_NAME,
+     	   		(
+         		CASE 
+          			WHEN B.IS_JCFF = 1 THEN '是'
+		          	WHEN B.IS_JCFF = 0 THEN '否'
+         		END 
+     	   		) JCFF_NAME,
+     	   		BP003.ZQZ || (
+         		CASE 
+          			WHEN BP003.ZQDW = 1 THEN '天'
+		          	WHEN BP003.ZQDW = 2 THEN '月'
+		          	WHEN BP003.ZQDW = 3 THEN '年'
+         		END 
+     	   		) FXJG,
+            	'课程代码:'||BP003.KCBH REC_HD,
+            	(CASE 
+            		WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+            		ELSE 'LAST'
+            	END
+            	) DATA_VERSION
+               
+			FROM B_P_002_REC B
+			JOIN B_P_003 BP003
+            ON B.KCID = BP003.ID
+			LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+          	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+          	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.WHBMID
+         	WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           	AND (select rec_czsj from B_P_002_REC where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+	</select>
+	
+  	<select id="queryDiff_BP00201_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT B.*, 'CURRENT' DATA_VERSION ,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+			to_char(B.XCPXRQ,'YYYY-MM-DD') XCPX_RQ,
+			to_char(B.SJ_KSRQ,'YYYY-MM-DD') SJKSRQ,
+	        to_char(B.SJ_JSRQ,'YYYY-MM-DD') SJJSRQ,
+   	   		(
+       		CASE 
+       			WHEN B.ZT = 0 THEN '无效'
+          		WHEN B.ZT = 1 THEN '有效'
+       		END 
+   	   		) ZT_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.KQ = 0 THEN '未参加'
+          		WHEN B.KQ = 1 THEN '出勤'
+       		END 
+   	   		) KQ_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.CQL is not null THEN B.CQL||'%'
+       		END 
+   	   		) CQL_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.KHJG = 0 THEN '未通过'
+          		WHEN B.KHJG = 1 THEN '通过'
+       		END 
+   	   		) KHJG_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.IS_YC = 0 THEN '否'
+          		WHEN B.IS_YC = 1 THEN '是'
+       		END 
+   	   		) YC_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.IS_SC = 0 THEN '否'
+          		WHEN B.IS_SC = 1 THEN '是'
+       		END 
+   	   		) SC_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.CYBS = 0 THEN '未查阅'
+          		WHEN B.CYBS = 1 THEN '已查阅'
+       		END 
+   	   		) CYBS_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.FXBS = 0 THEN '初训'
+          		WHEN B.FXBS = 1 THEN '复训'
+       		END 
+   	   		) FXBS_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.JSZT = 0 THEN '未接收'
+          		WHEN B.JSZT = 1 THEN '已接收'
+       		END 
+   	   		) JSZT_NAME,
+			(CASE 
+	         	WHEN B.REC_XGLX = 1 THEN '新增'
+	         	WHEN B.REC_XGLX = 2 THEN '修改'
+	         	WHEN B.REC_XGLX = 3 THEN '删除'
+	      	END
+	      	) REC_XGLX_TEXT ,
+		 	'' REC_HD
+	  	FROM B_P_00201_REC B
+	  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	 	WHERE B.PXJHID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	 	
+		UNION ALL
+	
+		SELECT B.*, 'LAST' DATA_VERSION ,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+			to_char(B.XCPXRQ,'YYYY-MM-DD') XCPX_RQ,
+			to_char(B.SJ_KSRQ,'YYYY-MM-DD') SJKSRQ,
+	        to_char(B.SJ_JSRQ,'YYYY-MM-DD') SJJSRQ,
+   	   		(
+       		CASE 
+       			WHEN B.ZT = 0 THEN '无效'
+          		WHEN B.ZT = 1 THEN '有效'
+       		END 
+   	   		) ZT_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.KQ = 0 THEN '未参加'
+          		WHEN B.KQ = 1 THEN '出勤'
+       		END 
+   	   		) KQ_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.CQL is not null THEN B.CQL||'%'
+       		END 
+   	   		) CQL_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.KHJG = 0 THEN '未通过'
+          		WHEN B.KHJG = 1 THEN '通过'
+       		END 
+   	   		) KHJG_NAME,
+   	   		   	   		(
+       		CASE 
+       			WHEN B.IS_YC = 0 THEN '否'
+          		WHEN B.IS_YC = 1 THEN '是'
+       		END 
+   	   		) YC_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.IS_SC = 0 THEN '否'
+          		WHEN B.IS_SC = 1 THEN '是'
+       		END 
+   	   		) SC_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.CYBS = 0 THEN '未查阅'
+          		WHEN B.CYBS = 1 THEN '已查阅'
+       		END 
+   	   		) CYBS_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.FXBS = 0 THEN '初训'
+          		WHEN B.FXBS = 1 THEN '复训'
+       		END 
+   	   		) FXBS_NAME,
+   	   		(
+       		CASE 
+       			WHEN B.JSZT = 0 THEN '未接收'
+          		WHEN B.JSZT = 1 THEN '已接收'
+       		END 
+   	   		) JSZT_NAME,
+			(CASE 
+         		WHEN B.REC_XGLX = 1 THEN '新增'
+         		WHEN B.REC_XGLX = 2 THEN '修改'
+         		WHEN B.REC_XGLX = 3 THEN '删除'
+      		END) REC_XGLX_TEXT ,
+	 		'' REC_HD
+		FROM B_P_00201_REC B
+		LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_P_002_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_P_002_REC C WHERE 
+		              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            ) 
+  	</select>
+  	
+  	<!-- 培训计划日志 结束 -->
+
+</mapper>

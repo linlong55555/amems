@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.oil.dao.OilMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.Oil" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="YPGG" property="ypgg" jdbcType="VARCHAR" />
+    <result column="YPMD" property="ypmd" jdbcType="DECIMAL" />
+    <result column="MS" property="ms" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+       
+    <association property="whr_user" javaType="com.eray.thjw.po.User">
+         <id column="whrid" property="id"/>
+         <result column="whr_realname" property="realname"/>
+         <result column="whr_username" property="username"/>
+     </association>  
+    
+     <association property="bm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="whbmid" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+     
+     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, YPGG, YPMD, ms, DPRTCODE, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_J_005
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_J_005
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.Oil" >
+    insert into B_J_005 (ID, YPGG, YPMD, 
+      ms, DPRTCODE, ZT, 
+      WHBMID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{ypgg,jdbcType=VARCHAR}, #{ypmd,jdbcType=DECIMAL}, 
+      #{ms,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.Oil" >
+    insert into B_J_005
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="ypgg != null" >
+        YPGG,
+      </if>
+      <if test="ypmd != null" >
+        YPMD,
+      </if>
+      <if test="ms != null" >
+        ms,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="ypgg != null" >
+        #{ypgg,jdbcType=VARCHAR},
+      </if>
+      <if test="ypmd != null" >
+        #{ypmd,jdbcType=DECIMAL},
+      </if>
+      <if test="ms != null" >
+        #{ms,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Oil" >
+    update B_J_005
+    <set >
+      <if test="ypgg != null" >
+        YPGG = #{ypgg,jdbcType=VARCHAR},
+      </if>
+      <if test="ypmd != null" >
+        YPMD = #{ypmd,jdbcType=DECIMAL},
+      </if>
+      <if test="ms != null" >
+        ms = #{ms,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.Oil" >
+    update B_J_005
+    set YPGG = #{ypgg,jdbcType=VARCHAR},
+      YPMD = #{ypmd,jdbcType=DECIMAL},
+      ms = #{ms,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <!-- 带条件的查询 -->
+  <select id="queryAll" parameterType="com.eray.thjw.po.Oil" resultMap="BaseResultMap">
+          select 
+          	 b_j_005.ID,
+          	 b_j_005.YPGG,
+          	 b_j_005.YPMD,
+          	 b_j_005.ms,
+          	 b_j_005.DPRTCODE,
+          	 b_j_005.ZT, 
+          	 b_j_005.WHBMID, 
+          	 b_j_005.WHRID,
+          	 b_j_005.WHSJ,
+          	 whr.realname whr_realname,whr.username whr_username,
+          	 bm.dprtname bm_dprtname,
+          	 jg.dprtname jg_dprtname
+          	 from b_j_005 left join t_user whr on b_j_005.whrid=whr.id
+          	 			  left join t_department bm on(b_j_005.whbmid=bm.id)
+          	 			  left join t_department jg on(b_j_005.dprtcode=jg.id)
+          	 	 <include refid="OilParam"></include> 
+     		
+     		<choose>   <!--  进行排序判断，如果默认就是默认字段排序 -->
+				    	<when test='pagination.sort == "auto"'>                       
+				    		order by whsj desc
+				    	</when>
+				    	<otherwise>
+						    order by ${pagination.sort} ${pagination.order}
+				    	</otherwise>
+			 </choose>
+  </select>  
+  
+  <sql  id="OilParam" >
+  	   where 
+	   1=1
+	   		and b_j_005.zt =1
+	   	<!-- id -->
+	     <if test="id != null and id != ''">
+         and  b_j_005.id = #{id}
+         </if>
+	   	<!-- 组织机构 -->
+	     <if test="dprtcode != null and dprtcode != ''">
+         and  b_j_005.dprtcode = #{dprtcode}
+         </if>
+	   	 <!-- 关键字查询 -->
+          <if test="keyword != null and keyword != ''">
+		    and (   UPPER(b_j_005.ypgg) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(b_j_005.ypmd) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(whr.USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(whr.REALNAME) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(b_j_005.ms) like UPPER('%'||#{keyword}||'%'))             
+		</if>
+  </sql>
+  
+   	 <select id="validationYpgg" parameterType="com.eray.thjw.po.Oil" resultType="int">
+		select 
+             count(1)
+              from b_j_005 
+	 			where 1=1 and b_j_005.zt =1
+	 			<!-- ypgg -->
+			     <if test="ypgg != null and ypgg != ''">
+		         and  b_j_005.ypgg = #{ypgg}
+		         </if>
+		         <!-- oldypgg -->
+			     <if test="oldypgg != null and oldypgg != ''">
+		         and  b_j_005.ypgg != #{oldypgg}
+		         </if>
+	 			
+ 	 </select>
+  
+   <select id="queryByDprtcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+   	 select 
+          	 b_j_005.ID,
+          	 b_j_005.YPGG,
+          	 b_j_005.YPMD,
+          	 b_j_005.ms,
+          	 b_j_005.DPRTCODE
+          	  		from b_j_005 where zt=1 and dprtcode=#{dprtcode,jdbcType=VARCHAR}
+   </select>
+  
+</mapper>

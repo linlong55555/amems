@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.AirworthinessDirectiveRecMapper" >
+   
+  <!-- 故障保留单日志列表 开始 -->
+  
+  <select id="queryList4Bs014" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT B.*  
+	       		      
+      		    ,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+		        ,  '指令流水号:'||B.LSH || ' ' <!-- ||(
+		        CASE 
+		           WHEN B.REC_CZSM = 0 THEN '创建'
+		           WHEN B.REC_CZSM = 1 THEN '提交'
+		           WHEN B.REC_CZSM = 2 THEN '已审核'
+		           WHEN B.REC_CZSM = 3 THEN '已批准'
+		           WHEN B.REC_CZSM = 4 THEN '中止（关闭）'
+		           WHEN B.REC_CZSM = 5 THEN '审核驳回'
+		           WHEN B.REC_CZSM = 6 THEN '批准驳回'
+		           WHEN B.REC_CZSM = 8 THEN '作废'
+		           WHEN B.REC_CZSM = 9 THEN '指定结束'
+		          
+		           WHEN B.REC_CZSM = 10 THEN '完成'
+		           WHEN B.REC_CZSM = 11 THEN '撤销'
+		           WHEN B.REC_CZSM = 12 THEN '修改'
+		           WHEN B.REC_CZSM = 13 THEN '改版'
+		           WHEN B.REC_CZSM = 14 THEN '已生效'
+		           WHEN B.REC_CZSM = 15 THEN '提交生产确认'
+		           WHEN B.REC_CZSM = 16 THEN '借出确认'
+		           WHEN B.REC_CZSM = 17 THEN '归还'
+		           WHEN B.REC_CZSM = 18 THEN '导入'
+		         END 
+		        ) --> REC_HD
+		        FROM b_s_014_REC B 
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		         
+		        
+		        WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		         </if>
+		            <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		        	and (
+		                 UPPER(B.FJZCH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+		            )
+		         </if>  
+		         <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+		     <choose>                                                                 
+			    	<when test='paramsMap.LOGINED_USERTYPE!=null and paramsMap.LOGINED_USERTYPE == "admin"'>                       
+			    		 AND exists 
+			    		( SELECT 1 from D_007 where 
+			    		    B.fjzch = FJZCH
+			    		AND B.dprtcode = DPRTCODE
+			    		AND zt = 1
+			    		)
+			    	</when>
+			    	<otherwise>
+					     AND exists 
+			    		( SELECT 1 from V_ROLE_JX where 
+			    		B.FJZCH = FJZCH
+			    		AND B.DPRTCODE = DPRTCODE
+			    		AND USER_ID = #{paramsMap.LOGINED_USERID,jdbcType=VARCHAR}
+			    		)
+			    	</otherwise>
+		   	</choose>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff4Bs014" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+               B.*
+               , CASE B.ZT WHEN 1 THEN '有效' ELSE '无效' END ZT_STR
+               ,JG.DPRTNAME  DPRTCODE_STR
+               ,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+               ,(CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) REC_XGLX_STR
+		          
+		        ,(CASE  WHEN B.BSHYY=1 THEN '定检原因' 
+		        WHEN B.BSHYY=2 THEN '故障原因' 
+		        WHEN B.BSHYY=3 THEN '缺件原因(航材、工具)' 
+		        WHEN B.BSHYY=4 THEN '机组原因' 
+		        WHEN B.BSHYY=5 THEN '其他原因' 
+		        ELSE ''  END) BSHYY_STR
+		       ,(CASE  WHEN  B.BSH_YJRQ IS NULL THEN '' ELSE to_char(B.BSH_YJRQ ,'yyyy-MM-dd HH24:mi')  END) BSH_YJRQ_STR
+		       ,(CASE  WHEN  B.BSH_SJRQ IS NULL THEN '' ELSE to_char(B.BSH_SJRQ ,'yyyy-MM-dd HH24:mi')   END) BSH_SJRQ_STR
+		       ,(CASE  WHEN  B.BSH_RQ IS NULL THEN '' ELSE to_char(B.BSH_RQ ,'yyyy-MM-dd HH24:mi')   END) BSH_RQ_STR  
+		       ,BSH_PZR.USERNAME ||' '|| BSH_PZR.REALNAME BSH_PZR_STR
+		       
+		       ,(CASE  WHEN  B.SH_YJRQ IS NULL THEN '' ELSE to_char(B.SH_YJRQ ,'yyyy-MM-dd HH24:mi')   END) SH_YJRQ_STR
+		       ,(CASE  WHEN  B.SH_SJRQ IS NULL THEN '' ELSE to_char(B.SH_SJRQ ,'yyyy-MM-dd HH24:mi')   END) SH_SJRQ_STR 
+		       ,(CASE  WHEN  B.SH_RQ IS NULL THEN '' ELSE to_char(B.SH_RQ ,'yyyy-MM-dd HH24:mi')   END) SH_RQ_STR 
+		       ,SH_PZR.USERNAME ||' '|| SH_PZR.REALNAME SH_PZR_STR
+		       
+		       ,WHR.USERNAME ||' '|| WHR.REALNAME WHR_STR
+		       ,WHDW.DPRTNAME  WHDW_STR
+		        
+		        
+               ,'指令流水号:'||B.LSH || ' '   REC_HD,
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM b_s_014_REC B
+          LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+          LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+          
+          LEFT JOIN T_USER BSH_PZR ON BSH_PZR.ID = B.BSH_PZRID
+          LEFT JOIN T_USER SH_PZR ON SH_PZR.ID = B.SH_PZRID
+          
+          LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+          LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.WHDWID
+          
+          WHERE 
+           B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from b_s_014_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+                   
+       ) WHERE 2 >=RNO
+       
+  </select>
+    
+  
+  
+</mapper>

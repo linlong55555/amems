@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.TEApplicabilityMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.TEApplicability" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="BH" property="bh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="SZWZ" property="szwz" jdbcType="VARCHAR" />
+    <result column="JKZT" property="jkzt" jdbcType="DECIMAL" />
+    <result column="JKBZ" property="jkbz" jdbcType="VARCHAR" />
+    <result column="KJBS" property="kjbs" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, ZT, WHDWID, WHRID, WHSJ, XC, BH, XLH, SZWZ, JKZT, JKBZ, KJBS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_00102
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  	<!-- 根据业务ID删除数据 -->
+<delete id="deleteByMainid" parameterType="java.lang.String">
+	delete from B_G2_00102
+	where MAINID = #{mainid,jdbcType=VARCHAR}
+</delete>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_00102
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.TEApplicability" >
+    insert into B_G2_00102 (ID, MAINID, ZT, 
+      WHDWID, WHRID, WHSJ, 
+      XC, BH, XLH, SZWZ, 
+      JKZT, JKBZ, KJBS)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{xc,jdbcType=DECIMAL}, #{bh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{szwz,jdbcType=VARCHAR}, 
+      #{jkzt,jdbcType=DECIMAL}, #{jkbz,jdbcType=VARCHAR}, #{kjbs,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.TEApplicability" >
+    insert into B_G2_00102
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="xc != null" >
+        XC,
+      </if>
+      <if test="bh != null" >
+        BH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="szwz != null" >
+        SZWZ,
+      </if>
+      <if test="jkzt != null" >
+        JKZT,
+      </if>
+      <if test="jkbz != null" >
+        JKBZ,
+      </if>
+      <if test="kjbs != null" >
+        KJBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xc != null" >
+        #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="bh != null" >
+        #{bh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="szwz != null" >
+        #{szwz,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzt != null" >
+        #{jkzt,jdbcType=DECIMAL},
+      </if>
+      <if test="jkbz != null" >
+        #{jkbz,jdbcType=VARCHAR},
+      </if>
+      <if test="kjbs != null" >
+        #{kjbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.TEApplicability" >
+    update B_G2_00102
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="bh != null" >
+        BH = #{bh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="szwz != null" >
+        SZWZ = #{szwz,jdbcType=VARCHAR},
+      </if>
+      <if test="jkzt != null" >
+        JKZT = #{jkzt,jdbcType=DECIMAL},
+      </if>
+      <if test="jkbz != null" >
+        JKBZ = #{jkbz,jdbcType=VARCHAR},
+      </if>
+      <if test="kjbs != null" >
+        KJBS = #{kjbs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.TEApplicability" >
+    update B_G2_00102
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      XC = #{xc,jdbcType=DECIMAL},
+      BH = #{bh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      SZWZ = #{szwz,jdbcType=VARCHAR},
+      JKZT = #{jkzt,jdbcType=DECIMAL},
+      JKBZ = #{jkbz,jdbcType=VARCHAR},
+      KJBS = #{kjbs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+      <!-- 批量新增,适用性 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+		 into B_G2_00102 (ID, MAINID, ZT, WHDWID, WHRID, WHSJ, XC, BH, XLH, SZWZ, KJBS)
+    	 values (#{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, 
+                 #{item.whdwid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, #{item.whsj,jdbcType=TIMESTAMP}, 
+                 #{item.xc,jdbcType=DECIMAL}, #{item.bh,jdbcType=VARCHAR}, #{item.xlh,jdbcType=VARCHAR}, 
+                 #{item.szwz,jdbcType=VARCHAR}, #{item.kjbs,jdbcType=DECIMAL})
+		</foreach>
+		select 1 from dual
+  </insert>
+</mapper>

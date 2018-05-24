@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.AuditMembersMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.AuditMembers" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="YWLX" property="ywlx" jdbcType="DECIMAL" />
+    <result column="JS" property="js" jdbcType="DECIMAL" />
+    <result column="CYID" property="cyid" jdbcType="VARCHAR" />
+    <result column="CYBH" property="cybh" jdbcType="VARCHAR" />
+    <result column="CYMC" property="cymc" jdbcType="VARCHAR" />
+    <result column="BMID" property="bmid" jdbcType="VARCHAR" />
+    <result column="BMBH" property="bmbh" jdbcType="VARCHAR" />
+    <result column="BMMC" property="bmmc" jdbcType="VARCHAR" />
+    <result column="ZW" property="zw" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, ZT, WHBMID, WHRID, WHSJ, YWID, YWLX, JS, CYID, CYBH, CYMC, BMID, BMBH, 
+    BMMC, ZW
+  </sql>
+  <!-- 根据业务id、业务类型、机构代码查询列表 -->
+  <select id="queryByYwidAndYwlxAndDrpt" resultMap="BaseResultMap">
+	 select 
+          	<include refid="Base_Column_List" />
+        from B_Z_901
+        where ZT = 1 and DPRTCODE = #{2,jdbcType=VARCHAR} and ywlx = #{1,jdbcType=DECIMAL} and ywid = #{0,jdbcType=VARCHAR}
+  </select>
+  <delete id="delete4Batch" parameterType="java.lang.String" >
+	   	delete from B_Z_901
+	   	where ID in
+	   		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  </delete>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_901
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_Z_901
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByYwid" parameterType="java.lang.String" >
+    delete from B_Z_901
+    where YWID = #{ywid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.AuditMembers" >
+    insert into B_Z_901 (ID, DPRTCODE, ZT, 
+      WHBMID, WHRID, WHSJ, 
+      YWID, YWLX, JS, CYID, 
+      CYBH, CYMC, BMID, BMBH, 
+      BMMC, ZW)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{ywid,jdbcType=VARCHAR}, #{ywlx,jdbcType=DECIMAL}, #{js,jdbcType=DECIMAL}, #{cyid,jdbcType=VARCHAR}, 
+      #{cybh,jdbcType=VARCHAR}, #{cymc,jdbcType=VARCHAR}, #{bmid,jdbcType=VARCHAR}, #{bmbh,jdbcType=VARCHAR}, 
+      #{bmmc,jdbcType=VARCHAR}, #{zw,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.AuditMembers" >
+    insert into B_Z_901
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="ywlx != null" >
+        YWLX,
+      </if>
+      <if test="js != null" >
+        JS,
+      </if>
+      <if test="cyid != null" >
+        CYID,
+      </if>
+      <if test="cybh != null" >
+        CYBH,
+      </if>
+      <if test="cymc != null" >
+        CYMC,
+      </if>
+      <if test="bmid != null" >
+        BMID,
+      </if>
+      <if test="bmbh != null" >
+        BMBH,
+      </if>
+      <if test="bmmc != null" >
+        BMMC,
+      </if>
+      <if test="zw != null" >
+        ZW,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="js != null" >
+        #{js,jdbcType=DECIMAL},
+      </if>
+      <if test="cyid != null" >
+        #{cyid,jdbcType=VARCHAR},
+      </if>
+      <if test="cybh != null" >
+        #{cybh,jdbcType=VARCHAR},
+      </if>
+      <if test="cymc != null" >
+        #{cymc,jdbcType=VARCHAR},
+      </if>
+      <if test="bmid != null" >
+        #{bmid,jdbcType=VARCHAR},
+      </if>
+      <if test="bmbh != null" >
+        #{bmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bmmc != null" >
+        #{bmmc,jdbcType=VARCHAR},
+      </if>
+      <if test="zw != null" >
+        #{zw,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.AuditMembers" >
+    update B_Z_901
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        YWLX = #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="js != null" >
+        JS = #{js,jdbcType=DECIMAL},
+      </if>
+      <if test="cyid != null" >
+        CYID = #{cyid,jdbcType=VARCHAR},
+      </if>
+      <if test="cybh != null" >
+        CYBH = #{cybh,jdbcType=VARCHAR},
+      </if>
+      <if test="cymc != null" >
+        CYMC = #{cymc,jdbcType=VARCHAR},
+      </if>
+      <if test="bmid != null" >
+        BMID = #{bmid,jdbcType=VARCHAR},
+      </if>
+      <if test="bmbh != null" >
+        BMBH = #{bmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bmmc != null" >
+        BMMC = #{bmmc,jdbcType=VARCHAR},
+      </if>
+      <if test="zw != null" >
+        ZW = #{zw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.AuditMembers" >
+    update B_Z_901
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      YWID = #{ywid,jdbcType=VARCHAR},
+      YWLX = #{ywlx,jdbcType=DECIMAL},
+      JS = #{js,jdbcType=DECIMAL},
+      CYID = #{cyid,jdbcType=VARCHAR},
+      CYBH = #{cybh,jdbcType=VARCHAR},
+      CYMC = #{cymc,jdbcType=VARCHAR},
+      BMID = #{bmid,jdbcType=VARCHAR},
+      BMBH = #{bmbh,jdbcType=VARCHAR},
+      BMMC = #{bmmc,jdbcType=VARCHAR},
+      ZW = #{zw,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <select id="selectByYwid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+     select 
+    <include refid="Base_Column_List" />
+    from B_Z_901
+    where YWID = #{ywid,jdbcType=VARCHAR} order by JS
+  </select>
+  
+  <!-- 复制审核成员 -->
+  <insert id="insert4Copy"  parameterType="java.lang.String">
+ 	 INSERT INTO B_Z_901(
+    	           ID, DPRTCODE, ZT, WHBMID, WHRID, WHSJ, YWID, YWLX, JS, CYID, CYBH, CYMC, BMID, BMBH, 
+          BMMC, ZW) 
+    SELECT SYS_GUID(), DPRTCODE, ZT, WHBMID, WHRID, WHSJ, #{newywid,jdbcType=VARCHAR}, YWLX, JS, CYID, CYBH, CYMC, BMID, BMBH, 
+          BMMC, ZW   
+    	FROM B_Z_901 
+	    WHERE YWID = #{ywid,jdbcType=VARCHAR}
+  </insert>
+  
+</mapper>

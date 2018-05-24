@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.FileRecycledMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.FileRecycled" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MKDM" property="mkdm" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WJID" property="wjid" jdbcType="VARCHAR" />
+    <result column="WJLX" property="wjlx" jdbcType="VARCHAR" />
+    <result column="WJMC" property="wjmc" jdbcType="VARCHAR" />
+    <result column="HZM" property="hzm" jdbcType="VARCHAR" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+    <result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+    <result column="YSWZ" property="yswz" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.po.FileRecycled" id="DetailResultMap" extends="BaseResultMap">
+    <association property="czr" javaType="com.eray.thjw.po.User">  
+        <id column="CZRID" property="id"/>  
+        <result column="CZRUSERNAME" property="username"/>  
+        <result column="CZRREALNAME" property="realname"/>  
+    </association>  
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, MKDM, DPRTCODE, WJID, WJLX, WJMC, HZM, CZSJ, CZBMID, CZRID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_018
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_018
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.FileRecycled" >
+    insert into D_018 (ID, MKDM, DPRTCODE, 
+      WJID, WJLX, WJMC, HZM, 
+      CZSJ, CZBMID, CZRID
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mkdm,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{wjid,jdbcType=VARCHAR}, #{wjlx,jdbcType=VARCHAR}, #{wjmc,jdbcType=VARCHAR}, #{hzm,jdbcType=VARCHAR}, 
+      #{czsj,jdbcType=TIMESTAMP}, #{czbmid,jdbcType=VARCHAR}, #{czrid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.FileRecycled" >
+    insert into D_018
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mkdm != null" >
+        MKDM,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="wjid != null" >
+        WJID,
+      </if>
+      <if test="wjlx != null" >
+        WJLX,
+      </if>
+      <if test="wjmc != null" >
+        WJMC,
+      </if>
+      <if test="hzm != null" >
+        HZM,
+      </if>
+      <if test="czsj != null" >
+        CZSJ,
+      </if>
+      <if test="czbmid != null" >
+        CZBMID,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mkdm != null" >
+        #{mkdm,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="wjid != null" >
+        #{wjid,jdbcType=VARCHAR},
+      </if>
+      <if test="wjlx != null" >
+        #{wjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="wjmc != null" >
+        #{wjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="hzm != null" >
+        #{hzm,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null" >
+        #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czbmid != null" >
+        #{czbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.FileRecycled" >
+    update D_018
+    <set >
+      <if test="mkdm != null" >
+        MKDM = #{mkdm,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="wjid != null" >
+        WJID = #{wjid,jdbcType=VARCHAR},
+      </if>
+      <if test="wjlx != null" >
+        WJLX = #{wjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="wjmc != null" >
+        WJMC = #{wjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="hzm != null" >
+        HZM = #{hzm,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null" >
+        CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czbmid != null" >
+        CZBMID = #{czbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.FileRecycled" >
+    update D_018
+    set MKDM = #{mkdm,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WJID = #{wjid,jdbcType=VARCHAR},
+      WJLX = #{wjlx,jdbcType=VARCHAR},
+      WJMC = #{wjmc,jdbcType=VARCHAR},
+      HZM = #{hzm,jdbcType=VARCHAR},
+      CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      CZBMID = #{czbmid,jdbcType=VARCHAR},
+      CZRID = #{czrid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询条件 -->
+  <sql id="Common_Param">
+  	 WHERE 1=1
+  	 	<!-- 飞模块代码 -->
+  	 	<if test="mkdm != null and mkdm != ''">
+        	AND  D1.MKDM = #{mkdm,jdbcType=VARCHAR}
+        </if>
+        <!-- 组织机构-->
+	    <if test="dprtcode != null and dprtcode != ''">
+            AND  D1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+        </if>
+        <!-- 关键字-->
+        <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+        	AND  (UPPER(D1.WJMC) LIKE UPPER('%'||#{paramsMap.keyword}||'%') 
+          	)
+       </if>
+  </sql>
+  
+  <!-- 查询回收站列表 -->
+  <select id="queryRecycledList" resultMap="DetailResultMap" parameterType="java.lang.String" >
+  
+  	with 
+        total_path as
+        (
+          <!-- 文件夹路径 -->
+          select distinct id, sys_connect_by_path(mlmc, '/') yswz
+			  from d_014
+			 where exists (select 1 from d_018 where d_014.id = d_018.wjid)
+			 start with fmlid = '#'
+			connect by fmlid = prior id
+		  
+		  union all
+		  
+		  <!-- 文件路径 -->
+		  select distinct d_011.id, d_014.yswz
+			  from d_011
+			  left join (select id, sys_connect_by_path(d_014.mlmc, '/') yswz
+			               from d_014
+			              start with d_014.fmlid = '#'
+			             connect by d_014.fmlid = prior d_014.id) d_014
+			    on d_011.mainid = d_014.id
+			 where exists (select 1 from d_018 where d_011.id = d_018.wjid)
+        )
+        
+    select 
+    d1.id, d1.mkdm, d1.dprtcode, d1.wjid, d1.wjlx, d1.wjmc, d1.hzm, d1.czsj, 
+    d1.czbmid, d1.czrid, t2.yswz,
+    t1.id as czrid, t1.username as czrusername, t1.realname as czrrealname
+    from d_018 d1
+    left join t_user t1 on d1.czrid = t1.id
+    left join total_path t2 on d1.wjid = t2.id
+    <include refid="Common_Param" />
+    <choose>
+	 	<when test='pagination.sort == "auto"'>
+	 		order by d1.wjmc, d1.hzm
+	 	</when>
+	 	<otherwise>
+		    order by ${pagination.sort} ${pagination.order}
+	 	</otherwise>
+ 	</choose>	
+  </select>
+  
+  <!-- 根据模块代码删除 -->
+  <delete id="deleteByMkdm" parameterType="com.eray.thjw.po.FileCatalog" >
+    delete from D_018
+    where mkdm = #{mkdm,jdbcType=VARCHAR} and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+  </delete>
+</mapper>

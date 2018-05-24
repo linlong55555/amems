@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.OutboundOrderDetailsMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.OutboundOrderDetails" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="KCLLID" property="kcllid" jdbcType="VARCHAR" />
+    <result column="WCKCLLID" property="wckcllid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, KCLLID, WCKCLLID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_02301
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_02301
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from B_H2_02301
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.OutboundOrderDetails" >
+    insert into B_H2_02301 (ID, MAINID, KCLLID, 
+      WCKCLLID)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+      #{wckcllid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.OutboundOrderDetails" >
+    insert into B_H2_02301
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="kcllid != null" >
+        KCLLID,
+      </if>
+      <if test="wckcllid != null" >
+        WCKCLLID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null" >
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="wckcllid != null" >
+        #{wckcllid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.OutboundOrderDetails" >
+    update B_H2_02301
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null" >
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="wckcllid != null" >
+        WCKCLLID = #{wckcllid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.OutboundOrderDetails" >
+    update B_H2_02301
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCLLID = #{kcllid,jdbcType=VARCHAR},
+      WCKCLLID = #{wckcllid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- start 根据业务id获取数据 -->
+	<select id="getDepartmentByYwid" parameterType="String" resultMap="BaseResultMap">
+		select
+		ID, MAINID, KCLLID, WCKCLLID from B_H2_02301
+		where mainid=#{mainid,jdbcType=VARCHAR}
+	</select>
+	
+  	<delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_H2_02301
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</delete>
+</mapper>

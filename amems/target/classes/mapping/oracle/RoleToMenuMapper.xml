@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.RoleToMenuMapper">
+     
+	<resultMap id="roleToMenuMap" type="com.eray.thjw.po.RoleToMenu">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+		<result column="MENU_ID" property="menuId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="roleToMenuColumn">
+		ID,ROLE_ID,MENU_ID
+	</sql>
+	
+	<!-- 搜索参数 -->
+	<sql id="roleToMenuParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="roleId != null and roleId != ''">
+             and ROLE_ID = #{roleId}
+         </if>
+         <if test="menuId != null and menuId != ''">
+             and MENU_ID = #{menuId}
+         </if>
+	</sql>
+
+	 <select id="queryCount" parameterType="com.eray.thjw.po.RoleToMenu" resultType="int">
+		select count(*) FROM T_ROLE2MENU <include refid="roleToMenuParam"></include>
+ 	 </select>
+	
+	<!-- 添加角色信息 -->
+	<insert id="save"  parameterType="com.eray.thjw.po.RoleToMenu" >
+		insert into   
+		T_ROLE2MENU
+		(<include refid="roleToMenuColumn"></include>)
+		 values
+		 (#{id},#{roleId},#{menuId})
+	</insert>
+	
+	<!-- 删除角色信息 -->
+	<delete id="delete" parameterType="com.eray.thjw.po.RoleToMenu" >
+		delete from T_ROLE2MENU
+		<include refid="roleToMenuParam"></include>
+	</delete>
+	
+	<select id="selectByRole" resultMap="roleToMenuMap">
+		select ID,ROLE_ID,MENU_ID FROM T_ROLE2MENU where ROLE_ID = #{roleId}
+ 	 </select>
+ 	 
+ 	<delete id="deleteRoleMenus">
+		delete from T_ROLE2MENU 
+		where ROLE_ID = #{roleId}
+		and MENU_ID in 
+		<foreach item="idItem" collection="menuIds" open="(" separator="," close=")">
+			#{idItem}
+		</foreach>
+	</delete> 
+ 	
+	<insert id="insertRoleMenu" >
+		insert into   
+		T_ROLE2MENU
+		(<include refid="roleToMenuColumn"></include>)
+		 values
+        (#{0}, #{1}, #{2})  
+	</insert>
+ 	 
+</mapper>

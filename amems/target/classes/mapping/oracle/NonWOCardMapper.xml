@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.NonWOCardMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.NonWOCard" >
+   <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="XGGD_LX" property="xggdLx" jdbcType="DECIMAL" />
+    <result column="XGGD_ZLX" property="xggdZlx" jdbcType="DECIMAL" />
+    <result column="XGGDID" property="xggdid" jdbcType="VARCHAR" />
+    <result column="XGJCGDID" property="xgjcgdid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    
+    <result column="GDBH" property="gdbh" jdbcType="VARCHAR" />
+    <result column="ZY" property="zy" jdbcType="VARCHAR" />
+    <result column="ZHUT" property="zhut" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, XGGD_LX, XGGD_ZLX, xggdid, xgjcgdid, ZT, whdwid, WHRID, WHSJ, DPRTCODE
+  </sql>
+  
+      <sql id="BaseResulParam">
+	     where 
+		   1=1
+		   <!-- 工单关联工单的maidid -->
+		     <if test="mainid != null and mainid != ''">
+	            and  MAINID = #{mainid,jdbcType=VARCHAR}
+	         </if>
+		     <if test="dprtcode != null and dprtcode != ''">
+	            and  dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	         </if>
+   </sql>
+  
+  <select id="selectByNonWOCardList" parameterType="com.eray.thjw.po.NonWOCard"  resultMap="BaseResultMap" >
+	select a.ID, a.MAINID, a.XGGD_LX, a.XGGD_ZLX, a.xggdid, a.xgjcgdid,
+	
+	a.ZT, a.whdwid,
+
+	a.WHRID, a.WHSJ, a.DPRTCODE, b.gdbh gdbh ,c.zy,c.zhut from B_G_00605 a left
+	
+	join b_g_006 b on a.xgjcgdid=b.id
+
+	left join (select id,zy,zhut from b_g_007 union all select id,zy,zhut from
+	b_g_016 union all select id,zy,zhut from b_g_010 union all select id,zy,gzzt zhut from b_g_013) c on a.xggdid=c.id
+
+	where a.MAINID = #{mainid,jdbcType=VARCHAR}
+		
+  </select>
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_00605
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_00605
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.NonWOCard" >
+    insert into B_G_00605 (ID, MAINID, XGGD_LX, 
+      XGGD_ZLX, XGGDID, XGJCGDID, 
+      ZT, WHDWID, WHRID, 
+      WHSJ, DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{xggdLx,jdbcType=DECIMAL}, 
+      #{xggdZlx,jdbcType=DECIMAL}, #{xggdid,jdbcType=VARCHAR}, #{xgjcgdid,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.NonWOCard" >
+    insert into B_G_00605
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="xggdLx != null" >
+        XGGD_LX,
+      </if>
+      <if test="xggdZlx != null" >
+        XGGD_ZLX,
+      </if>
+      <if test="xggdid != null" >
+        XGGDID,
+      </if>
+      <if test="xgjcgdid != null" >
+        XGJCGDID,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+        WHSJ,
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="xggdLx != null" >
+        #{xggdLx,jdbcType=DECIMAL},
+      </if>
+      <if test="xggdZlx != null" >
+        #{xggdZlx,jdbcType=DECIMAL},
+      </if>
+      <if test="xggdid != null" >
+        #{xggdid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgjcgdid != null" >
+        #{xgjcgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      sysdate,
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.NonWOCard" >
+    update B_G_00605
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="xggdLx != null" >
+        XGGD_LX = #{xggdLx,jdbcType=DECIMAL},
+      </if>
+      <if test="xggdZlx != null" >
+        XGGD_ZLX = #{xggdZlx,jdbcType=DECIMAL},
+      </if>
+      <if test="xggdid != null" >
+        XGGDID = #{xggdid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgjcgdid != null" >
+        XGJCGDID = #{xgjcgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.NonWOCard" >
+    update B_G_00605
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      XGGD_LX = #{xggdLx,jdbcType=DECIMAL},
+      XGGD_ZLX = #{xggdZlx,jdbcType=DECIMAL},
+      XGGDID = #{xggdid,jdbcType=VARCHAR},
+      XGJCGDID = #{xgjcgdid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+   <select id="selectedXggkList" parameterType="com.eray.thjw.po.NonWOCard"  resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include>
+		from B_G_00605
+		<include refid="BaseResulParam"></include>
+  </select>
+  
+   <delete id="deleteById" parameterType="java.lang.String" >
+     delete from B_G_00605
+       where ID = #{id}
+  </delete>
+  
+  
+</mapper>

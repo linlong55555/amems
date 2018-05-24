@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.OtherHCMainDataMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.HCMainData" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+    <result column="JLDW" property="jldw" jdbcType="VARCHAR" />
+    <result column="CJJH" property="cjjh" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="HCJZ" property="hcjz" jdbcType="DECIMAL" />
+    <result column="GLJB" property="gljb" jdbcType="DECIMAL" />
+    <result column="SXKZ" property="sxkz" jdbcType="DECIMAL" />
+    <result column="HCLX" property="hclx" jdbcType="DECIMAL" />
+    <result column="HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+    <result column="IS_MEL" property="isMel" jdbcType="DECIMAL" />
+    <result column="MIN_KCL" property="minKcl" jdbcType="DECIMAL" />
+    <result column="MAX_KCL" property="maxKcl" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="XH" property="xh" jdbcType="VARCHAR" />
+     <result column="GG" property="gg" jdbcType="VARCHAR" />
+      <result column="XINGH" property="xingh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="BMID" property="bmid" jdbcType="VARCHAR" />
+    <result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+    <result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" />
+    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+    <result column="KYKCSL" property="kykcsl" jdbcType="DECIMAL" />
+    
+    <result column="JUESCB" jdbcType="DECIMAL" property="juescb" />
+    <result column="JIESCB" jdbcType="DECIMAL" property="jiescb" />
+    <result column="GSCB" jdbcType="DECIMAL" property="gscb" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+    <result column="DPRTNAME" jdbcType="VARCHAR" property="dprtname" />
+    <result column="ZJHMS" jdbcType="VARCHAR" property="zjhms" />
+  </resultMap>
+  
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  <resultMap type="com.eray.thjw.aerialmaterial.po.HCMainData" id="MaterialToPlaneModelMap" extends="BaseResultMap">  
+       <collection property="materialToPlaneModelList" ofType="com.eray.thjw.aerialmaterial.po.MaterialToPlaneModel" >  
+           <id property="id" column="MPMID" />  
+           <result property="mainid" column="MAINID" />  
+           <result property="fjjx" column="FJJX" />  
+       </collection>  
+   </resultMap> 
+  
+  <sql id="Material_PlaneModel_List" >
+    B.ID, B.BJH, B.DPRTCODE, B.ZWMS, B.YWMS, B.JLDW, B.CJJH, B.ZJH, B.HCJZ, B.GLJB, B.SXKZ, B.HCLX, B.HCLX_EJ, 
+    B.IS_MEL, B.MIN_KCL, B.MAX_KCL, B.BZ,B.XH,B.GG,B.XINGH, B.ZT, B.BMID, B.CJRID, B.CJSJ,D.ID AS MPMID,D.MAINID,D.FJJX
+  </sql>
+  
+  	<select id="selectByIds" resultMap="MaterialToPlaneModelMap"  >
+    	select 
+		    <include refid="Material_PlaneModel_List" />
+		from D_008 B
+		left join D_00801 D 
+	    on B.ID = D.MAINID
+		where B.zt=1
+  	</select>
+  
+</mapper>

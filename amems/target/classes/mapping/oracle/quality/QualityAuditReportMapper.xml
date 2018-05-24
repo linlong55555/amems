@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.QualityAuditReportMapper">
+<resultMap type="com.eray.thjw.quality.po.QualityAuditReport" id="BaseResultMap">
+<id column="ID" property="id" jdbcType="VARCHAR"></id>
+<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR"></result>
+<result column="ZT" property="zt" jdbcType="DECIMAL"></result>
+<result column="WHBMID" property="whbmid" jdbcType="VARCHAR"></result>
+<result column="WHRID" property="whrid" jdbcType="VARCHAR"></result>
+<result column="WHSJ" property="whsj" jdbcType="TIMESTAMP"></result>
+<result column="SHRBMID" property="shrbmid" jdbcType="VARCHAR"></result>
+<result column="SHRID" property="shrid" jdbcType="VARCHAR"></result>
+<result column="SHSJ" property="shsj" jdbcType="TIMESTAMP"></result>
+<result column="SHYIJ" property="shyij" jdbcType="VARCHAR"></result>
+<result column="SPRBMID" property="sprbmid" jdbcType="VARCHAR"></result>
+<result column="SPRID" property="sprid" jdbcType="VARCHAR"></result>
+<result column="SPSJ" property="spsj" jdbcType="TIMESTAMP"></result>
+<result column="SPYJ" property="spyj" jdbcType="VARCHAR"></result>
+<result column="GBSM" property="gbsm" jdbcType="VARCHAR"></result>
+<result column="GBRBMID" property="gbrbmid" jdbcType="VARCHAR"></result>
+<result column="GBRID" property="gbrid" jdbcType="VARCHAR"></result>
+<result column="GBSJ" property="gbsj" jdbcType="TIMESTAMP"></result>
+<result column="ZLSHBGBH" property="zlshbgbh" jdbcType="VARCHAR"></result>
+<result column="SHMD" property="shmd" jdbcType="VARCHAR"></result>
+<result column="SHFW" property="shfw" jdbcType="VARCHAR"></result>
+<result column="SHYJ" property="shyj" jdbcType="VARCHAR"></result>
+<result column="SHGY" property="shgy" jdbcType="VARCHAR"></result>
+<result column="SHJL" property="shjl" jdbcType="VARCHAR"></result>
+<result column="SHLB" property="shlb" jdbcType="VARCHAR"></result>
+<result column="LX" property="lx" jdbcType="DECIMAL"></result>
+<result column="SHDXID" property="shdxid" jdbcType="VARCHAR"></result>
+<result column="SHDXBH" property="shdxbh" jdbcType="VARCHAR"></result>
+<result column="SHDXMC" property="shdxmc" jdbcType="VARCHAR"></result>
+<result column="SHRQ" property="shrq" jdbcType="TIMESTAMP"></result>
+</resultMap>
+
+<resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.quality.po.QualityAuditReport">
+	   <association property="user" javaType="com.eray.thjw.po.User">  
+	        <id 	column="USER_ID" property="id"/>  
+	        <result column="USER_REALNAME" property="realname"/>  
+	   </association>  	   
+	   <association property="auditPerson" javaType="com.eray.thjw.quality.po.AuditMembers">
+	       <id      column="AUDIT_ID" property="id"/>
+	       <result  column="AUDIT_SHCY" property="shcy"/>
+	   </association>
+	    <association property="distributeDepartment" javaType="com.eray.thjw.quality.po.DistributeDepartment">
+	       <id      column="DISTRIBUTE_ID" property="id"/>
+	       <result  column="DISTRIBUTE_CY" property="distributeDeparts"/>
+	   </association>
+</resultMap>
+
+<sql id="Base_Column_List" >
+    Z014.ID, DPRTCODE, ZT, WHBMID, WHRID, WHSJ,SHRBMID,SHRID,SHSJ,SHYIJ,
+    SPRBMID,SPRID,SPSJ,SPYJ,GBSM,GBRBMID,GBRID,GBSJ,ZLSHBGBH,SHMD,SHFW,
+    SHYJ,SHGY,SHJL,SHLB,LX,SHDXID,SHDXBH,SHDXMC,SHRQ,TUSER.REALNAME USER_REALNAME,AUDIT_SHCY，DISTRIBUTE_CY
+</sql>
+
+<select id="selectByKey" resultType="com.eray.thjw.quality.po.QualityAuditReport" parameterType="java.lang.String">
+SELECT * FROM B_Z_014 Z014 WHERE Z014.ID=#{0}
+</select>
+
+
+
+<select id="getQualityAuditReportList" resultMap="ResultMap" parameterType="com.eray.thjw.quality.po.QualityAuditReport">
+	SELECT
+	<include refid="Base_Column_List" />
+	FROM B_Z_014 Z014
+	LEFT JOIN 
+	(
+	SELECT Z901.YWID,
+	WM_CONCAT(Z901.JS || '#_#' || Z901.CYID || '#_#' ||
+	Z901.CYBH || '#_#' || Z901.CYMC) AUDIT_SHCY
+	FROM B_Z_901 Z901
+	WHERE
+	<if test="dprtcode!=null and dprtcode!=''">
+		Z901.DPRTCODE =#{dprtcode,jdbcType=VARCHAR} AND
+	</if>
+	Z901.ZT = 1
+	AND Z901.YWLX = 15
+	GROUP BY YWID
+	) Z901  ON Z901.YWID = Z014.ID
+	LEFT JOIN (
+	SELECT Z902.YWID,
+	WM_CONCAT(Z902.BMID || '#_#' ||
+	Z902.BMBH || '#_#' || Z902.BMMC) DISTRIBUTE_CY
+	FROM B_Z_902 Z902
+	WHERE
+	<if test="dprtcode!=null and dprtcode!=''">
+		Z902.DPRTCODE =#{dprtcode,jdbcType=VARCHAR} AND
+	</if>
+	Z902.ZT = 1
+	AND Z902.YWLX = 15
+	GROUP BY YWID	
+	) Z902 ON
+	Z902.YWID = Z014.ID
+	LEFT JOIN T_USER TUSER
+	ON TUSER.ID = Z014.WHRID
+	WHERE 1=1
+
+	<if test="paramsMap!=null and paramsMap.ztList!=null and paramsMap.ztList.size>0">
+		AND Z014.ZT IN
+		<foreach collection="paramsMap.ztList" item="item" open="(" close=")" index="index" separator=",">
+			#{item}
+		</foreach>
+	</if>
+	<!--如果点击的是质量审核报告菜单,添加如下查询条件  -->
+	<if test="paramsMap !=null and paramsMap.isView !=null and paramsMap.isView ==true">
+	AND ( Z014.SHDXID=#{paramsMap.currentUserBmdm} OR
+	instr(Z902.DISTRIBUTE_CY,#{paramsMap.currentUserBmdm})>0   
+	) 
+	AND Z014.ZT='3'
+	</if>
+		
+	<if test="paramsMap !=null and paramsMap.shrn !=null and paramsMap.shrn !=''">
+	  AND (
+	  UPPER(Z014.SHDXBH) LIKE UPPER('%'||#{paramsMap.shrn}||'%') OR 
+	  UPPER(Z014.SHDXMC) LIKE UPPER('%'||#{paramsMap.shrn}||'%')
+	  )
+	</if>
+
+	<if test="paramsMap!=null and paramsMap.keyword!=null and paramsMap.keyword!=''">
+		AND (
+		UPPER(Z014.ZLSHBGBH) LIKE UPPER('%'||#{paramsMap.keyword,jdbcType=VARCHAR}||'%')
+		OR UPPER(Z014.SHGY) LIKE UPPER('%'||#{paramsMap.keyword,jdbcType=VARCHAR}||'%') 
+		)
+	</if>
+          
+     <if test="paramsMap!=null and paramsMap.shrqbegin!=null and paramsMap.shrqbegin!=''">
+      AND Z014.SHRQ &gt;=to_date(#{paramsMap.shrqbegin}||'00:00:00','YYYY-MM-DD HH24:MI:SS')
+     </if>
+     
+     <if test="paramsMap!=null and paramsMap.shrqend!=null and paramsMap.shrqend!=''">
+      AND Z014.SHRQ &lt;=to_date(#{paramsMap.shrqend}||'23:59:59','YYYY-MM-DD HH24:MI:SS')
+     </if>
+     
+     <!-- 当前日期减6个月 -->
+     <if test="paramsMap!=null and paramsMap.shrqbegin==null">
+      AND Z014.SHRQ &gt;=add_months(sysdate,-6)
+     </if>
+     
+      <if test="paramsMap!=null and paramsMap.shrqbegin==null">
+      AND Z014.SHRQ &lt;=sysdate
+     </if>
+     
+     <if test="lx!=null and lx!=''">
+       AND Z014.LX=#{lx,jdbcType=DECIMAL}
+     </if>
+     
+     <if test="shlb!=null and shlb!=''">
+       AND Z014.SHLB=#{shlb,jdbcType=DECIMAL}
+     </if>
+          
+	<if test="shdxbh!=null and shdxbh!=''">
+		AND Z014.SHDXBH=#{shdxbh,jdbcType=VARCHAR}
+	</if>
+	
+	<if test="dprtcode!=null and dprtcode!=''">
+		AND Z014.DPRTCODE=#{dprtcode,jdbcType=VARCHAR}
+	</if>
+	
+	<if test="id !=null and id !=''">
+	    AND Z014.ID=#{id,jdbcType=VARCHAR} 
+	</if>
+     <choose>                                                                                 
+    	<when test='pagination.sort == "auto"'>                       
+    		 ORDER BY Z014.WHSJ DESC
+    	</when>
+    	<otherwise>
+		    order by ${pagination.sort} ${pagination.order}
+    	</otherwise>
+	 </choose>
+     
+</select>
+
+<!--校验质量审核编号唯一性  -->
+<select id="validatShbhUnique" resultType="java.lang.String" parameterType="java.lang.String">
+  select 1 from B_Z_014 Z014 where Z014.DPRTCODE=#{1} and Z014.ZLSHBGBH=#{0} and Z014.ID!=#{2}
+
+</select>
+
+<!--根据质量审核单报告编号和组织结构查询  -->
+<select id="selectByQualityReportNum" resultMap="ResultMap" parameterType="com.eray.thjw.quality.po.QualityAuditReport">
+	SELECT
+	<include refid="Base_Column_List" />
+	FROM B_Z_014 Z014
+	LEFT JOIN 
+	(
+	SELECT Z901.YWID,
+	WM_CONCAT(Z901.JS || '#_#' || Z901.CYID || '#_#' ||
+	Z901.CYBH || '#_#' || Z901.CYMC) AUDIT_SHCY
+	FROM B_Z_901 Z901
+	WHERE
+	<if test="dprtcode!=null and dprtcode!=''">
+		Z901.DPRTCODE =#{dprtcode,jdbcType=VARCHAR} AND
+	</if>
+	Z901.ZT = 1
+	AND Z901.YWLX = 15
+	GROUP BY YWID
+	) Z901  ON Z901.YWID = Z014.ID
+	LEFT JOIN (
+	SELECT Z902.YWID,
+	WM_CONCAT(Z902.BMID || '#_#' ||
+	Z902.BMBH || '#_#' || Z902.BMMC) DISTRIBUTE_CY
+	FROM B_Z_902 Z902
+	WHERE
+	<if test="dprtcode!=null and dprtcode!=''">
+		Z902.DPRTCODE =#{dprtcode,jdbcType=VARCHAR} AND
+	</if>
+	Z902.ZT = 1
+	AND Z902.YWLX = 15
+	GROUP BY YWID	
+	) Z902 ON
+	Z902.YWID = Z014.ID
+	LEFT JOIN T_USER TUSER
+	ON TUSER.ID = Z014.WHRID
+	WHERE 1=1 AND Z014.ZLSHBGBH=#{zlshbgbh,jdbcType=VARCHAR}
+</select>
+
+
+<!--删除质量审核报告  -->
+<delete id="deleteAuditReport" parameterType="java.lang.String">
+DELETE FROM B_Z_014 WHERE ID=#{id,jdbcType=VARCHAR}
+</delete>
+
+<!--删除审核成员  -->
+<delete id="deleteAuditMember" parameterType="java.lang.String">
+DELETE FROM B_Z_901 WHERE YWID=#{ywid,jdbcType=VARCHAR}
+</delete>
+
+<!--删除分发部门  -->
+<delete id="deleteDistributeDepartment" parameterType="java.lang.String">
+DELETE FROM B_Z_902 WHERE YWID=#{ywid,jdbcType=VARCHAR}
+</delete>
+
+<!--保存质量审核报告  -->
+<insert id="saveAuditReport" parameterType="com.eray.thjw.quality.po.QualityAuditReport">
+	INSERT INTO B_Z_014
+	(ID,DPRTCODE,ZT,WHBMID,WHRID,WHSJ,SHRBMID,SHRID,SHSJ,SHYIJ,SPRBMID,SPRID
+	,SPSJ,SPYJ,GBSM,GBRBMID,GBRID,GBSJ,ZLSHBGBH,SHMD,SHFW,SHYJ,SHGY,SHJL,SHLB,LX,SHDXID,SHDXBH,SHDXMC
+	,SHRQ ) VALUES (
+	#{id,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},#{zt,jdbcType=DECIMAL},
+	#{whbmid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR},#{whsj,jdbcType=TIMESTAMP},
+	#{shrbmid,jdbcType=VARCHAR},#{shrid,jdbcType=VARCHAR},#{shsj,jdbcType=TIMESTAMP},
+	#{shyij,jdbcType=VARCHAR},#{sprbmid,jdbcType=VARCHAR},#{sprid,jdbcType=VARCHAR},
+	#{spsj,jdbcType=TIMESTAMP},#{spyj,jdbcType=VARCHAR},#{gbsm,jdbcType=VARCHAR}
+	,#{gbrbmid,jdbcType=VARCHAR},#{gbrid,jdbcType=VARCHAR},#{gbsj,jdbcType=TIMESTAMP},
+	#{zlshbgbh,jdbcType=VARCHAR},#{shmd,jdbcType=VARCHAR},#{shfw,jdbcType=TIMESTAMP},
+	#{shyj,jdbcType=VARCHAR},#{shgy,jdbcType=VARCHAR},#{shjl,jdbcType=TIMESTAMP},
+	#{shlb,jdbcType=DECIMAL},#{lx,jdbcType=DECIMAL},#{shdxid,jdbcType=VARCHAR},
+	#{shdxbh,jdbcType=VARCHAR},#{shdxmc,jdbcType=VARCHAR},#{shrq,jdbcType=TIMESTAMP}
+	)
+</insert>
+<!--批量保存审核成员  -->
+<insert id="saveAuditMember" parameterType="java.util.List">
+	INSERT INTO B_Z_901 (ID, DPRTCODE, ZT,
+	WHBMID, WHRID, WHSJ,
+	YWID, YWLX,
+	JS, CYID,
+	CYBH, CYMC, BMID, BMBH,
+	BMMC, ZW)
+	<foreach collection="list" item="item" index="index" separator="union all">
+		(select
+		#{item.id},
+		#{item.dprtcode},
+		#{item.zt},
+		#{item.whbmid},
+		#{item.whrid},
+		#{item.whsj},
+		#{item.ywid},
+		#{item.ywlx},
+		#{item.js},
+		#{item.cyid},
+		#{item.cybh},
+		#{item.cymc},
+		#{item.bmid}, 
+		#{item.bmbh},
+	    #{item.bmmc}, 
+	    #{item.zw,jdbcType=VARCHAR}
+		from dual
+		)
+	</foreach>
+</insert>
+
+<!--批量保存分发部门  -->
+<insert id="saveDistributeDepartment" parameterType="java.util.List">
+	INSERT INTO B_Z_902
+	(ID,DPRTCODE,ZT,WHBMID,WHRID,WHSJ,YWID,YWLX,BMID,BMBH,BMMC)
+	<foreach collection="list" item="item" index="index" separator="union all">
+	  (select
+           #{item.id},
+           #{item.dprtcode},
+           #{item.zt},
+           #{item.whbmid},
+           #{item.whrid},
+           #{item.whsj},
+           #{item.ywid},
+           #{item.ywlx},
+           #{item.bmid},
+           #{item.bmbh},
+           #{item.bmmc}    
+         from dual
+        )
+	</foreach>
+
+</insert>
+
+<!--新增流程记录  -->
+<insert id="saveFlowRecord" parameterType="com.eray.thjw.quality.po.ProcessRecord">
+	INSERT INTO D_025 (ID, MAINID, DPRTCODE,
+	CZRMC, BMMC, CZSM,
+	CZSJ)
+	VALUES (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR},
+	#{dprtcode,jdbcType=VARCHAR},
+	#{czrmc,jdbcType=VARCHAR}, #{bmmc,jdbcType=VARCHAR}, #{czsm,jdbcType=VARCHAR},
+	#{czsj,jdbcType=TIMESTAMP})
+</insert>
+
+
+<!--修改质量审核报告  -->
+<update id="updateAuditReportById" parameterType="com.eray.thjw.quality.po.QualityAuditReport">
+UPDATE B_Z_014 
+<set>
+
+   <!-- 
+   	<if test="dprtcode!=null">
+		DPRTCODE=#{dprtcode,jdbcType=VARCHAR},
+	</if>
+    -->
+
+	<if test="zt !=null">
+		ZT=#{zt,jdbcType=VARCHAR},
+	</if>
+	<if test="whbmid !=null">
+		WHBMID=#{whbmid,jdbcType=VARCHAR},
+	</if>
+	<if test="whrid !=null">
+		WHRID=#{whrid,jdbcType=VARCHAR},
+	</if>
+	<if test="whsj !=null">
+		WHSJ=#{whsj,jdbcType=TIMESTAMP},
+	</if>
+	<if test="shrbmid !=null">
+		SHRBMID=#{shrbmid,jdbcType=VARCHAR},
+	</if>
+	<if test="shrid !=null">
+		SHRID=#{shrid,jdbcType=VARCHAR},
+	</if>
+	<if test="shsj !=null">
+		SHSJ=#{shsj,jdbcType=TIMESTAMP},
+	</if>
+	<if test="shyij !=null">
+		SHYIJ=#{shyij,jdbcType=VARCHAR},
+	</if>
+	<if test="sprbmid !=null">
+		SPRBMID=#{sprbmid,jdbcType=VARCHAR},
+	</if>
+	<if test="sprid !=null">
+		SPRID=#{sprid,jdbcType=VARCHAR},
+	</if>
+	<if test="spsj !=null">
+		SPSJ=#{spsj,jdbcType=TIMESTAMP},
+	</if>
+	<if test="spyj !=null">
+		SPYJ=#{spyj,jdbcType=VARCHAR},
+	</if>
+    <if test="gbsm !=null">
+		GBSM=#{gbsm,jdbcType=VARCHAR},
+	</if>
+	<if test="gbrbmid !=null">
+		GBRBMID=#{gbrbmid,jdbcType=VARCHAR},
+	</if>
+	<if test="gbrid !=null">
+	   GBRID=#{gbrid,jdbcType=VARCHAR},
+	</if>
+	<if test="gbsj !=null">
+	   GBSJ=#{gbsj,jdbcType=TIMESTAMP},
+	</if>
+	<if test="zlshbgbh !=null">
+	   ZLSHBGBH=#{zlshbgbh,jdbcType=VARCHAR},
+	</if>
+	<if test="shmd !=null">
+	   SHMD=#{shmd,jdbcType=VARCHAR},
+	</if>
+	<if test="shfw !=null">
+	   SHFW=#{shfw,jdbcType=VARCHAR},
+	</if>
+	<if test="shyj !=null">
+	   SHYJ=#{shyj,jdbcType=VARCHAR},
+	</if>
+	<if test="shgy !=null">
+	   SHGY=#{shgy,jdbcType=VARCHAR},
+	</if>
+	<if test="shjl !=null">
+	   SHJL=#{shjl,jdbcType=VARCHAR},
+	</if>
+	<if test="shlb !=null">
+	   SHLB=#{shlb,jdbcType=DECIMAL},
+	</if>
+	<if test="lx !=null">
+	   lx=#{lx,jdbcType=DECIMAL},
+	</if>
+	<if test="shdxid !=null">
+	   SHDXID=#{shdxid,jdbcType=VARCHAR},
+	</if>
+	<if test="shdxbh !=null">
+	   SHDXBH=#{shdxbh,jdbcType=VARCHAR},
+	</if>
+	<if test="shdxmc !=null">
+	   SHDXMC=#{shdxmc,jdbcType=VARCHAR},
+	</if>
+	<if test="shrq !=null">
+	   SHRQ=#{shrq,jdbcType=TIMESTAMP},
+	</if>	
+</set>
+WHERE ID=#{id,jdbcType=VARCHAR}
+</update>
+</mapper>

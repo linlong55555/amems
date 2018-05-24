@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.SysLog">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="CZRID" jdbcType="VARCHAR" property="czrid" />
+    <result column="CZIP" jdbcType="VARCHAR" property="czip" />
+    <result column="CZMC" jdbcType="VARCHAR" property="czmc" />
+    <result column="CZURL" jdbcType="VARCHAR" property="czurl" />
+    <result column="CZSJ" jdbcType="VARCHAR" property="czsj" />
+    <result column="RZLX" jdbcType="DECIMAL" property="rzlx" />
+    <result column="YCNR" jdbcType="VARCHAR" property="ycnr" />
+    <result column="CASJ" jdbcType="TIMESTAMP" property="casj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, CZRID, CZIP, CZMC, CZURL, CZSJ, RZLX, YCNR, CASJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_LOG
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_LOG
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.SysLog">
+    insert into T_LOG (ID, DPRTCODE, CZRID, 
+      CZIP, CZMC, CZURL, 
+      CZSJ, RZLX, YCNR, CASJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{czrid,jdbcType=VARCHAR}, 
+      #{czip,jdbcType=VARCHAR}, #{czmc,jdbcType=VARCHAR}, #{czurl,jdbcType=VARCHAR}, 
+      #{czsj,jdbcType=VARCHAR}, #{rzlx,jdbcType=DECIMAL}, #{ycnr,jdbcType=VARCHAR}, #{casj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.SysLog">
+    insert into T_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="czrid != null">
+        CZRID,
+      </if>
+      <if test="czip != null">
+        CZIP,
+      </if>
+      <if test="czmc != null">
+        CZMC,
+      </if>
+      <if test="czurl != null">
+        CZURL,
+      </if>
+      <if test="czsj != null">
+        CZSJ,
+      </if>
+      <if test="rzlx != null">
+        RZLX,
+      </if>
+      <if test="ycnr != null">
+        YCNR,
+      </if>
+      <if test="id != null">
+        CASJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null">
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czip != null">
+        #{czip,jdbcType=VARCHAR},
+      </if>
+      <if test="czmc != null">
+        #{czmc,jdbcType=VARCHAR},
+      </if>
+      <if test="czurl != null">
+        #{czurl,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null">
+        #{czsj,jdbcType=VARCHAR},
+      </if>
+      <if test="rzlx != null">
+        #{rzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ycnr != null">
+        #{ycnr,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.SysLog">
+    update T_LOG
+    <set>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="czrid != null">
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czip != null">
+        CZIP = #{czip,jdbcType=VARCHAR},
+      </if>
+      <if test="czmc != null">
+        CZMC = #{czmc,jdbcType=VARCHAR},
+      </if>
+      <if test="czurl != null">
+        CZURL = #{czurl,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null">
+        CZSJ = #{czsj,jdbcType=VARCHAR},
+      </if>
+      <if test="rzlx != null">
+        RZLX = #{rzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ycnr != null">
+        YCNR = #{ycnr,jdbcType=VARCHAR},
+      </if>
+      <if test="casj != null">
+        CASJ = #{casj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.SysLog">
+    update T_LOG
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set CZRID = #{czrid,jdbcType=VARCHAR},
+      CZIP = #{czip,jdbcType=VARCHAR},
+      CZMC = #{czmc,jdbcType=VARCHAR},
+      CZURL = #{czurl,jdbcType=VARCHAR},
+      CZSJ = #{czsj,jdbcType=VARCHAR},
+      RZLX = #{rzlx,jdbcType=DECIMAL},
+      YCNR = #{ycnr,jdbcType=VARCHAR},
+      CASJ = #{casj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAllPageList"  resultMap="BaseResultMap">
+	select   b1.ID,  b1.DPRTCODE,  b1.CZRID,  b1.CZIP,  b1.CZMC,  b1.CZURL,  b1.CZSJ,  b1.RZLX,  b1.YCNR,  b1.CASJ,
+	(b2.username ||' '||b2.realName) as username 
+  	from t_log b1 left join t_user b2 on b1.czrid=b2.id
+
+		   <include refid="BaseResulParam1"></include>
+              
+              <choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		order by casj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+	
+		 <select id="queryCount" parameterType="com.eray.thjw.system.po.SysLog" resultType="int">
+		  select count(*)
+  from t_log  b1
+  left join t_user b2 on b1.czrid=b2.id
+  
+  <include refid="BaseResulParam1"></include>
+ 	 </select>
+ 	 
+ 	    <sql id="BaseResulParam1">
+	   where  1=1
+          <if test="keyword != null and keyword != ''">
+		    and (
+		    	UPPER(b1.CZIP) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(username) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(b1.CZMC) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(b1.CZSJ) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(username) like UPPER('%'||#{keyword}||'%')
+		    )              <!-- 左右匹配 查询关键字 -->
+		 </if>
+       
+  </sql>
+</mapper>

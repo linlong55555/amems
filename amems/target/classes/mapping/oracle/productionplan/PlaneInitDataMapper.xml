@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.productionplan.dao.PlaneInitDataMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlaneInitData">
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+     <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="INIT_XMBH" jdbcType="VARCHAR" property="initXmbh" />
+    <result column="INIT_XMMS" jdbcType="VARCHAR" property="initXmms" />
+    <result column="INIT_VALUE" jdbcType="VARCHAR" property="initValue" />
+    <result column="JSBS" jdbcType="DECIMAL" property="jsbs" />
+  </resultMap>
+  
+  	<!-- 字段 -->
+	<sql id="BaseResulColumn">
+		FJZCH,DPRTCODE,INIT_XMBH,INIT_XMMS,INIT_VALUE,JSBS
+	</sql>
+  
+  
+    <!-- 查询数量 -->
+  <select id="queryCount" parameterType="com.eray.thjw.productionplan.po.PlaneInitData" resultType="java.lang.Integer">
+    select count(1) from D_00701 
+     <include refid="BaseResultParam" />
+  </select>
+  
+    <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.PlaneInitData" >
+    update D_00701
+    <set >
+      <if test="initXmbh != null" >
+        INIT_XMBH = #{initXmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="initXmms != null" >
+        INIT_XMMS = #{initXmms,jdbcType=VARCHAR},
+      </if>
+      <if test="initValue != null" >
+        INIT_VALUE = #{initValue,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbs != null" >
+        JSBS = #{jsbs,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} and INIT_XMBH=#{initXmbh,jdbcType=VARCHAR} and DPRTCODE=#{dprtcode,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 搜索参数 -->
+	<sql id="BaseResultParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="fjzch != null and fjzch != ''">
+             and FJZCH = #{fjzch}
+         </if>
+         <if test="initXmbh != null and initXmbh != ''">
+             and INIT_XMBH = #{initXmbh}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and dprtCode = #{dprtcode}
+         </if>
+	</sql>
+  
+  
+  <select id="selectByKey"  resultMap="BaseResultMap" >
+	    select     <include refid="BaseResulColumn"></include>   from D_00701
+		 <include refid="BaseResultParam"></include>
+  </select>
+  
+  <insert id="insert" parameterType="com.eray.thjw.productionplan.po.PlaneInitData">
+    insert into D_00701 (FJZCH, INIT_XMBH, INIT_XMMS, 
+      INIT_VALUE, JSBS)
+    values (#{fjzch,jdbcType=VARCHAR}, #{initXmbh,jdbcType=VARCHAR}, #{initXmms,jdbcType=VARCHAR}, 
+      #{initValue,jdbcType=VARCHAR}, #{jsbs,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.PlaneInitData">
+    insert into D_00701
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fjzch != null">
+        FJZCH,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="initXmbh != null">
+        INIT_XMBH,
+      </if>
+      <if test="initXmms != null">
+        INIT_XMMS,
+      </if>
+      <if test="initValue != null">
+        INIT_VALUE,
+      </if>
+      <if test="jsbs != null">
+        JSBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fjzch != null">
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+       <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="initXmbh != null">
+        #{initXmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="initXmms != null">
+        #{initXmms,jdbcType=VARCHAR},
+      </if>
+      <if test="initValue != null">
+        #{initValue,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbs != null">
+        #{jsbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  
+
+  
+  <!-- 批量插入飞机初始化数据 -->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into D_00701 (FJZCH,DPRTCODE, INIT_XMBH, INIT_XMMS, 
+      INIT_VALUE, JSBS)
+     <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+	select
+	#{item.fjzch,jdbcType=VARCHAR},
+	#{item.dprtcode,jdbcType=VARCHAR},
+	#{item.initXmbh,jdbcType=VARCHAR},
+	#{item.initXmms,jdbcType=VARCHAR},
+	#{item.initValue,jdbcType=VARCHAR},
+	#{item.jsbs,jdbcType=DECIMAL}
+	from dual 
+	 </foreach> 
+  </insert>
+  
+  <!-- 根据飞机注册号删除初始化数据 -->
+  <delete id="deleteByFjzch" parameterType="java.lang.String">
+    delete from D_00701 where fjzch = #{fjzch,jdbcType=VARCHAR} and dprtcode=#{dprtcode,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 根据飞机注册号查询对应的初始化数据 -->
+  <select id="findByFjzch" parameterType="com.eray.thjw.productionplan.po.PlaneData" resultType="java.util.HashMap" >
+	    SELECT D1.FJZCH,
+                        D1.DPRTCODE,
+                        D1.FJJX,
+                        D1.XLH,
+                        D1.BZM,
+                        D1.CCRQ,
+                        D1.JD,
+                        D3.JDMS,
+                        D1.JSGZJL,
+                        D1.BZ,
+                        D1.BMID,
+                        D1.CJRID,
+                        D1.CJSJ,
+                        D1.ZT,
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_date_rq' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_DATE_RQ",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_time_jsfx' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_TIME_JSFX",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_time_ssd' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_TIME_SSD",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_time_jc' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_TIME_JC",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_qlj' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_QLJ",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_jc' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_JC",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_wdg' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_WDG",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_ssd' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_SSD",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_l_n1' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_L_N1",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_l_n2' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_L_N2",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_l_n3' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_L_N3",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_l_n4' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_L_N4",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_l_n5' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_L_N5",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_l_n6' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_L_N6",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_r_n1' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_R_N1",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_r_n2' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_R_N2",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_r_n3' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_R_N3",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_r_n4' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_R_N4",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_r_n5' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_R_N5",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_r_n6' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_R_N6",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_ts1' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_TS1",
+                        MAX((CASE WHEN D2.INIT_XMBH = 'init_loop_ts2' THEN D2.INIT_VALUE ELSE NULL END)) "INIT_LOOP_TS2"
+                   FROM D_007 D1
+                   LEFT JOIN D_00701 D2
+				     ON D1.FJZCH = D2.FJZCH
+				    AND D1.DPRTCODE = D2.DPRTCODE
+			 	   LEFT JOIN D_012 D3
+				     ON D1.JD = D3.ID
+			     	AND D1.DPRTCODE = D3.DPRTCODE
+                  WHERE D1.FJZCH = #{fjzch,jdbcType=VARCHAR}
+                    AND D1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+                  GROUP BY D1.FJZCH,D1.DPRTCODE,D1.XLH,D1.FJJX,
+                        D1.BZM,
+                        D1.CCRQ,
+                        D1.JD,
+                        D3.JDMS,
+                        D1.JSGZJL,
+                        D1.BZ,
+                        D1.BMID,
+                        D1.CJRID,
+                        D1.CJSJ,
+                        D1.ZT
+  </select>
+</mapper>

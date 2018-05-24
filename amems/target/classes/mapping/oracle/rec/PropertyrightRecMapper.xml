@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.PropertyrightRecMapper" >
+   
+  <!-- 飞机列表 开始 -->
+  <select id="queryList4D026" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+      	SELECT B.*       
+        ,CJR.USERNAME ||' '|| CJR.REALNAME CJR_REALNAME
+        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME
+        ,DPRT.DPRTNAME DPRT_DRPTNAME
+        , '产权编码:'||B.CQBH AS REC_HD
+        ,BM.DPRTNAME BM_DRPTNAME
+        FROM d_026_REC B 
+        LEFT JOIN T_USER CJR ON CJR.ID = B.whRID
+        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+        LEFT JOIN T_DEPARTMENT DPRT ON DPRT.ID = B.DPRTCODE
+        LEFT JOIN T_DEPARTMENT BM ON BM.ID = B.WHBMID
+        WHERE 1=1
+      		 <if test='paramsMap.REC_CZLS != null and paramsMap.REC_CZLS != ""'>
+        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+         </if>
+         <if test='paramsMap.ID != null and paramsMap.ID != ""'>
+        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+         </if>
+         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+      			and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+         </if>
+         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+       		and (
+                UPPER(B.FJZCH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+           )
+         </if>
+         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff4D026" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+                B.FJZCH,B.DPRTCODE,B.CQBH,B.BZ,B.whsj
+		        ,CJR.USERNAME ||' '|| CJR.REALNAME CJR_REALNAME
+		        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME 
+		        ,GS.KHBM ||' '|| GS.KHMC GS_REALNAME
+		        ,DPRT.DPRTNAME DPRT_DRPTNAME
+		        ,BM.DPRTNAME BM_DRPTNAME 
+		        ,B.REC_XGLX,B.REC_CZRID,B.REC_CZSJ,B.REC_IP,B.REC_CZSM,B.REC_CZLS,B.REC_ZBID
+		        , '产权编码:'||B.CQBH AS REC_HD,
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM d_026_REC B 
+		        LEFT JOIN T_USER CJR ON CJR.ID = B.WHRID
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		        LEFT JOIN T_DEPARTMENT DPRT ON DPRT.ID = B.DPRTCODE
+		        LEFT JOIN D_019 GS ON GS.ID = B.GSID
+		        LEFT JOIN T_DEPARTMENT BM ON BM.ID = B.WHBMID
+         WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from d_026_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+       
+  </select>	
+  
+  
+   
+</mapper>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ExpatriateDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ExpatriateDetail">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="SJLX" jdbcType="DECIMAL" property="sjlx" />
+    <result column="GLDJLX" jdbcType="DECIMAL" property="gldjlx" />
+    <result column="DJID" jdbcType="VARCHAR" property="djid" />
+    <result column="KCLLID" jdbcType="VARCHAR" property="kcllid" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="cxsl" jdbcType="DECIMAL" property="cxsl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, MAINID, SJLX, GLDJLX, DJID, KCLLID, DPRTCODE,cxsl
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_01201
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+    <select id="queryByKey"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_01201
+    where djid = #{0,jdbcType=VARCHAR} and kcllid = #{1,jdbcType=VARCHAR}
+  </select>
+  
+  <!--根据MainID及相关单据ID进行删除 -->
+  <delete id="deleteByMainIdAndDjid">
+    delete from B_H_01201
+    where MAINID = #{0,jdbcType=VARCHAR} AND DJID = #{1,jdbcType=VARCHAR} 
+  </delete>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_01201
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ExpatriateDetail">
+    insert into B_H_01201 (ID, MAINID, SJLX, 
+      GLDJLX, DJID, KCLLID, 
+      DPRTCODE,cxsl)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{sjlx,jdbcType=DECIMAL}, 
+      #{gldjlx,jdbcType=DECIMAL}, #{djid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+      #{dprtcode,jdbcType=VARCHAR},#{cxsl,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ExpatriateDetail">
+    insert into B_H_01201
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="sjlx != null">
+        SJLX,
+      </if>
+      <if test="gldjlx != null">
+        GLDJLX,
+      </if>
+      <if test="djid != null">
+        DJID,
+      </if>
+      <if test="kcllid != null">
+        KCLLID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="cxsl != null">
+        cxsl,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="sjlx != null">
+        #{sjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="gldjlx != null">
+        #{gldjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="djid != null">
+        #{djid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="cxsl != null">
+        #{cxsl,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ExpatriateDetail">
+    update B_H_01201
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="sjlx != null">
+        SJLX = #{sjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="gldjlx != null">
+        GLDJLX = #{gldjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="djid != null">
+        DJID = #{djid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="cxsl != null">
+        cxsl = #{cxsl,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ExpatriateDetail">
+    update B_H_01201
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      SJLX = #{sjlx,jdbcType=DECIMAL},
+      GLDJLX = #{gldjlx,jdbcType=DECIMAL},
+      DJID = #{djid,jdbcType=VARCHAR},
+      KCLLID = #{kcllid,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      cxsl = #{cxsl,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

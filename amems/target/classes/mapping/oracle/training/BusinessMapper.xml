@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.BusinessMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.Business" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DGBH" property="dgbh" jdbcType="VARCHAR" />
+    <result column="DGMC" property="dgmc" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="KCS" property="paramsMap.kcs" jdbcType="DECIMAL" />
+    <result column="KCBH" property="paramsMap.kcbh" jdbcType="VARCHAR" />
+    <result column="KCMC" property="paramsMap.kcmc" jdbcType="VARCHAR" />
+    <result column="pxqk" property="paramsMap.pxqk" jdbcType="VARCHAR" />
+  </resultMap>
+    <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.training.po.Business">
+      <!--T_user 维护人  -->
+		 <association property="zdr" javaType="com.eray.thjw.po.User">
+	      <id column="ID" property="id" jdbcType="VARCHAR" />
+		  <result column="DRZHID" property="drzhid" jdbcType="VARCHAR" />
+		  <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+	      <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+	      <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+  		  <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+	    </association>
+	    <!--T_DEPARTMENT 组织机构信息  -->
+	    <association property="dprt" javaType="com.eray.thjw.po.Department">
+	       <id column="ID" property="id" jdbcType="VARCHAR" />
+		    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+		    <result column="PARENTID" property="parentid" jdbcType="VARCHAR" />
+		    <result column="DPRTTYPE" property="dprttype" jdbcType="VARCHAR" />
+		    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		     <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+	    </association>
+  </resultMap>
+  
+  <resultMap id="RyRelResultMap" extends="BaseResultMap" type="com.eray.thjw.training.po.Business">
+      <!-- 岗位人员关系 -->
+      <collection property="businessToMaintenancePersonnels" ofType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel">
+	      <id column="RYREL_ID" property="id" jdbcType="VARCHAR" />
+		  <result column="RYREL_GWID" property="gwid" jdbcType="VARCHAR" />
+		  <result column="RYREL_WXRYDAID" property="wxrydaid" jdbcType="VARCHAR" />
+      </collection>
+	    
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, DGBH, DGMC, BZ, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  
+   <select id="queryAllPageList" resultMap="ResultMap">
+	select t1.ID, t1.DPRTCODE, t1.DGBH, t1.DGMC, t1.BZ, t1.ZT, t1.WHBMID, t1.WHRID, 
+	t1.WHSJ,(t3.username || ' ' || t3.realname) username,dprt.dprtname
+	from b_p_001 t1 
+	left join t_user t3 on t1.whrid=t3.id
+	left join t_department dprt on t1.dprtcode=dprt.id
+		 
+		 <include refid="FlightRecordParam1"></include>
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by t1.WHSJ desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+		 	
+	</select>
+	
+	<select id="queryByKc" resultMap="BaseResultMap">
+		select B.ID, B.DPRTCODE, B.DGBH, B.DGMC, B.BZ, B.ZT
+	    from B_P_001 B
+	    JOIN B_P_005 B5
+	    ON B.ID = B5.GWID
+	    AND B5.ZT = 1
+	    AND B.ZT = 1
+	    AND B.DPRTCODE = #{dprtcode}
+	    <if test="paramsMap != null and paramsMap.kcbh != null and paramsMap.kcbh != ''">
+             AND B5.KCID = #{paramsMap.kcbh}
+        </if>
+	    order by B.DGBH ASC
+	</select>
+	
+	<!-- 通过维修人员id获取岗位列表 -->
+	<select id="queryList4mpids" resultMap="RyRelResultMap" parameterType="java.util.List">
+		select 
+		  a.ID  
+		, a.DGBH  
+		, a.DGMC  
+		
+		, b.ID AS RYREL_ID
+		, b.GWID AS RYREL_GWID
+		, b.WXRYDAID AS RYREL_WXRYDAID
+
+		from b_p_001 a
+		inner join b_p_006 b on a.id  = b.gwid 
+		where  b.wxrydaid in 
+		  <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}       
+         </foreach>    
+	</select>
+	
+	
+ 
+	<sql id="FlightRecordParam1">
+	   where t1.zt=1
+	  	  <if test="paramsMap != null and paramsMap.ids != null and paramsMap.ids != ''">
+           and t1.ID not in
+   			 <foreach item="item" index="index" collection="paramsMap.ids" open="(" separator="," close=")">  
+        			#{item}  
+   			 </foreach>  
+     	</if>  
+	   
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (
+		               UPPER(t1.DGBH) like UPPER('%'||#{keyword}||'%')
+		      		or UPPER(t1.DGMC) like UPPER('%'||#{keyword}||'%')
+		      		or UPPER(t1.BZ) like UPPER('%'||#{keyword}||'%')
+		     )             
+		  </if>
+	     <if test="id != null and id != '' " >   
+            and  t1.id  = #{id,jdbcType=VARCHAR}
+         </if>
+	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.Business" >
+    insert into B_P_001 (ID, DPRTCODE, DGBH, 
+      DGMC, BZ, ZT, WHBMID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{dgbh,jdbcType=VARCHAR}, 
+      #{dgmc,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.Business" >
+    insert into B_P_001
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="dgbh != null" >
+        DGBH,
+      </if>
+      <if test="dgmc != null" >
+        DGMC,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="dgbh != null" >
+        #{dgbh,jdbcType=VARCHAR},
+      </if>
+      <if test="dgmc != null" >
+        #{dgmc,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.Business" >
+    update B_P_001
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="dgbh != null" >
+        DGBH = #{dgbh,jdbcType=VARCHAR},
+      </if>
+      <if test="dgmc != null" >
+        DGMC = #{dgmc,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.Business" >
+    update B_P_001
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      DGBH = #{dgbh,jdbcType=VARCHAR},
+      DGMC = #{dgmc,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateById" parameterType="com.eray.thjw.training.po.Business" >
+    update B_P_001
+    set 
+      DGBH = #{dgbh,jdbcType=VARCHAR},
+      DGMC = #{dgmc,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <select id="queryAllBusiness" parameterType="com.eray.thjw.training.po.Business" resultMap="BaseResultMap">
+  	  select 
+  	   <include refid="Base_Column_List" />,(select count(1) from b_p_005 where gwid=b_p_001.id) as KCS
+				from B_P_001
+                  where  zt=1
+     <if test="dprtcode != null and dprtcode != ''">
+            and  dprtcode = #{dprtcode}
+     </if>
+  </select>
+  
+  <select id="queryAllResults" parameterType="com.eray.thjw.training.po.Business" resultMap="BaseResultMap">
+  	  SELECT
+			BP001.DGBH,
+			BP001.DGMC,
+			BP005.KCID AS KCBH,
+			BP003.KCMC,
+		CASE
+			
+			WHEN BP004.KCBH IS NULL THEN
+			0 ELSE 1 
+		END pxqk
+		FROM
+			B_P_005 BP005
+			JOIN B_P_001 BP001 ON BP005.GWID = BP001.ID 
+			
+			<if test="paramsMap != null and paramsMap.ids != null and paramsMap.ids != ''">
+            and BP001.ID in
+    			 <foreach item="item" index="index" collection="paramsMap.ids" open="(" separator="," close=")">  
+         			#{item}  
+    			 </foreach>  
+      		</if> 
+			JOIN (
+			SELECT
+				BP003.DPRTCODE,
+				BP003.KCBH,
+				MAX( BP003.KCMC ) KCMC 
+			FROM
+				B_P_003 BP003 
+			GROUP BY
+				BP003.DPRTCODE,
+				BP003.KCBH 
+			) BP003 ON BP003.DPRTCODE = BP001.DPRTCODE 
+			AND BP005.KCID = BP003.KCBH
+			LEFT JOIN (
+			SELECT DISTINCT
+				BP004.DPRTCODE,
+				BP003.KCBH 
+			FROM
+				B_P_004 BP004
+				JOIN B_P_003 BP003 ON BP004.KCID = BP003.ID 
+			WHERE
+				1 != 1 
+			   <if test="paramsMap != null and paramsMap.wxrydaid != null and paramsMap.wxrydaid != ''">
+		        OR BP004.WXRYDAID = #{paramsMap.wxrydaid}
+		      </if>
+				
+			) BP004 ON BP001.DPRTCODE = BP004.DPRTCODE 
+			AND BP005.KCID = BP004.KCBH 
+		ORDER BY
+			pxqk desc,
+		BP005.KCID
+  </select>
+  
+   <select id="selectBydgbh" parameterType="com.eray.thjw.training.po.Business" resultType="java.lang.Integer" >
+    select 
+	    count(1)
+		    from B_P_001
+		   	 where dgbh = #{dgbh,jdbcType=VARCHAR} and zt=1 and dprtcode=#{dprtcode,jdbcType=VARCHAR}
+		   	      <if test="id != null and id != '' " >   
+		            and  id  != #{id,jdbcType=VARCHAR}
+		         </if>
+  </select>
+  <!-- 根据机构代码查询岗位 -->
+  <select id="queryBusinessByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String">
+  		select 
+	    <include refid="Base_Column_List" />
+	    from B_P_001
+	    where zt=1 and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

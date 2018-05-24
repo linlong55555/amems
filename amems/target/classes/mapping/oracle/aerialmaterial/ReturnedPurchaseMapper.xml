@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ReturnedPurchaseMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ReturnedPurchase" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="FHDW" property="fhdw" jdbcType="VARCHAR" />
+    <result column="THDH" property="thdh" jdbcType="VARCHAR" />
+    <result column="THBMID" property="thbmid" jdbcType="VARCHAR" />
+    <result column="THRID" property="thrid" jdbcType="VARCHAR" />
+    <result column="THRQ" property="thrq" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="CKDID" property="ckdid" jdbcType="VARCHAR" />
+    <result column="SHDID" property="shdid" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ReturnedPurchase">
+		    <!--b_h_013 出库人  -->
+		 <association property="outstock" javaType="com.eray.thjw.aerialmaterial.po.Outstock">
+	        <id column="ID" jdbcType="VARCHAR" property="id" />
+		    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+		    <result column="CKLX" jdbcType="DECIMAL" property="cklx" />
+		    <result column="SGBS" jdbcType="DECIMAL" property="sgbs" />
+		    <result column="CKDH" jdbcType="VARCHAR" property="ckdh" />
+		    <result column="CKSJ" jdbcType="TIMESTAMP" property="cksj" />
+		    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+		    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+		    <result column="ZDBMID" jdbcType="VARCHAR" property="zdbmid" />
+		    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+		    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+		    <result column="CKBMID" jdbcType="VARCHAR" property="ckbmid" />
+		    <result column="CUKID" jdbcType="VARCHAR" property="cukid" />
+		    <result column="SQBMID" jdbcType="VARCHAR" property="sqbmid" />
+		    <result column="SQRID" jdbcType="VARCHAR" property="sqrid" />
+		    <result column="JDDXID" jdbcType="VARCHAR" property="jddxid" />
+		    <result column="JDFZR" jdbcType="VARCHAR" property="jdfzr" />
+		    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+		    <result column="SQSJ" jdbcType="TIMESTAMP" property="sqsj" />
+		    <result column="XGDJID" jdbcType="VARCHAR" property="xgdjid" />
+	    </association>
+		  <!--T_user 退货人  -->
+		 <association property="thr" javaType="com.eray.thjw.po.User">
+	      <id column="ID" property="id" jdbcType="VARCHAR" />
+		  <result column="DRZHID" property="drzhid" jdbcType="VARCHAR" />
+		  <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+	      <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+	      <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+  		  <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+	    </association>
+		  <!--T_user 制单人  -->
+		 <association property="zdr" javaType="com.eray.thjw.po.User">
+	      <id column="ID" property="id" jdbcType="VARCHAR" />
+		  <result column="DRZHID" property="drzhid" jdbcType="VARCHAR" />
+		  <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+	      <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+	      <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+  		  <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+	    </association>
+	    <!--T_DEPARTMENT 组织机构信息  -->
+	    <association property="dprt" javaType="com.eray.thjw.po.Department">
+	       <id column="ID" property="id" jdbcType="VARCHAR" />
+		    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+		    <result column="PARENTID" property="parentid" jdbcType="VARCHAR" />
+		    <result column="DPRTTYPE" property="dprttype" jdbcType="VARCHAR" />
+		    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		     <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+	    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, FHDW, THDH, THBMID, THRID, THRQ, ZT, ZDRID, ZDSJ, BZ, CKDID
+  </sql>
+  
+    <select id="queryAllPageList" resultMap="ResultMap">
+ select  t1.ID, t1.DPRTCODE, t1.FHDW, t1.THDH, t1.THBMID,  t1.THRQ, t1.ZT,  t1.ZDSJ, t1.BZ, t1.CKDID
+	,t2.ckdh,(thr.username || ' ' || thr.realname) as thrid,(zdr.username || ' ' || zdr.realname) as zdrid,dprt.dprtname
+	from b_h_022 t1 
+	LEFT JOIN b_h_013 t2 on t1.ckdid=t2.id 
+	LEFT JOIN t_user thr on t1.thrid=thr.id and t1.dprtcode=thr.jgdm
+	LEFT JOIN t_user zdr on t1.zdrid=zdr.id and t1.dprtcode=zdr.jgdm
+	LEFT JOIN t_department dprt on t1.dprtcode=dprt.id
+		 
+		 <include refid="FlightRecordParam1"></include>
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by t1.zdsj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+ 
+	<sql id="FlightRecordParam1">
+	   where 1=1  and t1.zt &lt;&gt;8 
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="zt != null and zt != ''">
+             and t1.zt =  #{zt}
+         </if>
+          <if test="paramsMap.dateBegin != null and paramsMap.dateBegin != ''">
+		    and t1.thrq &gt;=to_date(#{paramsMap.dateBegin}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="paramsMap.dateEnd != null and paramsMap.dateEnd != ''">
+		    and t1.thrq &lt;=to_date(#{paramsMap.dateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="keyword != null and keyword != ''">
+		      and (UPPER(t1.THDH) like UPPER('%'||#{keyword}||'%')
+		       or UPPER(t1.FHDW) like UPPER('%'||#{keyword}||'%')
+		       or UPPER(t1.BZ) like UPPER('%'||#{keyword}||'%')
+		       or UPPER(t2.ckdh) like UPPER('%'||#{keyword}||'%')
+		       or UPPER(thr.username) like UPPER('%'||#{keyword}||'%')
+		       or UPPER(thr.realname) like UPPER('%'||#{keyword}||'%')
+               or UPPER(zdr.username) like UPPER('%'||#{keyword}||'%' )
+		       or UPPER(zdr.realname) like UPPER('%'||#{keyword}||'%' )
+		      
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	     <if test="id != null and id != '' " >   
+            and  t1.id  = #{id,jdbcType=VARCHAR}
+           </if>
+	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMap" parameterType="java.lang.String" >
+   select  t1.ID, t1.DPRTCODE, t1.FHDW, t1.THDH, t1.THBMID,  t1.THRQ, t1.ZT,  t1.ZDSJ, t1.BZ, t1.CKDID,t1.thrid
+	,t2.ckdh,(thr.username || ' ' || thr.realname) as username,(zdr.username || ' ' || zdr.realname) as zdrid,dprt.dprtname
+	from b_h_022 t1 
+	LEFT JOIN b_h_013 t2 on t1.ckdid=t2.id 
+	LEFT JOIN t_user thr on t1.thrid=thr.id and t1.dprtcode=thr.jgdm
+	LEFT JOIN t_user zdr on t1.zdrid=zdr.id and t1.dprtcode=zdr.jgdm
+	LEFT JOIN t_department dprt on t1.dprtcode=dprt.id
+    where t1.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_022
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchase" >
+    insert into B_H_022 (ID, DPRTCODE, FHDW, 
+      THDH, THBMID, THRID, 
+      THRQ, ZT, ZDRID, 
+      ZDSJ, BZ, CKDID)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{fhdw,jdbcType=VARCHAR}, 
+      #{thdh,jdbcType=VARCHAR}, #{thbmid,jdbcType=VARCHAR}, #{thrid,jdbcType=VARCHAR}, 
+      #{thrq,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, #{zdrid,jdbcType=VARCHAR}, 
+      #{zdsj,jdbcType=TIMESTAMP}, #{bz,jdbcType=VARCHAR}, #{ckdid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchase" >
+    insert into B_H_022
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="fhdw != null" >
+        FHDW,
+      </if>
+      <if test="thdh != null" >
+        THDH,
+      </if>
+      <if test="thbmid != null" >
+        THBMID,
+      </if>
+      <if test="thrid != null" >
+        THRID,
+      </if>
+      <if test="thrq != null" >
+        THRQ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="ckdid != null" >
+        CKDID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="fhdw != null" >
+        #{fhdw,jdbcType=VARCHAR},
+      </if>
+      <if test="thdh != null" >
+        #{thdh,jdbcType=VARCHAR},
+      </if>
+      <if test="thbmid != null" >
+        #{thbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="thrid != null" >
+        #{thrid,jdbcType=VARCHAR},
+      </if>
+      <if test="thrq != null" >
+        #{thrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdid != null" >
+        #{ckdid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchase" >
+    update B_H_022
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="fhdw != null" >
+        FHDW = #{fhdw,jdbcType=VARCHAR},
+      </if>
+      <if test="thdh != null" >
+        THDH = #{thdh,jdbcType=VARCHAR},
+      </if>
+      <if test="thbmid != null" >
+        THBMID = #{thbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="thrid != null" >
+        THRID = #{thrid,jdbcType=VARCHAR},
+      </if>
+      <if test="thrq != null" >
+        THRQ = #{thrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdid != null" >
+        CKDID = #{ckdid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchase" >
+    update B_H_022
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      FHDW = #{fhdw,jdbcType=VARCHAR},
+      THDH = #{thdh,jdbcType=VARCHAR},
+      THBMID = #{thbmid,jdbcType=VARCHAR},
+      THRID = #{thrid,jdbcType=VARCHAR},
+      THRQ = #{thrq,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      BZ = #{bz,jdbcType=VARCHAR},
+      CKDID = #{ckdid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="queryByIds" resultMap="BaseResultMap" parameterType="Map">
+ 	SELECT 
+               B1.THDH ,
+               B1.ID ,
+               B4.ID AS SHDID 
+         FROM B_H_022 B1
+         LEFT JOIN B_H_02201 B2 ON B1.ID=B2.MAINID
+         LEFT JOIN B_H_02001 B3 ON B2.SHDMXID=B3.ID
+         LEFT JOIN B_H_020   B4 ON B3.MAINID=B4.ID      
+         WHERE B1.ZT IN(2,10) AND B4.ID IN
+         	 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+					#{id,jdbcType=VARCHAR}
+				 </foreach>
+  </select>
+</mapper>

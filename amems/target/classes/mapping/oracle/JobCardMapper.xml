@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.JobCardMapper">
+ <resultMap id="BaseResultMap" type="com.eray.thjw.po.JobCard">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="GDJCID" jdbcType="VARCHAR" property="gdjcid" />
+    <result column="DJBH" jdbcType="VARCHAR" property="djbh" />
+    <result column="NBXH" jdbcType="VARCHAR" property="nbxh" />
+    <result column="GDBH" jdbcType="VARCHAR" property="gdbh" />
+    <result column="WXFABH" jdbcType="VARCHAR" property="wxfabh" />
+    <result column="ZY" jdbcType="VARCHAR" property="zy" />
+    <result column="JHGS_RS" jdbcType="DECIMAL" property="jhgsRs" />
+    <result column="JHGS_XSS" jdbcType="DECIMAL" property="jhgsXss" />
+    <result column="JX" jdbcType="VARCHAR" property="jx" />
+    <result column="GZZT" jdbcType="VARCHAR" property="gzzt" />
+    <result column="CJGK" jdbcType="VARCHAR" property="cjgk" />
+    <result column="YXX" jdbcType="DECIMAL" property="yxx" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="SHBMID" jdbcType="VARCHAR" property="shbmid" />
+    <result column="SHYJ" jdbcType="VARCHAR" property="shyj" />
+    <result column="SHRID" jdbcType="VARCHAR" property="shrid" />
+    <result column="SHSJ" jdbcType="TIMESTAMP" property="shsj" />
+    <result column="PFBMID" jdbcType="VARCHAR" property="pfbmid" />
+    <result column="PFYJ" jdbcType="VARCHAR" property="pfyj" />
+    <result column="PFRID" jdbcType="VARCHAR" property="pfrid" />
+    <result column="PFSJ" jdbcType="TIMESTAMP" property="pfsj" />
+    <result column="ZDDWID" jdbcType="VARCHAR" property="zddwid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="zdjsrid" jdbcType="VARCHAR" property="zdjsrid" />
+    <result column="zdjsrq" jdbcType="TIMESTAMP" property="zdjsrq" />
+    <result column="zdjsyy" jdbcType="VARCHAR" property="zdjsyy" />
+    
+    
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+    <result column="wxfazwms" jdbcType="VARCHAR" property="wxfazwms" />
+    <result column="djxmzwms" jdbcType="VARCHAR" property="djxmzwms" />
+    <result column="djxmid" jdbcType="VARCHAR" property="djxmid" />
+    
+     <result column="pc" jdbcType="VARCHAR" property="pc" />
+     <result column="cksc" jdbcType="VARCHAR" property="cksc" />
+     <result column="ckgk" jdbcType="VARCHAR" property="ckgk" />
+     <result column="gzzw" jdbcType="VARCHAR" property="gzzw" />
+     <result column="bcwj" jdbcType="VARCHAR" property="bcwj" />
+     <result column="zjh" jdbcType="VARCHAR" property="zjh" />
+     <result column="gzdd" jdbcType="VARCHAR" property="gzdd" />
+     <result column="bb" jdbcType="VARCHAR" property="bb" />
+     <result column="zjhZwms" jdbcType="VARCHAR" property="zjhZwms" />
+     <result column="wxfabb" jdbcType="VARCHAR" property="wxfabb" />
+     <result column="gklx" jdbcType="VARCHAR" property="gklx" />
+     <result column="gzzId" jdbcType="VARCHAR" property="gzzId" />
+     
+     <result column="scmsYw" jdbcType="VARCHAR" property="scmsYw" />
+     <result column="scmsZw" jdbcType="VARCHAR" property="scmsZw" />
+     <result column="djgznrid" jdbcType="VARCHAR" property="djgznrid" />
+     <result column="wxfamc" jdbcType="VARCHAR" property="wxfamc" />
+     <result column="djxmmc" jdbcType="VARCHAR" property="djxmmc" />
+     
+     
+     
+      <association property="shr_user" javaType="com.eray.thjw.po.User">
+         <id column="shrid" property="id"/>
+         <result column="shr_realname" property="realname"/>
+         <result column="shr_username" property="username"/>
+     </association>
+     
+     <association property="pfr_user" javaType="com.eray.thjw.po.User">
+         <id column="pfrid" property="id"/>
+         <result column="pfr_realname" property="realname"/>
+         <result column="pfr_username" property="username"/>
+     </association>
+     
+     <association property="zdr_user" javaType="com.eray.thjw.po.User">
+         <id column="zdrid" property="id"/>
+         <result column="zdr_realname" property="realname"/>
+         <result column="zdr_username" property="username"/>
+     </association>
+     
+     <association property="zdjs_user" javaType="com.eray.thjw.po.User">
+         <id column="zdjsid" property="id"/>
+         <result column="zdjs_realname" property="realname"/>
+         <result column="zdjs_username" property="username"/>
+     </association>
+     
+     <association property="gzz" javaType="com.eray.thjw.system.po.WorkGroup">
+         <id column="gzzId" property="id"/>
+         <result column="gzzmc" property="gzzmc"/>
+     </association>
+    
+  </resultMap>
+  <sql id="Base_Column_List">
+    B_G_013.ID, B_G_013.GDJCID, B_G_013.DJBH, B_G_013.NBXH,B_G_013.WXFABH,B_G_013.GDBH, B_G_013.ZY, B_G_013.JHGS_RS, B_G_013.JHGS_XSS, B_G_013.JX, B_G_013.GZZT, B_G_013.CJGK, B_G_013.YXX, B_G_013.BZ, B_G_013.SHBMID, 
+    B_G_013.SHYJ, B_G_013.SHRID, B_G_013.SHSJ, B_G_013.PFBMID, B_G_013.PFYJ, B_G_013.PFRID, B_G_013.PFSJ, B_G_013.ZDDWID, B_G_013.ZDRID, B_G_013.ZDSJ, B_G_013.ZT, B_G_013.DPRTCODE,
+    B_G_013.pc,B_G_013.cksc,B_G_013.ckgk,B_G_013.gzzw,B_G_013.bcwj,B_G_013.zjh,B_G_013.gzdd,B_G_013.bb,
+    B_G_013.zdjsrid,B_G_013.zdjsrq,B_G_013.zdjsyy,B_G_013.GKLX,B_G_013.GZZID
+     
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+   <!--  select 
+    <include refid="Base_Column_List" />,B_G_011.ZWMS wxfazwms,B_G_012.ZWMS djxmzwms,B_G_012.id djxmid,D_005.zwms,B_G_011.bb wxfabb
+    from B_G_013 left join B_G_011 on (B_G_013.WXFABH=B_G_011.WXFABH)
+    			 left join B_G_012 on (B_g_013.Djbh=B_g_012.Djbh)
+    			 left join D_005 on (B_G_013.zjh=D_005.zjh)
+    where B_G_013.ID = #{id,jdbcType=VARCHAR} and B_G_011.ZXBS =1  and b_g_012.zxbs=1 -->
+    
+    select 
+    <include refid="Base_Column_List" />,C.ZWMS wxfazwms,t.ZWMS djxmzwms,t.djxmid djxmid,D_005.zwms zjhZwms,C.bb wxfabb
+    ,shr.username shr_username,shr.realname shr_realname,pfr.username pfr_username,pfr.realname pfr_realname
+    ,zdr.username zdr_username,zdr.realname zdr_realname
+    from B_G_013 left join (select a.ZWMS,a.bb,a.wxfabh from b_g_011 a where  bb=(select MAX(BB) bb from B_G_011 b where wxfabh=a.wxfabh and  ZT not in(8,9))) C
+    								 on (B_G_013.WXFABH=C.WXFABH)
+    			 left join (select b1202.djxmid,b012.zwms,b1202.nbxh,b1202.dprtcode,b012.djbh from B_G_01202 b1202 left join b_g_012 b012 on (b1202.djxmid=b012.id)) t on t.djbh=b_g_013.djbh and t.dprtcode=b_g_013.dprtcode and  t.nbxh=B_g_013.nbxh
+    			 left join D_005 on (B_G_013.zjh=D_005.zjh AND B_G_013.DPRTCODE = D_005.DPRTCODE)
+    			 left join t_user pfr on(B_G_013.pfrid=pfr.id)
+    			 left join t_user shr on(B_G_013.shrid=shr.id)
+    			 left join t_user zdr on (B_G_013.zdrid=zdr.id)
+    where B_G_013.ID = #{id,jdbcType=VARCHAR}   
+  </select>
+  
+  <select id="queryListByDjgznrid"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_013
+    where djbh = #{0,jdbcType=VARCHAR} and nbxh = #{1,jdbcType=VARCHAR} and DPRTCODE = #{2,jdbcType=VARCHAR}  and zt =3 and yxx =1
+  </select>
+  
+  <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />,B_G_011.ZWMS wxfazwms,B_G_012.ZWMS djxmzwms,B_G_012.id djxmid,D_005.zwms,B_G_011.bb wxfabb
+    ,shr.username shr_username,shr.realname shr_realname,pfr.username pfr_username,pfr.realname pfr_realname
+    ,zdr.username zdr_username,zdr.realname zdr_realname
+    from B_G_013 left join B_G_011 on (B_G_013.WXFABH=B_G_011.WXFABH and B_G_011.ZXBS =1)
+    			 left join B_G_012 on (B_g_013.Djbh=B_g_012.Djbh and b_g_012.zxbs=1)
+    			 left join D_005 on (B_G_013.zjh=D_005.zjh AND B_G_013.DPRTCODE = D_005.DPRTCODE)
+    			 left join t_user pfr on(B_G_013.pfrid=pfr.id)
+    			 left join t_user shr on(B_G_013.shrid=shr.id)
+    			 left join t_user zdr on (B_G_013.zdrid=zdr.id)
+    where B_G_013.GDBH = #{gdbh,jdbcType=VARCHAR}   
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_G_013
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.JobCard">
+    insert into B_G_013 (ID, GDJCID, DJBH, 
+      NBXH, GDBH, ZY, JHGS_RS, 
+      JHGS_XSS, JX, GZZT, 
+      CJGK, YXX, BZ, SHBMID, 
+      SHYJ, SHRID, SHSJ, 
+      PFBMID, PFYJ, PFRID, 
+      PFSJ, ZDDWID, ZDRID, 
+      ZDSJ, ZT, DPRTCODE
+      )
+    values (#{id,jdbcType=VARCHAR}, #{gdjcid,jdbcType=VARCHAR}, #{djbh,jdbcType=VARCHAR}, 
+      #{nbxh,jdbcType=VARCHAR}, #{gdbh,jdbcType=VARCHAR}, #{zy,jdbcType=VARCHAR}, #{jhgsRs,jdbcType=DECIMAL}, 
+      #{jhgsXss,jdbcType=DECIMAL}, #{jx,jdbcType=VARCHAR}, #{gzzt,jdbcType=VARCHAR}, 
+      #{cjgk,jdbcType=VARCHAR}, #{yxx,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{shbmid,jdbcType=VARCHAR}, 
+      #{shyj,jdbcType=VARCHAR}, #{shrid,jdbcType=VARCHAR}, #{shsj,jdbcType=TIMESTAMP}, 
+      #{pfbmid,jdbcType=VARCHAR}, #{pfyj,jdbcType=VARCHAR}, #{pfrid,jdbcType=VARCHAR}, 
+      #{pfsj,jdbcType=TIMESTAMP}, #{zddwid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      sysdate, #{zt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.JobCard">
+    insert into B_G_013
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="gdjcid != null">
+        GDJCID,
+      </if>
+      <if test="wxfabh != null">
+        WXFABH,
+      </if>
+      <if test="djbh != null">
+        DJBH,
+      </if>
+      <if test="nbxh != null">
+        NBXH,
+      </if>
+      <if test="gdbh != null">
+        GDBH,
+      </if>
+      <if test="zy != null">
+        ZY,
+      </if>
+      <if test="jhgsRs != null">
+        JHGS_RS,
+      </if>
+      <if test="jhgsXss != null">
+        JHGS_XSS,
+      </if>
+      <if test="jx != null">
+        JX,
+      </if>
+      <if test="gzzt != null">
+        GZZT,
+      </if>
+      <if test="cjgk != null">
+        CJGK,
+      </if>
+      <if test="yxx != null">
+        YXX,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="shbmid != null">
+        SHBMID,
+      </if>
+      <if test="shyj != null">
+        SHYJ,
+      </if>
+      <if test="shrid != null">
+        SHRID,
+      </if>
+      <if test="shsj != null">
+        SHSJ,
+      </if>
+      <if test="pfbmid != null">
+        PFBMID,
+      </if>
+      <if test="pfyj != null">
+        PFYJ,
+      </if>
+      <if test="pfrid != null">
+        PFRID,
+      </if>
+      <if test="pfsj != null">
+        PFSJ,
+      </if>
+      <if test="zddwid != null">
+        ZDDWID,
+      </if>
+      <if test="zdrid != null">
+        ZDRID,
+      </if>
+      <if test="zdsj != null">
+        ZDSJ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="pc != null">
+        pc,
+      </if>
+      <if test="cksc != null">
+        cksc,
+      </if>
+      <if test="ckgk != null">
+        ckgk,
+      </if>
+      <if test="gzzw != null">
+        gzzw,
+      </if>
+      <if test="bcwj != null">
+        bcwj,
+      </if>
+      <if test="zjh != null">
+        zjh,
+      </if>
+      <if test="gzdd != null">
+        gzdd,
+      </if>
+      <if test="bb != null">
+        bb,
+      </if>
+      <if test="zdjsrid != null">
+        zdjsrid,
+      </if>
+      <if test="zdjsrq != null">
+        zdjsrq,
+      </if>
+      <if test="zdjsyy != null">
+        zdjsyy,
+      </if>
+      <if test="gklx != null">
+        gklx,
+      </if>
+      <if test="gzzId != null">
+        gzzId,
+      </if>
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="gdjcid != null">
+        #{gdjcid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfabh != null">
+        #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null">
+        #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="nbxh != null">
+        #{nbxh,jdbcType=VARCHAR},
+      </if>
+      <if test="gdbh != null">
+        #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null">
+        #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null">
+        #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null">
+        #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="jx != null">
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzt != null">
+        #{gzzt,jdbcType=VARCHAR},
+      </if>
+      <if test="cjgk != null">
+        #{cjgk,jdbcType=VARCHAR},
+      </if>
+      <if test="yxx != null">
+        #{yxx,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null">
+        #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shyj != null">
+        #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null">
+        sysdate,
+      </if>
+      <if test="pfbmid != null">
+        #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfyj != null">
+        #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null">
+        #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null">
+        sysdate,
+      </if>
+      <if test="zddwid != null">
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        sysdate,
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pc != null">
+        #{pc,jdbcType=VARCHAR},
+      </if>
+      <if test="cksc != null">
+        #{cksc,jdbcType=VARCHAR},
+      </if>
+      <if test="ckgk != null">
+        #{ckgk,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzw != null">
+        #{gzzw,jdbcType=VARCHAR},
+      </if>
+      <if test="bcwj != null">
+        #{bcwj,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null">
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdd != null">
+        #{gzdd,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null">
+        #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null">
+        #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null">
+        sysdate,
+      </if>
+      <if test="zdjsyy != null">
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="gklx != null">
+        #{gklx,jdbcType=DECIMAL},
+      </if>
+      <if test="gzzId != null">
+        #{gzzId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.JobCard">
+    update B_G_013
+    <set>
+      <if test="gdjcid != null">
+        GDJCID = #{gdjcid,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null">
+        DJBH = #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="nbxh != null">
+        NBXH = #{nbxh,jdbcType=VARCHAR},
+      </if>
+      <if test="gdbh != null">
+        GDBH = #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null">
+        ZY = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null">
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null">
+        JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="jx != null">
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzt != null">
+        GZZT = #{gzzt,jdbcType=VARCHAR},
+      </if>
+      <if test="cjgk != null">
+        CJGK = #{cjgk,jdbcType=VARCHAR},
+      </if>
+      <if test="yxx != null">
+        YXX = #{yxx,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null">
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shyj != null">
+        SHYJ = #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        SHRID = #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null">
+        SHSJ = sysdate,
+      </if>
+      <if test="pfbmid != null">
+        PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfyj != null">
+        PFYJ = #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null">
+        PFRID = #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null">
+        PFSJ = sysdate,
+      </if>
+      <if test="zddwid != null">
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        ZDSJ = sysdate,
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="wxfabh != null">
+        wxfabh = #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="pc != null">
+        pc = #{pc,jdbcType=VARCHAR},
+      </if>
+      <if test="cksc != null">
+        cksc = #{cksc,jdbcType=VARCHAR},
+      </if>
+      <if test="ckgk != null">
+        ckgk = #{ckgk,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzw != null">
+        gzzw = #{gzzw,jdbcType=VARCHAR},
+      </if>
+      <if test="bcwj != null">
+        bcwj = #{bcwj,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null">
+        zjh = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdd != null">
+        gzdd = #{gzdd,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null">
+        bb = #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null">
+        zdjsrid = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null">
+        zdjsrq = sysdate,
+      </if>
+      <if test="zdjsyy != null">
+        zdjsyy = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="gklx != null">
+        gklx = #{gklx,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzId != null">
+        gzzid = #{gzzId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.JobCard">
+    update B_G_013
+    set GDJCID = #{gdjcid,jdbcType=VARCHAR},
+      DJBH = #{djbh,jdbcType=VARCHAR},
+      NBXH = #{nbxh,jdbcType=VARCHAR},
+      GDBH = #{gdbh,jdbcType=VARCHAR},
+      ZY = #{zy,jdbcType=VARCHAR},
+      JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      JX = #{jx,jdbcType=VARCHAR},
+      GZZT = #{gzzt,jdbcType=VARCHAR},
+      CJGK = #{cjgk,jdbcType=VARCHAR},
+      YXX = #{yxx,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      SHBMID = #{shbmid,jdbcType=VARCHAR},
+      SHYJ = #{shyj,jdbcType=VARCHAR},
+      SHRID = #{shrid,jdbcType=VARCHAR},
+      SHSJ = #{shsj,jdbcType=TIMESTAMP},
+      PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      PFYJ = #{pfyj,jdbcType=VARCHAR},
+      PFRID = #{pfrid,jdbcType=VARCHAR},
+      PFSJ = #{pfsj,jdbcType=TIMESTAMP},
+      ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+      pc = #{pc,jdbcType=VARCHAR}
+      cksc = #{cksc,jdbcType=VARCHAR}
+      ckgk = #{ckgk,jdbcType=VARCHAR}
+      gzzw = #{gzzw,jdbcType=VARCHAR}
+      bcwj = #{bcwj,jdbcType=VARCHAR}
+      zjh = #{zjh,jdbcType=VARCHAR}
+      gzdd = #{gzdd,jdbcType=VARCHAR}
+      zdjsrid = #{zdjsrid,jdbcType=VARCHAR}
+      zdjsrq = #{zdjsrq,jdbcType=TIMESTAMP}
+      zdjsyy = #{zdjsyy,jdbcType=VARCHAR}
+      
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAll" parameterType="com.eray.thjw.po.JobCard" resultMap="BaseResultMap">
+           select 
+					b_g_013.ID,
+					b_g_013.GDJCID,
+					b_g_013.DJBH,
+					b_g_013.WXFABH,
+					b_g_013.NBXH,
+					b_g_013.GDBH,
+					b_g_013.ZY,
+					b_g_013.JHGS_RS,
+					b_g_013.JHGS_XSS,
+					b_g_013.JX,
+					b_g_013.GZZT,
+					b_g_013.CJGK,
+					b_g_013.YXX,
+					b_g_013.BZ,
+					b_g_013.ZDDWID,
+					b_g_013.ZDRID,
+					b_g_013.ZDSJ,
+					b_g_013.DPRTCODE,
+					b_g_013.ZT,
+					b_g_013.zdjsrid,
+					b_g_013.zdjsrq,
+					b_g_013.zdjsyy,
+					b_g_013.gklx,
+					gzz.gzzdm||' '||gzz.gzzmc gzzmc,
+					zdr.username zdr_username,
+					zdr.realname zdr_realname,
+					zdjs.username zdjs_username,
+					zdjs.realname zdjs_realname
+					from b_g_013 
+           			left join T_USER zdr on (B_G_013.ZDRID = zdr.ID)
+           			left join T_USER zdjs on (B_G_013.zdjsrid = zdjs.ID)
+           			left join T_WORKGROUP gzz on (B_G_013.gzzid = gzz.ID)
+           			
+           			<include refid="JobCard_Conditions" />
+															<!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+								     <choose>                                                                 
+									    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+									    		 AND exists 
+									    		( SELECT 1 from D_007 where 
+									    			b_g_013.jx = fjjx
+									    		AND b_g_013.dprtcode = DPRTCODE
+									    		AND zt = 1
+									    		)
+									    	</when>
+									    	<otherwise>
+											     AND exists 
+									    		( SELECT 1 from V_ROLE_JX where 
+									    			b_g_013.jx= fjjx
+									    		AND b_g_013.dprtcode = DPRTCODE
+									    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+									    		)
+									    	</otherwise>
+								   	</choose>
+									
+									<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+									    	<when test='pagination.sort == "auto"'>                       
+									    		order by b_g_013.ZDSJ desc
+									    	</when>
+									    	<otherwise>
+											    order by b_g_013.${pagination.sort} ${pagination.order}
+									    	</otherwise>
+									 </choose>
+								 
+  	</select>
+	
+	<!-- 根据查询条件查询技术通告数量 -->
+  <select id="queryCount" parameterType="com.eray.thjw.po.JobCard" resultType="int">
+		select 
+				count(1)
+					from b_g_013 
+           			left join T_USER zdr on (B_G_013.ZDRID = zdr.ID)
+           			<include refid="JobCard_Conditions" />
+           			 <choose>                                                                 
+									    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+									    		 AND exists 
+									    		( SELECT 1 from D_007 where 
+									    			b_g_013.jx = fjjx
+									    		AND b_g_013.dprtcode = DPRTCODE
+									    		AND zt = 1
+									    		)
+									    	</when>
+									    	<otherwise>
+											     AND exists 
+									    		( SELECT 1 from V_ROLE_JX where 
+									    			b_g_013.jx= fjjx
+									    		AND b_g_013.dprtcode = DPRTCODE
+									    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+									    		)
+									    	</otherwise>
+								   	</choose>
+  </select>
+	<!-- 根据查询条件查询技术通告数量 -->
+  <select id="validationQueryCount" parameterType="com.eray.thjw.po.JobCard" resultType="int">
+		select 
+				count(1)
+					from b_g_013 
+           			left join T_USER zdr on (B_G_013.ZDRID = zdr.ID)
+           			<include refid="JobCard_Conditions" />
+  </select>
+  <sql id="JobCard_Conditions">
+	   where 
+	   b_g_013.zt not in(8)
+	     <if test="keyword != null and keyword != ''">
+		    and (   UPPER(b_g_013.gdbh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(b_g_013.gzzt) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(b_g_013.djbh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(b_g_013.jx) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(zdr.USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(zdr.REALNAME) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(b_g_013.bz) like UPPER('%'||#{keyword}||'%'))              <!-- 左右匹配 查询关键字 -->
+		</if>
+	     <if test="dprtcode != null and dprtcode != ''">
+            and  b_g_013.dprtcode = #{dprtcode}
+         </if>
+	     <if test="yxx != null">
+            and  b_g_013.yxx = #{yxx}
+         </if>
+	     <if test="zt != null">
+            and  b_g_013.zt = #{zt}
+         </if>
+	     <if test="gdbh != null and gdbh != ''">
+            and  b_g_013.gdbh = #{gdbh}
+         </if>
+         
+         <if test="oldgdbh != null and oldgdbh != ''">
+            and  b_g_013.gdbh != #{oldgdbh}
+         </if>
+         
+         <if test="zy != null and zy != ''">
+            and  b_g_013.zy = #{zy}
+         </if>
+         
+         <if test="gzzId != null and gzzId != ''">
+            and  b_g_013.gzzId = #{gzzId}
+         </if>
+         
+         <if test="gklx != null and gklx != ''">
+            and  b_g_013.gklx = #{gklx}
+         </if>
+         
+	    <if test="id != null and id != ''">
+            and  b_g_013.id = #{id}
+         </if>
+         
+	</sql>
+  
+    	<!-- 批量审核 -->
+	<update id="updateBatchAudit" parameterType="Map" >
+    	update B_G_013
+    	set 
+    		SHRID = #{shrid,jdbcType=VARCHAR},
+    		SHBMID = #{shbmid,jdbcType=VARCHAR},
+    		zt = #{zt,jdbcType=DECIMAL},
+    		SHYJ = #{shyj,jdbcType=VARCHAR},
+      		SHSJ = sysdate
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 批量批准 -->
+	<update id="updateBatchApprove" parameterType="Map" >
+    	update B_G_013
+    	set 
+    		PFRID = #{pfrid,jdbcType=VARCHAR},
+    		PFBMID = #{pfbmid,jdbcType=VARCHAR},
+    		zt = #{zt,jdbcType=DECIMAL},
+    		PFYJ = #{pfyj,jdbcType=VARCHAR},
+      		PFSJ = sysdate
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+  
+  <select id="selectBydjgznrid" parameterType="java.lang.String" resultMap="BaseResultMap">
+		   <!--  select b_g_01202.id      djgznrid,
+				       b_g_01202.cksc,
+				       b_g_01202.ckgk,
+				       b_g_01202.nbxh,
+				       b_g_01202.gzlx,
+				       b_g_01202.gzzw,
+				       b_g_01202.wz 	gzdd,
+				       b_g_01202.scms_zw scmsZw,
+				       b_g_01202.scms_yw scmsYw,
+				       b_g_012.djbh,
+				       b_g_012.id        djxmid,
+				       b_g_012.wxfabh,
+				       b_g_012.zwms		djxmmc,
+				       b_g_011.zwms		wxfamc,
+				       b_g_011.bb        wxfabb,
+				       b_g_011.jx,
+				       D_005.zwms        zjhZwms,
+				       D_005.zjh
+			  from b_g_012
+			  left join b_g_01202
+			    on (b_g_01202.djxmid = b_g_012.id)
+			  left join d_005
+			    on (b_g_01202.zjh=D_005.zjh and b_g_01202.dprtcode=D_005.dprtcode)
+			  left join b_g_011
+			    on (b_g_011.wxfabh = b_g_012.wxfabh)
+			 where b_g_01202.id = #{id,jdbcType=VARCHAR}
+			   and b_g_011.bb = (select MAX(BB) bb
+			                       from B_G_011 b
+			                      where b.ZT not in (8, 9)
+			                        and b.dprtcode = b_g_012.dprtcode)  -->
+			                        select
+      b1.id      djgznrid,
+       b1.cksc,
+       b1.ckgk,
+       b1.nbxh,
+       b1.gzlx,
+       b1.gzzw,
+       b1.wz gzdd,
+       b1.scms_zw scmsZw,
+       b1.scms_yw scmsYw,
+       b2.djbh,
+       b2.id        djxmid,
+       b2.wxfabh,
+       b2.zwms      djxmmc,
+       b3.zwms      wxfamc,
+       b3.bb        wxfabb,
+       b3.jx,
+       d.zwms        zjhZwms,
+       d.zjh
+  from b_g_01202 b1
+   join b_g_012 b2
+    on b1.djxmid = b2.id
+   and b1.id = #{id,jdbcType=VARCHAR}
+  left join d_005 d on d.zjh=b1.zjh and d.dprtcode = b1.dprtcode
+   join (SELECT t.wxfabh, t.bb, t.zwms, t.ywms, t.jx, t.dprtcode
+          FROM (SELECT ROW_NUMBER() OVER(PARTITION BY t.wxfabh, t.dprtcode ORDER BY t.bb DESC) rn,
+                       t.wxfabh,
+                       t.bb,
+                       t.zwms,
+                       t.ywms,
+                       t.jx,
+                       t.dprtcode
+                  FROM b_g_011 t
+                 where t.zt in (1, 2, 3)) t
+         WHERE rn = 1) b3
+    on b2.wxfabh = b3.wxfabh
+   and b2.dprtcode = b3.dprtcode
+  </select>
+  		  	<!-- 根据定检项目id集合定检项目信息 -->
+	<select id="queryByIdList" resultMap="BaseResultMap" >
+		select 
+		<include refid="Base_Column_List" />
+    	from B_G_013
+    	where ID in
+		<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+ 	</select>
+  
+   	<select id="findByDprtcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+ 		select id,gdbh from b_g_013 where dprtcode=#{dprtcode,jdbcType=VARCHAR} and zt=3
+ 	</select>
+ 	
+ 	<select id="queryWinByFjjx" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.JobCard" >
+		select 
+		<include refid="Base_Column_List" />
+    	from B_G_013
+		 where ZT != 8
+        <if test="keyword != null and keyword != ''">
+		    and (
+		    	UPPER(GDBH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(GZZT) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="dprtcode != null">
+		    and DPRTCODE = #{dprtcode}
+		</if>
+		<!--id-->
+		<if test="jx != null and jx != ''">
+			and JX = #{jx}
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and ID = #{id}
+		</if>
+		<if test="paramsMap != null and paramsMap.codeList != null and paramsMap.codeList != ''">
+		    and ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.codeList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+         <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by ZDSJ DESC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+		 
+ 	</select>
+</mapper>

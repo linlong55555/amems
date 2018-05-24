@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.InstallationListEffective2InitMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.InstallationListEffective2Init" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="ZSSYY" property="zssyy" jdbcType="VARCHAR" />
+    <result column="ZJSYL" property="zjsyl" jdbcType="VARCHAR" />
+    <result column="CXSYY" property="cxsyy" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+    <result column="BJH" property="paramsMap.bjh" jdbcType="VARCHAR" /><!-- 部件号 -->
+    <result column="XLH" property="paramsMap.xlh" jdbcType="VARCHAR" /><!-- 序列号 -->
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, JKLBH, JKFLBH, ZSSYY, ZJSYL, CXSYY, WHBMID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_00401
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_00401
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+   <!-- 查询初始值集合 -->
+   <select id="queryByMainidList" resultMap="BaseResultMap" >
+    select 
+	    bs200401.ID
+	    , bs200401.MAINID
+	    , bs200401.JKLBH
+	    , bs200401.JKFLBH
+	    , bs200401.ZSSYY
+	    , bs200401.ZJSYL
+	    , bs200401.CXSYY
+	    , bs2004.BJH
+	    , bs2004.XLH
+    from B_S2_00401 bs200401
+    left join B_S2_004 bs2004
+    on bs200401.mainid = bs2004.id
+    where bs200401.MAINID in
+		<foreach collection="list" item="mainidList" index="index" open="(" close=")" separator=",">
+			#{mainidList}
+		 </foreach>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S2_00401
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.InstallationListEffective2Init" >
+    insert into B_S2_00401 (ID, MAINID, JKLBH, 
+      JKFLBH, ZSSYY, ZJSYL, 
+      CXSYY, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{jklbh,jdbcType=VARCHAR}, 
+      #{jkflbh,jdbcType=VARCHAR}, #{zssyy,jdbcType=VARCHAR}, #{zjsyl,jdbcType=VARCHAR}, 
+      #{cxsyy,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.InstallationListEffective2Init" >
+    insert into B_S2_00401
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="jklbh != null" >
+        JKLBH,
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH,
+      </if>
+      <if test="zssyy != null" >
+        ZSSYY,
+      </if>
+      <if test="zjsyl != null" >
+        ZJSYL,
+      </if>
+      <if test="cxsyy != null" >
+        CXSYY,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zssyy != null" >
+        #{zssyy,jdbcType=VARCHAR},
+      </if>
+      <if test="zjsyl != null" >
+        #{zjsyl,jdbcType=VARCHAR},
+      </if>
+      <if test="cxsyy != null" >
+        #{cxsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.InstallationListEffective2Init" >
+    update B_S2_00401
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zssyy != null" >
+        ZSSYY = #{zssyy,jdbcType=VARCHAR},
+      </if>
+      <if test="zjsyl != null" >
+        ZJSYL = #{zjsyl,jdbcType=VARCHAR},
+      </if>
+      <if test="cxsyy != null" >
+        CXSYY = #{cxsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.InstallationListEffective2Init" >
+    update B_S2_00401
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      JKLBH = #{jklbh,jdbcType=VARCHAR},
+      JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      ZSSYY = #{zssyy,jdbcType=VARCHAR},
+      ZJSYL = #{zjsyl,jdbcType=VARCHAR},
+      CXSYY = #{cxsyy,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询飞机的有效的部件初始值 -->
+  <select id="queryByAircraft" resultMap="BaseResultMap" parameterType="com.eray.thjw.produce.po.InstallationListEffective" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM B_S2_00401
+    WHERE EXISTS (
+    	SELECT 1 FROM B_S2_004 WHERE B_S2_00401.MAINID = B_S2_004.ID
+    		AND B_S2_004.FJZCH = #{fjzch,jdbcType=VARCHAR}
+    		AND B_S2_004.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+    )
+    ORDER BY JKLBH
+  </select>
+  
+   <!-- 批量新增 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+  	insert into B_S2_00401 (ID, MAINID, JKLBH, 
+      JKFLBH, ZSSYY, ZJSYL, 
+      CXSYY, WHBMID, WHRID, 
+      WHSJ)
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+	    select #{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.jklbh,jdbcType=VARCHAR}, 
+	      #{item.jkflbh,jdbcType=VARCHAR}, #{item.zssyy,jdbcType=VARCHAR}, #{item.zjsyl,jdbcType=VARCHAR}, 
+	      #{item.cxsyy,jdbcType=VARCHAR}, #{item.whbmid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, 
+	      #{item.whsj,jdbcType=TIMESTAMP}
+	  	from dual
+    </foreach>
+  </insert>
+  <!-- 根据装机清单ID删除 -->
+  <delete id="deleteByMainid" parameterType="java.lang.String">
+  	DELETE FROM B_S2_00401 WHERE MAINID = #{mainid, jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 根据位置和时间查询 当时的一级节点 -->
+  <select id="selectTopByWzAndSj" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" />
+	  FROM B_S2_00401 S200401
+	 WHERE MAINID = (SELECT ID
+	                   FROM B_S2_004 S2004
+	                  WHERE S2004.YXBS = 1
+	                    AND S2004.DPRTCODE=#{dprtcode, jdbcType=VARCHAR}
+	                    AND COALESCE(S2004.AZSJ,
+	                                 TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;= #{jssj, jdbcType=TIMESTAMP}
+	                    AND COALESCE(S2004.CCSJ,
+	                                 TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt; #{jssj, jdbcType=TIMESTAMP}
+                        AND S2004.WZ = #{wz, jdbcType=DECIMAL}
+	                    AND CJ = 1
+	                    AND S2004.FJZCH=#{fjzch, jdbcType=VARCHAR}
+	                    AND ROWNUM = 1)
+  
+  </select>
+  
+  <!-- 清除装机清单生效区初始化数据中在机使用量和拆下时已用 -->
+  <update id="update4ClearRemoveDataByMainid">
+  	update B_S2_00401 set zjsyl = null, cxsyy = null where mainid = #{mainId, jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,75 @@
+package com.eray.framework.util.redis;
+
+import java.util.List;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
+
+/**
+ * jedis 操作集合
+ */
+
+/**
+ * @Description
+ * @CreateTime 2017年12月21日 上午11:29:00
+ * @CreateBy 胡黄驰
+ */
+public class JedisOperations {
+	/**
+	 * 批量删除指定键
+	 * 
+	 * @param List<String>
+	 * @author hchu
+	 * @CreateTime 2017年12月21日 下午12:00:47
+	 */
+	public void mdel(final List<String> keys) throws Exception {
+		if (null == keys) {
+			return;
+		}
+		Jedis jedis = RedisPool.getInstance().getJedisResource();
+		try {
+			Pipeline pipeline = jedis.pipelined();
+			for (String key : keys) {
+				pipeline.del(key);
+			}
+			pipeline.sync();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			jedis.close();
+		}
+	}
+
+	/**
+	 * 批量删除指定键
+	 * 
+	 * @param List<String>,
+	 *            Jedis
+	 * @author hchu
+	 * @CreateTime 2017年12月21日 下午12:00:47
+	 */
+	public void mdel(final List<String> keys, Jedis jedis) throws Exception {
+		if (null == keys) {
+			return;
+		}
+		Jedis jedisC = null;
+		if (null == jedis) {
+			jedisC = RedisPool.getInstance().getJedisResource();
+		} else {
+			jedisC = jedis;
+		}
+		try {
+			Pipeline pipeline = jedisC.pipelined();
+			for (String key : keys) {
+				pipeline.del(key);
+			}
+			pipeline.sync();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			jedisC.close();
+		}
+	}
+}

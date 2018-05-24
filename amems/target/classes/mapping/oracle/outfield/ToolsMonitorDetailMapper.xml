@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.outfield.dao.ToolsMonitorDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.outfield.po.ToolsMonitorDetail">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="BJXLH" jdbcType="VARCHAR" property="bjxlh" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+    <result column="ZWMS" jdbcType="VARCHAR" property="zwms" />
+    <result column="YWMS" jdbcType="VARCHAR" property="ywms" />
+    <result column="GG" jdbcType="VARCHAR" property="gg" />
+    <result column="XH" jdbcType="VARCHAR" property="xh" />
+    <result column="BJBS" jdbcType="DECIMAL" property="bjbs" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="JY_SCRQ" jdbcType="TIMESTAMP" property="jyScrq" />
+    <result column="JY_XCRQ" jdbcType="TIMESTAMP" property="jyXcrq" />
+    <result column="JY_ZQ" jdbcType="DECIMAL" property="jyZq" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  
+  	<!-- 配置供应商与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.outfield.po.ToolsMonitorDetail" id="DetailToJoinMap" extends="BaseResultMap">  
+	  	<association property="whr" javaType="com.eray.thjw.po.User">  
+	        <id column="WID" property="id"/>  
+	        <result column="WUSERNAME" property="username"/>  
+	        <result column="WREALNAME" property="realname"/>  
+	    </association>  
+	</resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, BJXLH, BJH, ZWMS, YWMS, GG, XH, BJBS, BZ, JY_SCRQ, JY_XCRQ, JY_ZQ, ZT, 
+    WHBMID, WHRID, WHSJ
+  </sql>
+  <sql id="Alias_Column_List">
+    BW00101.ID, BW00101.MAINID, BW00101.BJXLH, BW00101.BJH, BW00101.ZWMS, BW00101.YWMS, BW00101.GG, BW00101.XH, BW00101.BJBS, 
+    BW00101.BZ, BW00101.JY_SCRQ, BW00101.JY_XCRQ, BW00101.JY_ZQ, BW00101.ZT, BW00101.WHBMID, BW00101.WHRID, BW00101.WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT T1.ID,
+       T1.MAINID,
+       T1.BJXLH,
+       T1.BJH,
+       (CASE WHEN T3.ZWMS IS NULL THEN T1.ZWMS ELSE T3.ZWMS END) ZWMS,
+       (CASE WHEN T3.YWMS IS NULL THEN T1.YWMS ELSE T3.YWMS END) YWMS,
+       (CASE WHEN T3.GG IS NULL THEN T1.GG ELSE T3.GG END) GG,
+       (CASE WHEN T3.XINGH IS NULL THEN T1.XH ELSE T3.XINGH END) XH,
+       T1.BJBS,
+       T1.BZ,
+       T1.JY_SCRQ,
+       T1.JY_XCRQ,
+       T1.JY_ZQ,
+       T1.ZT,
+       T1.WHBMID,
+       T1.WHRID,
+       T1.WHSJ
+  FROM B_W_00101 T1
+  JOIN B_W_001 T2
+    ON T1.MAINID = T2.ID
+  LEFT JOIN D_008 T3
+    ON T2.BJID = T3.ID
+ WHERE T1.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据mainid编号查询最大校验日期 -->
+  	<select id="getByMainidAndBjxlh" parameterType="java.lang.String" resultMap="BaseResultMap">
+    	SELECT t.ID, 
+    		   t.JY_SCRQ 
+    	FROM (
+	    	SELECT ROW_NUMBER() OVER(PARTITION BY MAINID, BJXLH ORDER BY JY_SCRQ DESC) rn,
+	               ID,
+	               JY_SCRQ
+	        FROM B_W_00101
+            WHERE ZT = 1 and MAINID = #{mainid,jdbcType=VARCHAR} and BJXLH = #{bjxlh,jdbcType=VARCHAR}
+         ) t
+         WHERE t.rn = 1
+  	</select>
+  
+  <!-- 根据计量工具id查询详情信息(最新检查日期) -->
+  <select id="queryDetailByMainId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT BW00101.ID,
+       BW00101.MAINID,
+       BW00101.BJXLH,
+       BW00101.BJH,
+       (CASE WHEN BW00101.ZWMS IS NULL THEN T3.ZWMS ELSE BW00101.ZWMS END) ZWMS,
+       (CASE WHEN BW00101.YWMS IS NULL THEN T3.YWMS ELSE BW00101.YWMS END) YWMS,
+       (CASE WHEN BW00101.GG IS NULL THEN T3.GG ELSE BW00101.GG END) GG,
+       (CASE WHEN BW00101.XH IS NULL THEN T3.XINGH ELSE BW00101.XH END) XH,
+       BW00101.BJBS,
+       BW00101.BZ,
+       BW00101.JY_SCRQ,
+       BW00101.JY_XCRQ,
+       BW00101.JY_ZQ,
+       BW00101.ZT,
+       BW00101.WHBMID,
+       BW00101.WHRID,
+       BW00101.WHSJ
+  FROM B_W_00101 BW00101
+  JOIN (SELECT BJXLH, MAX(JY_SCRQ) AS JY_SCRQ
+          FROM B_W_00101
+         WHERE MAINID = #{mainid}
+           AND ZT = 1
+         GROUP BY BJXLH) A
+    ON BW00101.BJXLH = A.BJXLH
+   AND BW00101.JY_SCRQ = A.JY_SCRQ
+  JOIN B_W_001 T2
+    ON BW00101.MAINID = T2.ID
+  LEFT JOIN D_008 T3
+    ON T2.BJID = T3.ID
+ WHERE BW00101.MAINID = #{mainid,jdbcType=VARCHAR}
+   AND BW00101.ZT = 1
+ ORDER BY BW00101.BJBS DESC, BW00101.JY_SCRQ DESC
+    
+  </select>
+  
+  <!-- 根据计量工具id,编号查询历史详情信息 -->
+  <select id="queryDetailByMainIdAndBjxlh" parameterType="java.lang.String" resultMap="DetailToJoinMap">
+    SELECT BW00101.ID,
+       BW00101.MAINID,
+       BW00101.BJXLH,
+       BW00101.BJH,
+       (CASE WHEN BW00101.ZWMS IS NULL THEN T3.ZWMS ELSE BW00101.ZWMS END) ZWMS,
+       (CASE WHEN BW00101.YWMS IS NULL THEN T3.YWMS ELSE BW00101.YWMS END) YWMS,
+       (CASE WHEN BW00101.GG IS NULL THEN T3.GG ELSE BW00101.GG END) GG,
+       (CASE WHEN BW00101.XH IS NULL THEN T3.XINGH ELSE BW00101.XH END) XH,
+       BW00101.BJBS,
+       BW00101.BZ,
+       BW00101.JY_SCRQ,
+       BW00101.JY_XCRQ,
+       BW00101.JY_ZQ,
+       BW00101.ZT,
+       BW00101.WHBMID,
+       BW00101.WHRID,
+       BW00101.WHSJ,
+       UW.ID AS WID,
+       UW.USERNAME AS WUSERNAME,
+       UW.REALNAME AS WREALNAME
+  FROM B_W_00101 BW00101
+  LEFT JOIN T_USER UW
+    ON BW00101.WHRID = UW.ID
+  JOIN B_W_001 T2
+    ON BW00101.MAINID = T2.ID
+  LEFT JOIN D_008 T3
+    ON T2.BJID = T3.ID
+ WHERE BW00101.MAINID = #{mainid,jdbcType=VARCHAR}
+   AND BW00101.ZT = 1
+   AND BW00101.BJXLH = #{bjxlh,jdbcType=VARCHAR}
+ ORDER BY BW00101.JY_SCRQ DESC
+    
+  </select>
+  
+	<!-- 根据条件分页查询计量监控列表 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.po.BaseEntity" resultType="Map">
+		SELECT * FROM (
+
+		 	select BW00101.ID,
+			       BW00101.MAINID,
+			       BW00101.BJXLH,
+			       BW00101.ZWMS,
+			       BW00101.YWMS,
+			       BW00101.GG,
+			       BW00101.XH,
+			       BW00101.BZ,
+			       BW00101.JY_SCRQ,
+			       BW00101.JY_XCRQ,
+			       BW00101.JY_ZQ,
+			       BW00101.WHBMID,
+			       BW00101.WHRID,
+			       BW00101.WHSJ,
+			       to_date(to_char(BW00101.JY_XCRQ, 'YYYY-MM-DD'), 'YYYY-MM-DD') -
+			       to_date(to_char(sysdate, 'YYYY-MM-DD'), 'YYYY-MM-DD') as SYTS,
+			       BW001.BJXLH AS MBJXLH,
+			       BW001.DPRTCODE,
+			       D008.BJH,
+			       D008.ZWMS AS HCZWMS,
+			       D008.YWMS AS HCYWMS,
+			       D008.HCLX,
+			       U.ID AS WID,
+			       U.USERNAME,
+			       U.REALNAME
+			  from B_W_00101 BW00101
+			  join (SELECT BJXLH, MAINID, MAX(JY_SCRQ) AS JY_SCRQ
+			          FROM B_W_00101
+			         where ZT = 1
+			         GROUP BY BJXLH, MAINID) A
+			    on BW00101.BJXLH = A.BJXLH
+			   and BW00101.MAINID = A.MAINID
+			   and BW00101.JY_SCRQ = A.JY_SCRQ
+			  left join B_W_001 BW001
+			    on BW00101.MAINID = BW001.ID
+			  left join D_008 D008
+			    on D008.ID = BW001.BJID
+			  left join T_USER U
+			    on BW00101.WHRID = U.ID
+			 where BW00101.ZT = 1
+			 AND EXISTS(SELECT 1 FROM B_H_001 B WHERE BW001.BJID = B.BJID and BW001.BJXLH = B.SN)
+            <include refid="Tools_Monitor_Param"></include>
+           	
+           ) A
+           
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by SYTS ASC,JY_SCRQ ASC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+	</select>
+	
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_W_00101
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.outfield.po.ToolsMonitorDetail">
+    insert into B_W_00101 (ID, MAINID, BJXLH, 
+      BJH, ZWMS, YWMS, GG, 
+      XH, BJBS, BZ, JY_SCRQ, 
+      JY_XCRQ, JY_ZQ, ZT, 
+      WHBMID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{bjxlh,jdbcType=VARCHAR}, 
+      #{bjh,jdbcType=VARCHAR}, #{zwms,jdbcType=VARCHAR}, #{ywms,jdbcType=VARCHAR}, #{gg,jdbcType=VARCHAR}, 
+      #{xh,jdbcType=VARCHAR}, #{bjbs,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{jyScrq,jdbcType=TIMESTAMP}, 
+      #{jyXcrq,jdbcType=TIMESTAMP}, #{jyZq,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.outfield.po.ToolsMonitorDetail">
+    insert into B_W_00101
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="bjxlh != null">
+        BJXLH,
+      </if>
+      <if test="bjh != null">
+        BJH,
+      </if>
+      <if test="zwms != null">
+        ZWMS,
+      </if>
+      <if test="ywms != null">
+        YWMS,
+      </if>
+      <if test="gg != null">
+        GG,
+      </if>
+      <if test="xh != null">
+        XH,
+      </if>
+      <if test="bjbs != null">
+        BJBS,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="jyScrq != null">
+        JY_SCRQ,
+      </if>
+      <if test="jyXcrq != null">
+        JY_XCRQ,
+      </if>
+      <if test="jyZq != null">
+        JY_ZQ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whbmid != null">
+        WHBMID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whrid != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjxlh != null">
+        #{bjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null">
+        #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null">
+        #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjbs != null">
+        #{bjbs,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="jyScrq != null">
+        #{jyScrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jyXcrq != null">
+        #{jyXcrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jyZq != null">
+        #{jyZq,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null">
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.outfield.po.ToolsMonitorDetail">
+    update B_W_00101
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjxlh != null">
+        BJXLH = #{bjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        YWMS = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null">
+        GG = #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null">
+        XH = #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjbs != null">
+        BJBS = #{bjbs,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="jyScrq != null">
+        JY_SCRQ = #{jyScrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jyXcrq != null">
+        JY_XCRQ = #{jyXcrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jyZq != null">
+        JY_ZQ = #{jyZq,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 根据mainid、编号删除计量工具监控详情数据 -->
+  <update id="deleteDetailByMainIdAndBjxlh" parameterType="com.eray.thjw.outfield.po.ToolsMonitorDetail">
+    update B_W_00101 set ZT = 0
+    where BJXLH = #{bjxlh,jdbcType=VARCHAR} and MAINID = #{mainid,jdbcType=VARCHAR}
+    	and (
+    		0 = #{bjbs} 
+    		or
+    		(	1 = #{bjbs} 
+    			and 
+    			not exists (select 1 from B_W_00101 where ZT = 1 and BJBS = 0 and BJXLH = #{bjxlh,jdbcType=VARCHAR} and MAINID = #{mainid,jdbcType=VARCHAR}) 
+    		)
+    		)
+  </update>
+  
+  <!-- 根据id删除计量工具监控详情 -->
+  <update id="deleteDetail"  parameterType="java.lang.String">
+    update B_W_00101 set ZT = 0
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.outfield.po.ToolsMonitorDetail">
+    update B_W_00101
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      BJXLH = #{bjxlh,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      ZWMS = #{zwms,jdbcType=VARCHAR},
+      YWMS = #{ywms,jdbcType=VARCHAR},
+      GG = #{gg,jdbcType=VARCHAR},
+      XH = #{xh,jdbcType=VARCHAR},
+      BJBS = #{bjbs,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      JY_SCRQ = #{jyScrq,jdbcType=TIMESTAMP},
+      JY_XCRQ = #{jyXcrq,jdbcType=TIMESTAMP},
+      JY_ZQ = #{jyZq,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+	<sql id="Tools_Monitor_Param">
+  
+	    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		   and (
+		       UPPER(BW001.BJXLH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    or UPPER(D008.ZWMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(D008.YWMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(D008.BJH) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(BW00101.BJXLH) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(BW00101.ZWMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(BW00101.YWMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    )
+		</if>
+		<if test="paramsMap != null and paramsMap.hclx != null and paramsMap.hclx != ''">
+		    and D008.HCLX = #{paramsMap.hclx}
+		</if>
+		<if test="paramsMap != null and paramsMap.jyXcrqBegin != null and paramsMap.jyXcrqBegin != ''">
+		    and BW00101.JY_XCRQ &gt;=to_date(#{paramsMap.jyXcrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')  
+		</if>
+		<if test="paramsMap != null and paramsMap.jyXcrqEnd != null and paramsMap.jyXcrqEnd != ''">
+		    and BW00101.JY_XCRQ &lt;=to_date(#{paramsMap.jyXcrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if> 
+		<if test="paramsMap != null and paramsMap.dprtcode != null">
+		    and BW001.DPRTCODE = #{paramsMap.dprtcode}
+		</if>
+  
+	</sql>
+  
+</mapper>

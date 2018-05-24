@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MaterialToStoreMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.MaterialToStore" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="CKH" property="ckh" jdbcType="VARCHAR" />
+    <result column="KWH" property="kwh" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, CKH, KWH, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_00802
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getMaterialStoreByMainId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_00802
+    where MAINID = #{mainId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_00802
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.MaterialToStore" >
+    insert into D_00802 (ID, MAINID, CKH, 
+      KWH, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{ckh,jdbcType=VARCHAR}, 
+      #{kwh,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, sysdate}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialToStore" >
+    insert into D_00802
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="ckh != null" >
+        CKH,
+      </if>
+      <if test="kwh != null" >
+        KWH,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+        WHSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null" >
+        #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="kwh != null" >
+        #{kwh,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+        sysdate,
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialToStore" >
+    update D_00802
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null" >
+        CKH = #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="kwh != null" >
+        KWH = #{kwh,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.MaterialToStore" >
+    update D_00802
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      CKH = #{ckh,jdbcType=VARCHAR},
+      KWH = #{kwh,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+	 <update id="updateByPrimaryMainid" parameterType="com.eray.thjw.aerialmaterial.po.MaterialToStore" >
+    update D_00802
+    <set >
+      <if test="ckh != null" >
+        CKH = #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="kwh != null" >
+        KWH = #{kwh,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </update>
+</mapper>

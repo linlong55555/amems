@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:aop="http://www.springframework.org/schema/aop"
+ xmlns:util="http://www.springframework.org/schema/util"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context.xsd
+      http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.2.xsd" default-lazy-init="true">
+ 
+    <!-- 引入jdbc配置文件 -->
+    <context:property-placeholder location="classpath:conf/jdbc.properties"/>
+    
+    <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
+	<context:component-scan base-package="com.eray">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+	
+	<bean class="com.eray.thjw.flyway.FlywayMigration" lazy-init="false"></bean>
+	<bean class="com.eray.thjw.aware.SpringContextHolder" lazy-init="false"></bean>
+	<bean class="com.eray.framework.common.SysConfig" lazy-init="false"></bean>
+	<bean class="com.eray.rest.common.SysConfig" lazy-init="false"></bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+        <property name="defaultEncoding" value="UTF-8"/>  
+        <!-- <property name="maxUploadSize" value="20000000"/>   -->
+    </bean>
+    
+    <bean id="multipleDataSourceAdvice" class="com.eray.thjw.advice.MultipleDataSourceAdvice"></bean>
+	<aop:config>  
+        <aop:pointcut id="multipleDataSourcePointcut" expression="execution(* com.eray.*.*.dao.*.*(..)) or execution(* com.eray.*.dao.*.*(..)) " />  
+        <aop:aspect id="multipleDataSourceAspect" ref="multipleDataSourceAdvice">  
+            <aop:before
+            pointcut-ref="multipleDataSourcePointcut"  
+            method="before"  
+            />  
+            <aop:after 
+            pointcut-ref="multipleDataSourcePointcut"  
+            method="after"  
+            />  
+        </aop:aspect>  
+    </aop:config>
+    
+
+	<!-- 增加aop 自动代理配置 -->
+	<aop:aspectj-autoproxy />
+    
+    <bean id="exceptionResolver" class="com.eray.thjw.exception.handler.ExceptionHandler">  
+      <property name="exceptionMappings">   
+        <props> 
+          <prop key="com.eray.thjw.exception.TimeOutException">web/public/login_timeout</prop>   
+          <prop key="com.eray.thjw.exception.BusinessException">error/errorpage</prop>
+          <prop key="com.eray.thjw.exception.NoAuthException">error/auth_error</prop> 
+          <prop key="java.lang.exception">error/500</prop>  
+            
+       </props>   
+     </property>   
+    </bean>  
+      
+    
+</beans>

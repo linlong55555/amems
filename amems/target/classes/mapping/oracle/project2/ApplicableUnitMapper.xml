@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.ApplicableUnitMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.ApplicableUnit" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="SYDWID" property="sydwid" jdbcType="VARCHAR" />
+    <result column="SYDW" property="sydw" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, SYDWID, SYDW, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_01302
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据父id查询工卡-适用单位列表 -->
+	<select id="queryByMainid" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select 
+           	<include refid="Base_Column_List" />
+        from B_G2_01302
+        where ZT = 1 and MAINID = #{mainid,jdbcType=VARCHAR}
+	</select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_01302
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  	<delete id="deleteByMainid" parameterType="java.lang.String" >
+    	delete from B_G2_01302
+    	where MAINID = #{mainid,jdbcType=VARCHAR}
+  	</delete>
+  	
+  	<delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_G2_01302
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.ApplicableUnit" >
+    insert into B_G2_01302 (ID, MAINID, SYDWID, 
+      SYDW, ZT, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{sydwid,jdbcType=VARCHAR}, 
+      #{sydw,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.ApplicableUnit" >
+    insert into B_G2_01302
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="sydwid != null" >
+        SYDWID,
+      </if>
+      <if test="sydw != null" >
+        SYDW,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="sydwid != null" >
+        #{sydwid,jdbcType=VARCHAR},
+      </if>
+      <if test="sydw != null" >
+        #{sydw,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  
+  	<!-- 批量插入工卡-适用单位 -->
+  	<insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+			<include refid="insert_applicable_unit"></include>
+		</foreach>
+		select 1 from dual
+	</insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.ApplicableUnit" >
+    update B_G2_01302
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="sydwid != null" >
+        SYDWID = #{sydwid,jdbcType=VARCHAR},
+      </if>
+      <if test="sydw != null" >
+        SYDW = #{sydw,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 插入工卡-适用单位 start -->
+	<sql id="insert_applicable_unit">
+		into B_G2_01302 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+	      	<if test="item.id != null" >
+	        	ID,
+	      	</if>
+	      	<if test="item.mainid != null" >
+	        	MAINID,
+	      	</if>
+	      	<if test="item.sydwid != null" >
+	        	SYDWID,
+	      	</if>
+	      	<if test="item.sydw != null" >
+	       		SYDW,
+	      	</if>
+	      	<if test="item.zt != null" >
+	        	ZT,
+	      	</if>
+	      	<if test="item.whbmid != null" >
+	        	WHBMID,
+	      	</if>
+	      	<if test="item.whrid != null" >
+	        	WHRID,
+	        	WHSJ,
+	      	</if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      	<if test="item.id != null" >
+	        	#{item.id,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.mainid != null" >
+	        	#{item.mainid,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.sydwid != null" >
+	        	#{item.sydwid,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.sydw != null" >
+	        	#{item.sydw,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.zt != null" >
+	        	#{item.zt,jdbcType=DECIMAL},
+	      	</if>
+	      	<if test="item.whbmid != null" >
+	        	#{item.whbmid,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="item.whrid != null" >
+	        	#{item.whrid,jdbcType=VARCHAR},
+	        	sysdate,
+	      	</if>
+	    </trim>
+	</sql>
+	<!-- 插入工卡-适用单位  end -->
+  
+   <!-- 批量删除:导入专用 -->
+   <delete id="delete4BatchImpl" parameterType="java.util.List" >
+   		<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+	   		delete from B_G2_01302
+		   	where MAINID = #{item,jdbcType=VARCHAR}
+		</foreach>
+ 	</delete>
+  	
+  <!-- 批量新增:导入专用 -->
+  <insert id="insert4BatchImpl" parameterType="java.util.List" >
+	    INSERT INTO B_G2_01302 (ID, MAINID, SYDWID, 
+						      	SYDW, ZT, WHBMID, 
+						      	WHRID,WHSJ)
+	      <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		    select 
+		     	#{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.sydwid,jdbcType=VARCHAR}, 
+      			#{item.sydw,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, #{item.whbmid,jdbcType=VARCHAR}, 
+      			#{item.whrid,jdbcType=VARCHAR}, #{item.whsj,jdbcType=TIMESTAMP}
+		  	from dual
+	    </foreach>
+  </insert>
+  
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.GiveInstructionMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.GiveInstruction" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="ZLXL" property="zlxl" jdbcType="DECIMAL" />
+    <result column="ZDRYID" property="zdryid" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DISPLAYNAME" property="paramsMap.displayName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, ZLXL, ZDRYID, SM, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+  <!-- 根据适技术文件id查询技术评估单-下达指令集合  -->
+  <select id="selectOrderList" resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.GiveInstruction" >
+    SELECT 
+    B1.ID, B1.MAINID, B1.ZLXL, B1.ZDRYID, B1.SM, B1.ZT, B1.WHDWID, B1.WHRID,B2.USERNAME || ' ' || B2.REALNAME AS DISPLAYNAME
+    FROM B_G2_00101 B1
+    LEFT JOIN T_USER B2 ON B1.ZDRYID=B2.ID
+    WHERE MAINID = #{mainid,jdbcType=VARCHAR}
+    ORDER BY ZLXL ASC
+  </select>
+  
+  <select id="selectOrdersList" resultMap="BaseResultMap">
+      SELECT 
+    B1.ID, B1.MAINID, B1.ZLXL, B1.ZDRYID, B1.SM, B1.ZT, B1.WHDWID, B1.WHRID,B2.USERNAME || ' ' || B2.REALNAME AS DISPLAYNAME
+    FROM B_G2_00101 B1
+    LEFT JOIN T_USER B2 ON B1.ZDRYID=B2.ID
+    WHERE MAINID in 
+    	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		 </foreach>
+    ORDER BY ZLXL ASC
+  
+   </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_00101
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_00101
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_G2_00101
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.GiveInstruction" >
+    insert into B_G2_00101 (ID, MAINID, ZLXL, 
+      ZDRYID, SM, ZT, WHDWID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zlxl,jdbcType=DECIMAL}, 
+      #{zdryid,jdbcType=VARCHAR}, #{sm,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.GiveInstruction" >
+    insert into B_G2_00101
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="zlxl != null" >
+        ZLXL,
+      </if>
+      <if test="zdryid != null" >
+        ZDRYID,
+      </if>
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zlxl != null" >
+        #{zlxl,jdbcType=DECIMAL},
+      </if>
+      <if test="zdryid != null" >
+        #{zdryid,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.GiveInstruction" >
+    update B_G2_00101
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zlxl != null" >
+        ZLXL = #{zlxl,jdbcType=DECIMAL},
+      </if>
+      <if test="zdryid != null" >
+        ZDRYID = #{zdryid,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.GiveInstruction" >
+    update B_G2_00101
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZLXL = #{zlxl,jdbcType=DECIMAL},
+      ZDRYID = #{zdryid,jdbcType=VARCHAR},
+      SM = #{sm,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

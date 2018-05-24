@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.DistributionDepartmentMapper">
+	<resultMap id="BaseResultMap"
+		type="com.eray.thjw.project2.po.DistributionDepartment">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="YWLX" property="ywlx" jdbcType="INTEGER" />
+		<result column="YWID" property="ywid" jdbcType="VARCHAR" />
+		<result column="LX" property="lx" jdbcType="INTEGER" />
+		<result column="DXID" property="dxid" jdbcType="VARCHAR" />
+		<result column="IS_JS" property="isJs" jdbcType="INTEGER" />
+		<result column="ZT" property="zt" jdbcType="INTEGER" />
+		<result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+		<result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+		<result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+		<association property="department" javaType="com.eray.thjw.po.Department">
+			<id column="D_ID" property="id" jdbcType="VARCHAR" />
+			<result column="D_DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+			<result column="D_DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+			<result column="D_PARENTID" property="parentid" jdbcType="VARCHAR" />
+			<result column="D_DPRTTYPE" property="dprttype" jdbcType="VARCHAR" />
+			<result column="D_REMARK" property="remark" jdbcType="VARCHAR" />
+			<result column="D_PXH" property="pxh" jdbcType="DECIMAL" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, DPRTCODE, YWLX, YWID, LX, DXID, IS_JS, ZT, WHDWID, WHRID, WHSJ
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from B_G2_998
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from B_G2_998
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_G2_998
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+   </delete>
+	
+	<insert id="insert" parameterType="com.eray.thjw.project2.po.DistributionDepartment">
+		insert into B_G2_998 (ID, DPRTCODE, YWLX,
+		YWID, LX, DXID, IS_JS,
+		ZT, WHDWID, WHRID,
+		WHSJ)
+		values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR},
+		#{ywlx,jdbcType=INTEGER},
+		#{ywid,jdbcType=VARCHAR}, #{lx,jdbcType=INTEGER}, #{dxid,jdbcType=VARCHAR},
+		#{isJs,jdbcType=INTEGER},
+		#{zt,jdbcType=INTEGER}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR},
+		#{whsj,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.eray.thjw.project2.po.DistributionDepartment">
+		insert into B_G2_998
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="dprtcode != null">
+				DPRTCODE,
+			</if>
+			<if test="ywlx != null">
+				YWLX,
+			</if>
+			<if test="ywid != null">
+				YWID,
+			</if>
+			<if test="lx != null">
+				LX,
+			</if>
+			<if test="dxid != null">
+				DXID,
+			</if>
+			<if test="isJs != null">
+				IS_JS,
+			</if>
+			<if test="zt != null">
+				ZT,
+			</if>
+			<if test="whdwid != null">
+				WHDWID,
+			</if>
+			<if test="whrid != null">
+				WHRID,
+				WHSJ,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="dprtcode != null">
+				#{dprtcode,jdbcType=VARCHAR},
+			</if>
+			<if test="ywlx != null">
+				#{ywlx,jdbcType=INTEGER},
+			</if>
+			<if test="ywid != null">
+				#{ywid,jdbcType=VARCHAR},
+			</if>
+			<if test="lx != null">
+				#{lx,jdbcType=INTEGER},
+			</if>
+			<if test="dxid != null">
+				#{dxid,jdbcType=VARCHAR},
+			</if>
+			<if test="isJs != null">
+				#{isJs,jdbcType=INTEGER},
+			</if>
+			<if test="zt != null">
+				#{zt,jdbcType=INTEGER},
+			</if>
+			<if test="whdwid != null">
+				#{whdwid,jdbcType=VARCHAR},
+			</if>
+			<if test="whrid != null">
+				#{whrid,jdbcType=VARCHAR},
+				sysdate,
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.DistributionDepartment">
+		update B_G2_998
+		<set>
+			<if test="dprtcode != null">
+				DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+			</if>
+			<if test="ywlx != null">
+				YWLX = #{ywlx,jdbcType=INTEGER},
+			</if>
+			<if test="ywid != null">
+				YWID = #{ywid,jdbcType=VARCHAR},
+			</if>
+			<if test="lx != null">
+				LX = #{lx,jdbcType=INTEGER},
+			</if>
+			<if test="dxid != null">
+				DXID = #{dxid,jdbcType=VARCHAR},
+			</if>
+			<if test="isJs != null">
+				IS_JS = #{isJs,jdbcType=INTEGER},
+			</if>
+			<if test="zt != null">
+				ZT = #{zt,jdbcType=INTEGER},
+			</if>
+			<if test="whdwid != null">
+				WHDWID = #{whdwid,jdbcType=VARCHAR},
+			</if>
+			<if test="whrid != null">
+				WHRID = #{whrid,jdbcType=VARCHAR},
+			</if>
+			<if test="whsj != null">
+				WHSJ = #{whsj,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.DistributionDepartment">
+		update B_G2_998
+		set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+		YWLX = #{ywlx,jdbcType=INTEGER},
+		YWID = #{ywid,jdbcType=VARCHAR},
+		LX = #{lx,jdbcType=INTEGER},
+		DXID = #{dxid,jdbcType=VARCHAR},
+		IS_JS = #{isJs,jdbcType=INTEGER},
+		ZT = #{zt,jdbcType=INTEGER},
+		WHDWID = #{whdwid,jdbcType=VARCHAR},
+		WHRID = #{whrid,jdbcType=VARCHAR},
+		WHSJ = #{whsj,jdbcType=TIMESTAMP}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- start 批量新增分发部门 -->
+	<insert id="insertDistributionDepartment" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+		into B_G2_998 (
+		ID, DPRTCODE, YWLX,
+		YWID, LX, DXID, IS_JS,
+		ZT, WHDWID, WHRID,
+		WHSJ
+		)
+		values
+			(
+			#{item.id,jdbcType=VARCHAR},
+			#{item.dprtcode,jdbcType=VARCHAR},
+			#{item.ywlx,jdbcType=INTEGER},
+			#{item.ywid,jdbcType=VARCHAR},
+			#{item.lx,jdbcType=INTEGER},
+			#{item.dxid,jdbcType=VARCHAR},
+			#{item.isJs,jdbcType=INTEGER},
+			#{item.zt,jdbcType=INTEGER},
+			#{item.whdwid,jdbcType=VARCHAR},
+			#{item.whrid,jdbcType=VARCHAR},
+			#{item.whsj,jdbcType=TIMESTAMP}
+			)
+		</foreach>
+		select 1 from dual
+	</insert>
+	<!-- end -->
+	<!-- start 根据业务id获取部门 -->
+	<select id="getDepartmentByYwid" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		b.id, b.dprtcode, b.ywlx,b.ywid, b.lx, b.dxid, b.is_js, b.zt, b.whdwid,
+		b.whrid,b.whsj,
+		t.id d_id, t.dprtcode d_dprtcode, t.dprtname d_dprtname from b_g2_998 b
+		left join T_DEPARTMENT t on b.DXID=t.id
+		where b.ywid=#{ywid,jdbcType=VARCHAR} and b.zt=1
+		order by is_js
+	</select>
+	<!-- end -->
+	<!-- start 批量作废分发部门数据 -->
+	<update id="updateZtByIds" parameterType="java.util.List">
+		update B_G2_998 set zt=0 where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</update>
+	<!-- end -->
+	<!-- start 根据业务id作废分发部门 -->
+	<update id="updateZtByYwid" parameterType="String">
+		update b_g2_998 set zt=0 where ywid=#{ywid,jdbcType=VARCHAR}
+	</update>
+	<!-- end -->
+	<!-- start 更新标识(圈阅) -->
+	<update id="updateisJsByid" parameterType="com.eray.thjw.project2.po.DistributionDepartment">
+		update B_G2_998
+		set IS_JS = 1,
+		WHRID = #{whrid,jdbcType=VARCHAR},
+		WHSJ = sysdate
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- end -->
+	<!-- start 根据业务id和对象id验证是否圈阅 -->
+	<select id="getDepartmentByYwidAndDxid4Circulation" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		b.id, b.dprtcode, b.ywlx,b.ywid, b.lx, b.dxid, b.is_js, b.zt, b.whdwid,
+		b.whrid,b.whsj,
+		t.id d_id, t.dprtcode d_dprtcode, t.dprtname d_dprtname from b_g2_998 b
+		left join T_DEPARTMENT t on b.DXID=t.id
+		left join b_g2_002 b2 on b.ywid=b2.id
+		where b.ywid=#{0} and b.zt=1 and b.dxid=#{1} and b2.zt=4
+	</select>
+	<select id="getDepartmentByYwidAndDxid4Eo" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		b.id, b.dprtcode, b.ywlx,b.ywid, b.lx, b.dxid, b.is_js, b.zt, b.whdwid,
+		b.whrid,b.whsj,
+		t.id d_id, t.dprtcode d_dprtcode, t.dprtname d_dprtname from b_g2_998 b
+		left join T_DEPARTMENT t on b.DXID=t.id
+		left join b_g2_010 b2 on b.ywid=b2.id
+		where b.ywid=#{0} and b.zt=1 and b.dxid=#{1} and b2.zt=7    --已生效
+	</select>
+	<!-- end -->
+	<!-- start 根据业务id集合获取分发部门数据 -->
+	<select id="getDepartmentByYwidList" resultMap="BaseResultMap">
+	select <include refid="Base_Column_List" />
+    	from B_G2_998
+    	where and zt=1 and ywid in 
+    	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		 </foreach>
+	</select>
+	<!-- end -->
+	
+	<!-- 根据业务ID删除分发部门数据 -->
+	<delete id="deleteByYwid" parameterType="java.lang.String">
+		delete from B_G2_998
+		where YWID = #{ywid,jdbcType=VARCHAR}
+	</delete>
+	
+	
+	<!-- start 根据业务id和对象id验证是否EO圈阅 -->
+	<select id="getDepartmentByYwidAndEODxid4Circulation" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		b.id, b.dprtcode, b.ywlx,b.ywid, b.lx, b.dxid, b.is_js, b.zt, b.whdwid,
+		b.whrid,b.whsj,
+		t.id d_id, t.dprtcode d_dprtcode, t.dprtname d_dprtname from b_g2_998 b
+		left join T_DEPARTMENT t on b.DXID=t.id
+		left join b_g2_010 b2 on b.ywid=b2.id
+		where b.ywid=#{0} and b.zt=1 and b.dxid=#{1} and b2.zt=7
+	</select>
+	<!-- end -->
+</mapper>

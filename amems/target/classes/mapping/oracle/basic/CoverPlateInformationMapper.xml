@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.basic.dao.CoverPlateInformationMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.basic.po.CoverPlateInformation" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="GBBH" property="gbbh" jdbcType="VARCHAR" />
+    <result column="GBMC" property="gbmc" jdbcType="VARCHAR" />
+    <result column="SZQYWZ" property="szqywz" jdbcType="VARCHAR" />
+    <result column="KGGS" property="kggs" jdbcType="DECIMAL" />
+    <result column="HGGS" property="hggs" jdbcType="DECIMAL" />
+    <result column="QY" property="qy" jdbcType="VARCHAR" />
+    <result column="RLGBBS" property="rlgbbs" jdbcType="VARCHAR" />
+    <result column="QY" property="qy" jdbcType="VARCHAR" />
+    <result column="RLGBBS" property="rlgbbs" jdbcType="VARCHAR" />
+    <result column="WHRXM" property="whrxm" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+  </resultMap>
+<!--  BaseResultMap 中   whrxm： dprtname：组织机构名称 -->
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, FJJX, GBBH, GBMC, SZQYWZ, KGGS, HGGS, QY, RLGBBS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_021
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryMultiselectByFjjx" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_021
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and ZT = 1 and FJJX = #{fjjx,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryWinByFjjx" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_021
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and ZT = 1 
+    <if test="keyword != null and keyword != ''">
+	    and (lower(GBBH) like lower('%'||#{keyword}||'%')
+	    	or lower(GBMC) like lower('%'||#{keyword}||'%'))             <!--  左右匹配 查询关键字 -->
+	</if> 
+	<if test="fjjx != null and fjjx != ''">
+	    and FJJX = #{fjjx,jdbcType=VARCHAR} 
+	</if>
+	order by GBBH asc
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_021
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    insert into D_021 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      FJJX, GBBH, GBMC, SZQYWZ, 
+      KGGS, HGGS, QY, RLGBBS)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{fjjx,jdbcType=VARCHAR}, #{gbbh,jdbcType=VARCHAR}, #{gbmc,jdbcType=VARCHAR}, #{szqywz,jdbcType=VARCHAR}, 
+      #{kggs,jdbcType=DECIMAL}, #{hggs,jdbcType=DECIMAL}, #{qy,jdbcType=VARCHAR}, #{rlgbbs,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    insert into D_021
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="gbbh != null" >
+        GBBH,
+      </if>
+      <if test="gbmc != null" >
+        GBMC,
+      </if>
+      <if test="szqywz != null" >
+        SZQYWZ,
+      </if>
+      <if test="kggs != null" >
+        KGGS,
+      </if>
+      <if test="hggs != null" >
+        HGGS,
+      </if>
+      <if test="qy != null" >
+        QY,
+      </if>
+      <if test="rlgbbs != null" >
+        RLGBBS
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="gbbh != null" >
+        #{gbbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gbmc != null" >
+        #{gbmc,jdbcType=VARCHAR},
+      </if>
+      <if test="szqywz != null" >
+        #{szqywz,jdbcType=VARCHAR},
+      </if>
+      <if test="kggs != null" >
+        #{kggs,jdbcType=DECIMAL},
+      </if>
+      <if test="hggs != null" >
+        #{hggs,jdbcType=DECIMAL},
+      </if>
+       <if test="qy != null" >
+        #{qy,jdbcType=VARCHAR},
+      </if>
+      <if test="rlgbbs != null" >
+        #{rlgbbs,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    update D_021
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="gbbh != null" >
+        GBBH = #{gbbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gbmc != null" >
+        GBMC = #{gbmc,jdbcType=VARCHAR},
+      </if>
+      <if test="szqywz != null" >
+        SZQYWZ = #{szqywz,jdbcType=VARCHAR},
+      </if>
+      <if test="kggs != null" >
+        KGGS = #{kggs,jdbcType=DECIMAL},
+      </if>
+      <if test="hggs != null" >
+        HGGS = #{hggs,jdbcType=DECIMAL},
+      </if>
+      <if test="qy != null" >
+        QY = #{qy,jdbcType=VARCHAR},
+      </if>
+      <if test="rlgbbs != null" >
+        RLGBBS = #{rlgbbs,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    update D_021
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      FJJX = #{fjjx,jdbcType=VARCHAR},
+      GBBH = #{gbbh,jdbcType=VARCHAR},
+      GBMC = #{gbmc,jdbcType=VARCHAR},
+      SZQYWZ = #{szqywz,jdbcType=VARCHAR},
+      KGGS = #{kggs,jdbcType=DECIMAL},
+      HGGS = #{hggs,jdbcType=DECIMAL},
+      QY = #{qy,jdbcType=VARCHAR},
+      RLGBBS = #{rlgbbs,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   
+  <update id="updateByPrimaryKeySelectiveImport" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    update D_021
+    set
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      GBMC = #{gbmc,jdbcType=VARCHAR},
+      SZQYWZ = #{szqywz,jdbcType=VARCHAR},
+      KGGS = #{kggs,jdbcType=DECIMAL},
+      HGGS = #{hggs,jdbcType=DECIMAL},
+      QY = #{qy,jdbcType=VARCHAR},
+      RLGBBS = #{rlgbbs,jdbcType=VARCHAR}
+      where GBBH = #{gbbh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and FJJX = #{fjjx,jdbcType=VARCHAR}
+  </update>
+  <select id="queryCount" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" resultType="int">
+	  SELECT COUNT(*)
+ 		 FROM D_021 <include refid="BaseResulParam3"></include>
+  </select>
+  <sql id="BaseResulParam3">
+	   WHERE 1=1  
+         <if test="fjjx != null and fjjx != ''">
+             AND fjjx = #{fjjx}
+         </if>
+         <if test="gbbh != null and gbbh != ''">
+             AND gbbh = #{gbbh}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and dprtcode = #{dprtcode}
+         </if>
+  </sql>
+
+   
+  <sql id="Base_Query_tj">
+  where 1=1
+      <if test="dprtcode != null and dprtcode !=''" >
+     and   t.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+      </if>
+      <if test="zt != null" >
+     and   t.ZT = #{zt,jdbcType=DECIMAL}
+      </if>
+      <if test="fjjx != null and fjjx !=''" >
+     and   t.FJJX = #{fjjx,jdbcType=VARCHAR}
+      </if>
+      <if test="gbbh != null and gbbh !=''" >
+     and   lower(t.GBBH) LIKE lower('%'||#{gbbh,jdbcType=VARCHAR}||'%' )
+      </if>
+      <if test="gbmc != null and gbmc !=''" >
+     and   lower(t.GBMC) LIKE lower('%'||#{gbmc,jdbcType=VARCHAR}||'%' )
+      </if>
+      <if test="szqywz != null and szqywz !=''" >
+     and   lower(t.SZQYWZ) LIKE lower('%'||#{szqywz,jdbcType=VARCHAR}||'%' )
+      </if>
+       <if test="qy != null and qy !=''" >
+     and   lower(t.QY) LIKE lower('%'||#{qy,jdbcType=VARCHAR}||'%')
+      </if>
+   </sql>
+  <!--  CoverPlate 列表 ，李高升 -->
+   <select id="queryCoverPlateList"  parameterType="com.eray.thjw.basic.po.CoverPlateInformation"  resultMap="BaseResultMap">
+     select t.ID, t.DPRTCODE, t.WHBMID, t.WHRID, t.WHSJ, t.ZT, t.FJJX, t.GBBH, t.GBMC, t.SZQYWZ, t.KGGS, t.HGGS,t.QY,t.RLGBBS
+     ,t1.username||' '||t1.realname WHRXM ,t2.DPRTNAME  from D_021 t left join t_user t1 on t.whrid=t1.id
+     left join  t_department t2 on t.dprtcode=t2.id
+     <include refid="Base_Query_tj" />  
+     <if test="keyword != null and keyword != '' ">
+			    and lower(t.GBBH) like lower('%'||#{keyword}||'%' )
+			  </if>
+          <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by t.WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+   </select>
+   
+     <!--  CoverPlate 列表 ，胡才秋 -->
+   <select id="queryCoverPlateListByKeyword"  parameterType="com.eray.thjw.basic.po.CoverPlateInformation"  resultMap="BaseResultMap">
+     select t.ID, t.DPRTCODE, t.WHBMID, t.WHRID, t.WHSJ, t.ZT, t.FJJX, t.GBBH, t.GBMC, t.SZQYWZ, t.KGGS, t.HGGS,t.QY,t.RLGBBS
+     ,t1.username||' '||t1.realname WHRXM ,t2.DPRTNAME  from D_021 t left join t_user t1 on t.whrid=t1.id
+     left join  t_department t2 on t.dprtcode=t2.id
+     <include refid="Base_Query_tj" />  
+     		  <if test="keyword != null and keyword != '' ">
+			    and (lower(t.GBBH) like lower('%'||#{keyword}||'%') or lower(t.GBMC) like lower('%'||#{keyword}||'%'))
+			  </if>
+			<choose>                                                                 
+		    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+		    		 AND exists 
+		    		( SELECT 1 from D_007 where 
+		    			t.fjjx = FJJX
+		    		AND t.dprtcode = DPRTCODE
+		    		AND zt = 1
+		    		)
+		    	</when>
+		    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+		    		 AND exists 
+		    		( SELECT 1 from V_ROLE_JX where 
+		    			t.fjjx= FJJX
+		    		AND t.dprtcode = DPRTCODE
+		    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+		    		)
+		    	</when>
+		   	</choose>
+		    <choose>
+		    	<!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by t.WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+   </select>
+   
+   
+   <select id="getCount" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" resultType="int">
+   SELECT COUNT(1) FROM D_021 
+   WHERE 
+       1=1 
+       <if test="dprtcode != null and dprtcode !=''" >
+       and  DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+       </if>
+      <if test="fjjx != null and fjjx !=''" >
+       and  FJJX = #{fjjx,jdbcType=VARCHAR}
+      </if>
+      <if test="gbbh != null and gbbh !=''" >
+       and GBBH = #{gbbh,jdbcType=VARCHAR} 
+      </if> 
+      <if test="zt !=null and zt !=''">
+      	and ZT = #{zt,jdbcType=DECIMAL}
+      </if>     
+   </select>
+   
+   
+    <!-- 导入专用: 根据机构代码、机型、状态=1、值 -->
+  	<select id="getCoverPlateByParam" parameterType="java.lang.String" resultType="com.eray.thjw.basic.po.CoverPlateInformation">
+	    select 
+	  	   ID
+	    from D_021
+	    where 
+	    	DPRTCODE= #{dprtcode,jdbcType=VARCHAR} and FJJX = #{jx,jdbcType=VARCHAR} and
+	    	ZT = 1 and  GBBH = #{sz,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

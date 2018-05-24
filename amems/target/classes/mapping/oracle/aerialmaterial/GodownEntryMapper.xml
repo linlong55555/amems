@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.GodownEntryMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.GodownEntry">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="dprtcode" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="rklx" jdbcType="INTEGER" property="rklx" />
+    <result column="rkdh" jdbcType="VARCHAR" property="rkdh" />
+    <result column="rkbmid" jdbcType="VARCHAR" property="rkbmid" />
+    <result column="rukid" jdbcType="VARCHAR" property="rukid" />
+    <result column="rkrq" jdbcType="TIMESTAMP" property="rkrq" />
+    <result column="zt" jdbcType="INTEGER" property="zt" />
+    <result column="bz" jdbcType="VARCHAR" property="bz" />
+    <result column="xgdjid" jdbcType="VARCHAR" property="xgdjid" />
+    <result column="jydid" jdbcType="VARCHAR" property="jydid" />
+    <result column="shdid" jdbcType="VARCHAR" property="shdid" />
+    <result column="shdmxid" jdbcType="VARCHAR" property="shdmxid" />
+    <result column="zdbmid" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="zdrid" jdbcType="VARCHAR" property="zdrid" />
+    <result column="zdsj" jdbcType="TIMESTAMP" property="zdsj" />
+     <result column="rksl" jdbcType="NUMERIC" property="rksl" />
+    <result column="fhdw" jdbcType="VARCHAR" property="fhdw" />
+    <result column="grn" jdbcType="VARCHAR" property="grn" />
+  </resultMap>
+  
+   <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.GodownEntry">
+   		<!--D_008 航材主数据表  -->
+	    <association property="hcmainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">
+	      <id column="ID" property="id" jdbcType="VARCHAR" />
+		    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+		    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+		    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+		    <result column="JLDW" property="jldw" jdbcType="VARCHAR" />
+		    <result column="CJJH" property="cjjh" jdbcType="VARCHAR" />
+		    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+		    <result column="HCJZ" property="hcjz" jdbcType="DECIMAL" />
+		    <result column="GLJB" property="gljb" jdbcType="DECIMAL" />
+		    <result column="SXKZ" property="sxkz" jdbcType="DECIMAL" />
+		    <result column="HCLX" property="hclx" jdbcType="DECIMAL" />
+		    <result column="HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+		    <result column="IS_MEL" property="isMel" jdbcType="DECIMAL" />
+		    <result column="MIN_KCL" property="minKcl" jdbcType="DECIMAL" />
+		    <result column="MAX_KCL" property="maxKcl" jdbcType="DECIMAL" />
+		    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+		    <result column="XH" property="xh" jdbcType="VARCHAR" />
+		     <result column="GG" property="gg" jdbcType="VARCHAR" />
+		      <result column="XINGH" property="xingh" jdbcType="VARCHAR" />
+		    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+		    <result column="BMID" property="bmid" jdbcType="VARCHAR" />
+		    <result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+		    <result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" />
+		    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+		    <result column="KYKCSL" property="kykcsl" jdbcType="DECIMAL" />
+		    
+		    <result column="JUESCB" jdbcType="DECIMAL" property="juescb" />
+		    <result column="JIESCB" jdbcType="DECIMAL" property="jiescb" />
+		    <result column="GSCB" jdbcType="DECIMAL" property="gscb" />
+		    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+		    <result column="CBWHSJ" jdbcType="TIMESTAMP" property="cbwhsj" />
+		    
+		    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+		    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+		    <result column="DPRTNAME" jdbcType="VARCHAR" property="dprtname" />
+		    <result column="ZJHMS" jdbcType="VARCHAR" property="zjhms" />
+	    </association>
+	    <!--B_H_006_NEW 检验单 -->
+	    <association property="inspection" javaType="com.eray.thjw.aerialmaterial.po.Inspection">
+            <id column="jyid" jdbcType="VARCHAR" property="id" />
+		    <result column="dprtcode" jdbcType="VARCHAR" property="dprtcode" />
+		    <result column="jydh" jdbcType="VARCHAR" property="jydh" />
+		    <result column="shdid" jdbcType="VARCHAR" property="shdid" />
+		    <result column="shdmxid" jdbcType="VARCHAR" property="shdmxid" />
+		    <result column="kysl" jdbcType="NUMERIC" property="kysl" />
+		    <result column="hcly" jdbcType="VARCHAR" property="hcly" />
+		    <result column="cfyq" jdbcType="VARCHAR" property="cfyq" />
+		    <result column="xkzh" jdbcType="VARCHAR" property="xkzh" />
+		    <result column="shzh" jdbcType="VARCHAR" property="shzh" />
+		    <result column="shzwz" jdbcType="VARCHAR" property="shzwz" />
+		    <result column="tsn" jdbcType="VARCHAR" property="tsn" />
+		    <result column="tso" jdbcType="VARCHAR" property="tso" />
+		    <result column="bz" jdbcType="VARCHAR" property="bz" />
+		    <result column="scrq" jdbcType="DATE" property="scrq" />
+		    <result column="zzcs" jdbcType="VARCHAR" property="zzcs" />
+		    <result column="hjsm" jdbcType="DATE" property="hjsm" />
+		    <result column="jyrid" jdbcType="VARCHAR" property="jyrid" />
+		    <result column="jyrq" jdbcType="DATE" property="jyrq" />
+		    <result column="jyjg" jdbcType="INTEGER" property="jyjg" />
+		    <result column="jgsm" jdbcType="VARCHAR" property="jgsm" />
+		    <result column="zt" jdbcType="INTEGER" property="zt" />
+		    <result column="zdbmid" jdbcType="VARCHAR" property="zdbmid" />
+		    <result column="zdrid" jdbcType="VARCHAR" property="zdrid" />
+		    <result column="zdsj" jdbcType="TIMESTAMP" property="zdsj" />
+	    </association>
+		<!--b_h_02001 收货单明细 -->
+	    <association property="receiptSheetDetail" javaType="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail">
+		  <id column="id" jdbcType="VARCHAR" property="id" />
+		    <result column="mainid" jdbcType="VARCHAR" property="mainid" />
+		    <result column="bjid" jdbcType="VARCHAR" property="bjid" />
+		    <result column="pch" jdbcType="VARCHAR" property="pch" />
+		    <result column="sn" jdbcType="VARCHAR" property="sn" />
+		    <result column="kwid" jdbcType="VARCHAR" property="kwid" />
+		    <result column="sl" jdbcType="NUMERIC" property="sl" />
+		    <result column="thsl" jdbcType="NUMERIC" property="thsl" />
+		    <result column="kcllid" jdbcType="VARCHAR" property="kcllid" />
+		    <result column="zt" jdbcType="INTEGER" property="zt" />
+		    <result column="xgdjid" jdbcType="VARCHAR" property="xgdjid" />
+		    <result column="whrid" jdbcType="VARCHAR" property="whrid" />
+		    <result column="whsj" jdbcType="TIMESTAMP" property="whsj" />
+		    <result column="is_zj" jdbcType="INTEGER" property="iszj" />
+		    <result column="yjid" jdbcType="VARCHAR" property="yjid" />
+	    </association>
+		<!--b_h_020 收货单 -->
+	    <association property="receiptSheet" javaType="com.eray.thjw.aerialmaterial.po.ReceiptSheet">
+		    <id column="shid" jdbcType="VARCHAR" property="id" />
+		    <result column="dprtcode" jdbcType="VARCHAR" property="dprtcode" />
+		    <result column="shlx" jdbcType="INTEGER" property="shlx" />
+		    <result column="shdh" jdbcType="VARCHAR" property="shdh" />
+		    <result column="shbmid" jdbcType="VARCHAR" property="shbmid" />
+		    <result column="shrid" jdbcType="VARCHAR" property="shrid" />
+		    <result column="shrq" jdbcType="TIMESTAMP" property="shrq" />
+		    <result column="jddxid" jdbcType="VARCHAR" property="jddxid" />
+		    <result column="jdfzr" jdbcType="VARCHAR" property="jdfzr" />
+		    <result column="zt" jdbcType="INTEGER" property="zt" />
+		    <result column="zdrid" jdbcType="VARCHAR" property="zdrid" />
+		    <result column="zdsj" jdbcType="TIMESTAMP" property="zdsj" />
+		    <result column="bz" jdbcType="VARCHAR" property="bz" />
+		    <result column="xgdjid" jdbcType="VARCHAR" property="xgdjid" />
+		    <result column="xgdjbh" jdbcType="VARCHAR" property="xgdjbh" />
+		    <result column="fhdw" jdbcType="VARCHAR" property="fhdw" />
+	    </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, dprtcode, rklx, rkdh, rkbmid, rukid, rkrq, zt, bz, xgdjid, jydid, shdid, shdmxid, 
+    zdbmid, zdrid, zdsj
+  </sql>
+  
+  <select id="queryAllPageList" resultMap="ResultMap">
+		SELECT t1.id, t1.dprtcode, t1.rklx, t1.rkdh, t1.rkbmid,  t1.rkrq, t1.zt, t1.bz, t1.xgdjid, t1.jydid, t1.shdid, t1.shdmxid, t1.fhdw,
+	t1.zdbmid,  t1.zdsj,t4.bjh,t4.zwms,t4.ywms,t4.jldw,t4.gljb,t6.kysl,t3.sl,t3.thsl,t3.bjid,t4.hclx,t2.xkzh,t2.shzh,t2.shzwz,t2.hjsm,t2.tsn,t2.tso,t2.cfyq,t2.kccb,t2.grn
+	,t6.jyjg,t6.jydh,t6.jyrq,t7.username ||' '|| t7.realname  zdrid,t8.username ||' '|| t8.realname  rukid ,t9.shdh,t6.id jyid,t9.id shid  
+	,(CASE 
+     WHEN t6.id  is null 
+       THEN (CASE WHEN t3.sl IS NULL THEN 0 ELSE t3.sl END)-(CASE WHEN t3.thsl IS NULL THEN 0 ELSE t3.thsl END)
+    ELSE t6.kysl END ) as rksl
+  from b_h_008_new t1 
+   join b_h_00801_new t5
+   on t1.id=t5.mainid 
+  LEFT JOIN b_h_017 t2 on t2.id=t5.kcllid 
+  LEFT JOIN b_h_02001 t3 on t1.shdmxid=t3.id 
+  LEFT JOIN d_008 t4 on t3.bjid=t4.id 
+  LEFT JOIN b_h_006_new t6 on t6.id=t1.jydid  
+  left join t_user t7 on t1.zdrid=t7.id
+  left join t_user t8 on t1.rukid=t8.id
+  left join b_h_020 t9 on t1.shdid=t9.id
+		 <include refid="FlightRecordParam1"></include>
+	  	<choose>
+		    	<when test='pagination.sort == "auto"'>
+		    		 order by t1.zdsj desc
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 	</choose>
+	 
+  </select>
+  
+	<!-- 搜索参数 -->
+	<sql id="FlightRecordParam1">
+	   where 1=1  
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode,jdbcType=VARCHAR}
+         </if>
+         <if test="rklx != null and rklx != '' " >   
+            and  t1.rklx  = #{rklx,jdbcType=INTEGER}
+         </if>
+         <if test="zt != null and zt != '' " >   
+            and  t1.zt  = #{zt,jdbcType=INTEGER}
+         </if>
+         <if test="paramsMap.jyjg != null and paramsMap.jyjg != '' " >   
+            and  t6.jyjg  = #{paramsMap.jyjg,jdbcType=INTEGER}
+         </if>
+         <if test="paramsMap.rukDateBegin != null and paramsMap.rukDateBegin != ''">
+       	  	and t1.rkrq &gt;=to_date(#{paramsMap.rukDateBegin}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="paramsMap.rukDateEnd != null and paramsMap.rukDateEnd != ''">
+        	 and t1.rkrq &lt;=to_date(#{paramsMap.rukDateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		 <if test="paramsMap.jyDateBegin != null and paramsMap.jyDateBegin != ''">
+		 	 and t6.jyrq &gt;=to_date(#{paramsMap.jyDateBegin}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="paramsMap.jyDateEnd != null and paramsMap.jyDateEnd != ''">
+         and t6.jyrq &lt;=to_date(#{paramsMap.jyDateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+		</if>
+         <if test="keyword != null and keyword != ''">
+		      and (UPPER(t4.bjh) like UPPER('%'||#{keyword,jdbcType=VARCHAR}||'%')
+		       or  UPPER(t4.ywms) like UPPER('%'||#{keyword}||'%')
+		       or  UPPER(t4.zwms) like UPPER('%'||#{keyword}||'%')
+		       or  UPPER(t1.rkdh) like UPPER('%'||#{keyword}||'%')
+		       or  UPPER(t6.jydh) like UPPER('%'||#{keyword}||'%')
+		       or  UPPER(t9.shdh) like UPPER('%'||#{keyword}||'%')
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	     <if test="id != null and id != '' " >   
+            and  t1.id  = #{id,jdbcType=VARCHAR}
+         </if>
+	</sql>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMap">
+  	SELECT t1.id, t1.dprtcode, t1.rklx, t1.rkdh, t1.rkbmid, t1.rukid, t1.rkrq, t1.zt, t1.bz, t1.xgdjid, t1.jydid, t1.shdid, t1.shdmxid, t1.fhdw,
+	t1.zdbmid, t7.username ||' '|| t7.realname  zdrid , t1.zdsj,t4.bjh,t4.xh,t4.gg,t4.zwms,t4.ywms,t4.jldw,t4.gljb,t6.kysl,t3.sl,t3.thsl,t3.bjid,t4.hclx,t2.xkzh,t2.shzh,t2.shzwz,t2.hjsm,t2.tsn,t2.tso,t2.cfyq,t2.kccb,t2.cklb
+	,t6.id jyid from b_h_008_new t1 
+	left join 
+	(
+	select * from b_h_00801_new where rownum = 1 
+	)t5 on t1.id=t5.mainid 
+	LEFT JOIN b_h_017 t2 on t2.id=t5.kcllid 
+	LEFT JOIN b_h_02001 t3 on t1.shdmxid=t3.id 
+	LEFT JOIN d_008 t4 on t3.bjid=t4.id 
+	LEFT JOIN b_h_006_new t6 on t6.id=t1.jydid   
+	left join t_user t7 on t1.zdrid=t7.id 
+  	where t1.id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from b_h_008_new
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.GodownEntry">
+    insert into b_h_008_new (id, dprtcode, rklx, 
+      rkdh, rkbmid, rukid, 
+      rkrq, zt, bz, xgdjid, 
+      jydid, shdid, shdmxid, 
+      zdbmid, zdrid, zdsj
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{rklx,jdbcType=INTEGER}, 
+      #{rkdh,jdbcType=VARCHAR}, #{rkbmid,jdbcType=VARCHAR}, #{rukid,jdbcType=VARCHAR}, 
+      #{rkrq,jdbcType=TIMESTAMP}, #{zt,jdbcType=INTEGER}, #{bz,jdbcType=VARCHAR}, #{xgdjid,jdbcType=VARCHAR}, 
+      #{jydid,jdbcType=VARCHAR}, #{shdid,jdbcType=VARCHAR}, #{shdmxid,jdbcType=VARCHAR}, 
+      #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.GodownEntry">
+    insert into b_h_008_new
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dprtcode != null">
+        dprtcode,
+      </if>
+      <if test="rklx != null">
+        rklx,
+      </if>
+      <if test="rkdh != null">
+        rkdh,
+      </if>
+      <if test="rkbmid != null">
+        rkbmid,
+      </if>
+      <if test="rukid != null">
+        rukid,
+      </if>
+      <if test="rkrq != null">
+        rkrq,
+      </if>
+      <if test="zt != null">
+        zt,
+      </if>
+      <if test="bz != null">
+        bz,
+      </if>
+      <if test="xgdjid != null">
+        xgdjid,
+      </if>
+      <if test="jydid != null">
+        jydid,
+      </if>
+      <if test="shdid != null">
+        shdid,
+      </if>
+      <if test="shdmxid != null">
+        shdmxid,
+      </if>
+      <if test="zdbmid != null">
+        zdbmid,
+      </if>
+      <if test="zdrid != null">
+        zdrid,
+      </if>
+      <if test="zdrid != null">
+        zdsj,
+      </if>
+      <if test="fhdw != null">
+        fhdw,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="rklx != null">
+        #{rklx,jdbcType=INTEGER},
+      </if>
+      <if test="rkdh != null">
+        #{rkdh,jdbcType=VARCHAR},
+      </if>
+      <if test="rkbmid != null">
+        #{rkbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rukid != null">
+        #{rukid,jdbcType=VARCHAR},
+      </if>
+      <if test="rkrq != null">
+        #{rkrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null">
+        #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="jydid != null">
+        #{jydid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdid != null">
+        #{shdid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdmxid != null">
+        #{shdmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null">
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        current_timestamp,
+      </if>
+      <if test="fhdw != null">
+        #{fhdw,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.GodownEntry">
+    update b_h_008_new
+    <set>
+      <if test="dprtcode != null">
+        dprtcode = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="rklx != null">
+        rklx = #{rklx,jdbcType=INTEGER},
+      </if>
+      <if test="rkdh != null">
+        rkdh = #{rkdh,jdbcType=VARCHAR},
+      </if>
+      <if test="rkbmid != null">
+        rkbmid = #{rkbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rukid != null">
+        rukid = #{rukid,jdbcType=VARCHAR},
+      </if>
+      <if test="rkrq != null">
+        rkrq = #{rkrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null">
+        zt = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="bz != null">
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null">
+        xgdjid = #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="jydid != null">
+        jydid = #{jydid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdid != null">
+        shdid = #{shdid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdmxid != null">
+        shdmxid = #{shdmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null">
+        zdbmid = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        zdrid = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        zdsj = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fhdw != null">
+        fhdw = #{fhdw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.GodownEntry">
+    update b_h_008_new
+    set dprtcode = #{dprtcode,jdbcType=VARCHAR},
+      rklx = #{rklx,jdbcType=INTEGER},
+      rkdh = #{rkdh,jdbcType=VARCHAR},
+      rkbmid = #{rkbmid,jdbcType=VARCHAR},
+      rukid = #{rukid,jdbcType=VARCHAR},
+      rkrq = sysdate,
+      zt = #{zt,jdbcType=INTEGER},
+      bz = #{bz,jdbcType=VARCHAR},
+      xgdjid = #{xgdjid,jdbcType=VARCHAR},
+      jydid = #{jydid,jdbcType=VARCHAR},
+      shdid = #{shdid,jdbcType=VARCHAR},
+      shdmxid = #{shdmxid,jdbcType=VARCHAR},
+      zdbmid = #{zdbmid,jdbcType=VARCHAR},
+      zdrid = #{zdrid,jdbcType=VARCHAR},
+      zdsj = #{zdsj,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

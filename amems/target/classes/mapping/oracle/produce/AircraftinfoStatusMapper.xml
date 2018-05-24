@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.AircraftinfoStatusMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.AircraftinfoStatus" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WZ" property="wz" jdbcType="DECIMAL" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="LJZ" property="ljz" jdbcType="DECIMAL" />
+    <result column="CSZ" property="csz" jdbcType="DECIMAL" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, FJZCH, DPRTCODE, WZ, ZJQDID, JH, XLH, JKLBH, JKFLBH, LJZ, CSZ, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_911
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectList4forecast" resultMap="BaseResultMap" parameterType="com.eray.thjw.produce.po.AircraftinfoStatus" >
+    select 
+    ID, FJZCH, DPRTCODE, WZ, ZJQDID, JH, XLH, JKLBH, JKFLBH,  (nvl(CSZ,0)+nvl(LJZ,0)) LJZ, CSZ, WHSJ
+    from B_S2_911
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} order by wz asc,JKFLBH asc
+  </select>
+  
+  <select id="queryList4FlightBook" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    ID, FJZCH, DPRTCODE, WZ, ZJQDID, JH, XLH, JKLBH, JKFLBH, COALESCE(CSZ, 0) CSZ, COALESCE(LJZ, 0) LJZ, WHSJ
+    from B_S2_911
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} 
+    	and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+    	and WZ = 11
+    	and JKLBH in ('2_10_FH','3_10_FC')
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S2_911
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.AircraftinfoStatus" >
+    insert into B_S2_911 (ID, FJZCH, DPRTCODE, 
+      WZ, ZJQDID, JH, XLH, 
+      JKLBH, JKFLBH, LJZ, 
+      CSZ, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{wz,jdbcType=DECIMAL}, #{zjqdid,jdbcType=VARCHAR}, #{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, 
+      #{jklbh,jdbcType=VARCHAR}, #{jkflbh,jdbcType=VARCHAR}, #{ljz,jdbcType=DECIMAL}, 
+      #{csz,jdbcType=DECIMAL}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.AircraftinfoStatus" >
+    insert into B_S2_911
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="wz != null" >
+        WZ,
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID,
+      </if>
+      <if test="jh != null" >
+        JH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="jklbh != null" >
+        JKLBH,
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH,
+      </if>
+      <if test="ljz != null" >
+        LJZ,
+      </if>
+      <if test="csz != null" >
+        CSZ,
+      </if>
+        WHSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="zjqdid != null" >
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null" >
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ljz != null" >
+        #{ljz,jdbcType=DECIMAL},
+      </if>
+      <if test="csz != null" >
+        #{csz,jdbcType=DECIMAL},
+      </if>
+        sysdate
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.AircraftinfoStatus" >
+    update B_S2_911
+    <set >
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        WZ = #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ljz != null" >
+        LJZ = #{ljz,jdbcType=DECIMAL},
+      </if>
+      <if test="csz != null" >
+        CSZ = #{csz,jdbcType=DECIMAL},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.AircraftinfoStatus" >
+    update B_S2_911
+    set FJZCH = #{fjzch,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WZ = #{wz,jdbcType=DECIMAL},
+      ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      JH = #{jh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      JKLBH = #{jklbh,jdbcType=VARCHAR},
+      JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      LJZ = #{ljz,jdbcType=DECIMAL},
+      CSZ = #{csz,jdbcType=DECIMAL},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 飞机编辑时修改初始值，仅更改位置为机身的非日历数据 -->
+  <update id="updateByPlaneEdit">
+    UPDATE B_S2_911
+	   SET CSZ = (SELECT CSZ
+	                FROM D_00701
+	               WHERE DPRTCODE = B_S2_911.DPRTCODE
+	               	 AND WZ = B_S2_911.WZ
+	               	 AND FJZCH = B_S2_911.FJZCH
+	                 AND JKLBH = B_S2_911.JKLBH)
+	 WHERE DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND WZ = 11
+	   AND FJZCH = #{fjzch, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据飞机和装机位置查询记录数 -->
+  <select id="selectCountByFjAndWz" resultType="int">
+  	SELECT COUNT(1)
+	  FROM B_S2_911
+	 WHERE DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND WZ = #{wz, jdbcType=DECIMAL}
+	   AND FJZCH = #{fjzch, jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 批量新增 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+    insert into B_S2_911 (ID, FJZCH, DPRTCODE, 
+      WZ, ZJQDID, JH, XLH, 
+      JKLBH, JKFLBH, LJZ, 
+      CSZ, WHSJ)
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+	    select #{item.id,jdbcType=VARCHAR}, #{item.fjzch,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, 
+	      #{item.wz,jdbcType=DECIMAL}, #{item.zjqdid,jdbcType=VARCHAR}, #{item.jh,jdbcType=VARCHAR}, #{item.xlh,jdbcType=VARCHAR}, 
+	      #{item.jklbh,jdbcType=VARCHAR}, #{item.jkflbh,jdbcType=VARCHAR}, #{item.ljz,jdbcType=DECIMAL}, 
+	      #{item.csz,jdbcType=DECIMAL}, sysdate
+	  	from dual
+    </foreach>
+  </insert>
+  
+  <!-- 批量修改 -->
+  <update id="update4Batch" parameterType="java.util.List">
+  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+        update B_S2_911
+	    set ZJQDID = #{item.zjqdid,jdbcType=VARCHAR},
+	      JH = #{item.jh,jdbcType=VARCHAR},
+	      XLH = #{item.xlh,jdbcType=VARCHAR},
+	      LJZ = #{item.ljz,jdbcType=DECIMAL},
+	      CSZ = #{item.csz,jdbcType=DECIMAL},
+	      WHSJ = #{item.whsj,jdbcType=TIMESTAMP}
+	    where DPRTCODE = #{item.dprtcode,jdbcType=VARCHAR}
+	      AND JKLBH = #{item.jklbh,jdbcType=VARCHAR}
+	      AND WZ = #{item.wz,jdbcType=DECIMAL}
+	      AND FJZCH = #{item.fjzch,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+  
+  <!--从部件使用汇总 更新飞机状态数据累计值（除机身数据） -->
+  <update id="updateLJFromComponentUseCount">
+  	update b_s2_911 t1
+	   set ljz = (select sj_fz
+	                from b_s2_913 t2
+	               where t2.zjqdid = t1.zjqdid
+	                 and t2.jklbh = t1.jklbh)
+	 where dprtcode = #{dprtcode, jdbcType=VARCHAR}
+	   and wz != 11
+	   and fjzch = #{fjzch, jdbcType=VARCHAR}
+  </update>
+  <!-- 更新飞机状态数据累计值（机身数据） -->
+  <update id="updateBodyLJ">
+  	update b_s2_911 t1
+	   set ljz = (select case
+	                       when t1.jklbh = '2_10_FH' then
+	                        sum(s200601.fxsj_fz)
+	                       else
+	                        sum(s200601.fxxh)
+	                     end
+	                from b_s2_00601 s200601
+	                join b_s2_006 s2006 on s2006.dprtCode = #{dprtcode, jdbcType=VARCHAR}
+	                                   and s200601.zt = 1
+	                                   and s200601.mainid = s2006.id
+	                                   and s2006.zt in (2, 12, 99)
+	                                   and s2006.fjzch = #{fjzch, jdbcType=VARCHAR}
+	                                   and s200601.kcsj &gt;=
+	                                       to_date(COALESCE((select csz
+	                                                          from d_00701
+	                                                         where dprtCode = #{dprtcode, jdbcType=VARCHAR}
+	                                                           and jklbh = '1_10'
+	                                                           and wz = 11
+	                                                           and fjzch = #{fjzch, jdbcType=VARCHAR}),
+	                                                        '1790-01-01000000'),
+	                                               'YYYY-MM-DDHH24MISS'))
+	 where dprtcode = #{dprtcode, jdbcType=VARCHAR}
+	   and wz = 11
+	   and fjzch = #{fjzch, jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteByZjqdid">
+   delete from b_s2_911 where zjqdid = #{zjqdid, jdbcType=VARCHAR}
+  </delete>
+  
+   <select id="getDefaultFHFC" resultMap="BaseResultMap" parameterType="com.eray.thjw.produce.po.FailureKeep" >
+    SELECT 
+    	JKFLBH,CSZ 
+    FROM B_S2_911
+    WHERE dprtcode = #{dprtcode, jdbcType=VARCHAR} and jkflbh in('2T','3C') and wz = 11 and fjzch = #{fjzch, jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

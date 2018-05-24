@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.OutboundOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.OutboundOrder" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="SHLX" property="shlx" jdbcType="DECIMAL" />
+    <result column="SHDH" property="shdh" jdbcType="VARCHAR" />
+    <result column="SHBMID" property="shbmid" jdbcType="VARCHAR" />
+    <result column="SHRID" property="shrid" jdbcType="VARCHAR" />
+    <result column="SHRQ" property="shrq" jdbcType="TIMESTAMP" />
+    <result column="LYDW" property="lydw" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="CKID" property="ckid" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="LYID" property="lyid" jdbcType="VARCHAR" />
+    <result column="LYBH" property="lybh" jdbcType="VARCHAR" />
+    <result column="LYMC" property="lymc" jdbcType="VARCHAR" />
+    <result column="ckmc" property="paramsMap.ckmc" jdbcType="VARCHAR" />
+  </resultMap>
+    <resultMap type="com.eray.thjw.material2.po.OutboundOrder" id="ResultMap" extends="BaseResultMap">
+  	<collection property="outboundOrderDetailslist" ofType="com.eray.thjw.material2.po.OutboundOrderDetails">
+    	<id column="outboundOrderDetailslist_ID" property="id" jdbcType="VARCHAR" />
+	    <result column="mainid" property="mainid" jdbcType="VARCHAR" />
+	    <result column="kcllid" property="kcllid" jdbcType="VARCHAR" />
+	    <result column="wckcllid" property="wckcllid" jdbcType="VARCHAR" />
+	    <result column="cksl" property="cksl" jdbcType="DECIMAL" />
+	    <result column="hclx" property="hclx" jdbcType="INTEGER" />
+	    <result column="kcid" property="kcid" jdbcType="VARCHAR" />
+	    <result column="bjh" property="bjh" jdbcType="VARCHAR" />
+	    <result column="djsl" property="djsl" jdbcType="DECIMAL" />
+	    <result column="kcsl" property="kcsl" jdbcType="DECIMAL" />
+	    
+	    <result column="ckh" property="ckh" jdbcType="VARCHAR" />
+	    <result column="kwh" property="kwh" jdbcType="VARCHAR" />
+	    <result column="sn" property="sn" jdbcType="VARCHAR" />
+	    <result column="pch" property="pch" jdbcType="VARCHAR" />
+	    <result column="cqbh" property="paramsMap.cqbh" jdbcType="VARCHAR" />
+	    <result column="gg" property="gg" jdbcType="VARCHAR" />
+	    <result column="xingh" property="xingh" jdbcType="VARCHAR" />
+	    <result column="kccb" property="kccb" jdbcType="DECIMAL" />
+	    <result column="biz" property="biz" jdbcType="VARCHAR" />
+	    <result column="jz" property="jz" jdbcType="DECIMAL" />
+	    <result column="jzbz" property="jzbz" jdbcType="VARCHAR" />
+	    <result column="jldw" property="jldw" jdbcType="VARCHAR" />
+	    <result column="gljb" property="gljb" jdbcType="DECIMAL" />
+	    <result column="mxid" property="paramsMap.mxid" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHBMID, WHRID, WHSJ, SHLX, SHDH, SHBMID, SHRID, SHRQ, LYDW, FJZCH, 
+    CKID, BZ, ZT, LYID, LYBH, LYMC
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_023
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_023
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.OutboundOrder" >
+    insert into B_H2_023 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, SHLX, 
+      SHDH, SHBMID, SHRID, 
+      SHRQ, LYDW, FJZCH, 
+      CKID, BZ, ZT, LYID, 
+      LYBH, LYMC)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{shlx,jdbcType=DECIMAL}, 
+      #{shdh,jdbcType=VARCHAR}, #{shbmid,jdbcType=VARCHAR}, #{shrid,jdbcType=VARCHAR}, 
+      #{shrq,jdbcType=TIMESTAMP}, #{lydw,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, 
+      #{ckid,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{lyid,jdbcType=VARCHAR}, 
+      #{lybh,jdbcType=VARCHAR}, #{lymc,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.OutboundOrder" >
+    insert into B_H2_023
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="shlx != null" >
+        SHLX,
+      </if>
+      <if test="shdh != null" >
+        SHDH,
+      </if>
+      <if test="shbmid != null" >
+        SHBMID,
+      </if>
+      <if test="shrid != null" >
+        SHRID,
+      </if>
+      <if test="shrq != null" >
+        SHRQ,
+      </if>
+      <if test="lydw != null" >
+        LYDW,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="ckid != null" >
+        CKID,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="lyid != null" >
+        LYID,
+      </if>
+      <if test="lybh != null" >
+        LYBH,
+      </if>
+      <if test="lymc != null" >
+        LYMC,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shlx != null" >
+        #{shlx,jdbcType=DECIMAL},
+      </if>
+      <if test="shdh != null" >
+        #{shdh,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null" >
+        #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrq != null" >
+        #{shrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lydw != null" >
+        #{lydw,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="ckid != null" >
+        #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="lymc != null" >
+        #{lymc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.OutboundOrder" >
+    update B_H2_023
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shlx != null" >
+        SHLX = #{shlx,jdbcType=DECIMAL},
+      </if>
+      <if test="shdh != null" >
+        SHDH = #{shdh,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null" >
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHRID = #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrq != null" >
+        SHRQ = #{shrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lydw != null" >
+        LYDW = #{lydw,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="ckid != null" >
+        CKID = #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        LYID = #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        LYBH = #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="lymc != null" >
+        LYMC = #{lymc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.OutboundOrder" >
+    update B_H2_023
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      SHLX = #{shlx,jdbcType=DECIMAL},
+      SHDH = #{shdh,jdbcType=VARCHAR},
+      SHBMID = #{shbmid,jdbcType=VARCHAR},
+      SHRID = #{shrid,jdbcType=VARCHAR},
+      SHRQ = #{shrq,jdbcType=TIMESTAMP},
+      LYDW = #{lydw,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      CKID = #{ckid,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      LYID = #{lyid,jdbcType=VARCHAR},
+      LYBH = #{lybh,jdbcType=VARCHAR},
+      LYMC = #{lymc,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <!-- 根据查询条件查询数量 -->
+  <select id="queryCount" parameterType="com.eray.thjw.material2.po.OutboundOrder" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM B_H2_023 
+    WHERE SHDH     = #{ shdh,     jdbcType = VARCHAR }
+  	AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </select>
+  
+    <!--根据单号查询数量-->
+   <select id="getCount4Validation" parameterType="com.eray.thjw.material2.po.OutboundOrder" resultType="int">
+		select count(1) from B_H2_023 where SHDH=#{shdh,jdbcType=VARCHAR} 
+   </select>
+   
+   <select id="queryAllPageList" resultMap="BaseResultMap">
+		SELECT  b1.ID, b1.DPRTCODE, b1.WHBMID, b1.WHRID, b1.WHSJ, b1.SHLX, b1.SHDH, b1.SHBMID, b1.SHRID, b1.SHRQ, b1.LYDW, b1.FJZCH, 
+    b1.CKID, b1.BZ, b1.ZT, b1.LYID, b1.LYBH, b1.LYMC from B_H2_023 b1
+    WHERE 1=1 and b1.zt != 11
+    <if test="fjzch != null and fjzch != '' and fjzch !='N/A'">
+    	AND b1.fjzch = #{fjzch,     jdbcType = VARCHAR}
+    </if>
+    <if test="dprtcode != null and dprtcode != '' ">
+    	AND b1.dprtcode = #{dprtcode,     jdbcType = VARCHAR}
+    </if>
+    <if test=" fjzch =='N/A' " >   
+        AND  FJZCH  is null
+    </if>
+    <if test="shlx != null and shlx != ''">
+    	AND b1.shlx = #{shlx,     jdbcType = VARCHAR}
+    </if>
+     <!-- 关键字-->
+    <if test="keyword != null and keyword != ''">
+     	AND  (lower(b1.SHDH) LIKE lower('%'||#{keyword}||'%') OR
+     		 lower(b1.bz) LIKE lower('%'||#{keyword}||'%')
+       	)
+    </if>
+    <if test="fjzch != null and fjzch != '' and fjzch !='N/A' " >  
+     <choose>                                                                 
+    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+    		 AND exists 
+    		( SELECT 1 from D_007 where 
+    		b1.fjzch = FJZCH
+    		AND b_h_024.dprtcode = DPRTCODE
+    		AND zt = 1
+    		)
+    	</when>
+    	<when test='paramsMap.userId!=null and paramsMap.userId != "" '>                       
+    		 AND exists 
+    		( SELECT 1 from V_ROLE_JX where 
+    		b1.fjzch= FJZCH
+    		AND b1.dprtcode = DPRTCODE
+    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+    		)
+    	</when>
+	   	</choose>
+	   	 </if>
+	   	 order by b1.shrq  desc ,b1.shdh desc,b1.id
+   </select>
+   
+  <!--根据id查询信息 Start-->
+  <select id="getByStockoutId"  resultMap="ResultMap" >
+select b1.ID, b1.DPRTCODE, b1.WHBMID, b1.WHRID, b1.WHSJ, b1.SHLX, b1.SHDH, b1.SHBMID, b1.SHRID, b1.SHRQ, b1.LYDW, b1.FJZCH, 
+         b1.CKID, b1.BZ, b1.ZT, b1.LYID, b1.LYBH, b1.LYMC ,b3.id as outboundOrderDetailslist_ID,
+         b2.lymxid mxid,b2.ckmxid,b4.kcsl cksl,
+         b3.kcllid,b3.wckcllid,
+         b5.hclx,b5.gljb,
+         b4.kcid,b4.bjh,b6.djsl,b6.kcsl,b4.ckh,b4.kwh,b4.sn,b4.pch,b7.cqbh || ' '|| b7.fjzch ||' '|| b7.gsmc cqbh,b5.gg,b5.xingh,b5.jldw,bh032.CB kccb,bh032.CBBZ biz,bh032.JZ,bh032.JZBZ,
+         d009.ckmc
+      from b_h2_023 b1
+      left join b_h2_02301 b3 on b1.id=b3.mainid
+      left join b_h_029 b2 on  b1.id=b2.ckdid and b2.ckmxid=b3.id
+      left join b_h_017 b4 on b3.kcllid=b4.id
+      left join b_h_001 b6 on b6.id=b4.kcid
+      left join d_008 b5 on b4.bjid=b5.id
+      left join d_026 b7 on b7.id=b4.cqid
+      left Join d_009 d009 on b1.ckid=d009.id
+      left join b_h_032 bh032 on b1.dprtcode = BH032.dprtcode 
+       and COALESCE(b4.sn, '-')=COALESCE(BH032.xlh,'-') 
+       and COALESCE(b4.pch,'-')=COALESCE(BH032.pch,'-') 
+       and b4.bjh = BH032.bjh
+    
+		 WHERE  B1.ID  = #{id, jdbcType=VARCHAR}
+  </select>
+   
+</mapper>

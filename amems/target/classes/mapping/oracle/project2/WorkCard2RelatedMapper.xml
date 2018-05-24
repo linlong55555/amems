@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.WorkCard2RelatedMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.WorkCard2Related" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="GKH" property="gkh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  	<!-- 配置工卡关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.project2.po.WorkCard2Related" id="WorkCardRelWithRelMap" extends="BaseResultMap">  
+	    <!-- 配置工卡与工作内容附件关系 -->
+	    <association property="workCard" javaType="com.eray.thjw.project2.po.WorkCard">  
+	        <id column="WC_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="WC_DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="WC_GKH" property="gkh" jdbcType="VARCHAR" />
+		    <result column="WC_JX" property="jx" jdbcType="VARCHAR" />
+		    <result column="WC_ZJH" property="zjh" jdbcType="VARCHAR" />
+		    <result column="WC_WXXMBH" property="wxxmbh" jdbcType="VARCHAR" />
+		    <result column="WC_GZLX" property="gzlx" jdbcType="DECIMAL" />
+		    <result column="WC_ZY" property="zy" jdbcType="VARCHAR" />
+		    <result column="WC_JHGS_RS" property="jhgsRs" jdbcType="VARCHAR" />
+		    <result column="WC_JHGS_XSS" property="jhgsXss" jdbcType="VARCHAR" />
+		    <result column="WC_GZBT" property="gzbt" jdbcType="VARCHAR" />
+		    <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+		    	<id column="F_ZJH" property="zjh"/>
+	     		<result column="F_ZWMS" property="zwms"/>
+	        	<result column="F_YWMS" property="ywms"/>
+		    </association>
+	    </association>
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, JX, GKH, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  
+  	<sql id="Work_Card_Rel_List" >
+    	B.ID, B.MAINID, B.JX, B.GKH, B.ZT, B.WHBMID, B.WHRID, B.WHSJ
+  	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_01301
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据mainid查询工卡-关联工卡列表   -->
+	<select id="queryByMainid" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select 
+           	<include refid="Base_Column_List" />
+        from B_G2_01301
+        where ZT = 1 and MAINID = #{mainid,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据条件查询工卡-关联工卡列表 -->
+	<select id="queryAllList" parameterType="com.eray.thjw.project2.po.WorkCard2Related" resultMap="WorkCardRelWithRelMap">
+		select 
+           	<include refid="Work_Card_Rel_List" />
+           	,BG2013.ID AS WC_ID
+           	,BG2013.DPRTCODE AS WC_DPRTCODE
+           	,BG2013.GKH AS WC_GKH
+           	,BG2013.JX AS WC_JX
+           	,BG2013.ZJH AS WC_ZJH
+           	,BG2013.WXXMBH AS WC_WXXMBH
+           	,BG2013.GZLX AS WC_GZLX
+           	,BG2013.ZY AS WC_ZY
+           	,BG2013.JHGS_RS AS WC_JHGS_RS
+           	,BG2013.JHGS_XSS AS WC_JHGS_XSS
+           	,BG2013.GZBT AS WC_GZBT
+           	,D005.ZJH AS F_ZJH
+        	,D005.ZWMS AS F_ZWMS
+        	,D005.YWMS AS F_YWMS
+        from B_G2_01301 B
+        	JOIN B_G2_013 BG2013 ON BG2013.GKH = B.GKH and B.JX = BG2013.JX
+        	LEFT JOIN D_005 D005 ON BG2013.ZJH = D005.ZJH and BG2013.DPRTCODE = D005.DPRTCODE
+        where B.ZT = 1 and BG2013.ZXBS = 2
+		  and BG2013.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR} 
+          and B.MAINID = #{mainid,jdbcType=VARCHAR}
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_01301
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from B_G2_01301
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  
+  	<delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_G2_01301
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.WorkCard2Related" >
+    insert into B_G2_01301 (ID, MAINID, JX, 
+      GKH, ZT, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{jx,jdbcType=VARCHAR}, 
+      #{gkh,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.WorkCard2Related" >
+    insert into B_G2_01301
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="gkh != null" >
+        GKH,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="gkh != null" >
+        #{gkh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  
+  	<!-- 批量插入工卡-关联工卡 -->
+  	<insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+			<include refid="insert_work_card_rel"></include>
+		</foreach>
+		select 1 from dual
+	</insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.WorkCard2Related" >
+    update B_G2_01301
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="gkh != null" >
+        GKH = #{gkh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 插入工卡-关联工卡 start -->
+	<sql id="insert_work_card_rel">
+		into B_G2_01301
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        ID,
+	      </if>
+	      <if test="item.mainid != null" >
+	        MAINID,
+	      </if>
+	      <if test="item.jx != null" >
+	        JX,
+	      </if>
+	      <if test="item.gkh != null" >
+	        GKH,
+	      </if>
+	      <if test="item.zt != null" >
+	        ZT,
+	      </if>
+	      <if test="item.whbmid != null" >
+	        WHBMID,
+	      </if>
+	      <if test="item.whrid != null" >
+	        WHRID,
+	        WHSJ,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        #{item.id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.mainid != null" >
+	        #{item.mainid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.jx != null" >
+	        #{item.jx,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.gkh != null" >
+	        #{item.gkh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.zt != null" >
+	        #{item.zt,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.whbmid != null" >
+	        #{item.whbmid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.whrid != null" >
+	        #{item.whrid,jdbcType=VARCHAR},
+	        sysdate,
+	      </if>
+	    </trim>		
+	</sql>
+	<!-- 插入工卡-关联工卡 end -->
+  
+</mapper>

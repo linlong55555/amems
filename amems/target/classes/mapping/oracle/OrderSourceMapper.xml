@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.OrderSourceMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.OrderSource" >
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="PGDID" property="pgdid" jdbcType="VARCHAR" />
+    <result column="ZLXL" property="zlxl" jdbcType="DECIMAL" />
+    <result column="ZLID" property="zlid" jdbcType="VARCHAR" />
+    <result column="ZLBH" property="zlbh" jdbcType="VARCHAR" />
+    <result column="PGDH" property="pgdh" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="BB" property="bb" jdbcType="VARCHAR" />
+    
+    <result column="LY" property="ly" jdbcType="VARCHAR" />
+    <result column="SHZLTGH" property="shzltgh" jdbcType="VARCHAR" />
+    <result column="SXRQ" property="sxrq" jdbcType="VARCHAR" />
+    <result column="PGQX" property="pgqx" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="VARCHAR" />
+    <result column="DISPLAYNAME" property="displayname" jdbcType="VARCHAR" />
+    <result column="YWZT" property="ywzt" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+  <!-- 字段 -->
+	<sql id="OrderSourceColumn">
+		DPRTCODE,PGDID,ZLXL,ZLID,ZLBH,PGDH
+	</sql>
+  
+     <sql id="BaseResulParam">
+	     where 
+		   1=1
+		   <!-- 指令id -->
+		     <if test="zlbh != null and zlbh != ''">
+	            and  t1.ZLBH = #{zlbh,jdbcType=VARCHAR}
+	         </if>
+	         <if test="zlid != null and zlid != ''">
+	            and  t1.ZLID = #{zlid,jdbcType=VARCHAR}
+	         </if>
+	         <!-- 指令类型 -->
+		     <if test="zlxl != '' and zlxl != null">
+	            and  t1.zlxl = #{zlxl,jdbcType=DECIMAL}
+	         </if>
+		     <if test="dprtcode != '' and dprtcode!=null ">
+	            and  t1.dprtcode = #{dprtcode,jdbcType=DECIMAL}
+	         </if>
+   </sql>
+  
+  <select id="selectByOrder" parameterType="com.eray.thjw.po.OrderSource"  resultMap="BaseResultMap" >
+		 select t1.DPRTCODE,t1.PGDID,t1.ZLXL,t1.ZLID,t1.ZLBH,t1.PGDH ,t2.JX,t2.ly,t2.shzltgh,
+		 
+		t2.sxrq,t2.pgrid,t2.pgqx,t2.zt,t3.username||t3.realname displayname
+		
+		from B_G_003 t1 left join B_G_001 t2 ON  t1.pgdid=t2.id left join t_user t3 on t3.id=t2.pgrid
+		<include refid="BaseResulParam"></include>
+		order by t1.ZLXL, t1.ZLBH
+  </select>
+  
+   <select id="queryOrderSourceListByZlxl" parameterType="com.eray.thjw.po.OrderSource" resultMap="BaseResultMap">
+     select
+       B_G_003.DPRTCODE,
+       B_G_003.PGDID,
+       B_G_003.PGDH,
+       B_G_003.ZLXL,
+       B_G_003.ZLID,
+       B_G_003.ZLBH
+     from B_G_003
+       where B_G_003.zlxl = #{zlxl} and B_G_003.DPRTCODE=#{dprtcode}
+       
+ 		<if test="zlids!=null">  
+    		and B_G_003.ZLID in  
+    		 <foreach item="item" index="index" collection="zlids" open="("  
+	        	separator="," close=")">  
+	         	#{item}  
+    		</foreach>  
+  		</if>     
+  </select>
+  
+  
+  
+  <insert id="insert" parameterType="com.eray.thjw.po.OrderSource" >
+    insert into B_G_003 (DPRTCODE, PGDID, ZLXL, 
+      ZLID,ZLBH,pgdh)
+    values (#{dprtcode,jdbcType=VARCHAR}, #{pgdid,jdbcType=VARCHAR}, #{zlxl,jdbcType=DECIMAL}, 
+      #{zlid,jdbcType=VARCHAR},#{zlbh,jdbcType=VARCHAR},#{pgdh,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.OrderSource" >
+    insert into B_G_003
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="pgdid != null" >
+        PGDID,
+      </if>
+      <if test="zlxl != null" >
+        ZLXL,
+      </if>
+      <if test="zlid != null" >
+        ZLID,
+      </if>
+      <if test="pgdh != null" >
+        PGDH,
+      </if>
+      <if test="zlbh != null" >
+        ZLBH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdid != null" >
+        #{pgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zlxl != null" >
+        #{zlxl,jdbcType=DECIMAL},
+      </if>
+      <if test="zlid != null" >
+        #{zlid,jdbcType=VARCHAR},
+      </if>
+       <if test="pgdh != null" >
+        #{pgdh,jdbcType=VARCHAR},
+      </if>
+      <if test="zlbh != null" >
+        #{zlbh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="findOne"   resultMap="BaseResultMap">
+		select <include refid="OrderSourceColumn"></include>  from B_G_003 where PGDID = #{pgdid}
+	</select>
+	
+	<select id="queryByPgdId" resultMap="BaseResultMap">
+		select <include refid="OrderSourceColumn"></include>  
+		from B_G_003 
+		where PGDID = #{pgdid}
+		and
+		(
+		(ZLXL = 1 and ZLID IN (select ID from B_G_002 where ZT != 8))
+		OR
+		(ZLXL = 2 and ZLID IN (select ID from B_G_004 where ZT != 8))
+		OR
+		(ZLXL = 3 and ZLID IN (select ID from B_G_005 where ZT != 8))
+		OR
+		(ZLXL = 4 and ZLID IN (select ID from B_G_007 where ZT != 8))
+		OR
+		(ZLXL = 6 and ZLID IN (select ID from B_G_009 where ZT != 8))
+		) 
+		order by zlxl asc,zlbh desc
+	</select>
+  
+  <!-- 根据指令id查询下达指令来源信息 -->
+  <select id="selectOrderSourceListByZlid" parameterType="java.lang.String" resultType="java.util.Map">
+     select
+       B_G_003.DPRTCODE,
+       B_G_003.PGDID,
+       B_G_003.PGDH,
+       B_G_003.ZLXL,
+       B_G_003.ZLID,
+       B_G_003.ZLBH,
+       B_G_001.SHZLTGH
+     from B_G_003
+     inner join B_G_001 on (B_G_003.PGDID = B_G_001.ID)
+       where B_G_003.ZLID = #{zlid}
+         order by B_G_001.pgdh asc
+  </select>
+  
+  <select id="selectOrderSourceList" parameterType="java.util.Map" resultMap="BaseResultMap">
+     select
+       B_G_003.DPRTCODE,
+       B_G_003.PGDID,
+       B_G_003.PGDH,
+       B_G_003.ZLXL,
+       B_G_003.ZLID,
+       B_G_003.ZLBH,
+       B_G_003.BB
+       from B_G_003
+       
+        where 1=1
+	     <if test="ids != null">
+             and B_G_003.ZLID in 
+			 <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+			  #{item}  
+			 </foreach> 
+         </if>
+         order by B_G_003.pgdh asc 
+  </select>
+  
+    <select id="queryByTechnicalfileIds" resultMap="BaseResultMap">
+    select 
+      A.PGDID,A.ZLID,A.PGDH,A.ZT,A.ZLBH
+	      from (select b2.id zlid,b2.jstgh zlbh,b2.zt,b3.pgdid,b3.pgdh from b_g_002 b2 left join b_g_003 b3 on b2.id=b3.zlid where b2.zt!=8
+	      union all
+	            select b4.id zlid,b4.jszlh zlbh,b4.zt,b3.pgdid,b3.pgdh from b_g_004 b4 left join b_g_003 b3 on b4.id=b3.zlid where b4.zt!=8
+	      union all
+	            select b5.id zlid,b5.jszlh zlbh,b5.zt,b3.pgdid,b3.pgdh from b_g_005 b5 left join b_g_003 b3 on b5.id=b3.zlid where b5.zt!=8
+	      union all
+	            select b9.id zlid,b9.gczlbh zlbh,b9.zt,b3.pgdid,b3.pgdh from b_g_009 b9 left join b_g_003 b3 on b9.id=b3.zlid where b9.zt!=8
+	      union all
+	            select b7.id zlid,b7.gdbh zlbh,b7.zt,b3.pgdid,b3.pgdh from b_g_007 b7 left join b_g_003 b3 on b7.id=b3.zlid where b7.zt!=8
+      
+      ) A 
+        where 1=1
+             and A.pgdid in 
+			<foreach collection="list" item="pgdid" index="index" open="(" close=")" separator=",">
+				#{pgdid,jdbcType=VARCHAR}
+			</foreach>
+         order by A.pgdh asc 
+  </select>
+  
+  <!-- 插入下达指令来源信息 -->
+  <insert id="insertOrderSource" parameterType="java.util.List" >
+     insert into B_G_003
+     (
+      DPRTCODE,
+      PGDID,
+      PGDH,
+      ZLXL,
+      ZLID,
+      ZLBH,
+      YWZT
+     )
+     
+     <foreach collection="list" item="item" index="index" separator="union all">
+        (select
+           #{item.dprtcode},
+           #{item.pgdid},
+           #{item.pgdh},
+           #{item.zlxl},
+           #{item.zlid},
+           #{item.zlbh},
+           #{item.ywzt}
+         from dual
+        )
+     </foreach>
+  </insert>
+  
+  <!-- 删除下达指令来源信息 -->
+  <delete id="deleteOrderSourceByZlid" parameterType="java.lang.String" >
+     delete from B_G_003
+       where zlid = #{zlid}
+  </delete>
+  <delete id="deleteOrderSourceByPgdid" parameterType="java.lang.String" >
+     delete from B_G_003
+       where pgdid = #{pgdid}
+  </delete>
+  <!-- 删除下达指令来源信息 -->
+  <delete id="deleteOrderSourceByZlbhAndpgdid" parameterType="com.eray.thjw.po.OrderSource" >
+     delete from B_G_003
+       where ZLBH = #{zlbh} and PGDID=#{pgdid}
+  </delete>
+  
+  <select id="selectByZlbhKey" resultMap="BaseResultMap" >
+   select * from (
+    select 
+     		B_G_003.pgdid,
+     		B_G_003.pgdh,
+     		B_G_003.zlxl,
+     		B_G_003.zlid,
+     		B_G_003.zlbh
+    		from B_G_003 
+    			where B_G_003.zlbh = #{0} and B_G_003.dprtcode=#{1}
+    			)where rownum=1
+  </select>
+  
+  
+</mapper>

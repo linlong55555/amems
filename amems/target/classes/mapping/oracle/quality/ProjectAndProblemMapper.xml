@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.ProjectAndProblemMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.ProjectAndProblem" >
+    <result column="SHWTDID" property="shwtdid" jdbcType="VARCHAR" />
+    <result column="SHXMDID" property="shxmdid" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.ProjectAndProblem" >
+    insert into B_Z_012 (SHWTDID, SHXMDID)
+    values (#{shwtdid,jdbcType=VARCHAR}, #{shxmdid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.ProjectAndProblem" >
+    insert into B_Z_012
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shwtdid != null" >
+        SHWTDID,
+      </if>
+      <if test="shxmdid != null" >
+        SHXMDID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shwtdid != null" >
+        #{shwtdid,jdbcType=VARCHAR},
+      </if>
+      <if test="shxmdid != null" >
+        #{shxmdid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <delete id="deleteByShwtdid" parameterType="String">
+  	delete from B_Z_012 where shwtdid = #{shwtdid,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByShxmdid" parameterType="String">
+  	delete from B_Z_012 where shxmdid = #{shxmdid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

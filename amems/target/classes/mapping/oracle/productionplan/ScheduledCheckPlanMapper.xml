@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.ScheduledCheckPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.ScheduledCheckPlan" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="DJXMID" property="djxmid" jdbcType="VARCHAR" />
+    <result column="DJXMBH" property="djxmbh" jdbcType="VARCHAR" />
+    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+    <result column="JKJHZ" property="jkjhz" jdbcType="VARCHAR" />
+    <result column="JKSJZ" property="jksjz" jdbcType="VARCHAR" />
+    <result column="DW" property="dw" jdbcType="DECIMAL" />
+    <result column="FXJLDH" property="fxjldh" jdbcType="VARCHAR" />
+    <result column="FXJLTBSJ" property="fxjltbsj" jdbcType="TIMESTAMP" />
+    <result column="DJRWDH" property="djrwdh" jdbcType="VARCHAR" />
+    <result column="IS_CYJS" property="isCyjs" jdbcType="DECIMAL" />
+    <result column="SCTJID" property="sctjid" jdbcType="VARCHAR" />
+    <result column="XCTJID" property="xctjid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ZJQDID, DJXMID, DJXMBH, JKFLBH, JKLBH, JKJHZ, JKSJZ, DW, FXJLDH, FXJLTBSJ, DJRWDH, 
+    IS_CYJS, SCTJID, XCTJID, ZDRID, ZDSJ, ZT, DPRTCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_008
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_008
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckPlan" >
+    insert into B_S_008 (ID, ZJQDID, DJXMID, 
+      DJXMBH, JKFLBH, JKLBH, 
+      JKJHZ, JKSJZ, DW, FXJLDH, 
+      FXJLTBSJ, DJRWDH, IS_CYJS, 
+      SCTJID, XCTJID, ZDRID, 
+      ZDSJ, ZT, DPRTCODE
+      )
+    values (#{id,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR}, #{djxmid,jdbcType=VARCHAR}, 
+      #{djxmbh,jdbcType=VARCHAR}, #{jkflbh,jdbcType=VARCHAR}, #{jklbh,jdbcType=VARCHAR}, 
+      #{jkjhz,jdbcType=VARCHAR}, #{jksjz,jdbcType=VARCHAR}, #{dw,jdbcType=DECIMAL}, #{fxjldh,jdbcType=VARCHAR}, 
+      #{fxjltbsj,jdbcType=TIMESTAMP}, #{djrwdh,jdbcType=VARCHAR}, #{isCyjs,jdbcType=DECIMAL}, 
+      #{sctjid,jdbcType=VARCHAR}, #{xctjid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      #{zdsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckPlan" >
+    insert into B_S_008
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID,
+      </if>
+      <if test="djxmid != null" >
+        DJXMID,
+      </if>
+      <if test="djxmbh != null" >
+        DJXMBH,
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH,
+      </if>
+      <if test="jklbh != null" >
+        JKLBH,
+      </if>
+      <if test="jkjhz != null" >
+        JKJHZ,
+      </if>
+      <if test="jksjz != null" >
+        JKSJZ,
+      </if>
+      <if test="dw != null" >
+        DW,
+      </if>
+      <if test="fxjldh != null" >
+        FXJLDH,
+      </if>
+      <if test="fxjltbsj != null" >
+        FXJLTBSJ,
+      </if>
+      <if test="djrwdh != null" >
+        DJRWDH,
+      </if>
+      <if test="isCyjs != null" >
+        IS_CYJS,
+      </if>
+      <if test="sctjid != null" >
+        SCTJID,
+      </if>
+      <if test="xctjid != null" >
+        XCTJID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmid != null" >
+        #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmbh != null" >
+        #{djxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkjhz != null" >
+        #{jkjhz,jdbcType=VARCHAR},
+      </if>
+      <if test="jksjz != null" >
+        #{jksjz,jdbcType=VARCHAR},
+      </if>
+      <if test="dw != null" >
+        #{dw,jdbcType=DECIMAL},
+      </if>
+      <if test="fxjldh != null" >
+        #{fxjldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjltbsj != null" >
+        #{fxjltbsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="djrwdh != null" >
+        #{djrwdh,jdbcType=VARCHAR},
+      </if>
+      <if test="isCyjs != null" >
+        #{isCyjs,jdbcType=DECIMAL},
+      </if>
+      <if test="sctjid != null" >
+        #{sctjid,jdbcType=VARCHAR},
+      </if>
+      <if test="xctjid != null" >
+        #{xctjid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckPlan" >
+    update B_S_008
+    <set >
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmid != null" >
+        DJXMID = #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmbh != null" >
+        DJXMBH = #{djxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkjhz != null" >
+        JKJHZ = #{jkjhz,jdbcType=VARCHAR},
+      </if>
+      <if test="jksjz != null" >
+        JKSJZ = #{jksjz,jdbcType=VARCHAR},
+      </if>
+      <if test="dw != null" >
+        DW = #{dw,jdbcType=DECIMAL},
+      </if>
+      <if test="fxjldh != null" >
+        FXJLDH = #{fxjldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjltbsj != null" >
+        FXJLTBSJ = #{fxjltbsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="djrwdh != null" >
+        DJRWDH = #{djrwdh,jdbcType=VARCHAR},
+      </if>
+      <if test="isCyjs != null" >
+        IS_CYJS = #{isCyjs,jdbcType=DECIMAL},
+      </if>
+      <if test="sctjid != null" >
+        SCTJID = #{sctjid,jdbcType=VARCHAR},
+      </if>
+      <if test="xctjid != null" >
+        XCTJID = #{xctjid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckPlan" >
+    update B_S_008
+    set ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      DJXMID = #{djxmid,jdbcType=VARCHAR},
+      DJXMBH = #{djxmbh,jdbcType=VARCHAR},
+      JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      JKLBH = #{jklbh,jdbcType=VARCHAR},
+      JKJHZ = #{jkjhz,jdbcType=VARCHAR},
+      JKSJZ = #{jksjz,jdbcType=VARCHAR},
+      DW = #{dw,jdbcType=DECIMAL},
+      FXJLDH = #{fxjldh,jdbcType=VARCHAR},
+      FXJLTBSJ = #{fxjltbsj,jdbcType=TIMESTAMP},
+      DJRWDH = #{djrwdh,jdbcType=VARCHAR},
+      IS_CYJS = #{isCyjs,jdbcType=DECIMAL},
+      SCTJID = #{sctjid,jdbcType=VARCHAR},
+      XCTJID = #{xctjid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL}
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

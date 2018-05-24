@@ -1,0 +1,44 @@
+/**
+ * 
+ */
+package com.eray.framework.redis;
+
+import java.util.Date;
+
+import redis.clients.jedis.Jedis;
+
+/** 
+ * @Description 
+ * @CreateTime 2017年12月20日 下午10:01:15
+ * @CreateBy 
+ */
+public class JT {
+
+	/** 
+	 * @Description 
+	 * @CreateTime 2017年12月20日 下午10:01:16
+	 * @CreateBy 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		//new JT().redisTest01();
+		new JT().test01();
+	}
+	
+	private void redisTest01(){
+		Jedis jedis = RedisPool.getInstance().getJedisResourceWithAuth();
+		jedis.set("009","hello hchu!  1122334455");
+		System.out.println(jedis.bgsave());
+		String value = jedis.get("009");
+		System.out.println(value);
+		value = jedis.clientList();
+		System.out.println(value);
+		jedis.close();
+	}
+	
+	private JT test01(){
+		System.out.println(System.currentTimeMillis());
+		return new JT();
+	}
+
+}

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.EOMonitorIemSetMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.EOMonitorIemSet" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="SCZ" property="scz" jdbcType="VARCHAR" />
+    <result column="DW_SCZ" property="dwScz" jdbcType="DECIMAL" />
+    <result column="ZQZ" property="zqz" jdbcType="VARCHAR" />
+    <result column="DW_ZQZ" property="dwZqz" jdbcType="DECIMAL" />
+    <result column="YDZ_Q" property="ydzQ" jdbcType="VARCHAR" />
+    <result column="YDZ_QDW" property="ydzQdw" jdbcType="DECIMAL" />
+    <result column="YDZ_H" property="ydzH" jdbcType="VARCHAR" />
+    <result column="YDZ_HDW" property="ydzHdw" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, XC, JKLBH, JKFLBH, SCZ, DW_SCZ, ZQZ, DW_ZQZ, YDZ_Q, YDZ_QDW, YDZ_H, YDZ_HDW, 
+    ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  
+  <!-- 新增,监控项设置 -->
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.EOMonitorIemSet" >
+    insert into B_G2_01002 (ID, MAINID, XC, 
+      JKLBH, JKFLBH, SCZ, 
+      DW_SCZ, ZQZ, DW_ZQZ, 
+      YDZ_Q, YDZ_QDW, YDZ_H, 
+      YDZ_HDW, ZT, WHBMID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{xc,jdbcType=DECIMAL}, 
+      #{jklbh,jdbcType=VARCHAR}, #{jkflbh,jdbcType=VARCHAR}, #{scz,jdbcType=VARCHAR}, 
+      #{dwScz,jdbcType=DECIMAL}, #{zqz,jdbcType=VARCHAR}, #{dwZqz,jdbcType=DECIMAL}, 
+      #{ydzQ,jdbcType=VARCHAR}, #{ydzQdw,jdbcType=DECIMAL}, #{ydzH,jdbcType=VARCHAR}, 
+      #{ydzHdw,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <!-- 批量新增,EO-工时/停场时间 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+			into B_G2_01002 (ID, MAINID, XC, JKLBH, JKFLBH, SCZ, DW_SCZ, ZQZ, DW_ZQZ, YDZ_Q, YDZ_QDW, YDZ_H, YDZ_HDW, ZT, WHBMID, WHRID, WHSJ)
+	        values (#{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.xc,jdbcType=DECIMAL}, 
+	      			#{item.jklbh,jdbcType=VARCHAR}, #{item.jkflbh,jdbcType=VARCHAR}, #{item.scz,jdbcType=VARCHAR}, 
+	      			#{item.dwScz,jdbcType=DECIMAL}, #{item.zqz,jdbcType=VARCHAR}, #{item.dwZqz,jdbcType=DECIMAL}, 
+	      			#{item.ydzQ,jdbcType=VARCHAR}, #{item.ydzQdw,jdbcType=DECIMAL}, #{item.ydzH,jdbcType=VARCHAR}, 
+	      			#{item.ydzHdw,jdbcType=DECIMAL}, #{item.zt,jdbcType=DECIMAL}, #{item.whbmid,jdbcType=VARCHAR}, 
+	      			#{item.whrid,jdbcType=VARCHAR}, #{item.whsj,jdbcType=TIMESTAMP})
+		</foreach>
+		select 1 from dual
+  </insert>
+  
+  <!-- 修改,监控项设置 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.EOMonitorIemSet" >
+    update B_G2_01002
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="jklbh != null" >
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="scz != null" >
+        SCZ = #{scz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwScz != null" >
+        DW_SCZ = #{dwScz,jdbcType=DECIMAL},
+      </if>
+      <if test="zqz != null" >
+        ZQZ = #{zqz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwZqz != null" >
+        DW_ZQZ = #{dwZqz,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzQ != null" >
+        YDZ_Q = #{ydzQ,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzQdw != null" >
+        YDZ_QDW = #{ydzQdw,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzH != null" >
+        YDZ_H = #{ydzH,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzHdw != null" >
+        YDZ_HDW = #{ydzHdw,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 根据条件查询EO监控项设置列表 -->
+	<select id="queryAllList" parameterType="com.eray.thjw.project2.po.EOMonitorIemSet" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+        from B_G2_01002
+        where 1 = 1
+	      	<if test="id != null" >
+        		and ID = #{id,jdbcType=VARCHAR}
+      		</if>
+      		<if test="mainid != null" >
+        		and MAINID = #{mainid,jdbcType=VARCHAR}
+      		</if>
+        order by XC asc
+	</select>
+	
+	<!-- 根据业务ID删除数据 -->
+	<delete id="deleteByMainid" parameterType="java.lang.String">
+		delete from B_G2_01002
+		where MAINID = #{mainid,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 根据多个EOid查询监控项目，以mainid,XC,JKLBH进行排序 -->
+  	<select id="selectMonitorByMainIds" resultType="com.eray.thjw.project2.po.EOMonitorIemSet">
+  		SELECT ID,
+		       MAINID,
+		       XC,
+		       JKLBH,
+		       JKFLBH,
+		       SCZ,
+		       DW_SCZ,
+		       ZQZ,
+		       DW_ZQZ,
+		       YDZ_Q,
+		       YDZ_QDW,
+		       YDZ_H,
+		       YDZ_HDW
+		 FROM B_G2_01002
+		 WHERE ZT = 1
+		   AND MAINID IN 
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item, jdbcType=VARCHAR}
+			</foreach>
+			ORDER BY MAINID, XC, JKLBH
+  	</select>
+  	<select id="queryByMainid" parameterType="string" resultMap="BaseResultMap">
+		select 
+           B_G2_01002.ID, B_G2_01002.MAINID, B_G2_01002.XC, B_G2_01002.JKLBH, B_G2_01002.JKFLBH, 
+           B_G2_01002.SCZ, B_G2_01002.DW_SCZ, B_G2_01002.ZQZ, B_G2_01002.DW_ZQZ, B_G2_01002.YDZ_Q, 
+           B_G2_01002.YDZ_QDW, B_G2_01002.YDZ_H, B_G2_01002.YDZ_HDW, 
+    B_G2_01002.ZT, B_G2_01002.WHBMID, B_G2_01002.WHRID, B_G2_01002.WHSJ
+        from B_G2_01002
+        LEFT JOIN D_00601 D00601 ON D00601.jklbh =B_G2_01002.jklbh
+        where 1 = 1     	
+        		and B_G2_01002.MAINID = #{mainid,jdbcType=VARCHAR}
+        order by D00601.PXH
+	</select>
+</mapper>

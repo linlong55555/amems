@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.MaintenanceFailureSummaryMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.MaintenanceFailureSummary" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="KJFW" property="kjfw" jdbcType="DECIMAL" />
+    <result column="GJC" property="gjc" jdbcType="VARCHAR" />
+    <result column="GZMS" property="gzms" jdbcType="VARCHAR" />
+    <result column="JYZJ" property="jyzj" jdbcType="VARCHAR" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="JD" property="jd" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="ZY" property="zy" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.productionplan.po.MaintenanceFailureSummary" id="SummaryJoinMap" extends="BaseResultMap">  
+       
+        <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+	    	<id column="FZJH" property="zjh"/>
+	     	<result column="FZWMS" property="zwms"/>
+	        <result column="FYWMS" property="ywms"/>
+	    </association>
+       
+     	<collection property="summaryDetailList" ofType="com.eray.thjw.productionplan.po.MaintenanceFailureSummaryDetail" >  
+        	<id property="id" column="DID" />  
+        	<result property="mainid" column="DMAINID" />  
+        	<result property="pgjg" column="DPGJG" />  
+        	<result property="clrid" column="DCLRID" /> 
+        	<result property="clr" column="DCLR" />  
+        	<result property="clsj" column="DCLSJ" />  
+       	</collection>
+        
+   </resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, KJFW, GJC, GZMS, JYZJ, FJJX, FJZCH, JD, ZJH, ZY, BJH, ZT, ZDDWID, ZDRID, 
+    ZDSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_015
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectById" resultMap="SummaryJoinMap" parameterType="java.lang.String" >
+    select 
+    	BS015.ID, BS015.DPRTCODE, BS015.KJFW, BS015.GJC, BS015.GZMS, BS015.JYZJ, BS015.FJJX, BS015.FJZCH, BS015.JD, BS015.ZJH,
+	    BS015.ZY, BS015.BJH, BS015.ZT, BS015.ZDDWID, BS015.ZDRID,BS015.ZDSJ,
+	    D005.ZJH AS FZJH,D005.ZWMS AS FZWMS,D005.YWMS AS FYWMS,
+	    BS01501.ID AS DID,BS01501.MAINID AS DMAINID,BS01501.PGJG AS DPGJG,BS01501.CLRID AS DCLRID,BS01501.CLR AS DCLR,BS01501.CLSJ AS DCLSJ
+    from B_S_015 BS015
+    left join D_005 D005
+	on BS015.ZJH = D005.ZJH and BS015.DPRTCODE = D005.DPRTCODE
+	left join B_S_01501 BS01501
+	on BS015.ID = BS01501.MAINID and BS01501.ZT = 1
+    where BS015.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据条件分页查询维修故障总结列表 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.po.BaseEntity" resultType="Map">
+			 	select 
+				    BS015.ID, BS015.DPRTCODE, BS015.KJFW, BS015.GJC, BS015.GZMS, BS015.JYZJ, BS015.FJJX, BS015.FJZCH, BS015.JD, BS015.ZJH,
+				    BS015.ZY, BS015.BJH, BS015.ZT, BS015.ZDDWID, BS015.ZDRID,BS015.ZDSJ,
+				    D012.JDMS,
+				    D005.ZJH AS FZJH,D005.ZWMS AS FZWMS,D005.YWMS AS FYWMS
+				from B_S_015 BS015
+				left join D_012 D012
+				on D012.ID = BS015.JD AND BS015.DPRTCODE = D012.DPRTCODE
+				left join D_005 D005
+	    		on BS015.ZJH = D005.ZJH and BS015.DPRTCODE = D005.DPRTCODE
+				where BS015.ZT = 1
+	            <include refid="summary_Param"></include>
+	            <!-- order by ID asc -->
+			  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by ZDSJ DESC
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+				</choose>
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_015
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.productionplan.po.MaintenanceFailureSummary" >
+    insert into B_S_015 (ID, DPRTCODE, KJFW, 
+      GJC, GZMS, JYZJ, FJJX, 
+      FJZCH, JD, ZJH, ZY, 
+      BJH, ZT, ZDDWID, ZDRID, 
+      ZDSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{kjfw,jdbcType=DECIMAL}, 
+      #{gjc,jdbcType=VARCHAR}, #{gzms,jdbcType=VARCHAR}, #{jyzj,jdbcType=VARCHAR}, #{fjjx,jdbcType=VARCHAR}, 
+      #{fjzch,jdbcType=VARCHAR}, #{jd,jdbcType=VARCHAR}, #{zjh,jdbcType=VARCHAR}, #{zy,jdbcType=VARCHAR}, 
+      #{bjh,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{zddwid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      #{zdsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.MaintenanceFailureSummary" >
+    insert into B_S_015
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="kjfw != null" >
+        KJFW,
+      </if>
+      <if test="gjc != null" >
+        GJC,
+      </if>
+      <if test="gzms != null" >
+        GZMS,
+      </if>
+      <if test="jyzj != null" >
+        JYZJ,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="jd != null" >
+        JD,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="zy != null" >
+        ZY,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+      <if test="zdrid != null" >
+        ZDSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="kjfw != null" >
+        #{kjfw,jdbcType=DECIMAL},
+      </if>
+      <if test="gjc != null" >
+        #{gjc,jdbcType=VARCHAR},
+      </if>
+      <if test="gzms != null" >
+        #{gzms,jdbcType=VARCHAR},
+      </if>
+      <if test="jyzj != null" >
+        #{jyzj,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jd != null" >
+        #{jd,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zddwid != null" >
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.MaintenanceFailureSummary" >
+    update B_S_015
+    <set >
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="kjfw != null" >
+        KJFW = #{kjfw,jdbcType=DECIMAL},
+      </if>
+      <if test="gjc != null" >
+        GJC = #{gjc,jdbcType=VARCHAR},
+      </if>
+      <if test="gzms != null" >
+        GZMS = #{gzms,jdbcType=VARCHAR},
+      </if>
+      <if test="jyzj != null" >
+        JYZJ = #{jyzj,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jd != null" >
+        JD = #{jd,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        ZY = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.MaintenanceFailureSummary" >
+    update B_S_015
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set KJFW = #{kjfw,jdbcType=DECIMAL},
+      GJC = #{gjc,jdbcType=VARCHAR},
+      GZMS = #{gzms,jdbcType=VARCHAR},
+      JYZJ = #{jyzj,jdbcType=VARCHAR},
+      FJJX = #{fjjx,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      JD = #{jd,jdbcType=VARCHAR},
+      ZJH = #{zjh,jdbcType=VARCHAR},
+      ZY = #{zy,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <sql id="summary_Param">
+    
+    	<if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+		    and BS015.ID = #{paramsMap.id}
+		</if>
+    
+	    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		   and (
+		       UPPER(BS015.GJC) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    or UPPER(BS015.BJH) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(BS015.FJJX) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(BS015.FJZCH) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	<!-- or (BS015.JD) like ('%'||#{paramsMap.keyword}||'%') -->
+	    	or UPPER(BS015.ZJH) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(BS015.GZMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    	or UPPER(BS015.JYZJ) like UPPER('%'||#{paramsMap.keyword}||'%')
+	    )
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.zdrqBegin != null and paramsMap.zdrqBegin != ''">
+		    and BS015.ZDSJ &gt;= to_date(#{paramsMap.zdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqEnd != null and paramsMap.zdrqEnd != ''">
+		    and BS015.ZDSJ &lt;= to_date(#{paramsMap.zdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.kjfw != null and paramsMap.kjfw != ''">
+		    and BS015.KJFW = #{paramsMap.kjfw}
+		</if>
+		<if test="paramsMap != null and paramsMap.zy != null and paramsMap.zy != ''">
+		    and BS015.ZY = #{paramsMap.zy}
+		</if>
+		<if test="paramsMap != null and paramsMap.jd != null and paramsMap.jd != ''">
+		    and BS015.JD = #{paramsMap.jd}
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrid != null">
+		    and BS015.ZDRID = #{paramsMap.zdrid}
+		</if>
+		<if test="paramsMap != null and paramsMap.dprtcode != null">
+		    and BS015.DPRTCODE = #{paramsMap.dprtcode}
+		</if>
+	</sql>
+  
+</mapper>

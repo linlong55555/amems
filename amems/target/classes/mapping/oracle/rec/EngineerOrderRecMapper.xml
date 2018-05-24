@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.EngineerOrderRecMapper" >
+   <!-- EO日志列表 开始 -->
+   
+	   	<!-- EO主列表 -->
+		<select id="queryList4Bg2010" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT 
+				 B.ID
+				,B.REC_CZLS
+			    ,B.EOBH AS REC_HD
+			    ,B.REC_CZSM
+			    ,B.REC_CZSJ
+		       	,B.REC_IP
+			    ,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+			FROM B_G2_010_REC B
+			LEFT JOIN B_G2_01000_REC C ON B.ID = C.MAINID AND B.REC_CZLS = C.REC_CZLS
+			LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+			WHERE 1=1
+        	<if test='paramsMap!=null and paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	       		and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	        </if>
+	        <if test='paramsMap!=null and paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+	       		and (
+	                UPPER(B.EOBH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+	           	)
+	    	</if>
+			order by B.REC_CZSJ DESC,B.BB DESC
+		</select>
+   
+   		<!-- EO明细列表 -->
+		<select id="queryDiff4Bg2010" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT * FROM (
+			SELECT 
+				 ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO
+			    , B.ID
+			    , B.DPRTCODE
+			    , (CASE
+						WHEN B.ZT =1 THEN '保存'
+						WHEN B.ZT =2 THEN '提交'
+						WHEN B.ZT =3 THEN '已审核'
+						WHEN B.ZT =4 THEN '已批准'
+						WHEN B.ZT =5 THEN '审核驳回'
+						WHEN B.ZT =6 THEN '批准驳回'
+						WHEN B.ZT =7 THEN '生效'
+						WHEN B.ZT =9 THEN '指定结束'
+						WHEN B.ZT =10 THEN '完成'
+				   END) NEW_ZT
+			    , B.ZXBS
+			    , B.F_BBID
+			    , B.B_BBID
+			    , B.WHBMID
+			    , B.WHRID
+			    , B.WHSJ
+			    , B.SHBMID
+			    , B.SHRID
+			    , B.SHSJ
+                , B.SHYJ
+                , B.PFBMID
+                , B.PFRID
+                , B.PFSJ
+                , B.PFYJ
+                , B.GBRID
+                , B.GBRQ
+                , B.GBYY
+                , B.EOBH
+                , B.BB
+                , (CASE 
+	        			WHEN B.IS_XFSC = 0 THEN '否'
+	         			WHEN B.IS_XFSC = 1 THEN '是'
+                  END) NEW_XFSC
+                , B.JX
+                , (D005.ZJH||' '||D005.YWMS) AS ZJH
+                , B.EOZT
+                , TO_CHAR(B.BFRQ,'YYYY-MM-DD') AS BFRQ
+                , (CASE 
+	        			WHEN B.JB = 9 THEN '紧急'
+	         			WHEN B.JB = 1 THEN '一般'
+                  END) NEW_JB
+                , B.GZLX
+                , (CASE 
+	        			WHEN B.SYLB = 1 THEN '飞机'
+	         			WHEN B.SYLB = 2 THEN '发动机'
+	         			WHEN B.SYLB = 3 THEN 'APU'
+	         			WHEN B.SYLB = 99 THEN '部件'
+                  END) NEW_SYLB
+                , B.FJZCH
+                , B.EOLB
+                , B.EOFJ
+                , B.JHGS_RS
+                , B.JHGS_XSS
+                , (CASE 
+	        			WHEN B.RII = 0 THEN '否'
+	         			WHEN B.RII = 1 THEN '是'
+                  END) NEW_RII
+                 , (CASE 
+	        			WHEN B.ZXFS = 1 THEN '单次'
+	         			WHEN B.ZXFS = 2 THEN '重复'
+	         			WHEN B.ZXFS = 3 THEN '分段'
+                  END) NEW_ZXFS
+                 , (CASE 
+	        			WHEN B.HDWZ = 0 THEN '否'
+	         			WHEN B.HDWZ = 1 THEN '是'
+                  END) NEW_HDWZ
+                , B.PFJL
+                , B.SHJL
+			    , B.REC_CZLS
+			    , B.EOBH AS REC_HD
+			    , B.REC_CZSM
+			    , B.REC_CZSJ
+		       	, B.REC_IP
+		       	, (CASE 
+	        			WHEN C.SCJSZY = 0 THEN '否'
+	         			WHEN C.SCJSZY = 1 THEN '是'
+                  END) NEW_SCJSZY
+		       	, C.YWJSYFW
+		       	, C.GZGS
+		       	, C.FHX
+		       	, C.WXGZDXID
+		       	, C.WXGZDX
+		       	, (replace(replace(replace(replace(replace(replace(replace(replace(C.WXGZBS,'A','功能失效  '),'B','机体完整  '),'C','性能改进  '),'D','腐蚀  '),'E','疲劳裂纹  '),'F','分层  '),'G','线路老化  '),'H','其他')) AS NEW_WXGZBS 
+		       	, C.WXGZBS_QT
+		       	, (CASE 
+	        			WHEN C.IS_ZZPHBH = 0 THEN '否'
+	         			WHEN C.IS_ZZPHBH = 1 THEN '是'
+                  END) NEW_ZZPHBH
+		       	, C.MTC
+		       	, C.WTC
+		       	, C.ARM
+		       	, C.BHNR
+		       	, C.YXSC
+		       	, C.QCJG
+		       	, C.QCJGDW
+		       	, C.BFQCZB
+		       	, C.BFQCZBTZD
+		       	, (CASE 
+	        			WHEN C.ZZTJBS = 0 THEN '否'
+	         			WHEN C.ZZTJBS = 1 THEN '是'
+                  END) NEW_ZZTJBS
+		       	, C.ZZTJ
+		       	, C.GCJY
+		       	, C.SCAP
+		       	, C.YYJMS
+		       	, C.CLCS
+		       	, C.GBJL_BC
+		       	, C.GBJL_YQBBGX
+		       	, C.GBJL_GBYY
+		       	, C.IS_YXCBW
+		       	, C.SYCJZRJQD
+		       	, C.DQFZSJ
+		       	, C.WXXMXGX
+		       	, C.FKYQ
+		       	, C.HCXQSQD
+		       	, C.YYLJCL
+		       	, C.HHXX
+		       	, C.QT
+		       	, C.IS_TSGJSB
+		       	, C.IS_SP_QC
+		       	, C.SP_QCSM
+		       	, C.IS_SP_RG
+		       	, C.SP_RGSM
+		       	, C.SPQX
+		       	, C.SP_JGXX
+		       	, C.IS_DQFZSJ
+			    ,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+			    ,(CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT' ELSE 'LAST' END) DATA_VERSION
+			FROM B_G2_010_REC B
+			LEFT JOIN B_G2_01000_REC C ON B.ID = C.MAINID AND B.REC_CZLS = C.REC_CZLS
+			LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+			LEFT JOIN D_005 D005 ON B.DPRTCODE = D005.DPRTCODE AND B.ZJH = D005.ZJH
+			WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND (select rec_czsj from B_G2_010_REC where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= B.REC_CZSJ 
+		) WHERE 2 >= RNO
+		</select>
+   
+     	<!-- 附件 -->
+	  	<select id="queryDiff4D011" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT 
+				 B.ID
+				,B.DPRTCODE
+				,B.MAINID
+				,B.YSWJM
+				,B.WBWJM
+				,B.NBWJM
+				,B.WJDX
+				,B.HZM
+				,B.SM
+				,B.CFLJ
+				,B.YXZT
+				,B.CZBMID
+				,B.CZRID
+				,B.CZSJ
+				,B.REC_XGLX AS REC_XGLX
+		       	,B.REC_CZRID AS REC_CZRID
+		       	,B.REC_CZSJ AS REC_CZSJ
+		       	,B.REC_IP AS REC_IP
+		       	,B.REC_CZSM AS REC_CZSM
+		       	,B.REC_CZLS AS REC_CZLS
+		       	,B.REC_ZBID AS REC_ZBID 
+				,JG.DPRTNAME  DPRTCODE_STR
+				,B.WJDX||'K' WJDX_STR
+				,CASE B.YXZT WHEN 1 THEN '有效' ELSE '无效' END YXZT_STR
+				,CZR.USERNAME ||' '|| CZR.REALNAME CZR_STR
+				,CZBM.DPRTNAME  CZBM_STR
+				,REC_CZR.USERNAME ||' '|| REC_CZR.REALNAME REC_CZR_STR
+				,'CURRENT' DATA_VERSION 
+				,'' REC_HD
+		   FROM D_011_REC B
+		   LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+		   LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+		   LEFT JOIN T_USER CZR ON CZR.ID = B.CZRID
+		   LEFT JOIN T_DEPARTMENT CZBM ON CZBM.ID = B.CZBMID
+		   WHERE  B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		   
+		   UNION ALL
+		
+		   SELECT 
+		   		 B.ID
+				,B.DPRTCODE
+				,B.MAINID
+				,B.YSWJM
+				,B.WBWJM
+				,B.NBWJM
+				,B.WJDX
+				,B.HZM
+				,B.SM
+				,B.CFLJ
+				,B.YXZT
+				,B.CZBMID
+				,B.CZRID
+				,B.CZSJ
+				,B.REC_XGLX AS REC_XGLX
+		       	,B.REC_CZRID AS REC_CZRID
+		       	,B.REC_CZSJ AS REC_CZSJ
+		       	,B.REC_IP AS REC_IP
+		       	,B.REC_CZSM AS REC_CZSM
+		       	,B.REC_CZLS AS REC_CZLS
+		       	,B.REC_ZBID AS REC_ZBID 
+				,JG.DPRTNAME  DPRTCODE_STR 
+				,B.WJDX||'K' WJDX_STR
+				,CASE B.YXZT WHEN 1 THEN '有效' ELSE '无效' END YXZT_STR
+				,CZR.USERNAME ||' '|| CZR.REALNAME CZR_STR
+				,CZBM.DPRTNAME  CZBM_STR
+				,REC_CZR.USERNAME ||' '|| REC_CZR.REALNAME REC_CZR_STR
+				,'LAST' DATA_VERSION 
+			 	,'' REC_HD
+		  	 FROM D_011_REC B
+		  	 LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+		  	 LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+		     LEFT JOIN T_USER CZR ON CZR.ID = B.CZRID
+		     LEFT JOIN T_DEPARTMENT CZBM ON CZBM.ID = B.CZBMID
+		 	 WHERE B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         AND B.REC_CZLS IN
+		         (           
+		            SELECT REC_CZLS FROM (
+		            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+		              	FROM B_G2_010_REC A WHERE 
+		             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		            	AND A.REC_CZSJ &lt;=
+		            	(
+			              	SELECT C.REC_CZSJ FROM B_G2_010_REC C WHERE 
+			              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+			              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			             )            
+		             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+		            ) WHERE 1 = RNO                        
+	            ) 
+	  	</select>
+	  	
+	  	<!-- EO适用性 -->
+	  	<select id="queryDiff4Bg201001" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	  	   SELECT 
+				 B.*
+				,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+				,'CURRENT' DATA_VERSION 
+				,'' REC_HD
+		   FROM B_G2_01001_REC B
+		   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+		   WHERE  B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		   
+		   UNION ALL
+		   
+		    SELECT 
+				 B.*
+				,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+				,'LAST' DATA_VERSION 
+				,'' REC_HD
+		   FROM B_G2_01001_REC B
+		   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+		   WHERE  B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		         (           
+		            SELECT REC_CZLS FROM (
+		            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+		              	FROM B_G2_010_REC A WHERE 
+		             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		            	AND A.REC_CZSJ &lt;=
+		            	(
+			              	SELECT C.REC_CZSJ FROM B_G2_010_REC C WHERE 
+			              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+			              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			             )            
+		             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+		            ) WHERE 1 = RNO                        
+	            ) 
+	  	</select>
+	  	
+	  	
+	  	<!-- EO受影响出版物 -->
+	  	<select id="queryDiff4Bg201003" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	  	   SELECT 
+				 B.*
+				 , (CASE 
+	        			WHEN B.ZT = 0 THEN '失效'
+	         			WHEN B.ZT = 1 THEN '有效'
+                  END) NEW_ZT
+				,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+				,'CURRENT' DATA_VERSION 
+				,'' REC_HD
+		   FROM B_G2_01003_REC B
+		   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+		   WHERE  B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		   
+		   UNION ALL
+		   
+		    SELECT 
+				 B.*
+				, (CASE 
+	        			WHEN B.ZT = 0 THEN '失效'
+	         			WHEN B.ZT = 1 THEN '有效'
+                  END) NEW_ZT
+				,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+				,'LAST' DATA_VERSION 
+				,'' REC_HD
+		   FROM B_G2_01003_REC B
+		   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+		   WHERE  B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		         (           
+		            SELECT REC_CZLS FROM (
+		            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+		              	FROM B_G2_010_REC A WHERE 
+		             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		            	AND A.REC_CZSJ &lt;=
+		            	(
+			              	SELECT C.REC_CZSJ FROM B_G2_010_REC C WHERE 
+			              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+			              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			             )            
+		             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+		            ) WHERE 1 = RNO                        
+	            ) 
+	  	</select>
+	  	
+	  	<!-- EO工时停场时间 -->
+	  	<select id="queryDiff4Bg201004" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	  	   SELECT 
+				 B.*
+				 , (CASE 
+	        			WHEN B.ZT = 0 THEN '失效'
+	         			WHEN B.ZT = 1 THEN '有效'
+                  END) NEW_ZT
+				,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+				,'CURRENT' DATA_VERSION 
+				,'' REC_HD
+		   FROM B_G2_01004_REC B
+		   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+		   WHERE  B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		   
+		   UNION ALL
+		   
+		    SELECT 
+				 B.*
+				, (CASE 
+	        			WHEN B.ZT = 0 THEN '失效'
+	         			WHEN B.ZT = 1 THEN '有效'
+                  END) NEW_ZT
+				,WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME
+				,'LAST' DATA_VERSION 
+				,'' REC_HD
+		   FROM B_G2_01004_REC B
+		   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+		   WHERE  B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		         (           
+		            SELECT REC_CZLS FROM (
+		            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+		              	FROM B_G2_010_REC A WHERE 
+		             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		            	AND A.REC_CZSJ &lt;=
+		            	(
+			              	SELECT C.REC_CZSJ FROM B_G2_010_REC C WHERE 
+			              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+			              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			             )            
+		             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+		            ) WHERE 1 = RNO                        
+	            ) 
+	  	</select>
+	  	
+		<!-- 工种工时 -->
+		<select id="queryDiff_BG2993_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT * FROM(
+			
+				SELECT 
+					 B.*
+					,'CURRENT' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'EO指令' YWLX_NAME
+					,WG.GZZDM||' '||WG.GZZMC GZZSTR
+			      	,'' REC_HD
+			  	FROM B_G2_993_REC B
+			  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+			  	LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+			 	WHERE B.YWID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			 	
+				UNION ALL
+			
+				SELECT 
+					 B.*
+					,'LAST' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'EO指令' YWLX_NAME
+					,WG.GZZDM||' '||WG.GZZMC GZZSTR
+		      		,'' REC_HD
+				FROM B_G2_993_REC B
+				LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+				LEFT JOIN T_WORKGROUP WG ON B.GZZID = WG.ID
+				WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+					AND B.REC_CZLS IN
+			         (           
+			            SELECT REC_CZLS FROM (
+			            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+			              	FROM B_G2_010_REC A WHERE 
+			             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			            	AND A.REC_CZSJ &lt;=
+			            	(
+				              	SELECT C.REC_CZSJ FROM B_G2_013_REC C WHERE 
+				              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+				              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+				             )            
+			             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+			            ) WHERE 1 = RNO                        
+		            ) 
+		            
+		    ) A
+			ORDER BY A.XC ASC    
+	  	</select>
+	  	
+	  	<!-- 参考文件 -->
+		<select id="queryDiff_BG2999_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT * FROM(
+			
+				SELECT 
+					 B.*
+					,'CURRENT' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'EO指令' YWLX_NAME
+			      	,'' REC_HD
+			  	FROM B_G2_999_REC B
+			  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+			 	WHERE B.YWID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			 	
+				UNION ALL
+			
+				SELECT 
+					 B.*
+					,'LAST' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'EO指令' YWLX_NAME
+		      		,'' REC_HD
+				FROM B_G2_999_REC B
+				LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+				WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+					AND B.REC_CZLS IN
+			         (           
+			            SELECT REC_CZLS FROM (
+			            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+			              	FROM B_G2_010_REC A WHERE 
+			             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			            	AND A.REC_CZSJ &lt;=
+			            	(
+				              	SELECT C.REC_CZSJ FROM B_G2_013_REC C WHERE 
+				              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+				              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+				             )            
+			             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+			            ) WHERE 1 = RNO                        
+		            ) 
+		            
+		    ) A
+			ORDER BY A.XC ASC    
+	  	</select>
+	  	
+	  	<!-- 器材清单 -->
+		<select id="queryDiff_BG29971_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT * FROM(
+			
+				SELECT 
+					 B.*
+					,'CURRENT' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'工卡' YWLX_NAME
+					,(CASE 
+			         	WHEN B.BJLX = 1 THEN '航材'
+			         	WHEN B.BJLX = 2 THEN '工具'
+			         	WHEN B.BJLX = 3 THEN '设备'
+			      	END
+			      	) BJLX_NAME
+			      	,'' REC_HD
+			  	FROM B_G2_997_REC B
+			  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+			 	WHERE B.YWID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			 		  AND B.BJLX = 1
+			 	
+				UNION ALL
+			
+				SELECT 
+					 B.*
+					,'LAST' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'工卡' YWLX_NAME
+					,(CASE 
+			         	WHEN B.BJLX = 1 THEN '航材'
+			         	WHEN B.BJLX = 2 THEN '工具'
+			         	WHEN B.BJLX = 3 THEN '设备'
+			      	END
+			      	) BJLX_NAME
+		      		,'' REC_HD
+				FROM B_G2_997_REC B
+				LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+				WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+					AND B.BJLX = 1
+					AND B.REC_CZLS IN
+			         (           
+			            SELECT REC_CZLS FROM (
+			            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+			              	FROM B_G2_010_REC A WHERE 
+			             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			            	AND A.REC_CZSJ &lt;=
+			            	(
+				              	SELECT C.REC_CZSJ FROM B_G2_013_REC C WHERE 
+				              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+				              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+				             )            
+			             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+			            ) WHERE 1 = RNO                        
+		            ) 
+		            
+		    ) A
+			ORDER BY A.XC ASC    
+	  	</select>
+  	
+	  	<!-- 工具设备 -->
+		<select id="queryDiff_BG29972_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT * FROM(
+			
+				SELECT 
+					 B.*
+					,'CURRENT' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'工卡' YWLX_NAME
+					,(CASE 
+			         	WHEN B.BJLX = 1 THEN '航材'
+			         	WHEN B.BJLX = 2 THEN '工具'
+			         	WHEN B.BJLX = 3 THEN '设备'
+			      	END
+			      	) BJLX_NAME
+			      	,'' REC_HD
+			  	FROM B_G2_997_REC B
+			  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+			 	WHERE B.YWID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			 		  AND B.BJLX in (2,3)
+			 	
+				UNION ALL
+			
+				SELECT 
+					 B.*
+					,'LAST' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'工卡' YWLX_NAME
+					,(CASE 
+			         	WHEN B.BJLX = 1 THEN '航材'
+			         	WHEN B.BJLX = 2 THEN '工具'
+			         	WHEN B.BJLX = 3 THEN '设备'
+			      	END
+			      	) BJLX_NAME
+		      		,'' REC_HD
+				FROM B_G2_997_REC B
+				LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+				WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+					AND B.BJLX in (2,3)
+					AND B.REC_CZLS IN
+			         (           
+			            SELECT REC_CZLS FROM (
+			            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+			              	FROM B_G2_010_REC A WHERE 
+			             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			            	AND A.REC_CZSJ &lt;=
+			            	(
+				              	SELECT C.REC_CZSJ FROM B_G2_013_REC C WHERE 
+				              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+				              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+				             )            
+			             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+			            ) WHERE 1 = RNO                        
+		            ) 
+		            
+		    ) A
+			ORDER BY A.XC ASC    
+	  	</select>
+  		
+  		<!-- 工作内容 -->
+		<select id="queryDiff_BG2996_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT * FROM(
+			
+				SELECT 
+					 B.*
+					,'CURRENT' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'工卡' YWLX_NAME
+					,(CASE 
+			         	WHEN B.IS_BJ = 0 THEN '否'
+			         	WHEN B.IS_BJ = 1 THEN '是'
+			      	END
+			      	) BJ_NAME
+			      	,'' REC_HD
+			  	FROM B_G2_996_REC B
+			  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+			 	WHERE B.YWID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			 	
+				UNION ALL
+			
+				SELECT 
+					 B.*
+					,'LAST' DATA_VERSION 
+					,WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME
+					,'工卡' YWLX_NAME
+					,(CASE 
+			         	WHEN B.IS_BJ = 0 THEN '否'
+			         	WHEN B.IS_BJ = 1 THEN '是'
+			      	END
+			      	) BJ_NAME
+		      		,'' REC_HD
+				FROM B_G2_996_REC B
+				LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+				WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+					AND B.REC_CZLS IN
+			         (           
+			            SELECT REC_CZLS FROM (
+			            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+			              	FROM B_G2_010_REC A WHERE 
+			             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			            	AND A.REC_CZSJ &lt;=
+			            	(
+				              	SELECT C.REC_CZSJ FROM B_G2_013_REC C WHERE 
+				              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+				              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+				             )            
+			             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+			            ) WHERE 1 = RNO                        
+		            ) 
+		            
+		    ) A
+			ORDER BY A.XC ASC    
+	  	</select>
+	  	
+	  	<!-- 分发部门列表 -->
+	  	<select id="queryDiff4BG2998" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+			SELECT 
+			        B.*
+			      , 'CURRENT' DATA_VERSION,
+		       		(CASE
+						WHEN B.ZT = 0 THEN '失效'
+						WHEN B.ZT = 1 THEN '有效'
+					 END) AS FZT, 
+				    (CASE
+						WHEN B.IS_JS = 0 THEN '否'
+						WHEN B.IS_JS = 1 THEN '是'
+					END) AS FIS_JS, 
+				  WHR.USERNAME ||' '|| WHR.REALNAME AS FWHRID,
+		          WHBB.DPRTNAME AS FWHDWID, 
+		          '技术评估单' AS FYWLX, 
+		          BM.DPRTNAME AS FDXID, 
+		          B.REC_CZSM AS REC_CZSM,
+			      B.REC_CZLS AS REC_CZLS,
+			      B.REC_XGLX AS REC_XGLX,
+		          RECWHR.USERNAME||' '||RECWHR.REALNAME AS REC_CZR_NAME, 
+			      B.REC_CZSJ AS REC_CZSJ,
+			      B.REC_IP AS REC_IP
+				  FROM B_G2_998_REC B   
+			  	  LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+			 	  LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+			 	  LEFT JOIN T_DEPARTMENT WHBB  ON  B.WHDWID= WHBB.ID
+			   	  LEFT JOIN T_DEPARTMENT BM  ON  B.DXID= BM.ID
+				  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+				  AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+			UNION ALL
+			
+			SELECT 
+					B.*
+			      , 'CURRENT' DATA_VERSION,
+		       		(CASE
+						WHEN B.ZT = 0 THEN '失效'
+						WHEN B.ZT = 1 THEN '有效'
+					 END) AS FZT, 
+				    (CASE
+						WHEN B.IS_JS = 0 THEN '否'
+						WHEN B.IS_JS = 1 THEN '是'
+					END) AS FIS_JS, 
+				  WHR.USERNAME ||' '|| WHR.REALNAME AS FWHRID,
+		          WHBB.DPRTNAME AS FWHDWID, 
+		          '维护提示' AS FYWLX, 
+		          BM.DPRTNAME AS FDXID, 
+		          B.REC_CZSM AS REC_CZSM,
+			      B.REC_CZLS AS REC_CZLS,
+			      B.REC_XGLX AS REC_XGLX,
+		          RECWHR.USERNAME||' '||RECWHR.REALNAME AS REC_CZR_NAME, 
+			      B.REC_CZSJ AS REC_CZSJ,
+			      B.REC_IP AS REC_IP
+				  FROM B_G2_998_REC B
+			 	  LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+			 	  LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+			 	  LEFT JOIN T_DEPARTMENT WHBB  ON  B.WHDWID= WHBB.ID
+			 	  LEFT JOIN T_DEPARTMENT BM  ON  B.DXID= BM.ID
+				WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+					AND B.REC_CZLS IN
+			         (           
+			            SELECT REC_CZLS FROM (
+			            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+			              	FROM B_G2_010_REC A WHERE 
+			             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			            	AND A.REC_CZSJ &lt;=
+			            	(
+				              	SELECT C.REC_CZSJ FROM B_G2_002_REC C 
+				              	WHERE C.ID= #{paramsMap.ID,jdbcType=VARCHAR} AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+				             )            
+			             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+			            ) WHERE 1 = RNO                        
+		            )          
+		  </select>   
+   <!-- EO日志列表 结束  -->
+</mapper>

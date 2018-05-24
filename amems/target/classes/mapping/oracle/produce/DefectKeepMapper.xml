@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.DefectKeepMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.DefectKeep" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE"	property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHDWID" 	property="whdwid" 	jdbcType="VARCHAR" />
+    <result column="WHRID" 		property="whrid" 	jdbcType="VARCHAR" />
+    <result column="WHSJ" 		property="whsj" 	jdbcType="TIMESTAMP" />
+    <result column="ZT" 		property="zt" 		jdbcType="DECIMAL" />
+    <result column="BLDH" 		property="bldh" 	jdbcType="VARCHAR" />
+    <result column="FJZCH" 		property="fjzch" 	jdbcType="VARCHAR" />
+    <result column="SQRBMID" 	property="sqrbmid" 	jdbcType="VARCHAR" />
+    <result column="SQRID" 		property="sqrid" 	jdbcType="VARCHAR" />
+    <result column="SQRQ" 		property="sqrq" 	jdbcType="TIMESTAMP" />
+    <result column="BS145" 		property="bs145" 	jdbcType="DECIMAL" />
+    <result column="LYGDID" 	property="lygdid" 	jdbcType="VARCHAR" />
+    <result column="QXMS" 		property="qxms" 	jdbcType="VARCHAR" />
+    <result column="XFQX" 		property="xfqx" 	jdbcType="TIMESTAMP" />
+    <result column="PZRBMID" 	property="pzrbmid" 	jdbcType="VARCHAR" />
+    <result column="PZRID" 		property="pzrid" 	jdbcType="VARCHAR" />
+    <result column="PZYJ" 		property="pzyj" 	jdbcType="VARCHAR" />
+    <result column="PZSJ" 		property="pzsj" 	jdbcType="TIMESTAMP" />
+    <result column="YXXZ" 		property="yxxz" 	jdbcType="VARCHAR" />
+    <result column="GZZ" 		property="gzz" 		jdbcType="VARCHAR" />
+    <result column="GZRQ" 		property="gzrq" 	jdbcType="TIMESTAMP" />
+    <result column="GBRBMID" 	property="gbrbmid" 	jdbcType="VARCHAR" />
+    <result column="GBRID" 		property="gbrid" 	jdbcType="VARCHAR" />
+    <result column="GBSJ" 		property="gbsj" 	jdbcType="TIMESTAMP" />
+    <result column="GBYY" 		property="gbyy" 	jdbcType="VARCHAR" />
+    <result column="GDID" 		property="gdid" 	jdbcType="VARCHAR" />
+    <result column="SYTS" 		property="paramsMap.syts" 	jdbcType="VARCHAR" />
+    <result column="sqr" 		property="paramsMap.sqr" 	jdbcType="VARCHAR" />
+    <result column="GBR"   		property="paramsMap.gbr"    jdbcType="VARCHAR" />
+    <result column="LYGDBH" 	property="paramsMap.lygdbh" jdbcType="VARCHAR" />
+    <result column="LYGDZT" 	property="paramsMap.lygdzt" jdbcType="VARCHAR" />
+    <result column="GDBH" 		property="paramsMap.gdbh" 	jdbcType="VARCHAR" />
+    <result column="GDZT" 		property="paramsMap.gdzt" 	jdbcType="VARCHAR" />
+  </resultMap>
+   <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.produce.po.DefectKeep">
+	    <!--whr 维护人 -->
+ 		<association property="whr" javaType="com.eray.thjw.po.User">  
+	        <id column="WHR_ID" property="id"/>  
+	        <result column="WHR_USERUSER" property="username"/>  
+	        <result column="WHR_REALNAME" property="realname"/>  
+	    </association>  
+	    <!--dprt 机构代码  -->
+ 		<association property="dprt" javaType="com.eray.thjw.po.Department">
+	        <id     column="dprt_dprtcode"    property="id"/>
+	        <result column="dprt_dprtname" 	  property="dprtname"/>
+     	</association>  
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHDWID, WHRID, WHSJ, ZT, BLDH, FJZCH, SQRBMID, SQRID, SQRQ, BS145, 
+    LYGDID, QXMS, XFQX, PZRBMID, PZRID, PZYJ, PZSJ, YXXZ, GZZ, GZRQ, GBRBMID, GBRID, 
+    GBSJ, GBYY, GDID
+  </sql>
+  <select id="queryAllPageList"  resultMap="ResultMap">
+	SELECT  B1.ID, B1.DPRTCODE, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.ZT, B1.BLDH, B1.FJZCH, B1.SQRBMID, B1.SQRID, B1.SQRQ, B1.BS145, 
+		    B1.LYGDID, B1.QXMS, B1.XFQX, B1.PZRBMID, B1.PZRID, B1.PZYJ, B1.PZSJ, B1.YXXZ, B1.GZZ, B1.GZRQ, B1.GBRBMID, B1.GBRID, 
+		    B1.GBSJ, B1.GBYY, B1.GDID,
+      		CEIL(B1.XFQX  - SYSDATE) SYTS,
+        	B4.USERNAME || ' ' || B4.REALNAME AS WHR_ID,
+            B5.DPRTNAME AS DPRT_DPRTNAME,  
+           	B6.USERNAME || ' ' || B6.REALNAME AS SQR,
+            B7.USERNAME || ' ' || B7.REALNAME AS GBR,
+        	(CASE 
+        		WHEN (B1.BS145 = 1) 
+        		THEN BB1.GDBH 
+        		ELSE BB2.GDBH 
+        	 END
+        	 ) LYGDBH,
+          	(CASE 
+          		WHEN (B1.BS145 = 1) 
+          		THEN BB1.ZT 
+          		ELSE BB2.ZT 
+          	 END
+          	 ) LYGDZT,
+           (CASE 
+           		WHEN (B1.BS145 = 1) 
+           		THEN BB3.GDBH 
+           		ELSE BB4.GDBH 
+           	END
+           	) GDBH,
+           (CASE 
+           		WHEN (B1.BS145 = 1) 
+           		THEN BB3.ZT 
+           		ELSE BB4.ZT 
+           	END
+           	) GDZT
+         	FROM B_S2_012 B1
+          	LEFT JOIN T_USER B4 ON B1.WHRID=B4.ID
+      		LEFT JOIN T_DEPARTMENT B5 ON B1.DPRTCODE=B5.ID
+          LEFT JOIN T_USER B6 ON B1.SQRID=B6.ID
+          LEFT JOIN T_USER B7 ON B7.ID=B1.GBRID
+       LEFT JOIN B_S2_014 BB1 ON BB1.ID=B1.LYGDID
+          LEFT JOIN B_S2_008 BB2 ON BB2.ID=B1.LYGDID
+          
+            LEFT JOIN B_S2_014 BB3 ON BB3.ID=B1.GDID
+            LEFT JOIN B_S2_008 BB4 ON BB4.ID=B1.GDID
+			<include refid="BaseResulParam"></include>
+	    	<choose>
+				 <when test='pagination.sort == "auto"'>
+				    	 ORDER BY WHSJ
+				 </when>
+			     <otherwise>
+					     ORDER BY ${pagination.sort} ${pagination.order}
+			     </otherwise>
+		    </choose>
+  </select>
+  <select id="queryMonitorAllPageList"  resultMap="ResultMap">
+			SELECT  B1.ID, B1.DPRTCODE, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.ZT, B1.BLDH, B1.FJZCH, B1.SQRBMID, B1.SQRID, B1.SQRQ, B1.BS145, 
+      B1.LYGDID, B1.QXMS, B1.XFQX, B1.PZRBMID, B1.PZRID, B1.PZYJ, B1.PZSJ, B1.YXXZ, B1.GZZ, B1.GZRQ, B1.GBRBMID, B1.GBRID, 
+      B1.GBSJ, B1.GBYY, B1.GDID,
+      CEIL(B1.XFQX  - SYSDATE) SYTS,
+        B4.USERNAME || ' ' || B4.REALNAME AS WHR_ID,
+             B5.DPRTNAME AS DPRT_DPRTNAME,  
+           B6.USERNAME || ' ' || B6.REALNAME AS SQR,
+             B7.USERNAME || ' ' || B7.REALNAME AS GBR,
+        (CASE WHEN (B1.BS145 = 1) THEN BB1.GDBH ELSE BB2.GDBH END) LYGDBH,
+          (CASE WHEN (B1.BS145 = 1) THEN BB1.ZT ELSE BB2.ZT END)      LYGDZT,
+          
+           (CASE WHEN (B1.BS145 = 1) THEN BB3.GDBH ELSE BB4.GDBH END) GDBH,
+           (CASE WHEN (B1.BS145 = 1) THEN BB3.ZT ELSE BB4.ZT END)     GDZT
+         FROM B_S2_012 B1
+          LEFT JOIN T_USER B4 ON B1.WHRID=B4.ID
+      LEFT JOIN T_DEPARTMENT B5 ON B1.DPRTCODE=B5.ID
+          LEFT JOIN T_USER B6 ON B1.SQRID=B6.ID
+          LEFT JOIN T_USER B7 ON B7.ID=B1.GBRID
+       LEFT JOIN B_S2_014 BB1 ON BB1.ID=B1.LYGDID
+          LEFT JOIN B_S2_008 BB2 ON BB2.ID=B1.LYGDID
+          
+            LEFT JOIN B_S2_014 BB3 ON BB3.ID=B1.GDID
+            LEFT JOIN B_S2_008 BB4 ON BB4.ID=B1.GDID
+			<include refid="BaseResulParam"></include> AND B1.ZT NOT IN 1
+	    	<choose>
+				 <when test='pagination.sort == "auto"'>
+				    	 ORDER BY WHSJ
+				 </when>
+			     <otherwise>
+					     ORDER BY ${pagination.sort} ${pagination.order}
+			     </otherwise>
+		    </choose>
+  </select>
+  <!-- 搜索参数 -->
+  <sql id="BaseResulParam">
+	   		 WHERE 1=1  
+	    <if test="fjzch != null and fjzch != ''">
+             AND B1.FJZCH = #{fjzch, jdbcType=VARCHAR}
+        </if>
+        <if test="paramsMap.ztList != null and paramsMap.ztList != '' ">
+             AND  B1.ZT IN (${paramsMap.ztList})  
+        </if>
+         <if test="paramsMap != null and paramsMap.sqr != null and paramsMap.sqr != ''"> 
+		      and (
+			        UPPER(B6.REALNAME) like UPPER('%'||#{paramsMap.sqr}||'%')
+		      	or  UPPER(B6.USERNAME) like UPPER('%'||#{paramsMap.sqr}||'%')
+		     )              <!-- 左右匹配 查询关键字 -->
+        </if> 
+        <if test="dprtcode != null and dprtcode != ''">
+             AND B1.DPRTCODE =  #{dprtcode, jdbcType=VARCHAR}
+        </if>
+        <if test="keyword != null and keyword != ''">
+		     AND (UPPER(B1.BLDH) LIKE UPPER('%'||#{keyword}||'%')
+		     OR UPPER(B1.QXMS) LIKE UPPER('%'||#{keyword}||'%')
+		     	 )              <!-- 左右匹配 查询关键字 -->
+		</if>
+	    <if test="id != null and id != '' " >   
+             AND  B1.ID  = #{id, jdbcType=VARCHAR}
+        </if>
+        
+        <if test="paramsMap != null and paramsMap.sqBeginDate != null and paramsMap.sqBeginDate != ''">
+		     AND B1.SQRQ &gt;= TO_DATE(#{paramsMap.sqBeginDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+        <if test="paramsMap != null and paramsMap.sqEndDate != null and paramsMap.sqEndDate != ''">
+		     AND B1.SQRQ &lt;= TO_DATE(#{paramsMap.sqEndDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+        <if test="paramsMap != null and paramsMap.xfBeginDate != null and paramsMap.xfBeginDate != ''">
+		     AND B1.XFQX &gt;= TO_DATE(#{paramsMap.xfBeginDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+        <if test="paramsMap != null and paramsMap.xfEndDate != null and paramsMap.xfEndDate != ''">
+		     AND B1.XFQX &lt;= TO_DATE(#{paramsMap.xfEndDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+        <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+        <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    
+	    	</when>
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId != null and paramsMap.userId !=""'>  
+	    			 AND exists 
+	    		( select t.dprtcode, t.fjzch, t.fjjx,max(t.xlh) xlh
+		         	 from (
+		          		SELECT  DPRTCODE,FJZCH,XLH,FJJX from V_ROLE_JX 
+		                 where USER_ID = #{paramsMap.userId,jdbcType=VARCHAR} 
+		                union all
+		                select d010.dprtcode, d010.fjzch, d010.xlh,d010.fjjx
+		                  from d_010 d010
+		                 where d010.zt = 1) t where t.dprtcode=DPRTCODE
+		        		 group by t.dprtcode, t.fjzch,t.fjjx
+	    		)
+	    	</when>
+   		 </choose>
+  </sql>
+  <select id="queryCount" parameterType="com.eray.thjw.produce.po.DefectKeep" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM B_S2_012 
+    WHERE BLDH     = #{ bldh,     jdbcType = VARCHAR }
+  	AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </select>
+   <!--根据故障保留id查询故障保留信息 Start-->
+  <select id="getInfoById"  resultMap="ResultMap" >
+		SELECT  B1.ID, B1.DPRTCODE, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.ZT, B1.BLDH, B1.FJZCH, B1.SQRBMID, B1.SQRID, B1.SQRQ, B1.BS145, 
+			B1.LYGDID, B1.QXMS, B1.XFQX, B1.PZRBMID, B1.PZRID, B1.PZYJ, B1.PZSJ, B1.YXXZ, B1.GZZ, B1.GZRQ, B1.GBRBMID, B1.GBRID, 
+			B1.GBSJ, B1.GBYY, B1.GDID,
+		    B4.USERNAME || ' ' || B4.REALNAME AS WHR_ID,
+       	    B5.DPRTNAME AS DPRT_DPRTNAME,	
+     	    B6.USERNAME || ' ' || B6.REALNAME AS SQR,
+     	        B7.USERNAME || ' ' || B7.REALNAME AS GBR,
+		    (CASE WHEN (B1.BS145 = 1) THEN BB1.GDBH ELSE BB2.GDBH END) LYGDBH,
+        	(CASE WHEN (B1.BS145 = 1) THEN BB1.ZT ELSE BB2.ZT END) 	   LYGDZT,
+         	(CASE WHEN (B1.BS145 = 1) THEN BB2.GDBH ELSE BB3.GDBH END) GDBH,
+         	(CASE WHEN (B1.BS145 = 1) THEN BB2.ZT ELSE BB3.ZT END)     GDZT
+         FROM B_S2_012 B1
+          LEFT JOIN T_USER B4 ON B1.WHRID=B4.ID
+      LEFT JOIN T_DEPARTMENT B5 ON B1.DPRTCODE=B5.ID
+       	LEFT JOIN T_USER B6 ON B1.SQRID=B6.ID
+       	          LEFT JOIN T_USER B7 ON B7.ID=B1.GBRID
+       LEFT JOIN B_S2_014 BB1 ON BB1.ID=B1.LYGDID
+          LEFT JOIN B_S2_008 BB2 ON BB2.ID=B1.LYGDID
+            LEFT JOIN B_S2_014 BB3 ON BB1.ID=B1.GDID
+            LEFT JOIN B_S2_008 BB4 ON BB2.ID=B1.GDID
+		 WHERE  B1.ID  = #{id, jdbcType=VARCHAR}
+  </select>
+  <select id="getCurrentZt4Validation" parameterType="String" resultType="int">
+	select zt from B_S2_012 where id=#{id, jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_012
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S2_012
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.DefectKeep" >
+    insert into B_S2_012 (ID, DPRTCODE, WHDWID, 
+      WHRID, WHSJ, ZT, 
+      BLDH, FJZCH, SQRBMID, 
+      SQRID, SQRQ, BS145, 
+      LYGDID, QXMS, XFQX, 
+      PZRBMID, PZRID, PZYJ, 
+      PZSJ, YXXZ, GZZ, 
+      GZRQ, GBRBMID, GBRID, 
+      GBSJ, GBYY, GDID)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{bldh,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{sqrbmid,jdbcType=VARCHAR}, 
+      #{sqrid,jdbcType=VARCHAR}, #{sqrq,jdbcType=TIMESTAMP}, #{bs145,jdbcType=DECIMAL}, 
+      #{lygdid,jdbcType=VARCHAR}, #{qxms,jdbcType=VARCHAR}, #{xfqx,jdbcType=TIMESTAMP}, 
+      #{pzrbmid,jdbcType=VARCHAR}, #{pzrid,jdbcType=VARCHAR}, #{pzyj,jdbcType=VARCHAR}, 
+      #{pzsj,jdbcType=TIMESTAMP}, #{yxxz,jdbcType=VARCHAR}, #{gzz,jdbcType=VARCHAR}, 
+      #{gzrq,jdbcType=TIMESTAMP}, #{gbrbmid,jdbcType=VARCHAR}, #{gbrid,jdbcType=VARCHAR}, 
+      #{gbsj,jdbcType=TIMESTAMP}, #{gbyy,jdbcType=VARCHAR}, #{gdid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.DefectKeep" >
+    insert into B_S2_012
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="bldh != null" >
+        BLDH,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="sqrbmid != null" >
+        SQRBMID,
+      </if>
+      <if test="sqrid != null" >
+        SQRID,
+      </if>
+      <if test="sqrq != null" >
+        SQRQ,
+      </if>
+      <if test="bs145 != null" >
+        BS145,
+      </if>
+      <if test="lygdid != null" >
+        LYGDID,
+      </if>
+      <if test="qxms != null" >
+        QXMS,
+      </if>
+      <if test="xfqx != null" >
+        XFQX,
+      </if>
+      <if test="pzrbmid != null" >
+        PZRBMID,
+      </if>
+      <if test="pzrid != null" >
+        PZRID,
+      </if>
+      <if test="pzyj != null" >
+        PZYJ,
+      </if>
+      <if test="pzsj != null" >
+        PZSJ,
+      </if>
+      <if test="yxxz != null" >
+        YXXZ,
+      </if>
+      <if test="gzz != null" >
+        GZZ,
+      </if>
+      <if test="gzrq != null" >
+        GZRQ,
+      </if>
+      <if test="gbrbmid != null" >
+        GBRBMID,
+      </if>
+      <if test="gbrid != null" >
+        GBRID,
+      </if>
+      <if test="gbsj != null" >
+        GBSJ,
+      </if>
+      <if test="gbyy != null" >
+        GBYY,
+      </if>
+      <if test="gdid != null" >
+        GDID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bldh != null" >
+        #{bldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrbmid != null" >
+        #{sqrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrq != null" >
+        #{sqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bs145 != null" >
+        #{bs145,jdbcType=DECIMAL},
+      </if>
+      <if test="lygdid != null" >
+        #{lygdid,jdbcType=VARCHAR},
+      </if>
+      <if test="qxms != null" >
+        #{qxms,jdbcType=VARCHAR},
+      </if>
+      <if test="xfqx != null" >
+        #{xfqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pzrbmid != null" >
+        #{pzrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pzrid != null" >
+        #{pzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pzyj != null" >
+        #{pzyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pzsj != null" >
+        #{pzsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxxz != null" >
+        #{yxxz,jdbcType=VARCHAR},
+      </if>
+      <if test="gzz != null" >
+        #{gzz,jdbcType=VARCHAR},
+      </if>
+      <if test="gzrq != null" >
+        #{gzrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbrbmid != null" >
+        #{gbrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbsj != null" >
+        #{gbsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        #{gbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="gdid != null" >
+        #{gdid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.DefectKeep" >
+    update B_S2_012
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bldh != null" >
+        BLDH = #{bldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrbmid != null" >
+        SQRBMID = #{sqrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        SQRID = #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrq != null" >
+        SQRQ = #{sqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bs145 != null" >
+        BS145 = #{bs145,jdbcType=DECIMAL},
+      </if>
+      <if test="lygdid != null" >
+        LYGDID = #{lygdid,jdbcType=VARCHAR},
+      </if>
+      <if test="qxms != null" >
+        QXMS = #{qxms,jdbcType=VARCHAR},
+      </if>
+      <if test="xfqx != null" >
+        XFQX = #{xfqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pzrbmid != null" >
+        PZRBMID = #{pzrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pzrid != null" >
+        PZRID = #{pzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pzyj != null" >
+        PZYJ = #{pzyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pzsj != null" >
+        PZSJ = #{pzsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxxz != null" >
+        YXXZ = #{yxxz,jdbcType=VARCHAR},
+      </if>
+      <if test="gzz != null" >
+        GZZ = #{gzz,jdbcType=VARCHAR},
+      </if>
+      <if test="gzrq != null" >
+        GZRQ = #{gzrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbrbmid != null" >
+        GBRBMID = #{gbrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbsj != null" >
+        GBSJ = #{gbsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="gdid != null" >
+        GDID = #{gdid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.DefectKeep" >
+    update B_S2_012
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BLDH = #{bldh,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      SQRBMID = #{sqrbmid,jdbcType=VARCHAR},
+      SQRID = #{sqrid,jdbcType=VARCHAR},
+      SQRQ = #{sqrq,jdbcType=TIMESTAMP},
+      BS145 = #{bs145,jdbcType=DECIMAL},
+      LYGDID = #{lygdid,jdbcType=VARCHAR},
+      QXMS = #{qxms,jdbcType=VARCHAR},
+      XFQX = #{xfqx,jdbcType=TIMESTAMP},
+      PZRBMID = #{pzrbmid,jdbcType=VARCHAR},
+      PZRID = #{pzrid,jdbcType=VARCHAR},
+      PZYJ = #{pzyj,jdbcType=VARCHAR},
+      PZSJ = #{pzsj,jdbcType=TIMESTAMP},
+      YXXZ = #{yxxz,jdbcType=VARCHAR},
+      GZZ = #{gzz,jdbcType=VARCHAR},
+      GZRQ = #{gzrq,jdbcType=TIMESTAMP},
+      GBRBMID = #{gbrbmid,jdbcType=VARCHAR},
+      GBRID = #{gbrid,jdbcType=VARCHAR},
+      GBSJ = #{gbsj,jdbcType=TIMESTAMP},
+      GBYY = #{gbyy,jdbcType=VARCHAR},
+      GDID = #{gdid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

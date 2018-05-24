@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.CheckTaskBillMapper">
+     
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.CheckTaskBill">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" /> 
+    <result column="XLH" jdbcType="VARCHAR" property="xlh" />
+    <result column="DJXMID" jdbcType="VARCHAR" property="djxmid" />
+    <result column="DJRWBH" jdbcType="VARCHAR" property="djrwbh" />
+    <result column="WXFABH" jdbcType="VARCHAR" property="wxfabh" />  
+    <result column="DJBH" jdbcType="VARCHAR" property="djbh" />
+    <result column="BB" jdbcType="DECIMAL" property="bb" />
+    <result column="ZWMS" jdbcType="VARCHAR" property="zwms" />
+    <result column="YWMS" jdbcType="VARCHAR" property="ywms" />
+    <result column="ZYXS" jdbcType="DECIMAL" property="zyxs" />
+    <result column="JHGS_RS" jdbcType="DECIMAL" property="jhgsRs" />
+    <result column="JHGS_XSS" jdbcType="DECIMAL" property="jhgsXss" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZDBMID" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="SHBMID" jdbcType="VARCHAR" property="shbmid" />
+    <result column="SHYJ" jdbcType="TIMESTAMP" property="shyj" />
+    <result column="SHRID" jdbcType="VARCHAR" property="shrid" />
+     <result column="SHYJ" jdbcType="TIMESTAMP" property="shyj" />
+    <result column="SHRID" jdbcType="VARCHAR" property="shrid" />
+     <result column="SHYJ" jdbcType="TIMESTAMP" property="shyj" />
+    <result column="SHRID" jdbcType="VARCHAR" property="shrid" />
+    <result column="SHSJ" jdbcType="VARCHAR" property="shsj" />
+    <result column="PFBMID" jdbcType="VARCHAR" property="pfbmid" />
+    <result column="PFYJ" jdbcType="VARCHAR" property="pfyj" />
+    <result column="PFRID" jdbcType="VARCHAR" property="pfrid" />
+    <result column="PFSJ" jdbcType="VARCHAR" property="pfsj" />
+    <result column="ZDJSRID" jdbcType="VARCHAR" property="zdjsrid" />
+    <result column="ZDJSRQ" jdbcType="TIMESTAMP" property="zdjsrq" />
+    <result column="ZDJSYY" jdbcType="VARCHAR" property="zdjsyy" />
+     
+     <result column="JKXMBH_F" jdbcType="VARCHAR" property="jkxmbhF" />
+    <result column="JKZ_F" jdbcType="VARCHAR" property="jkzF" />
+    <result column="JKXMBH_S" jdbcType="VARCHAR" property="jkxmbhS" />
+    <result column="JKZ_S" jdbcType="VARCHAR" property="jkzS" />
+    <result column="JKXMBH_T" jdbcType="TIMESTAMP" property="jkxmbhT" />
+    <result column="JKZ_T" jdbcType="VARCHAR" property="jkzT" />
+    
+    <result column="USERNAME" jdbcType="TIMESTAMP" property="username" />
+    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+    <result column="DISPLAYNAME" jdbcType="VARCHAR" property="displayname" />
+    
+    
+    <result column="DPRTNAME" jdbcType="VARCHAR" property="dprtname" />
+    <result column="JKBZ" jdbcType="VARCHAR" property="jkbz" />
+  </resultMap>
+  <sql id="Base_Column_List">
+   ID,FJZCH,BJH,XLH,DJXMID,DJRWBH,WXFABH,DJBH,BB,ZWMS,YWMS,ZYXS,JHGS_RS,JHGS_XSS,
+   BZ,ZDBMID,ZDRID,ZDSJ,ZT,DPRTCODE,SHBMID,SHYJ,SHRID,SHSJ,PFBMID,PFYJ,PFRID,PFSJ,
+   ZDJSRID,ZDJSRQ,ZDJSYY,JKBZ
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select 
+     a.ID,a.FJZCH,a.BJH,a.XLH,a.DJXMID,a.DJRWBH,a.WXFABH,a.DJBH,a.BB,a.ZWMS,a.YWMS,a.ZYXS,a.JHGS_RS,a.JHGS_XSS,
+  	 a.BZ,a.ZDBMID,a.ZDRID,a.ZDSJ,a.ZT,a.DPRTCODE,a.SHBMID,a.SHYJ,a.SHRID,a.SHSJ,a.PFBMID,a.PFYJ,a.PFRID,a.PFSJ,
+     a.ZDJSRID,a.ZDJSRQ,a.ZDJSYY,a.JKBZ,t.USERNAME,t.REALNAME
+    from B_G_014 a left join t_user t on a.zdrid=t.id
+    where a.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 检查定检任务主表是否存在数据 -->
+  <select id="checkIsExist" parameterType="Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_014
+    where WXFABH = #{wxfabh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and ZT in 
+    	<foreach collection="stateList" item="state" index="index" open="(" close=")" separator=",">
+			#{state}
+		</foreach>
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_G_014
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+   <!-- 添加定检任务主表信息 -->
+   <insert id="save" parameterType="com.eray.thjw.po.CheckTaskBill">
+    insert into B_G_014 (ID, FJZCH,BJH,XLH,DJXMID,DJRWBH,WXFABH,DJBH,BB,ZWMS,YWMS,ZYXS,JHGS_RS,JHGS_XSS,BZ,ZDBMID,ZDRID,ZDSJ,ZT,DPRTCODE,JKBZ)
+    values (#{id,jdbcType=VARCHAR},#{fjzch,jdbcType=VARCHAR},#{bjh,jdbcType=VARCHAR},#{xlh,jdbcType=VARCHAR},#{djxmid,jdbcType=VARCHAR},#{djrwbh,jdbcType=VARCHAR},#{wxfabh,jdbcType=VARCHAR},#{djbh,jdbcType=VARCHAR},#{bb,jdbcType=VARCHAR},#{zwms,jdbcType=VARCHAR},#{ywms,jdbcType=VARCHAR},#{zyxs,jdbcType=DECIMAL},#{jhgsRs,jdbcType=DECIMAL},#{jhgsXss,jdbcType=DECIMAL},#{bz,jdbcType=VARCHAR},#{zdbmid,jdbcType=VARCHAR},#{zdrid,jdbcType=VARCHAR},sysdate,#{zt,jdbcType=DECIMAL},#{dprtcode,jdbcType=VARCHAR},#{jkbz,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.CheckTaskBill">
+    update B_G_014
+    <set>
+      <if test="djrwbh != null">
+        DJRWBH = #{djrwbh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfabh != null">
+        WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null">
+        DJBH = #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null">
+        BB = #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="zwms != null">
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        YWMS = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="zyxs != null">
+        ZYXS = #{zyxs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsRs != null">
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null">
+        JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null">
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="zdjsrid != null">
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+        ZDJSRQ = sysdate,
+      <if test="zdjsyy != null">
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null">
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkbz != null">
+        JKBZ = #{jkbz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeySelective1" parameterType="com.eray.thjw.po.CheckTaskBill">
+    update B_G_014
+    <set>
+      <if test="jkbz != null">
+        JKBZ = #{jkbz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.CheckTaskBill">
+    update B_G_014
+    set DJRWBH = #{djrwbh,jdbcType=VARCHAR},
+      WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      DJBH = #{djbh,jdbcType=VARCHAR},
+      BB = #{bb,jdbcType=DECIMAL},
+      ZWMS = #{zwms,jdbcType=VARCHAR},
+      YWMS = #{ywms,jdbcType=VARCHAR},
+      ZYXS = #{zyxs,jdbcType=DECIMAL},
+      JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+   <!-- 定检任务单参数 -->
+	<sql id="checklistParam">
+	   where 
+	   1=1
+	     <if test="keyword != null and keyword != ''">
+		    and (UPPER(a.djrwbh) like UPPER('%'||#{keyword}||'%')
+		    or UPPER(a.wxfabh) like UPPER('%'||#{keyword}||'%')
+		    or UPPER(a.djbh) like UPPER('%'||#{keyword}||'%')
+		    or UPPER(a.fjzch) like UPPER('%'||#{keyword}||'%')
+		    or UPPER(a.bjh) like UPPER('%'||#{keyword}||'%')
+		    or UPPER(a.xlh) like UPPER('%'||#{keyword}||'%')
+		    or UPPER(a.zwms) like UPPER('%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+		  <if test="jkxm != null and jkxm  != ''">
+		    and (b.jkxmbh_F= #{jkxm}      
+		    or b.jkxmbh_S  = #{jkxm} 
+		    or b.jkxmbh_T = #{jkxm} )              <!-- 监控项目查询  -->
+		</if>
+		  <if test="zt != null ">                               <!-- 状态查询  -->
+            and  A.zt = #{zt} 
+         </if>
+          <if test="zdrid != null and zdrid != ''">    <!-- 制单人查询  -->
+            and  A.zdrid  = #{zdrid }
+           </if>
+           <if test="dprtcode != null and dprtcode != ''">    <!-- 制单人查询  -->
+            and  A.dprtcode  = #{dprtcode }
+           </if>
+           <if test="id != null and id != ''">    <!-- 制单人查询  -->
+            and  A.id  = #{id}
+           </if>
+	</sql>
+	
+    <select id="selectCheckTaskBill" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.CheckTaskBill">
+	           
+		           select a.ID,a.FJZCH,a.BJH,a.XLH,a.DJXMID,a.DJRWBH,a.WXFABH,a.DJBH,a.BB,a.ZWMS,a.YWMS,a.ZYXS,a.JHGS_RS,a.JHGS_XSS,
+		           
+		           a.BZ,a.ZDBMID,a.ZDRID,a.ZDSJ,a.ZT,a.DPRTCODE,a.SHBMID,a.SHYJ,a.SHRID,a.SHSJ,a.PFBMID,a.PFYJ,a.PFRID,a.PFSJ,a.ZDJSRID,a.ZDJSRQ,a.ZDJSYY,
+		           
+		           b.JKXMBH_F ,b.JKZ_F ,b.JKXMBH_S,b.JKZ_S ,b.JKXMBH_T,b.JKZ_T ,e.username||' '||e.realname displayname,
+		           
+		           c.username,c.realname,d.dprtname from b_g_014 a 
+	
+	               left join b_g_01401 b on a.id=b.mainid left join t_user c on a.zdrid=c.id 
+	          
+	               left join t_department d on a.dprtcode=d.id left join t_user e on a.zdjsrid=e.id
+              
+                 <include refid="checklistParam"></include>
+           <choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		order by a.zdsj DESC 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>	
+  </select>
+  
+</mapper>

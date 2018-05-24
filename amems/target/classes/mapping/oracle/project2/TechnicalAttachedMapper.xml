@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.TechnicalAttachedMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.TechnicalAttached" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="WCLX" 	property="wclx" jdbcType="VARCHAR" />
+    <result column="DJ" 	property="dj" jdbcType="VARCHAR" />
+    <result column="JJCD" 	property="jjcd" jdbcType="VARCHAR" />
+    <result column="SJGZ" 	property="sjgz" jdbcType="VARCHAR" />
+    <result column="WJZY" 	property="wjzy" jdbcType="VARCHAR" />
+    <result column="SYFW_YWJ" property="syfwYwj" jdbcType="VARCHAR" />
+    <result column="SYX" 	  property="syx" jdbcType="DECIMAL" />
+    <result column="FSYYY" 	  property="fsyyy" jdbcType="VARCHAR" />
+    <result column="SYLB"     property="sylb" jdbcType="DECIMAL" />
+    <result column="SYFW_BDW" property="syfwBdw" jdbcType="VARCHAR" />
+    <result column="GBTJ" 	  property="gbtj" jdbcType="VARCHAR" />
+    <result column="IS_CFJC"  property="isCfjc" jdbcType="DECIMAL" />
+    <result column="IS_ZZCS"  property="isZzcs" jdbcType="DECIMAL" />
+    <result column="IS_MFHC"  property="isMfhc" jdbcType="DECIMAL" />
+    <result column="IS_ZBHC"  property="isZbhc" jdbcType="DECIMAL" />
+    <result column="IS_TSGJ"  property="isTsgj" jdbcType="DECIMAL" />
+    <result column="IS_YXZLPH" property="isYxzlph" jdbcType="DECIMAL" />
+    <result column="YWJNR"     property="ywjnr" jdbcType="VARCHAR" />
+    <result column="BJ"        property="bj" jdbcType="VARCHAR" />
+    <result column="WJGXJX"    property="wjgxjx" jdbcType="VARCHAR" />
+    <result column="XGWJZXZTDC" property="xgwjzxztdc" jdbcType="VARCHAR" />
+    <result column="GCPGJL"     property="gcpgjl" jdbcType="VARCHAR" />
+    <result column="JLFJID"     property="jlfjid" jdbcType="VARCHAR" />
+    <result column="fjzch"     property="fjzch" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, WCLX, DJ, JJCD, SJGZ, WJZY, SYFW_YWJ, SYX, FSYYY, SYLB, SYFW_BDW, 
+    GBTJ, IS_CFJC, IS_ZZCS, IS_MFHC, IS_ZBHC, IS_TSGJ, IS_YXZLPH, YWJNR, BJ, WJGXJX, 
+    XGWJZXZTDC, GCPGJL, JLFJID,fjzch
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_00100
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据mainid 技术评估单id查询 技术评估单附表  -->
+  <select id="selectByMainidCount" parameterType="com.eray.thjw.project2.po.TechnicalAttached" resultType="java.lang.Integer">
+    SELECT COUNT(1)
+    FROM B_G2_00100 
+    WHERE MAINID  = #{ mainid,jdbcType = VARCHAR }
+  </select>
+  
+  <!-- 根据mainid 技术评估单id查询 技术评估单附表  -->
+  <select id="selectByMainid"   resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT <include refid="Base_Column_List" />
+    FROM B_G2_00100 
+    WHERE MAINID  = #{ mainid,jdbcType = VARCHAR }
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_00100
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.TechnicalAttached" >
+    insert into B_G2_00100 (ID, MAINID, WCLX, 
+      DJ, JJCD, SJGZ, WJZY, 
+      SYFW_YWJ, SYX, FSYYY, 
+      SYLB, SYFW_BDW, 
+      GBTJ, IS_CFJC, IS_ZZCS, 
+      IS_MFHC, IS_ZBHC, IS_TSGJ, 
+      IS_YXZLPH, YWJNR, BJ, 
+      WJGXJX, XGWJZXZTDC, GCPGJL, 
+      JLFJID,fjzch)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{wclx,jdbcType=VARCHAR}, 
+      #{dj,jdbcType=VARCHAR}, #{jjcd,jdbcType=VARCHAR}, #{sjgz,jdbcType=VARCHAR}, #{wjzy,jdbcType=VARCHAR}, 
+      #{syfwYwj,jdbcType=VARCHAR}, #{syx,jdbcType=DECIMAL}, #{fsyyy,jdbcType=VARCHAR}, 
+      #{sylb,jdbcType=DECIMAL}, #{syfwBdw,jdbcType=VARCHAR},  
+      #{gbtj,jdbcType=VARCHAR}, #{isCfjc,jdbcType=DECIMAL}, #{isZzcs,jdbcType=DECIMAL}, 
+      #{isMfhc,jdbcType=DECIMAL}, #{isZbhc,jdbcType=DECIMAL}, #{isTsgj,jdbcType=DECIMAL}, 
+      #{isYxzlph,jdbcType=DECIMAL}, #{ywjnr,jdbcType=VARCHAR}, #{bj,jdbcType=VARCHAR}, 
+      #{wjgxjx,jdbcType=VARCHAR}, #{xgwjzxztdc,jdbcType=VARCHAR}, #{gcpgjl,jdbcType=VARCHAR}, 
+      #{jlfjid,jdbcType=VARCHAR},#{fjzch,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.TechnicalAttached" >
+    insert into B_G2_00100
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="wclx != null" >
+        WCLX,
+      </if>
+      <if test="dj != null" >
+        DJ,
+      </if>
+      <if test="jjcd != null" >
+        JJCD,
+      </if>
+      <if test="sjgz != null" >
+        SJGZ,
+      </if>
+      <if test="wjzy != null" >
+        WJZY,
+      </if>
+      <if test="syfwYwj != null" >
+        SYFW_YWJ,
+      </if>
+      <if test="syx != null" >
+        SYX,
+      </if>
+      <if test="fsyyy != null" >
+        FSYYY,
+      </if>
+      <if test="sylb != null" >
+        SYLB,
+      </if>
+      <if test="syfwBdw != null" >
+        SYFW_BDW,
+      </if>
+     
+      <if test="gbtj != null" >
+        GBTJ,
+      </if>
+      <if test="isCfjc != null" >
+        IS_CFJC,
+      </if>
+      <if test="isZzcs != null" >
+        IS_ZZCS,
+      </if>
+      <if test="isMfhc != null" >
+        IS_MFHC,
+      </if>
+      <if test="isZbhc != null" >
+        IS_ZBHC,
+      </if>
+      <if test="isTsgj != null" >
+        IS_TSGJ,
+      </if>
+      <if test="isYxzlph != null" >
+        IS_YXZLPH,
+      </if>
+      <if test="ywjnr != null" >
+        YWJNR,
+      </if>
+      <if test="bj != null" >
+        BJ,
+      </if>
+      <if test="wjgxjx != null" >
+        WJGXJX,
+      </if>
+      <if test="xgwjzxztdc != null" >
+        XGWJZXZTDC,
+      </if>
+      <if test="gcpgjl != null" >
+        GCPGJL,
+      </if>
+      <if test="jlfjid != null" >
+        JLFJID,
+      </if>
+      <if test="fjzch != null" >
+        fjzch,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="wclx != null" >
+        #{wclx,jdbcType=VARCHAR},
+      </if>
+      <if test="dj != null" >
+        #{dj,jdbcType=VARCHAR},
+      </if>
+      <if test="jjcd != null" >
+        #{jjcd,jdbcType=VARCHAR},
+      </if>
+      <if test="sjgz != null" >
+        #{sjgz,jdbcType=VARCHAR},
+      </if>
+      <if test="wjzy != null" >
+        #{wjzy,jdbcType=VARCHAR},
+      </if>
+      <if test="syfwYwj != null" >
+        #{syfwYwj,jdbcType=VARCHAR},
+      </if>
+      <if test="syx != null" >
+        #{syx,jdbcType=DECIMAL},
+      </if>
+      <if test="fsyyy != null" >
+        #{fsyyy,jdbcType=VARCHAR},
+      </if>
+      <if test="sylb != null" >
+        #{sylb,jdbcType=DECIMAL},
+      </if>
+      <if test="syfwBdw != null" >
+        #{syfwBdw,jdbcType=VARCHAR},
+      </if>
+      <if test="gbtj != null" >
+        #{gbtj,jdbcType=VARCHAR},
+      </if>
+      <if test="isCfjc != null" >
+        #{isCfjc,jdbcType=DECIMAL},
+      </if>
+      <if test="isZzcs != null" >
+        #{isZzcs,jdbcType=DECIMAL},
+      </if>
+      <if test="isMfhc != null" >
+        #{isMfhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isZbhc != null" >
+        #{isZbhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isTsgj != null" >
+        #{isTsgj,jdbcType=DECIMAL},
+      </if>
+      <if test="isYxzlph != null" >
+        #{isYxzlph,jdbcType=DECIMAL},
+      </if>
+      <if test="ywjnr != null" >
+        #{ywjnr,jdbcType=VARCHAR},
+      </if>
+      <if test="bj != null" >
+        #{bj,jdbcType=VARCHAR},
+      </if>
+      <if test="wjgxjx != null" >
+        #{wjgxjx,jdbcType=VARCHAR},
+      </if>
+      <if test="xgwjzxztdc != null" >
+        #{xgwjzxztdc,jdbcType=VARCHAR},
+      </if>
+      <if test="gcpgjl != null" >
+        #{gcpgjl,jdbcType=VARCHAR},
+      </if>
+      <if test="jlfjid != null" >
+        #{jlfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.TechnicalAttached" >
+    update B_G2_00100
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="wclx != null" >
+        WCLX = #{wclx,jdbcType=VARCHAR},
+      </if>
+      <if test="dj != null" >
+        DJ = #{dj,jdbcType=VARCHAR},
+      </if>
+      <if test="jjcd != null" >
+        JJCD = #{jjcd,jdbcType=VARCHAR},
+      </if>
+      <if test="sjgz != null" >
+        SJGZ = #{sjgz,jdbcType=VARCHAR},
+      </if>
+      <if test="wjzy != null" >
+        WJZY = #{wjzy,jdbcType=VARCHAR},
+      </if>
+      <if test="syfwYwj != null" >
+        SYFW_YWJ = #{syfwYwj,jdbcType=VARCHAR},
+      </if>
+      <if test="syx != null" >
+        SYX = #{syx,jdbcType=DECIMAL},
+      </if>
+      <if test="fsyyy != null" >
+        FSYYY = #{fsyyy,jdbcType=VARCHAR},
+      </if>
+      <if test="sylb != null" >
+        SYLB = #{sylb,jdbcType=DECIMAL},
+      </if>
+      <if test="syfwBdw != null" >
+        SYFW_BDW = #{syfwBdw,jdbcType=VARCHAR},
+      </if>
+      <if test="gbtj != null" >
+        GBTJ = #{gbtj,jdbcType=VARCHAR},
+      </if>
+      <if test="isCfjc != null" >
+        IS_CFJC = #{isCfjc,jdbcType=DECIMAL},
+      </if>
+      <if test="isZzcs != null" >
+        IS_ZZCS = #{isZzcs,jdbcType=DECIMAL},
+      </if>
+      <if test="isMfhc != null" >
+        IS_MFHC = #{isMfhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isZbhc != null" >
+        IS_ZBHC = #{isZbhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isTsgj != null" >
+        IS_TSGJ = #{isTsgj,jdbcType=DECIMAL},
+      </if>
+      <if test="isYxzlph != null" >
+        IS_YXZLPH = #{isYxzlph,jdbcType=DECIMAL},
+      </if>
+      <if test="ywjnr != null" >
+        YWJNR = #{ywjnr,jdbcType=VARCHAR},
+      </if>
+      <if test="bj != null" >
+        BJ = #{bj,jdbcType=VARCHAR},
+      </if>
+      <if test="wjgxjx != null" >
+        WJGXJX = #{wjgxjx,jdbcType=VARCHAR},
+      </if>
+      <if test="xgwjzxztdc != null" >
+        XGWJZXZTDC = #{xgwjzxztdc,jdbcType=VARCHAR},
+      </if>
+      <if test="gcpgjl != null" >
+        GCPGJL = #{gcpgjl,jdbcType=VARCHAR},
+      </if>
+      <if test="jlfjid != null" >
+        JLFJID = #{jlfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        fjzch = #{fjzch,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.TechnicalAttached" >
+    update B_G2_00100
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      WCLX = #{wclx,jdbcType=VARCHAR},
+      DJ = #{dj,jdbcType=VARCHAR},
+      JJCD = #{jjcd,jdbcType=VARCHAR},
+      SJGZ = #{sjgz,jdbcType=VARCHAR},
+      WJZY = #{wjzy,jdbcType=VARCHAR},
+      SYFW_YWJ = #{syfwYwj,jdbcType=VARCHAR},
+      SYX = #{syx,jdbcType=DECIMAL},
+      FSYYY = #{fsyyy,jdbcType=VARCHAR},
+      SYLB = #{sylb,jdbcType=DECIMAL},
+      SYFW_BDW = #{syfwBdw,jdbcType=VARCHAR},
+      GBTJ = #{gbtj,jdbcType=VARCHAR},
+      IS_CFJC = #{isCfjc,jdbcType=DECIMAL},
+      IS_ZZCS = #{isZzcs,jdbcType=DECIMAL},
+      IS_MFHC = #{isMfhc,jdbcType=DECIMAL},
+      IS_ZBHC = #{isZbhc,jdbcType=DECIMAL},
+      IS_TSGJ = #{isTsgj,jdbcType=DECIMAL},
+      IS_YXZLPH = #{isYxzlph,jdbcType=DECIMAL},
+      YWJNR = #{ywjnr,jdbcType=VARCHAR},
+      BJ = #{bj,jdbcType=VARCHAR},
+      WJGXJX = #{wjgxjx,jdbcType=VARCHAR},
+      XGWJZXZTDC = #{xgwjzxztdc,jdbcType=VARCHAR},
+      GCPGJL = #{gcpgjl,jdbcType=VARCHAR},
+      JLFJID = #{jlfjid,jdbcType=VARCHAR},
+      fjzch = #{fjzch,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

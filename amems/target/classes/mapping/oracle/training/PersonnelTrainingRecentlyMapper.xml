@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.PersonnelTrainingRecentlyMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.PersonnelTrainingRecently" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="WXRYDAID" property="wxrydaid" jdbcType="VARCHAR" />
+    <result column="PXJLID" property="pxjlid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, KCID, WXRYDAID, PXJLID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_004
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_004
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.PersonnelTrainingRecently" >
+    insert into B_P_004 (ID, DPRTCODE, KCID, 
+      WXRYDAID, PXJLID)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{kcid,jdbcType=VARCHAR}, 
+      #{wxrydaid,jdbcType=VARCHAR}, #{pxjlid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.PersonnelTrainingRecently" >
+    insert into B_P_004
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="wxrydaid != null" >
+        WXRYDAID,
+      </if>
+      <if test="pxjlid != null" >
+        PXJLID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxrydaid != null" >
+        #{wxrydaid,jdbcType=VARCHAR},
+      </if>
+      <if test="pxjlid != null" >
+        #{pxjlid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.PersonnelTrainingRecently" >
+    update B_P_004
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxrydaid != null" >
+        WXRYDAID = #{wxrydaid,jdbcType=VARCHAR},
+      </if>
+      <if test="pxjlid != null" >
+        PXJLID = #{pxjlid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.PersonnelTrainingRecently" >
+    update B_P_004
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      WXRYDAID = #{wxrydaid,jdbcType=VARCHAR},
+      PXJLID = #{pxjlid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.system.dao.SnUniqverTempMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.SnUniqverTemp" >
+    <result column="LSH" property="lsh" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.SnUniqverTemp" >
+    insert into "T_SN_UNIQVER_TEMP" (LSH, BJH, XLH, 
+      DPRTCODE)
+    values (#{lsh,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, 
+      #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.SnUniqverTemp" >
+    insert into "T_SN_UNIQVER_TEMP"
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lsh != null" >
+        LSH,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lsh != null" >
+        #{lsh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+		into "T_SN_UNIQVER_TEMP" (
+		LSH, BJH, XLH,  DPRTCODE
+		)
+		values
+			(
+			#{item.lsh,jdbcType=VARCHAR}, #{item.bjh,jdbcType=VARCHAR}, #{item.xlh,jdbcType=VARCHAR}, 
+      		#{item.dprtcode,jdbcType=VARCHAR}
+			)
+		</foreach>
+		select 1 from dual
+	</insert>
+	<delete id="deleteByLsh" parameterType="string">
+		delete from "T_SN_UNIQVER_TEMP" where lsh = #{lsh,jdbcType=VARCHAR}
+	</delete>
+	
+</mapper>

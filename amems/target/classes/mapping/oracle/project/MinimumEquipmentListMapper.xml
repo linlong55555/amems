@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project.dao.MinimumEquipmentListMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project.po.MinimumEquipmentList">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="JX" jdbcType="VARCHAR" property="jx" />
+    <result column="BB" jdbcType="VARCHAR" property="bb" />
+    <result column="MELBGDID" jdbcType="VARCHAR" property="melbgdid" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="MELQDFJID" jdbcType="VARCHAR" property="melqdfjid" />
+    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 配置课程与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.project.po.MinimumEquipmentList" id="MelToUserMap" extends="BaseResultMap">  
+	  	<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZID" property="id"/>  
+	        <result column="ZUSERNAME" property="username"/>  
+	        <result column="ZREALNAME" property="realname"/>  
+	    </association>
+	    
+	    <association property="shr" javaType="com.eray.thjw.po.User">  
+	        <id column="SID" property="id"/>  
+	        <result column="SUSERNAME" property="username"/>  
+	        <result column="SREALNAME" property="realname"/>  
+	    </association>
+	    
+	    <association property="pyr" javaType="com.eray.thjw.po.User">  
+	        <id column="PID" property="id"/>  
+	        <result column="PUSERNAME" property="username"/>  
+	        <result column="PREALNAME" property="realname"/>  
+	    </association>
+	    
+	    <association property="attachment" javaType="com.eray.thjw.flightdata.po.Attachment">  
+	        <id column="AID" property="id" jdbcType="VARCHAR" />
+		    <result column="AMAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="ADPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="AYSWJM" property="yswjm" jdbcType="VARCHAR" />
+		    <result column="AWBWJM" property="wbwjm" jdbcType="VARCHAR" />
+		    <result column="ANBWJM" property="nbwjm" jdbcType="VARCHAR" />
+		    <result column="AWJDX" property="wjdx" jdbcType="DECIMAL" />
+		    <result column="ACFLJ" property="cflj" jdbcType="VARCHAR" />
+		    <result column="HZM" property="hzm" jdbcType="VARCHAR" />
+	    </association>
+	    
+	    <association property="melChangeSheet" javaType="com.eray.thjw.project.po.MelChangeSheet">  
+	        <id column="MID" property="id" jdbcType="VARCHAR" />
+		    <result column="MZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+		    <result column="MZDRID" property="zdrid" jdbcType="VARCHAR" />
+		    <result column="MZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+		    <result column="MZT" property="zt" jdbcType="DECIMAL" />
+		    <result column="MDYZT" property="dyzt" jdbcType="DECIMAL" />
+		    <result column="MDPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="MZDJSRID" property="zdjsrid" jdbcType="VARCHAR" />
+		    <result column="MZDJSRQ" property="zdjsrq" jdbcType="TIMESTAMP" />
+		    <result column="MZDJSYY" property="zdjsyy" jdbcType="VARCHAR" />
+		    <result column="MSHBMID" property="shbmid" jdbcType="VARCHAR" />
+		    <result column="MSHYJ" property="shyj" jdbcType="VARCHAR" />
+		    <result column="MSHRID" property="shrid" jdbcType="VARCHAR" />
+		    <result column="MSHSJ" property="shsj" jdbcType="TIMESTAMP" />
+		    <result column="MPFBMID" property="pfbmid" jdbcType="VARCHAR" />
+		    <result column="MPFYJ" property="pfyj" jdbcType="VARCHAR" />
+		    <result column="MPFRID" property="pfrid" jdbcType="VARCHAR" />
+		    <result column="MPFSJ" property="pfsj" jdbcType="TIMESTAMP" />
+		    <result column="MJX" property="jx" jdbcType="VARCHAR" />
+		    <result column="MGGDBH" property="ggdbh" jdbcType="VARCHAR" />
+		    <result column="MXGQ_BB" property="xgqBb" jdbcType="VARCHAR" />
+		    <result column="MXGH_BB" property="xghBb" jdbcType="VARCHAR" />
+		    <result column="MXMH" property="xmh" jdbcType="VARCHAR" />
+		    <result column="MSSBF" property="ssbf" jdbcType="VARCHAR" />
+		    <result column="MSSZJ" property="sszj" jdbcType="VARCHAR" />
+		    <result column="MZY" property="zy" jdbcType="VARCHAR" />
+		    <result column="MXGYJ" property="xgyj" jdbcType="VARCHAR" />
+		    <result column="MXGBJ" property="xgbj" jdbcType="VARCHAR" />
+		    <result column="MXDNR" property="xdnr" jdbcType="VARCHAR" />
+		    <result column="MXGYY" property="xgyy" jdbcType="VARCHAR" />
+		    <result column="MXDQX" property="xdqx" jdbcType="VARCHAR" />
+		    <result column="MMELQDFJID" property="melqdfjid" jdbcType="VARCHAR" />
+	    </association>
+	</resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, JX, BB, MELBGDID, ZT, MELQDFJID, WHBMID, WHRID, WHSJ
+  </sql>
+  
+  <sql id="Mel_List">
+    B.ID, B.DPRTCODE, B.JX, B.BB, B.MELBGDID, B.ZT, B.MELQDFJID, B.WHBMID, B.WHRID, B.WHSJ
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_008
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="selectById" resultMap="MelToUserMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Mel_List" />
+    , A.ID AS AID
+    , A.MAINID AS AMAINID
+    , A.DPRTCODE AS ADPRTCODE
+    , A.YSWJM AS AYSWJM
+    , A.WBWJM AS AWBWJM
+    , A.NBWJM AS ANBWJM
+    , A.WJDX AS AWJDX
+    , A.CFLJ AS ACFLJ
+    , A.HZM AS HZM
+    from B_G_008 B
+    LEFT JOIN D_011 A ON B.MELQDFJID = A.MAINID and A.YXZT = 1
+    where B.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="checkExists" resultMap="BaseResultMap" parameterType="com.eray.thjw.project.po.MinimumEquipmentList" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_008
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR}
+  </select>
+  
+    	<!-- 根据查询条件分页查询信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.project.po.MinimumEquipmentList" resultMap="MelToUserMap">
+	
+		select 
+           	<include refid="Mel_List" />
+           	,DPRT.DPRTNAME
+		    ,U.ID as ZID,U.USERNAME as ZUSERNAME,U.REALNAME as ZREALNAME
+		    ,S.ID as SID,S.USERNAME as SUSERNAME,S.REALNAME as SREALNAME
+		    ,P.ID as PID,P.USERNAME as PUSERNAME,P.REALNAME as PREALNAME
+		    ,BG019.ID as MID,BG019.GGDBH AS MGGDBH,BG019.SHSJ AS MSHSJ,BG019.PFSJ AS MPFSJ
+		    ,BG019.ZDSJ AS MZDSJ
+		    , D011.ID AS AID
+		    , D011.MAINID AS AMAINID
+		    , D011.DPRTCODE AS ADPRTCODE
+		    , D011.YSWJM AS AYSWJM
+		    , D011.WBWJM AS AWBWJM
+		    , D011.NBWJM AS ANBWJM
+		    , D011.WJDX AS AWJDX
+		    , D011.CFLJ AS ACFLJ
+		    , D011.HZM AS HZM
+            from B_G_008 B
+            LEFT JOIN B_G_019 BG019 ON B.MELBGDID = BG019.ID
+            LEFT JOIN T_USER U ON B.WHRID = U.ID
+    		LEFT JOIN T_USER S ON BG019.SHRID = S.ID
+    		LEFT JOIN T_USER P ON BG019.PFRID = P.ID
+            LEFT JOIN T_DEPARTMENT DPRT ON DPRT.ID = B.DPRTCODE
+            LEFT JOIN D_011 D011 ON D011.MAINID = B.MELQDFJID and D011.YXZT = 1
+            where B.ZT != 8
+           	<include refid="Mel_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B.WHSJ DESC,B.ID
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_G_008
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project.po.MinimumEquipmentList">
+    insert into B_G_008 (ID, DPRTCODE, JX, 
+      BB, MELBGDID, ZT, MELQDFJID, 
+      WHBMID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jx,jdbcType=VARCHAR}, 
+      #{bb,jdbcType=VARCHAR}, #{melbgdid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{melqdfjid,jdbcType=VARCHAR}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project.po.MinimumEquipmentList">
+    insert into B_G_008
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="jx != null">
+        JX,
+      </if>
+      <if test="bb != null">
+        BB,
+      </if>
+      <if test="melbgdid != null">
+        MELBGDID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="melqdfjid != null">
+        MELQDFJID,
+      </if>
+      <if test="whbmid != null">
+        WHBMID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null">
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null">
+        #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="melbgdid != null">
+        #{melbgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="melqdfjid != null">
+        #{melqdfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project.po.MinimumEquipmentList">
+    update B_G_008
+    <set>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null">
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null">
+        BB = #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="melbgdid != null">
+        MELBGDID = #{melbgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="melqdfjid != null">
+        MELQDFJID = #{melqdfjid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project.po.MinimumEquipmentList">
+    update B_G_008
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      JX = #{jx,jdbcType=VARCHAR},
+      BB = #{bb,jdbcType=VARCHAR},
+      MELBGDID = #{melbgdid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      MELQDFJID = #{melqdfjid,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByNotEffective" parameterType="java.lang.String">
+    update B_G_008
+    set 
+      ZT = 0
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and JX = #{jx,jdbcType=VARCHAR} 
+  </update>
+  
+  <!-- 搜索参数 -->
+	<sql id="Mel_Param">
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	<!-- (BG019.GGDBH) like ('%'||#{keyword}||'%')
+		    	or --> UPPER(B.JX) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER('R'||B.BB) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode}
+		</if>
+		<if test="zt != null">
+		    and B.ZT = #{zt}
+		</if>
+		<!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+	    <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    			B.jx = FJJX
+	    		AND B.dprtcode = DPRTCODE
+	    		AND zt = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+	    		 AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    			B.jx= FJJX
+	    		AND B.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    	</when>
+	   	</choose>
+		<if test="paramsMap != null and paramsMap.zdrqBegin != null and paramsMap.zdrqBegin != ''">
+		    and B.WHSJ &gt;= to_date(#{paramsMap.zdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqEnd != null and paramsMap.zdrqEnd != ''">
+		    and B.WHSJ &lt;= to_date(#{paramsMap.zdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B.ID = #{id}
+		</if>
+	</sql>
+</mapper>

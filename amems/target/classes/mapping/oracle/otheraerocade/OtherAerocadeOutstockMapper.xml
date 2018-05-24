@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.otheraerocade.dao.OtherAerocadeOutstockMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Outstock">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="CKLX" jdbcType="DECIMAL" property="cklx" />
+    <result column="SGBS" jdbcType="DECIMAL" property="sgbs" />
+    <result column="CKDH" jdbcType="VARCHAR" property="ckdh" />
+    <result column="CKSJ" jdbcType="TIMESTAMP" property="cksj" />
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="ZDBMID" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="CKBMID" jdbcType="VARCHAR" property="ckbmid" />
+    <result column="CUKID" jdbcType="VARCHAR" property="cukid" />
+    <result column="SQBMID" jdbcType="VARCHAR" property="sqbmid" />
+    <result column="SQRID" jdbcType="VARCHAR" property="sqrid" />
+    <result column="JDDXID" jdbcType="VARCHAR" property="jddxid" />
+    <result column="JDFZR" jdbcType="VARCHAR" property="jdfzr" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="SQSJ" jdbcType="TIMESTAMP" property="sqsj" />
+    <result column="XGDJID" jdbcType="VARCHAR" property="xgdjid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, CKLX, SGBS, CKDH, CKSJ, FJZCH, ZT, ZDBMID, ZDRID, ZDSJ, CKBMID, CUKID, 
+    SQBMID, SQRID, JDDXID, JDFZR, BZ, SQSJ, XGDJID
+  </sql>
+  
+  <sql id="Alias_Column_List">
+    T.ID, T.DPRTCODE, T.CKLX, T.SGBS, T.CKDH, T.CKSJ, T.FJZCH, T.ZT, T.ZDBMID, T.ZDRID, T.ZDSJ, T.CKBMID, T.CUKID, 
+    T.SQBMID, T.SQRID, T.JDDXID, T.JDFZR, T.BZ, T.SQSJ, T.XGDJID
+  </sql>
+  	<!-- 查询借入归还出库单列表 start-->
+	<select id="selectBorrowReturnPage" parameterType="com.eray.thjw.po.BaseEntity" resultMap="BaseResultMap">
+		select 
+		<include refid="Alias_Column_List"></include>  
+		<include refid="selectBorrowReturnSql"></include>
+ 			<choose>
+ 				<when test='pagination.sort == "auto"'>
+ 	 				order by T.CKSJ DESC, T.ZDSJ DESC
+ 				</when>
+ 				<otherwise>
+		    	order by ${pagination.sort} ${pagination.order}
+		  	</otherwise>
+		</choose>
+	</select>
+	
+	<select id="selectBorrowReturnById" resultMap="BaseResultMap">
+		select 
+		<include refid="Alias_Column_List"></include>  
+		from B_H_013 T
+		where T.ID = #{id, jdbcType=VARCHAR}
+	</select>
+  
+  	<sql id="selectBorrowReturnSql">
+  		from B_H_013 T
+		left join B_H_014 T014 on T.JDDXID = T014.ID
+		where CKLX = 3 <!-- 归还出库 -->
+			and T014.JDDXBH = #{paramsMap.dprtcode, jdbcType=VARCHAR} <!-- 借调对象为自己 -->
+			and T.ZT in (2, 10) <!-- 2提交、10完成 -->
+			<if test="paramsMap.fxdid != null and paramsMap.fxdid != ''">
+				and T.DPRTCODE = #{paramsMap.fxdid, jdbcType=VARCHAR} <!-- 哪个飞行队的业务数据 -->
+			</if>
+			<if test="paramsMap.keyword != null and paramsMap.keyword != ''">
+				and (lower(T.CKDH) like lower('%'||#{paramsMap.keyword, jdbcType=VARCHAR}||'%')
+				or lower(T.JDFZR) like lower('%'||#{paramsMap.keyword, jdbcType=VARCHAR}||'%' ))
+			</if>
+  			<if test="paramsMap.dateBegin != null and paramsMap.dateBegin != '' ">
+		    	and T.CKSJ &gt;=to_date(#{paramsMap.dateBegin, jdbcType=VARCHAR}||' 00:00:00','YYYY-MM-DD HH24:MI:SS')  
+			</if>
+			<if test="paramsMap.dateEnd != null and paramsMap.dateEnd != ''">
+			    and T.CKSJ &lt;=to_date(#{paramsMap.dateEnd, jdbcType=VARCHAR}||' 23:59:59','YYYY-MM-DD HH24:MI:SS') 
+			</if>
+			<if test="paramsMap.id != null and paramsMap.id != ''">
+			    and T.ID = #{paramsMap.id, jdbcType=VARCHAR}
+			</if>
+  	</sql>
+  	<!-- 查询借入归还出库单列表 end-->
+  	
+  	<resultMap id="OutstockDetailResultMap" type="com.eray.thjw.aerialmaterial.po.OutstockDetail">
+	    <id column="ID" jdbcType="VARCHAR" property="id" />
+	    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+	    <result column="GLJB" jdbcType="DECIMAL" property="gljb" />
+	    <result column="HCLX" jdbcType="DECIMAL" property="hclx" />
+	    <association property="materialHistory" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+	    	<result column="BJH" jdbcType="VARCHAR" property="bjh" />
+	    	<result column="ZWMS" jdbcType="VARCHAR" property="zwms" />
+	    	<result column="YWMS" jdbcType="VARCHAR" property="ywms" />
+	    	<result column="JLDW" jdbcType="VARCHAR" property="jldw" />
+	    	<result column="SN" jdbcType="VARCHAR" property="sn" />
+	    	<result column="PCH" jdbcType="VARCHAR" property="pch" />
+	    	<result column="KCSL" jdbcType="VARCHAR" property="kcsl" />
+	    </association>
+	</resultMap>
+  	
+  	<!-- 查询借入归还出库单航材清单 start -->
+  	<select id="selectBorrowReturnDetail" resultMap="OutstockDetailResultMap">
+  		select T.ID,T.MAINID, T1.BJH, 
+		(CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+        (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+        (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+ 		T1.SN, T1.PCH, (T1.KCSL-T.TKSL) as KCSL, T2.GLJB, T2.HCLX
+  		from B_H_01301 T
+  		left join B_H_017 T1 on T.KCLLID = T1.ID
+  		left join D_008 T2 on T1.BJID = T2.ID
+  		where T1.KCSL > T.TKSL and T.ZT = 1 and T.MAINID = #{id, jdbcType=VARCHAR}	
+  	</select>
+  	<!-- 查询借入归还出库单航材清单 end -->
+</mapper>

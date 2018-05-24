@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.CustomerRecMapper" >
+<select id="queryList4D019" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+      SELECT     B.ID
+				,B.REC_CZLS
+			    ,'客户编号:' || B.KHBM AS REC_HD
+			    ,B.REC_CZSM
+			    ,B.REC_CZSJ
+		       	,B.REC_IP
+			    ,WHR.USERNAME||' '||WHR.REALNAME AS REC_CZR_NAME
+			FROM D_019_REC B
+			LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+			WHERE 1=1
+        	<if test='paramsMap!=null and paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	       		and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	        </if>
+	        <if test='paramsMap!=null and paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+	       		and (
+	                UPPER(B.KHBM) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+	           	)
+	    	</if>
+			order by B.REC_CZSJ DESC
+   </select>
+   
+   <select id="queryDiff4D019" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+       SELECT * FROM (
+			SELECT 
+				 ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO
+			    , B.ID
+			    , '客户编号:' || B.KHBM AS REC_HD
+			    , B.DPRTCODE
+			    , B.WHBMID
+			    , B.WHRID
+			    , B.WHSJ
+			    , B.KHBM
+			    , B.KHMC
+			    , B.GJ
+			    , B.CS
+			    , B.LXDH
+			    , B.BZ
+			    , B.YB
+			    , B.KHJC
+			    , (CASE 
+	        			WHEN B.ZT = 0 THEN '无效'
+	         			WHEN B.ZT = 1 THEN '有效'
+                  END) NEW_ZT
+			    , B.REC_XGLX
+                , B.REC_CZRID
+                , B.REC_CZSJ
+                , B.REC_CZSM
+                , B.REC_CZLS
+                , B.REC_ZBID
+                , B.REC_IP
+			    ,WHR.USERNAME||' '||WHR.REALNAME AS REC_CZR_NAME
+			    ,(CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT' ELSE 'LAST' END) DATA_VERSION
+			FROM D_019_REC B
+			LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+			WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND ( 
+	   		  SELECT REC_CZSJ FROM D_019_REC  
+	   		  WHERE  REC_CZLS = #{paramsMap.REC_CZLS,jdbcType = VARCHAR} 
+	   		  AND 	 ID 	  = #{paramsMap.ID,jdbcType=VARCHAR}
+	   		 ) >= B.REC_CZSJ
+		) WHERE 2 >= RNO
+   </select>
+</mapper>

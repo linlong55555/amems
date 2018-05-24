@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.EOApplicabilityMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.EOApplicability" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="BH" property="bh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="QRZT" property="qrzt" jdbcType="DECIMAL" />
+    <result column="SZWZ" property="szwz" jdbcType="VARCHAR" />
+    <result column="SGBS" property="sgbs" jdbcType="DECIMAL" />
+    <result column="GBZT" property="gbzt" jdbcType="DECIMAL" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBRQ" property="gbrq" jdbcType="TIMESTAMP" />
+    <result column="GBYY" property="gbyy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, ZT, WHBMID, WHRID, WHSJ, XC, BH, XLH, QRZT, SZWZ, SGBS,GBZT,GBRID,GBRQ,GBYY
+  </sql>
+ 
+  <!-- 新增,EO-适用性 -->
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.EOApplicability" >
+    insert into B_G2_01001 (ID, MAINID, ZT, 
+      WHBMID, WHRID, WHSJ, 
+      XC, BH, XLH, QRZT, 
+      SZWZ, SGBS,GBZT,GBRID,GBRQ,GBYY)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{xc,jdbcType=DECIMAL}, #{bh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{qrzt,jdbcType=DECIMAL}, 
+      #{szwz,jdbcType=VARCHAR}, #{sgbs,jdbcType=DECIMAL},#{gbzt,jdbcType=DECIMAL}, #{gbrid,jdbcType=VARCHAR}, 
+      #{gbrq,jdbcType=TIMESTAMP}, #{gbyy,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+    <!-- 批量新增,EO-适用性 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+		 into B_G2_01001 (ID, MAINID, ZT, WHBMID, WHRID, WHSJ, XC, BH, XLH, QRZT, SZWZ, SGBS)
+    	 values (#{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, 
+                 #{item.whbmid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, #{item.whsj,jdbcType=TIMESTAMP}, 
+                 #{item.xc,jdbcType=DECIMAL}, #{item.bh,jdbcType=VARCHAR}, #{item.xlh,jdbcType=VARCHAR}, #{item.qrzt,jdbcType=DECIMAL}, 
+                 #{item.szwz,jdbcType=VARCHAR}, #{item.sgbs,jdbcType=DECIMAL})
+		</foreach>
+		select 1 from dual
+  </insert>
+  
+  <!-- 修改,EO-适用性 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.EOApplicability" >
+    update B_G2_01001
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="bh != null" >
+        BH = #{bh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="qrzt != null" >
+        QRZT = #{qrzt,jdbcType=DECIMAL},
+      </if>
+      <if test="szwz != null" >
+        SZWZ = #{szwz,jdbcType=VARCHAR},
+      </if>
+      <if test="sgbs != null" >
+        SGBS = #{sgbs,jdbcType=DECIMAL},
+      </if>
+      <if test="gbzt != null" >
+        GBZT = #{gbzt,jdbcType=DECIMAL},
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+      </if>
+       <if test="gbrq != null" >
+        GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+ 	<!-- 根据业务ID删除数据 -->
+	<delete id="deleteByMainid" parameterType="java.lang.String">
+		delete from B_G2_01001
+		where MAINID = #{mainid,jdbcType=VARCHAR}
+	</delete>
+	
+   <!--  根据EOID查询是否有适用性确认状态=0的数据,只要有一条，列表就要表黄圈 -->
+   <select id="getSyxByZlidList" resultMap="BaseResultMap">
+	  	SELECT B.MAINID,COUNT(B.ZT) AS ZT
+		FROM B_G2_01001 B 
+		WHERE B.QRZT = '0' AND B.MAINID IN 
+		   	 <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			 	#{item}
+			 </foreach>
+		GROUP BY B.MAINID
+    </select>
+    
+     <!-- 批量新增,EO-适用性 -->
+  <insert id="insert4AddPlane">
+	INSERT INTO B_G2_01001
+	  (ID, MAINID, ZT, WHSJ, XC, BH, XLH, QRZT, SGBS, GBZT)
+	  SELECT SYS_GUID(),
+	         G2010.ID,
+	         1,
+	         SYSDATE,
+	         999,
+	         #{fjzch, jdbcType=VARCHAR},
+	         #{xlh, jdbcType=VARCHAR},
+	         0,
+	         0,
+	         1
+	    FROM B_G2_010 G2010
+	   WHERE G2010.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	     AND G2010.ZT IN (1, 2, 3, 4, 5, 6, 7)
+	     AND G2010.JX = #{fjjx, jdbcType=VARCHAR}
+	     AND G2010.SYLB = 1
+	     AND G2010.FJZCH = '00000'
+	     AND NOT EXISTS (SELECT 1
+	            FROM B_G2_01001 G201001
+	           WHERE G201001.MAINID = G2010.ID
+	             AND G201001.ZT = 1
+	             AND G201001.BH = #{fjzch, jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 批量新增,EO-适用性-部件 -->
+  <insert id="insert4AddComponent">
+	INSERT INTO B_G2_01001
+	  (ID, MAINID, ZT, WHSJ, XC, BH, XLH, QRZT, SGBS, GBZT)
+	  SELECT SYS_GUID(),
+	         G2010.ID,
+	         1,
+	         SYSDATE,
+	         999,
+	         #{bjh, jdbcType=VARCHAR},
+	         #{xlh, jdbcType=VARCHAR},
+	         0,
+	         0,
+	         1
+	    FROM B_G2_010 G2010
+	   WHERE G2010.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	     AND G2010.ZT IN (1, 2, 3, 4, 5, 6, 7)
+	     AND G2010.JX =  #{fjjx, jdbcType=VARCHAR}
+	     AND G2010.SYLB IN (2, 3, 99)
+	     AND NOT EXISTS (SELECT 1
+	            FROM B_G2_01001 G201001
+	           WHERE G201001.MAINID = G2010.ID
+	             AND G201001.ZT = 1
+	             AND G201001.BH = #{bjh, jdbcType=VARCHAR}
+	             AND G201001.XLH = #{xlh, jdbcType=VARCHAR})
+	     AND EXISTS (SELECT 1
+	            FROM B_G2_01001 G201001
+	           WHERE G201001.MAINID = G2010.ID
+	             AND G201001.ZT = 1
+	             AND G201001.BH = #{bjh, jdbcType=VARCHAR})
+
+  </insert>
+  
+   <select id="getEOApplicabilityByMainId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    	<include refid="Base_Column_List" />
+    from B_G2_01001 
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectById" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+		 	<include refid="Base_Column_List"></include>
+		from B_G2_01001 
+    	where ID = #{id,jdbcType=VARCHAR}
+   </select>
+   
+  <!-- start 获取未完成的执行对象数量 -->
+  <select id="getNotCompleteNumsByMainId" parameterType="String" resultType="int">
+  		select count(1) from B_G2_01001  
+  		where MAINID = #{mainid,jdbcType=VARCHAR} AND GBZT NOT IN('9','10')
+  </select>
+  
+</mapper>

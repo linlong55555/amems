@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.MonitoringPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.MonitoringPlan" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="JKSJID" property="jksjid" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="JHQSZ" property="jhqsz" jdbcType="VARCHAR" />
+    <result column="JHZ" property="jhz" jdbcType="VARCHAR" />
+    <result column="SJZ" property="sjz" jdbcType="VARCHAR" />
+    <result column="CSZ" property="csz" jdbcType="VARCHAR" />
+    <result column="WZ" property="wz" jdbcType="DECIMAL" />
+    <result column="SCZ" property="scz" jdbcType="VARCHAR" />
+    <result column="DW_SCZ" property="dwScz" jdbcType="DECIMAL" />
+    <result column="ZQZ" property="zqz" jdbcType="VARCHAR" />
+    <result column="DW_ZQZ" property="dwZqz" jdbcType="DECIMAL" />
+    <result column="YDZ_Q" property="ydzQ" jdbcType="VARCHAR" />
+    <result column="YDZ_QDW" property="ydzQdw" jdbcType="DECIMAL" />
+    <result column="YDZ_H" property="ydzH" jdbcType="VARCHAR" />
+    <result column="YDZ_HDW" property="ydzHdw" jdbcType="DECIMAL" />
+    <result column="CURRSJZ" property="paramsMap.sjz" jdbcType="VARCHAR" />
+    <result column="CURRSYZ" property="paramsMap.syz" jdbcType="VARCHAR" />
+    
+    <!-- 扩充字段 -->
+    <result column="jhsjsj" property="paramsMap.jhsjsj" jdbcType="VARCHAR" /><!-- 监控时间数据：完成时限 -->
+    <result column="CURRCSZ" property="paramsMap.csz" jdbcType="VARCHAR" /><!-- 初始值 -->
+   
+  </resultMap>
+  
+    <!-- 配置上次执行数据关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.produce.po.MonitoringPlan" id="MonitoringPlanWithRelMap" extends="BaseResultMap">  
+	    <!-- 配置监控数据与附件关系 -->
+	    <association property="monitoringLast" javaType="com.eray.thjw.produce.po.MonitoringLast">  
+	        <id column="ML_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="ML_JKSJID" property="jksjid" jdbcType="VARCHAR" />
+		    <result column="ML_JKLBH" property="jklbh" jdbcType="VARCHAR" />
+		    <result column="ML_SCJHZ" property="scjhz" jdbcType="VARCHAR" />
+		    <result column="ML_SCSJZ" property="scsjz" jdbcType="VARCHAR" />
+	    </association>
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, JKSJID, WHDWID, WHRID, WHSJ, ZT, JKLBH, JKFLBH, JHQSZ, JHZ, SJZ, CSZ, WZ, SCZ, DW_SCZ, ZQZ, 
+    DW_ZQZ, YDZ_Q, YDZ_QDW, YDZ_H, YDZ_HDW
+  </sql>
+  <sql id="Monitoring_Column_List" >
+    B.ID, B.JKSJID, B.WHDWID, B.WHRID, B.WHSJ, B.ZT, B.JKLBH, B.JKFLBH, B.JHQSZ, B.JHZ, B.SJZ, B.CSZ, 
+    B.WZ, B.SCZ, B.DW_SCZ, B.ZQZ, B.DW_ZQZ, B.YDZ_Q, B.YDZ_QDW, B.YDZ_H, B.YDZ_HDW
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_904
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据监控数据id查询监控数据-(计划)执行数据 -->
+  <select id="queryByJksjid" resultMap="MonitoringPlanWithRelMap" parameterType="java.lang.String" >
+    select
+       <include refid="Monitoring_Column_List" />
+       ,case
+          when t2.XLH is not null then
+           s200401.ZSSYY
+          else
+           d00701.CSZ
+        end CURRCSZ
+       ,case
+          when B.jklbh = '1_10' then
+           to_char(sysdate, 'yyyy-mm-dd')
+          else
+           (case
+             when t2.zjqdid is null then
+              COALESCE(t11.ljz, 0) +
+              COALESCE(t11.csz, 0)
+             else
+              COALESCE(t13.sj_fz, 0) +
+              COALESCE(t13.csz, 0)
+           end) || ''
+        end CURRSJZ
+        ,case
+          when B.jklbh = '1_10' then
+           to_date(B.jhz, 'yyyy-mm-dd') -
+           to_date(to_char(sysdate, 'yyyy-mm-dd'),
+                   'yyyy-mm-dd')
+          else
+           cast(B.jhz as integer) -
+           (case
+              when t2.zjqdid is null then
+               COALESCE(t11.ljz, 0) +
+               COALESCE(t11.csz, 0)
+              else
+               COALESCE(t13.sj_fz, 0) +
+               COALESCE(t13.csz, 0)
+            end)
+        end CURRSYZ
+        ,t1.id as ML_ID
+        ,t1.scjhz as ML_SCJHZ
+        ,t1.scsjz as ML_SCSJZ
+         from b_s2_904 B
+         join b_s2_902 t2
+          on B.zt = 1
+          and t2.id = B.jksjid
+          and t2.id = #{jksjid,jdbcType=VARCHAR}
+         left join b_s2_911 t11
+           on t2.dprtcode = t11.dprtcode
+          and t2.fjzch = t11.fjzch
+          and B.jklbh = t11.jklbh
+          and (case when B.jklbh = '2_30_EH' or B.jklbh = '3_30_EC' then B.wz else 1 end) = (case when B.jklbh = '2_30_EH' or B.jklbh = '3_30_EC' then t11.wz else 1 end)
+         left join b_s2_913 t13
+           on t2.dprtcode = t13.dprtcode
+          and t2.zjqdid = t13.zjqdid
+          and B.jklbh = t13.jklbh
+         left join b_s2_903 t1
+         on t1.zt = 1 and t1.jklbh = B.jklbh and t1.jksjid = t2.id
+         left join D_00701 d00701
+         on d00701.WZ = 11 
+         and d00701.FJZCH = t2.FJZCH 
+         and d00701.DPRTCODE = t2.DPRTCODE
+         and d00701.JKLBH = B.JKLBH
+         left join B_S2_00401 s200401
+         on s200401.MAINID = t2.ZJQDID
+         and s200401.JKLBH = B.JKLBH
+         and t2.XLH is not null
+        order by B.jklbh
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S2_904
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.MonitoringPlan" >
+    insert into B_S2_904 (ID, JKSJID, WHDWID, 
+      WHRID, WHSJ, ZT, 
+      JKLBH, JKFLBH, JHQSZ, 
+      JHZ, SJZ, CSZ, WZ, SCZ, DW_SCZ,  
+      ZQZ, DW_ZQZ, YDZ_Q, YDZ_QDW, 
+      YDZ_H, YDZ_HDW)
+    values (#{id,jdbcType=VARCHAR}, #{jksjid,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{jklbh,jdbcType=VARCHAR}, #{jkflbh,jdbcType=VARCHAR}, #{jhqsz,jdbcType=VARCHAR}, 
+      #{jhz,jdbcType=VARCHAR}, #{sjz,jdbcType=VARCHAR}, #{csz,jdbcType=VARCHAR}, #{wz,jdbcType=DECIMAL}, 
+      #{scz,jdbcType=VARCHAR}, #{dwScz,jdbcType=DECIMAL}, #{zqz,jdbcType=VARCHAR}, #{dwZqz,jdbcType=DECIMAL}, #{ydzQ,jdbcType=VARCHAR}, #{ydzQdw,jdbcType=DECIMAL}, 
+      #{ydzH,jdbcType=VARCHAR}, #{ydzHdw,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.MonitoringPlan" >
+    insert into B_S2_904
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="jksjid != null" >
+        JKSJID,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="jklbh != null" >
+        JKLBH,
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH,
+      </if>
+      <if test="jhqsz != null" >
+        JHQSZ,
+      </if>
+      <if test="jhz != null" >
+        JHZ,
+      </if>
+      <if test="sjz != null" >
+        SJZ,
+      </if>
+      <if test="csz != null" >
+        CSZ,
+      </if>
+      <if test="wz != null" >
+        WZ,
+      </if>
+      <if test="scz != null" >
+        SCZ,
+      </if>
+      <if test="dwScz != null" >
+        DW_SCZ,
+      </if>
+      <if test="zqz != null" >
+        ZQZ,
+      </if>
+      <if test="dwZqz != null" >
+        DW_ZQZ,
+      </if>
+      <if test="ydzQ != null" >
+        YDZ_Q,
+      </if>
+      <if test="ydzQdw != null" >
+        YDZ_QDW,
+      </if>
+      <if test="ydzH != null" >
+        YDZ_H,
+      </if>
+      <if test="ydzHdw != null" >
+        YDZ_HDW,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jksjid != null" >
+        #{jksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jklbh != null" >
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jhqsz != null" >
+        #{jhqsz,jdbcType=VARCHAR},
+      </if>
+      <if test="jhz != null" >
+        #{jhz,jdbcType=VARCHAR},
+      </if>
+      <if test="sjz != null" >
+        #{sjz,jdbcType=VARCHAR},
+      </if>
+      <if test="csz != null" >
+        #{csz,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="scz != null" >
+        #{scz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwScz != null" >
+        #{dwScz,jdbcType=DECIMAL},
+      </if>
+      <if test="zqz != null" >
+        #{zqz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwZqz != null" >
+        #{dwZqz,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzQ != null" >
+        #{ydzQ,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzQdw != null" >
+        #{ydzQdw,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzH != null" >
+        #{ydzH,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzHdw != null" >
+        #{ydzHdw,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.MonitoringPlan" >
+    update B_S2_904
+    <set >
+      <if test="jksjid != null" >
+        JKSJID = #{jksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jklbh != null" >
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jhqsz != null" >
+        JHQSZ = #{jhqsz,jdbcType=VARCHAR},
+      </if>
+      <if test="jhz != null" >
+        JHZ = #{jhz,jdbcType=VARCHAR},
+      </if>
+      <if test="sjz != null" >
+        SJZ = #{sjz,jdbcType=VARCHAR},
+      </if>
+      <if test="csz != null" >
+        CSZ = #{csz,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        WZ = #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="scz != null" >
+        SCZ = #{scz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwScz != null" >
+        DW_SCZ = #{dwScz,jdbcType=DECIMAL},
+      </if>
+      <if test="zqz != null" >
+        ZQZ = #{zqz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwZqz != null" >
+        DW_ZQZ = #{dwZqz,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzQ != null" >
+        YDZ_Q = #{ydzQ,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzQdw != null" >
+        YDZ_QDW = #{ydzQdw,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzH != null" >
+        YDZ_H = #{ydzH,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzHdw != null" >
+        YDZ_HDW = #{ydzHdw,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据监控数据批量删除计划数据 -->
+  <delete id="deleteByMainIdBatch">
+  	delete from B_S2_904
+    where JKSJID in
+   	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+   		#{item.id, jdbcType=VARCHAR}
+	</foreach>
+  </delete>
+  <!-- 批量新增计划数据 -->
+  <insert id="insert4Batch" parameterType="java.util.List" >
+    insert into B_S2_904 (ID, JKSJID, WHDWID, 
+      WHRID, WHSJ, ZT, 
+      JKLBH, JKFLBH, JHQSZ, 
+      JHZ, SJZ, CSZ, WZ, SCZ, DW_SCZ,  
+      ZQZ, DW_ZQZ, YDZ_Q, YDZ_QDW, 
+      YDZ_H, YDZ_HDW)
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+	    select #{item.id,jdbcType=VARCHAR}, #{item.jksjid,jdbcType=VARCHAR}, #{item.whdwid,jdbcType=VARCHAR}, 
+	      #{item.whrid,jdbcType=VARCHAR}, sysdate, 1, 
+	      #{item.jklbh,jdbcType=VARCHAR}, #{item.jkflbh,jdbcType=VARCHAR}, #{item.jhqsz,jdbcType=VARCHAR}, 
+	      #{item.jhz,jdbcType=VARCHAR}, #{item.sjz,jdbcType=VARCHAR}, #{item.csz,jdbcType=VARCHAR}, #{item.wz,jdbcType=DECIMAL}, 
+	      #{item.scz,jdbcType=VARCHAR}, #{item.dwScz,jdbcType=DECIMAL}, #{item.zqz,jdbcType=VARCHAR}, #{item.dwZqz,jdbcType=DECIMAL}, #{item.ydzQ,jdbcType=VARCHAR}, #{item.ydzQdw,jdbcType=DECIMAL}, 
+	      #{item.ydzH,jdbcType=VARCHAR}, #{item.ydzHdw,jdbcType=DECIMAL}
+	  	from dual
+    </foreach>
+  </insert>
+   
+   <!-- 根据工单监控数据id获取完成时限数据 -->
+   <select id="getCompleteLimit" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+		 select t.jksjid, max(t.jhsjsj) jhsjsj
+		 from (select s2904.jksjid,
+		               wm_concat(s2904.jklbh || '#_#' || s2904.jhz) over(PARTITION BY s2904.jksjid order by s2904.jklbh) jhsjsj
+		          from b_s2_904 s2904
+		         where s2904.zt = 1
+		           and s2904.jhz is not null) t
+		 where 1=1 and t.jksjid = #{jksjid,jdbcType=VARCHAR}
+		 group by t.jksjid
+   </select>
+   
+   <!-- 查询飞机对日历监控项目的计划执行数据（计划起算值为空，计划值不空） -->
+   <select id="selectCalPlanListByPlane" resultMap="BaseResultMap">
+  	SELECT S2904.ID, S2904.SCZ, S2904.DW_SCZ
+	  FROM B_S2_904 S2904
+	  JOIN B_S2_902 S2902
+	    ON S2904.ZT = 1
+	   AND S2904.JKSJID = S2902.ID
+	   AND S2904.JHQSZ IS NULL
+	   AND S2904.JHZ IS NOT NULL
+	   AND S2902.ZJQDID IS NULL
+	   AND S2902.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND S2904.JKLBH = '1_10'
+	   AND S2902.FJZCH = #{fjzch,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateJhz4Batch">
+  	<foreach collection="list" item="item" index="index" separator="" open="begin" close="end;"> 
+         UPDATE B_S2_904 set jhz = #{item.jhz,jdbcType=VARCHAR} 
+         where ID = #{item.id,jdbcType=VARCHAR};
+    </foreach>
+  	
+  </update>
+  <!-- 批量更新初始值及实际值 -->
+  <update id="updateSjz4Batch">
+  	<foreach collection="list" item="item" index="index" separator="" open="begin" close="end;"> 
+         UPDATE B_S2_904 set sjz = #{item.sjz,jdbcType=VARCHAR} , csz = #{item.csz,jdbcType=VARCHAR} 
+         where ID = #{item.id,jdbcType=VARCHAR};
+    </foreach>
+  </update>
+  <!-- 根据装机清单ID删除监控数据-计划执行数据 (监控数据未执行且不存在非指定结束的工单) -->
+  <delete id="deleteByZjqdid"> 
+	DELETE FROM B_S2_904 S2904
+	 WHERE S2904.JKSJID IN
+	       (SELECT ID
+	          FROM B_S2_901 S2901
+	         WHERE S2901.ZT = 1
+	           AND S2901.JSSJ IS NULL
+	           AND S2901.ZJQDID = #{zjqdid, jdbcType=VARCHAR}
+	           AND NOT EXISTS (SELECT 1
+	                  FROM B_S2_008 S2008
+	                 WHERE S2008.ZT IN (1, 2, 7, 10)
+	                   AND S2008.JKSJID = S2901.ID))  
+  </delete>
+</mapper>

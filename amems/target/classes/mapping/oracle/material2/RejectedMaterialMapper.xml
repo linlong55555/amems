@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.RejectedMaterialMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.RejectedMaterial" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHRBMID" property="whrbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="TLRQ" property="tlrq" jdbcType="TIMESTAMP" />
+    <result column="BJID" property="bjid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="BJMC" property="bjmc" jdbcType="VARCHAR" />
+    <result column="PCH" property="pch" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="TLSL" property="tlsl" jdbcType="DECIMAL" />
+    <result column="DW" property="dw" jdbcType="VARCHAR" />
+    <result column="SFKY" property="sfky" jdbcType="DECIMAL" />
+    <result column="BJLY" property="bjly" jdbcType="DECIMAL" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WCKCID" property="wckcid" jdbcType="VARCHAR" />
+    <result column="WLLB" property="wllb" jdbcType="DECIMAL" />
+    
+    <result column="CKH" property="paramsMap.ckh" jdbcType="VARCHAR" />
+    <result column="KWH" property="paramsMap.kwh" jdbcType="VARCHAR" />
+    <result column="LSCFWZ" property="paramsMap.lscfwz" jdbcType="VARCHAR" />
+    
+    
+   <!-- 扩充字段 -->
+   <result column="shsj" property="paramsMap.shsj" jdbcType="VARCHAR" /><!-- 收货时间 -->
+   <result column="shrq" property="paramsMap.shrq" jdbcType="VARCHAR" /><!-- 收货时间 -->
+   <result column="b1kcmc" property="paramsMap.kcmc" jdbcType="VARCHAR" /><!-- 上架库位 -->
+   <result column="kcsl" property="paramsMap.kcsl" jdbcType="VARCHAR" /><!-- 库存数量 -->
+   <!-- 扩充字段 -->
+  </resultMap>
+  
+    <resultMap id="RejectedMaterialToMap" extends="BaseResultMap" type="com.eray.thjw.material2.po.RejectedMaterial">
+	  	<association property="tlr" javaType="com.eray.thjw.po.User">  
+	        <id column="whrid" property="id"/>  
+	        <result column="tlr_username" property="username"/>  
+	        <result column="tlr_realname" property="realname"/>  
+	    </association>  
+	  	<association property="shr" javaType="com.eray.thjw.po.User">  
+	        <id column="shrid" property="id"/>  
+	        <result column="shr_username" property="username"/>  
+	        <result column="shr_realname" property="realname"/>  
+	    </association>  
+       	<collection property="receivingRelationshiplist" ofType="com.eray.thjw.material2.po.ReceivingRelationship">
+  			<id column="gxid" property="id" jdbcType="VARCHAR" />
+		    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+		    <result column="LYLX" property="lylx" jdbcType="DECIMAL" />
+		    <result column="LYID" property="lyid" jdbcType="VARCHAR" />
+		    <result column="LYMXID" property="lymxid" jdbcType="VARCHAR" />
+		    <result column="SHDID" property="shdid" jdbcType="VARCHAR" />
+		    <result column="SHMXID" property="shmxid" jdbcType="VARCHAR" />
+		    <result column="SHSL" property="shsl" jdbcType="DECIMAL" />
+		    <result column="DW" property="dw" jdbcType="VARCHAR" />
+		    <result column="SHR" property="paramsMap.shr" jdbcType="VARCHAR" />
+		    <result column="SHRQ" property="paramsMap.shrq" jdbcType="VARCHAR" />
+		    <result column="sl" property="paramsMap.sl" jdbcType="VARCHAR" />
+    	</collection>
+  </resultMap>
+  
+  <sql id="DemandSafeguardDetailParam">
+	   where 
+	   B_H_026.zt = 2
+	    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+            and (   lower(B_H_026.bjh) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B_H_026.bjmc) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B_H_026.pch) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B_H_026.xlh) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B_H_026.sm) like lower('%'||#{paramsMap.keyword}||'%')
+		    	)  
+        </if>
+	   
+	   <if test="paramsMap != null and paramsMap.isSh1 != null and paramsMap.isSh1 != ''">
+		    and  B_H_027.id is null
+		</if>
+		<if test="paramsMap != null and paramsMap.isSh2 != null and paramsMap.isSh2 != ''">
+		    and  B_H_027.id is not null
+		</if>
+	    <if test="fjzch != null and fjzch != ''">
+            and  B_H_026.fjzch = #{fjzch}
+        </if>
+	    <if test="bjly != null ">
+            and  B_H_026.bjly = #{bjly}
+        </if>
+	    <if test="sfky != null ">
+            and  B_H_026.SFKY = #{sfky}
+        </if>
+        <if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+            and  B_H_026.dprtcode = #{paramsMap.dprtcode}
+        </if>
+	   <if test="paramsMap != null and paramsMap.tlrqBegin != null and paramsMap.tlrqBegin != ''">
+		    and B_H_026.tlrq &gt;= to_date(#{paramsMap.tlrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.tlrqEnd != null and paramsMap.tlrqEnd != ''">
+		    and B_H_026.tlrq &lt;= to_date(#{paramsMap.tlrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if> 
+		 <if test="id != null and id != ''">
+            and  B_H_026.id = #{id}
+        </if>
+		 <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+            and  B_H_026.id != #{id}
+        </if>
+	   
+	</sql>
+  
+   <select id="queryAll" resultMap="RejectedMaterialToMap" parameterType="com.eray.thjw.material2.po.RejectedMaterial" >
+     select 
+	 <include refid="Base_Column_List" />
+		   ,B_H2_020.shrid
+		   ,b1.b1kcmc
+		   ,tlr.realname tlr_realname
+		   ,tlr.username tlr_username
+		   ,shr.username shr_username
+		   ,shr.realname shr_realname
+		   ,B_H2_020.shrq,
+		    B_H_027.id gxid,B_H_027.SHMXID,B_H_027.SHDID,
+		     shr.USERNAME || ' ' || shr.REALNAME AS SHR,
+		    d009.ckh , d00901.kwh ,
+		      b8.lsckid, b8.lskwid, b8.lscfwz,b8.sl
+		    from B_H_026 left join B_H_027 on B_H_026.id = B_H_027.lyid and B_H_027.zt = 1 and B_H_027.lylx = 1
+		           left join B_H2_020 on B_H_027.shdid = B_H2_020.id AND B_H2_020.ZT = 2
+		           left join t_user tlr on B_H_026.whrid = tlr.id
+		           left join t_user shr on B_H2_020.shrid = shr.id
+		           left join B_H2_02001 ON B_H2_02001.ID = B_H_027.SHMXID
+		           LEFT JOIN (SELECT MAINID,wm_concat(B_H2_0200101.CKMC || B_H2_0200101.KWH) as b1kcmc FROM B_H2_0200101 group by B_H2_0200101.MAINID) b1 ON B_H2_02001.id = b1.mainid
+    			left join b_h2_02001 b8 on B_H_027.shmxid=b8.id
+        		left join d_009 d009 on b8.lsckid=d009.id
+        		   left join d_00901 d00901 on b8.lskwid=d00901.id
+     <include refid="DemandSafeguardDetailParam"></include> 
+    	<choose>                                                                                 
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by B_H_026.tlrq asc
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	  </choose> 
+  </select>
+  
+  <sql id="Base_Column_List" >
+    B_H_026.ID, B_H_026.DPRTCODE, B_H_026.WHRBMID, B_H_026.WHRID, B_H_026.WHSJ, B_H_026.TLRQ, B_H_026.BJID, 
+    B_H_026.BJH, B_H_026.BJMC, B_H_026.PCH, B_H_026.XLH, B_H_026.TLSL, B_H_026.DW, B_H_026.SFKY, 
+    B_H_026.BJLY, B_H_026.FJZCH, B_H_026.SM, B_H_026.ZT, B_H_026.WCKCID, B_H_026.WLLB
+  </sql>
+  <select id="selectRejectedMaterial" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_026 left join B_H_027 on B_H_026.id = B_H_027.lyid
+    where B_H_026.ID = #{id,jdbcType=VARCHAR}
+    and B_H_027.id is not null
+    and B_H_027.lylx = 1 
+    and B_H_026.zt = 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="RejectedMaterialToMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,tlr.realname tlr_realname
+	,tlr.username tlr_username
+	,BH003.kcsl
+    from B_H_026
+     left join t_user tlr on B_H_026.whrid = tlr.id
+     left join B_H_003 BH003 on B_H_026.wckcid = BH003.id
+    where B_H_026.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_026
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.RejectedMaterial" >
+    insert into B_H_026 (ID, DPRTCODE, WHRBMID, 
+      WHRID, WHSJ, TLRQ, 
+      BJID, BJH, BJMC, PCH, 
+      XLH, TLSL, DW, SFKY, 
+      BJLY, FJZCH, SM, ZT, 
+      WCKCID, WLLB)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whrbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{tlrq,jdbcType=TIMESTAMP}, 
+      #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{bjmc,jdbcType=VARCHAR}, #{pch,jdbcType=VARCHAR}, 
+      #{xlh,jdbcType=VARCHAR}, #{tlsl,jdbcType=DECIMAL}, #{dw,jdbcType=VARCHAR}, #{sfky,jdbcType=DECIMAL}, 
+      #{bjly,jdbcType=DECIMAL}, #{fjzch,jdbcType=VARCHAR}, #{sm,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{wckcid,jdbcType=VARCHAR}, #{wllb,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.RejectedMaterial" >
+    insert into B_H_026
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whrbmid != null" >
+        WHRBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="tlrq != null" >
+        TLRQ,
+      </if>
+      <if test="bjid != null" >
+        BJID,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="bjmc != null" >
+        BJMC,
+      </if>
+      <if test="pch != null" >
+        PCH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="tlsl != null" >
+        TLSL,
+      </if>
+      <if test="dw != null" >
+        DW,
+      </if>
+      <if test="sfky != null" >
+        SFKY,
+      </if>
+      <if test="bjly != null" >
+        BJLY,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="wckcid != null" >
+        WCKCID,
+      </if>
+      <if test="wllb != null" >
+        WLLB,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whrbmid != null" >
+        #{whrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tlrq != null" >
+        #{tlrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bjid != null" >
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjmc != null" >
+        #{bjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null" >
+        #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="tlsl != null" >
+        #{tlsl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        #{dw,jdbcType=VARCHAR},
+      </if>
+      <if test="sfky != null" >
+        #{sfky,jdbcType=DECIMAL},
+      </if>
+      <if test="bjly != null" >
+        #{bjly,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="wckcid != null" >
+        #{wckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="wllb != null" >
+        #{wllb,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.RejectedMaterial" >
+    update B_H_026
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whrbmid != null" >
+        WHRBMID = #{whrbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tlrq != null" >
+        TLRQ = #{tlrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bjid != null" >
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjmc != null" >
+        BJMC = #{bjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null" >
+        PCH = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="tlsl != null" >
+        TLSL = #{tlsl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        DW = #{dw,jdbcType=VARCHAR},
+      </if>
+      <if test="sfky != null" >
+        SFKY = #{sfky,jdbcType=DECIMAL},
+      </if>
+      <if test="bjly != null" >
+        BJLY = #{bjly,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="wckcid != null" >
+        WCKCID = #{wckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="wllb != null" >
+        WLLB = #{wllb,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.RejectedMaterial" >
+    update B_H_026
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHRBMID = #{whrbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      TLRQ = #{tlrq,jdbcType=TIMESTAMP},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      BJMC = #{bjmc,jdbcType=VARCHAR},
+      PCH = #{pch,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      TLSL = #{tlsl,jdbcType=DECIMAL},
+      DW = #{dw,jdbcType=VARCHAR},
+      SFKY = #{sfky,jdbcType=DECIMAL},
+      BJLY = #{bjly,jdbcType=DECIMAL},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      SM = #{sm,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WCKCID = #{wckcid,jdbcType=VARCHAR},
+      WLLB = #{wllb,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

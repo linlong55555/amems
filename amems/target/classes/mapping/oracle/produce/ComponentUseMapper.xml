@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.produce.dao.ComponentUseMapper">
+  <!-- 查询待同步装机清单部件的在机累计值 -->
+  <select id="selectToBeSyncInstallCompnentUsageList" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2001.BJH,
+	       S2001.XLH,
+	       S2001.ID ZJQDID,
+	       S2001.WZ,
+	       SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	       SUM(S200601.FXXH) FXXH,
+	       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	       SUM(S200601.F1_XH) F1_XH,
+	       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	       SUM(S200601.F2_XH) F2_XH,
+	       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	       SUM(S200601.F3_XH) F3_XH,
+	       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	       SUM(S200601.F4_XH) F4_XH,
+	       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	       SUM(S200601.APU_XH) APU_XH
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND S200601.ZT = 1
+	   AND S200601.MAINID = S2006.ID
+	   AND S2006.ZT IN (2, 12)
+	   AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	  JOIN B_S2_001 S2001
+	    ON S2001.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND S200601.KCSJ &gt;=
+	       NVL(S2001.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt;
+	       NVL(S2001.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	   AND S2001.XLH IS NOT NULL
+	   AND S2001.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	   AND S2001.TBBS = 1
+	 WHERE 1 = 1
+	 GROUP BY S2001.BJH, S2001.XLH, S2001.ID,S2001.WZ
+  </select>
+  <!-- 查询飞行记录本涉及时间内在机部件的累计值 -->
+  <select id="selectInstalledCompnentUsageList" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2004.ID ZJQDID,
+		       S2004.WZ,
+		       SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+		       SUM(S200601.FXXH) FXXH,
+		       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+		       SUM(S200601.F1_XH) F1_XH,
+		       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+		       SUM(S200601.F2_XH) F2_XH,
+		       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+		       SUM(S200601.F3_XH) F3_XH,
+		       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+		       SUM(S200601.F4_XH) F4_XH,
+		       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+		       SUM(S200601.APU_XH) APU_XH
+		  FROM B_S2_004 S2004
+		  LEFT JOIN （SELECT S200601.FXSJ_FZ, S200601.FXXH, S200601.F1_SJ_FZ, 
+		  					S200601.F1_XH, S200601.F2_SJ_FZ, S200601.F2_XH, S200601.F3_SJ_FZ, 
+		  					S200601.F3_XH, S200601.F4_SJ_FZ, S200601.F4_XH, S200601.APU_SJ_FZ, 
+		  					S200601.APU_XH, S200601.KCSJ
+		  				FROM B_S2_00601 S200601
+		  				JOIN B_S2_006 S2006 ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+				                     AND S200601.ZT = 1
+				                     AND S200601.MAINID = S2006.ID
+				                     AND S2006.ZT IN (2, 12)
+				                     AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR} ) S200601 
+				  ON S200601.KCSJ &gt;= COALESCE(S2004.AZSJ,
+		                                  TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+		             AND S200601.KCSJ &lt; COALESCE(S2004.CCSJ,
+		                                  TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+		
+		 WHERE S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		   AND S2004.YXBS = 1
+		   AND S2004.XLH IS NOT NULL
+		   AND S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}
+		   AND COALESCE(S2004.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;= #{maxKcsj, jdbcType=TIMESTAMP}
+		   AND COALESCE(S2004.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt; #{minKcsj, jdbcType=TIMESTAMP}
+		 GROUP BY S2004.ID, S2004.WZ
+  </select>
+  <!-- 查询工单拆下件部件使用累计值 -->
+  <select id="selectWorkOrderCompnentUsageList" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2001.BJH,
+	       S2001.XLH,
+	       S2001.ID ZJQDID,
+	       S2001.WZ,
+	       SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	       SUM(S200601.FXXH) FXXH,
+	       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	       SUM(S200601.F1_XH) F1_XH,
+	       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	       SUM(S200601.F2_XH) F2_XH,
+	       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	       SUM(S200601.F3_XH) F3_XH,
+	       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	       SUM(S200601.F4_XH) F4_XH,
+	       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	       SUM(S200601.APU_XH) APU_XH
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.ZT = 1
+	   AND S200601.MAINID = S2006.ID
+	   AND S2006.ZT IN (2, 12)
+	  JOIN (SELECT S2004.BJH,
+	               S2004.XLH,
+	               S2004.ID,
+	               S2004.WZ,
+	               S2004.DPRTCODE,
+	               S2004.AZSJ,
+	               S200801.CX_SJ CCSJ,
+	               S2004.FJZCH
+	          FROM B_S2_00801 S200801
+	          JOIN B_S2_004 S2004
+	            ON S200801.ZT = 1 AND S200801.CX_ZJQDID = S2004.ID
+	           AND S2004.XLH IS NOT NULL
+	           AND S200801.MAINID = #{workOrderId, jdbcType=VARCHAR}) S2001
+	    ON S2001.DPRTCODE = S2006.DPRTCODE
+	   AND S2001.FJZCH = S2006.FJZCH
+	   AND S200601.KCSJ &gt;=
+	       NVL(S2001.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt;
+	       NVL(S2001.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	 WHERE 1 = 1
+	 GROUP BY S2001.BJH, S2001.XLH, S2001.ID,S2001.WZ
+  </select>
+  <!-- 查询工单装上件的在机使用量 -->
+  <select id="selectWorkOrderZsjCompnentUsageList" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2001.BJH,
+	       S2001.XLH,
+	       S2001.ID ZJQDID,
+	       S2001.WZ,
+	       SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	       SUM(S200601.FXXH) FXXH,
+	       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	       SUM(S200601.F1_XH) F1_XH,
+	       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	       SUM(S200601.F2_XH) F2_XH,
+	       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	       SUM(S200601.F3_XH) F3_XH,
+	       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	       SUM(S200601.F4_XH) F4_XH,
+	       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	       SUM(S200601.APU_XH) APU_XH
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.ZT = 1
+	   AND S200601.MAINID = S2006.ID
+	   AND S2006.ZT IN (2, 12)
+	  JOIN (SELECT S2002.BJH,
+	               S2002.XLH,
+	               S2002.ID,
+	               S2002.WZ,
+	               S2002.DPRTCODE,
+	               S2002.AZSJ,
+	               S2002.FJZCH,
+	               S2004.CCSJ
+	          FROM B_S2_00801 S200801
+	          JOIN B_S2_002 S2002
+	            ON S200801.ZT = 1 AND S200801.ZS_ZJQDID = S2002.ID
+	           AND S2002.XLH IS NOT NULL
+	           AND S200801.MAINID = #{workOrderId, jdbcType=VARCHAR}
+	          LEFT JOIN B_S2_004 S2004 ON S2002.ID = S2004.ID
+	           ) S2001
+	    ON S2001.DPRTCODE = S2006.DPRTCODE
+	   AND S2001.FJZCH = S2006.FJZCH
+	   AND S200601.KCSJ &gt;=
+	       NVL(S2001.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt; NVL(S2001.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	 GROUP BY S2001.BJH, S2001.XLH, S2001.ID,S2001.WZ
+  </select>
+  
+  <!-- 查询工单拆装记录拆下件部件使用累计值 -->
+  <select id="selectWorkOrderIOCompnentUsageList" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2001.BJH,
+	       S2001.XLH,
+	       S2001.ID ZJQDID,
+	       S2001.WZ,
+	       SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	       SUM(S200601.FXXH) FXXH,
+	       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	       SUM(S200601.F1_XH) F1_XH,
+	       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	       SUM(S200601.F2_XH) F2_XH,
+	       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	       SUM(S200601.F3_XH) F3_XH,
+	       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	       SUM(S200601.F4_XH) F4_XH,
+	       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	       SUM(S200601.APU_XH) APU_XH
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.ZT = 1
+	   AND S200601.MAINID = S2006.ID
+	   AND S2006.ZT IN (2, 12)
+	  JOIN (SELECT S2004.BJH,
+	               S2004.XLH,
+	               S2004.ID,
+	               S2004.WZ,
+	               S2004.DPRTCODE,
+	               S2004.AZSJ,
+	               S200801.CX_SJ CCSJ,
+	               S2004.FJZCH
+	          FROM B_S2_00801 S200801
+	          JOIN B_S2_004 S2004
+	            ON S200801.ZT = 1 AND S200801.CX_ZJQDID = S2004.ID
+	           AND S2004.XLH IS NOT NULL
+	           AND S200801.ID in
+	            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+				#{item, jdbcType = VARCHAR}
+				</foreach>
+			) S2001
+	    ON S2001.DPRTCODE = S2006.DPRTCODE
+	   AND S2001.FJZCH = S2006.FJZCH
+	   AND S200601.KCSJ &gt;=
+	       NVL(S2001.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt;
+	       NVL(S2001.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	 WHERE 1 = 1
+	 GROUP BY S2001.BJH, S2001.XLH, S2001.ID,S2001.WZ
+  </select>
+  <!-- 查询工单拆装记录装上件的在机使用量 -->
+  <select id="selectWorkOrderIOZsjCompnentUsageList" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2001.BJH,
+	       S2001.XLH,
+	       S2001.ID ZJQDID,
+	       S2001.WZ,
+	       SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	       SUM(S200601.FXXH) FXXH,
+	       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	       SUM(S200601.F1_XH) F1_XH,
+	       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	       SUM(S200601.F2_XH) F2_XH,
+	       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	       SUM(S200601.F3_XH) F3_XH,
+	       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	       SUM(S200601.F4_XH) F4_XH,
+	       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	       SUM(S200601.APU_XH) APU_XH
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.ZT = 1
+	   AND S200601.MAINID = S2006.ID
+	   AND S2006.ZT IN (2, 12)
+	  JOIN (SELECT S2002.BJH,
+	               S2002.XLH,
+	               S2002.ID,
+	               S2002.WZ,
+	               S2002.DPRTCODE,
+	               S2002.AZSJ,
+	               S2002.FJZCH,
+	               S2004.CCSJ
+	          FROM B_S2_00801 S200801
+	          JOIN B_S2_002 S2002
+	            ON S200801.ZT = 1 AND S200801.ZS_ZJQDID = S2002.ID
+	           AND S2002.XLH IS NOT NULL
+	           AND S200801.ID in
+	            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+				#{item, jdbcType = VARCHAR}
+				</foreach>
+			   LEFT JOIN B_S2_004 S2004 ON S2002.ID = S2004.ID
+			) S2001
+	    ON S2001.DPRTCODE = S2006.DPRTCODE
+	   AND S2001.FJZCH = S2006.FJZCH
+	   AND S200601.KCSJ &gt;=
+	       NVL(S2001.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt; NVL(S2001.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	 GROUP BY S2001.BJH, S2001.XLH, S2001.ID,S2001.WZ
+  </select>
+  
+  
+  <!-- 根据装机清单ID不带拆下时间查询部件累计使用量 -->
+  <select id="selectByZjqdidWithoutCxsj" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2004.BJH,
+	       S2004.XLH,
+	       S2004.ID ZJQDID,
+	       S2004.WZ,
+	       SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	       SUM(S200601.FXXH) FXXH,
+	       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	       SUM(S200601.F1_XH) F1_XH,
+	       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	       SUM(S200601.F2_XH) F2_XH,
+	       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	       SUM(S200601.F3_XH) F3_XH,
+	       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	       SUM(S200601.F4_XH) F4_XH,
+	       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	       SUM(S200601.APU_XH) APU_XH
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.ZT = 1
+	   AND S200601.MAINID = S2006.ID
+	   AND S2006.ZT IN (2, 12)
+	  JOIN B_S2_004 S2004 
+	    ON S2004.DPRTCODE = S2006.DPRTCODE
+	   AND S2004.FJZCH = S2006.FJZCH
+	   AND S200601.KCSJ &gt;=
+	       NVL(S2004.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt; TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')
+	   AND S2004.XLH IS NOT NULL
+	   AND S2004.ID = #{zjqdid, jdbcType=VARCHAR}
+	 GROUP BY S2004.BJH, S2004.XLH, S2004.ID,S2004.WZ
+  </select>
+  
+  <!-- 根据装机清单ID查询部件累计使用量 -->
+  <select id="selectByZjqdid" resultType="com.eray.thjw.produce.po.ComponentUse">
+		SELECT 
+		   S2004.WZ,
+		   SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	       SUM(S200601.FXXH) FXXH,
+	       SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	       SUM(S200601.F1_XH) F1_XH,
+	       SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	       SUM(S200601.F2_XH) F2_XH,
+	       SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	       SUM(S200601.F3_XH) F3_XH,
+	       SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	       SUM(S200601.F4_XH) F4_XH,
+	       SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	       SUM(S200601.APU_XH) APU_XH
+	  FROM B_S2_004 S2004
+	  JOIN (SELECT S200601.FXSJ_FZ,
+	               S200601.FXXH,
+	               S200601.F1_SJ_FZ,
+	               S200601.F1_XH,
+	               S200601.F2_SJ_FZ,
+	               S200601.F2_XH,
+	               S200601.F3_SJ_FZ,
+	               S200601.F3_XH,
+	               S200601.F4_SJ_FZ,
+	               S200601.F4_XH,
+	               S200601.APU_SJ_FZ,
+	               S200601.APU_XH,
+	               S200601.KCSJ,
+	               S2006.DPRTCODE,
+	               S2006.FJZCH
+	          FROM B_S2_00601 S200601
+	          JOIN B_S2_006 S2006
+	            ON S200601.ZT = 1
+	           AND S200601.MAINID = S2006.ID
+	           AND S200601.KCSJ &lt; #{jssj, jdbcType=TIMESTAMP}
+	           AND S2006.ZT IN (2, 12)) S200601
+	    ON S200601.KCSJ &gt;=
+	       NVL(S2004.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt; (CASE
+	         WHEN #{jssj, jdbcType=TIMESTAMP} &lt;
+	              COALESCE(S2004.CCSJ,
+	                       TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) THEN
+	         	 #{jssj, jdbcType=TIMESTAMP}
+	         ELSE
+	          COALESCE(S2004.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	       END)
+	   AND S2004.DPRTCODE = S200601.DPRTCODE
+	   AND S2004.FJZCH = S200601.FJZCH
+	   AND S2004.ID = #{zjqdid, jdbcType=VARCHAR}
+	 GROUP BY S2004.WZ  
+  
+  </select>
+  
+  <!-- 根据飞机查询飞机和关键部件累计使用量 -->
+  <select id="selectByFjzch" resultType="com.eray.thjw.produce.po.ComponentUse">
+	  	SELECT S2004.WZ,
+	       SUM(CASE
+	             WHEN S2004.WZ = 21 THEN
+	              S200601.F1_SJ_FZ
+	             WHEN S2004.WZ = 22 THEN
+	              S200601.F2_SJ_FZ
+	             WHEN S2004.WZ = 23 THEN
+	              S200601.F3_SJ_FZ
+	             WHEN S2004.WZ = 24 THEN
+	              S200601.F4_SJ_FZ
+	             WHEN S2004.WZ = 31 THEN
+	              S200601.APU_SJ_FZ
+	             ELSE
+	              0
+	           END) SJ,
+	       SUM(CASE
+	             WHEN S2004.WZ = 21 THEN
+	              S200601.F1_XH
+	             WHEN S2004.WZ = 22 THEN
+	              S200601.F2_XH
+	             WHEN S2004.WZ = 23 THEN
+	              S200601.F3_XH
+	             WHEN S2004.WZ = 24 THEN
+	              S200601.F4_XH
+	             WHEN S2004.WZ = 31 THEN
+	              S200601.APU_XH
+	             ELSE
+	              0
+	           END) XH
+	  FROM B_S2_004 S2004
+	  JOIN (SELECT S200601.F1_SJ_FZ,
+	               S200601.F1_XH,
+	               S200601.F2_SJ_FZ,
+	               S200601.F2_XH,
+	               S200601.F3_SJ_FZ,
+	               S200601.F3_XH,
+	               S200601.F4_SJ_FZ,
+	               S200601.F4_XH,
+	               S200601.APU_SJ_FZ,
+	               S200601.APU_XH,
+	               S200601.KCSJ,
+	               S2006.DPRTCODE,
+	               S2006.FJZCH
+	          FROM B_S2_00601 S200601
+	          JOIN B_S2_006 S2006
+	            ON S200601.ZT = 1
+	           AND S200601.MAINID = S2006.ID
+	           AND S200601.KCSJ &lt; #{jssj, jdbcType=TIMESTAMP}
+	           AND S2006.ZT IN (2, 12)) S200601
+	    ON S200601.KCSJ &gt;=
+	       NVL(S2004.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	   AND S200601.KCSJ &lt; (CASE
+	         WHEN  #{jssj, jdbcType=TIMESTAMP} &lt;
+	              COALESCE(S2004.CCSJ,
+	                       TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) THEN
+	             #{jssj, jdbcType=TIMESTAMP}
+	         ELSE
+	          COALESCE(S2004.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	       END)
+	   AND S2004.DPRTCODE = S200601.DPRTCODE
+	   AND COALESCE(S2004.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;= #{jssj, jdbcType=TIMESTAMP}
+	   AND COALESCE(S2004.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt; #{jssj, jdbcType=TIMESTAMP}
+	   AND S2004.YXBS = 1
+	   AND S2004.CJ = 1
+	   AND S2004.WZ IN (21, 22, 23, 24, 31)
+	   AND S2004.FJZCH = S200601.FJZCH
+	   AND S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	 WHERE 1 = 1
+	 GROUP BY S2004.WZ
+	UNION ALL
+	SELECT 11 WZ, SUM(S200601.FXSJ_FZ) FXSJ, SUM(S200601.FXXH) FXXH
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.ZT = 1
+	   AND S200601.MAINID = S2006.ID
+	   AND S2006.ZT IN (2, 12)
+	   AND S200601.KCSJ &lt; #{jssj, jdbcType=TIMESTAMP}
+	 WHERE 1 = 1
+	   AND S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	 GROUP BY S2006.FJZCH, S2006.DPRTCODE
+  
+  
+  </select>
+  
+  
+</mapper>

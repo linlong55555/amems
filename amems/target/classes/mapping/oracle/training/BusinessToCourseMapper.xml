@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.BusinessToCourseMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.BusinessToCourse" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="GWID" property="gwid" jdbcType="VARCHAR" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="JYYQ" property="jyyq" jdbcType="VARCHAR" />
+    <result column="PXJG" property="pxjg" jdbcType="VARCHAR" />
+    <result column="LY" property="ly" jdbcType="VARCHAR" />
+    <result column="JCTG" property="jctg" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="kcmc" property="kcmc" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, GWID, KCID, JYYQ, PXJG, LY, JCTG, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_005
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="queryAllBygwid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select ID, GWID, KCID, JYYQ, PXJG, LY, JCTG, ZT, WHBMID, WHRID, WHSJ,kcmc from (
+       select B_P_005.*,B_P_003.kcmc , row_number() over (partition by B_P_005.id order by null) rn from B_P_005
+         left join B_P_003 on B_P_005.kcid=B_P_003.kcbh and B_P_003.dprtcode = #{dprtcode,jdbcType=VARCHAR} where B_P_005.gwid =#{gwid,jdbcType=VARCHAR}
+         ) where rn=1
+    
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_005
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.BusinessToCourse" >
+    insert into B_P_005 (ID, GWID, KCID, 
+      JYYQ, PXJG, LY, JCTG, 
+      ZT, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{gwid,jdbcType=VARCHAR}, #{kcid,jdbcType=VARCHAR}, 
+      #{jyyq,jdbcType=VARCHAR}, #{pxjg,jdbcType=VARCHAR}, #{ly,jdbcType=VARCHAR}, #{jctg,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.BusinessToCourse" >
+    insert into B_P_005
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="gwid != null" >
+        GWID,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="jyyq != null" >
+        JYYQ,
+      </if>
+      <if test="pxjg != null" >
+        PXJG,
+      </if>
+      <if test="ly != null" >
+        LY,
+      </if>
+      <if test="jctg != null" >
+        JCTG,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="gwid != null" >
+        #{gwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="jyyq != null" >
+        #{jyyq,jdbcType=VARCHAR},
+      </if>
+      <if test="pxjg != null" >
+        #{pxjg,jdbcType=VARCHAR},
+      </if>
+      <if test="ly != null" >
+        #{ly,jdbcType=VARCHAR},
+      </if>
+      <if test="jctg != null" >
+        #{jctg,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+       sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.BusinessToCourse" >
+    update B_P_005
+    <set >
+      <if test="gwid != null" >
+        GWID = #{gwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="jyyq != null" >
+        JYYQ = #{jyyq,jdbcType=VARCHAR},
+      </if>
+      <if test="pxjg != null" >
+        PXJG = #{pxjg,jdbcType=VARCHAR},
+      </if>
+      <if test="ly != null" >
+        LY = #{ly,jdbcType=VARCHAR},
+      </if>
+      <if test="jctg != null" >
+        JCTG = #{jctg,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.BusinessToCourse" >
+    update B_P_005
+    set GWID = #{gwid,jdbcType=VARCHAR},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      JYYQ = #{jyyq,jdbcType=VARCHAR},
+      PXJG = #{pxjg,jdbcType=VARCHAR},
+      LY = #{ly,jdbcType=VARCHAR},
+      JCTG = #{jctg,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <select id="queryCount" parameterType="com.eray.thjw.training.po.BusinessToCourse" resultType="int">
+		select count(1)
+			from B_P_005 b where 1=1
+		  <if test="kcid != null and kcid != '' ">
+            and  b.kcid = #{kcid}
+         </if>
+         <if test="gwid != null and gwid != '' ">
+            and  b.gwid = #{gwid}
+         </if>
+		
+	</select>
+  
+</mapper>

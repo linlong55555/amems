@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.TaskReplaceMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.TaskReplace" >
+    <id column="ID" 		  	property="wxfaid" 		jdbcType="VARCHAR" />
+    <result column="DPRTCODE" 	property="dprtcode" jdbcType="VARCHAR" />
+    <result column="JX" 	property="jx" 	jdbcType="VARCHAR" />
+    <result column="WXXMID" 		property="wxxmid" 	jdbcType="VARCHAR" />
+    <result column="RWH" 		property="rwh" 	jdbcType="VARCHAR" />
+    <result column="WXXMLX" 		property="wxxmlx" 		jdbcType="DECIMAL" />
+    <result column="GKID" 	property="gkid" 	jdbcType="VARCHAR" />
+    <result column="GKBH" 		property="gkbh" 	jdbcType="VARCHAR" />
+    <result column="WXXMBB" 		property="bb" 	jdbcType="VARCHAR" />
+    <result column="CKH" 	property="ckh" 	jdbcType="VARCHAR" />
+    <result column="CKWJ" 	property="ckwj" 	jdbcType="VARCHAR" />
+    <result column="JHGS" 	property="jhgs" 	jdbcType="VARCHAR" />
+    <result column="JHGS_RS" 	property="jhgsRs" 	jdbcType="VARCHAR" />
+    <result column="JHGS_XSS" 	property="jhgsXss" 	jdbcType="VARCHAR" />
+    <result column="RWMS" 		property="rwms" 	jdbcType="VARCHAR" />
+    <result column="ZJH" 		property="zjh" 	jdbcType="VARCHAR" />
+    <result column="ZJH_ZWMS" 		property="zjh_zwms" 	jdbcType="VARCHAR" />
+    <result column="ZJH_YWMS" 		property="zjh_ywms" 	jdbcType="VARCHAR" />
+    <result column="DLBH" 		property="dlbh" 	jdbcType="VARCHAR" />
+    <result column="DLBH_ZWMS" 		property="dlbh_zwms" 	jdbcType="VARCHAR" />
+    <result column="DLBH_YWMS" 		property="dlbh_ywms" 	jdbcType="VARCHAR" />
+    <result column="SYX" 	property="syx" 	jdbcType="VARCHAR" />
+     <result column="EOBH" 	property="eobh" 	jdbcType="VARCHAR" />
+     <result column="FJZCH" 	property="fjzch" 	jdbcType="VARCHAR" />
+     
+  </resultMap>
+  
+  <select id="queryAll"  resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.TaskReplace">
+    SELECT G2011.ID ID,
+       G2011.DPRTCODE,
+       G2011.JX,
+       G201102.WXXMID,
+       G201102.RWH,
+       G2012.WXXMLX,
+       G201102.GKID,
+       G201102.GKBH,
+       G2012.BB WXXMBB,
+       G2012.CKH,
+       G2012.RWMS,
+       G2012.ZJH,
+       G2012.EOBH,
+       D005.ZWMS ZJH_ZWMS,
+       D005.YWMS ZJH_YWMS,
+       G201101.DLBH,
+       G201101.DLZWMS DLBH_ZWMS,
+       G201101.DLYWMS DLBH_YWMS,
+       CASE
+         WHEN G2012.SYX = '00000' THEN
+          '00000'
+         WHEN G2012.SYX = '-' THEN
+          G201203.FJZCH
+         ELSE
+          ''
+       END SYX
+  FROM B_G2_011 G2011   --维修方案
+  JOIN B_G2_01102 G201102  --维修方案生效区-维修项目关系
+    ON G2011.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+   AND G2011.ID = G201102.MAINID
+   AND G2011.ZXBS = 2
+    <if test="jx !=null and jx !=''">
+   AND G2011.JX = #{jx,jdbcType=VARCHAR}
+   </if>  
+  JOIN B_G2_012 G2012     --维修项目主表
+    ON G2012.YXBS = 1
+   AND G2012.ID = G201102.WXXMID
+  LEFT JOIN D_005 D005     --ata章节
+    ON D005.DPRTCODE = G2012.DPRTCODE
+   AND D005.ZJH = G2012.ZJH
+  LEFT JOIN B_G2_01101 G201101  --维修项目大类
+    ON G201101.ID = G2012.WXXMDLID
+  LEFT JOIN (SELECT G201203.MAINID WXXMID, WM_CONCAT(G201203.FJZCH) FJZCH
+               FROM B_G2_01203 G201203
+               JOIN B_G2_012 G2012_1
+                 ON G2012_1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}         
+                  <if test="jx !=null and jx !=''">
+                  AND G2012_1.JX =#{jx,jdbcType=VARCHAR}
+                  </if>       
+                AND G2012_1.ID = G201203.MAINID
+              GROUP BY G201203.MAINID) G201203
+    ON G201203.WXXMID = G2012.ID
+ WHERE 1 = 1
+ <if test="jx !=null and jx !=''">
+ AND G2011.JX=#{jx,jdbcType=VARCHAR}
+ </if>
+ <if test="paramsMap != null and paramsMap.keyword !='' and paramsMap.keyword !=null ">
+ AND (
+ UPPER(G201102.RWH) LIKE UPPER('%'||#{paramsMap.keyword}||'%') OR
+ UPPER(G2012.CKH) LIKE UPPER('%'||#{paramsMap.keyword}||'%') OR
+ UPPER(G2012.RWMS) LIKE UPPER('%'||#{paramsMap.keyword}||'%')
+ )
+ </if>
+ 
+<if test="paramsMap != null and paramsMap.wxxmlxList != null">
+   	  <if test="paramsMap.wxxmlxList.size > 0">
+			    AND WXXMLX IN
+	   	<foreach item="item" index="index" collection="paramsMap.wxxmlxList" open="(" separator="," close=")">  
+	       			#{item}  
+	   	</foreach>  
+   	  </if>
+   	  <if test="paramsMap.wxxmlxList.size == 0">
+			    AND 1 = 0
+   	 </if>
+</if>
+ 
+ <if test="paramsMap !=null and paramsMap.type=='1'">
+  ORDER BY G2012.ZJH, G2012.RWH
+ </if>
+ <if test="paramsMap !=null and paramsMap.type=='2'">
+ ORDER BY G201101.XC, G201101.DLBH, G2012.RWH
+ </if>  
+</select>
+  
+ <update id="updateEobhByWxxmid"  parameterType="java.lang.String" >
+    UPDATE B_G2_012 SET EOBH=#{0} WHERE ID=#{1}
+ </update> 
+ 
+ <delete id="deleteValidZone" parameterType="java.lang.String">
+   DELETE FROM B_G2_01103 WHERE MAINID=#{0} AND WXXMID=#{1}
+ </delete>
+ 
+ <delete id="deleteProject" parameterType="java.lang.String">
+  DELETE FROM B_G2_01202 WHERE MAINID=#{0}
+ </delete>
+ 
+ <select id="initProjectByid" resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.TaskReplace">
+ SELECT G2012.ID WXXMID, --维修项目编号
+       G2012.RWH, --任务号
+       G2012.BB WXXMBB, --维修项目版本
+       G2012.CKH, --参考号
+       G2012.CKWJ, --参考文件
+       G2012.JHGS_RS,
+       G2012.JHGS_XSS,
+       (G2012.JHGS_RS * G2012.JHGS_XSS) JHGS, --计划工时
+       G201203.FJZCH,
+       G2012.SYX  --适用性
+  FROM B_G2_01103 G201103
+  JOIN B_G2_012 G2012
+    ON G2012.YXBS = 1
+   AND G2012.ID = G201103.XGWXXMID
+   AND G201103.MAINID =#{wxfaid,jdbcType=VARCHAR}
+   AND G201103.WXXMID =#{wxxmid,jdbcType=VARCHAR}
+  LEFT JOIN (SELECT G201203.MAINID WXXMID, WM_CONCAT(G201203.FJZCH) FJZCH
+               FROM B_G2_01203 G201203                                
+              GROUP BY G201203.MAINID) G201203
+    ON G201203.WXXMID = G2012.ID
+ ORDER BY G2012.RWH
+ </select>
+ 
+ <select id="initProjectWindow" resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.TaskReplace">
+ SELECT G2012.ID WXXMID, --维修项目编号
+       G2012.RWH, --任务号
+       G2012.BB WXXMBB, --维修项目版本
+       G2012.CKH, --参考号
+       G2012.CKWJ, --参考文件
+       G2012.JHGS_RS,
+       G2012.JHGS_XSS,
+       G201203.FJZCH,
+       (G2012.JHGS_RS * G2012.JHGS_XSS) JHGS, --计划工时
+       CASE
+         WHEN G2012.SYX = '00000' THEN
+          '00000'
+         WHEN G2012.SYX = '-' THEN
+          G201203.FJZCH
+         ELSE
+          ''
+       END SYX --适用性
+  FROM B_G2_01102 G201102
+  JOIN B_G2_012 G2012
+    ON G2012.YXBS = 1
+   AND  G2012.WXXMLX!=4    --过滤掉定检包 
+   AND G2012.ID = G201102.WXXMID
+   AND G201102.MAINID = #{wxfaid,jdbcType=VARCHAR}
+  LEFT JOIN (SELECT G201203.MAINID WXXMID, WM_CONCAT(G201203.FJZCH) FJZCH
+               FROM B_G2_01203 G201203
+               JOIN B_G2_012 G2012_1
+                 ON G2012_1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+                AND G2012_1.JX =#{jx,jdbcType=VARCHAR}
+                AND G2012_1.ID = G201203.MAINID
+              GROUP BY G201203.MAINID) G201203
+    ON G201203.WXXMID = G2012.ID
+ WHERE 1=1
+<!--
+
+ NOT EXISTS (SELECT 1
+          FROM B_G2_01103 G201103
+         WHERE G201103.MAINID = #{wxfaid,jdbcType=VARCHAR}
+           AND G201103.WXXMID = #{wxxmid,jdbcType=VARCHAR}
+           AND G201103.XGWXXMID = G2012.ID)
+
+  -->
+
+
+<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		AND  (
+		    	UPPER(G2012.RWH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(G2012.CKH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    ) 
+</if>
+
+<if test="paramsMap != null and paramsMap.codeList != null and paramsMap.codeList.size>0">
+			 AND    G2012.RWH NOT IN
+	   	<foreach item="item" index="index" collection="paramsMap.codeList" open="(" separator="," close=")">  
+	       			#{item,jdbcType=VARCHAR}
+	   	</foreach> 
+	   	    
+</if>           
+           
+ORDER BY G2012.RWH 
+ 
+ </select>
+ 
+ 
+</mapper>

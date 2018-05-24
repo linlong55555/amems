@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.AffectedMapper">
+     
+	<resultMap id="AffectedMap" type="com.eray.thjw.po.Affected">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		<result column="ZXFL" property="zxfl" jdbcType="VARCHAR" />
+		<result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+		<result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+		<result column="BJH" property="bjh" jdbcType="VARCHAR" />
+		<result column="BJXLH" property="bjxlh" jdbcType="VARCHAR" />
+		<result column="ZT" property="zt" jdbcType="INTEGER" />
+		<result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+		<result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+		<result column="WHSJ" property="whsj" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtCode" jdbcType="VARCHAR" />
+		<result column="jhgs_rs" property="jhgsRs" jdbcType="VARCHAR" />
+		<result column="jhgs_xss" property="jhgsXss" jdbcType="VARCHAR" />
+	</resultMap>
+	
+		<!-- 添加受影响的对象 -->
+	<insert id="save"  parameterType="com.eray.thjw.po.Affected" >
+		insert into   
+		B_G_00102
+		(<include refid="AffectedColumn"></include>)
+		 values
+		 (#{id,jdbcType=VARCHAR},#{mainid,jdbcType=VARCHAR},#{zxfl,jdbcType=VARCHAR},#{fjzch,jdbcType=VARCHAR},#{zjqdid,jdbcType=VARCHAR},#{bjh,jdbcType=VARCHAR},#{bjxlh,jdbcType=VARCHAR},#{zt,jdbcType=DECIMAL},#{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR},sysdate,#{dprtCode,jdbcType=VARCHAR},#{jhgsRs,jdbcType=VARCHAR},#{jhgsXss,jdbcType=VARCHAR})
+	</insert>
+	
+		<!-- 修改受影响的对象 -->
+	<update id="update" parameterType="com.eray.thjw.po.Affected" >
+		 update B_G_00102 
+		 <trim prefix="SET" suffixOverrides=",">
+            <if test="null != zxfl">
+                zxfl = #{zxfl},
+            </if>
+             <if test="null != fjzch">
+                fjzch = #{fjzch},
+            </if>
+             <if test="null != zjqdid">
+                zjqdid = #{zjqdid},
+            </if>
+            <if test="null != bjh">
+                bjh = #{bjh},
+            </if>
+            <if test="null != bjxlh">
+                bjxlh =#{bjxlh} ,
+            </if>
+             <if test="null != whsj">
+                whsj = sysdate,
+            </if>
+             <if test="null != jhgsRs">
+                jhgs_rs = #{jhgsRs},
+            </if>
+             <if test="null != jhgsXss">
+                jhgs_xss = #{jhgsXss},
+            </if>
+              <if test="null != zt">
+                zt = #{zt},
+            </if>
+            id=id
+        </trim>
+		 where id = #{id}
+	</update>
+	
+	<!-- 字段 -->
+	<sql id="AffectedColumn">
+		ID,MAINID,ZXFL,FJZCH,ZJQDID,BJH,BJXLH,ZT,WHDWID,WHRID,WHSJ,DPRTCODE,jhgs_rs,jhgs_xss
+	</sql>
+	
+	<!-- 搜索参数 -->
+	<sql id="AffectedParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="roleId != null and roleId != ''">
+             and ROLE_ID = #{roleId}
+         </if>
+         <if test="dprtId != null and dprtId != ''">
+             and DPRT_ID = #{dprtId}
+         </if>
+	</sql>
+	
+  <select id="queryListByDjxmbhid" resultMap="AffectedMap" parameterType="java.lang.String" >
+	select <include refid="AffectedColumn"></include> from B_G_00102
+    	where mainid = #{djxmid,jdbcType=VARCHAR} and zt=1
+  </select>
+  
+    <select id="queryListByTechnicalfileids" resultMap="AffectedMap">
+	select 
+		B_G_00102.ID,B_G_00102.MAINID,
+		B_G_00102.ZXFL,B_G_00102.FJZCH,
+		B_G_00102.ZJQDID,B_G_00102.BJH,
+		B_G_00102.BJXLH,B_G_00102.ZT,
+		B_G_00102.WHDWID,B_G_00102.WHRID,
+		B_G_00102.WHSJ,B_G_00102.DPRTCODE,
+		B_G_00102.jhgs_rs,B_G_00102.jhgs_xss,
+		d_008.ywms||' '||d_008.zwms  bjms from B_G_00102 left join d_008 on d_008.bjh=B_G_00102.bjh and B_G_00102.dprtcode=d_008.dprtcode
+    	where B_G_00102.mainid in
+    	<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id,jdbcType=VARCHAR}
+		</foreach>
+    	 and B_G_00102.zt=1
+    	 
+  </select>
+  
+	<!-- 根据多个评估单id查询执行对象数据 -->
+  	<select id="queryListByPgdIds" resultMap="AffectedMap">
+		select ID,MAINID,FJZCH,BJH,BJXLH from B_G_00102
+    	where MAINID in
+    	<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id,jdbcType=VARCHAR}
+		</foreach>
+    	 and ZT = 1
+    	 order by FJZCH ASC,BJH ASC,BJXLH ASC
+  	</select>
+	
+
+	
+</mapper>

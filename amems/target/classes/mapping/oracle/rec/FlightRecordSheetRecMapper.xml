@@ -1,0 +1,1372 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.FlightRecordSheetRecMapper" >
+   
+  <!-- 查询飞行记录单日志列表分页 -->
+  <select id="queryList4BS006" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT B.*       
+		        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME
+		        ,'飞行记录单号:'||B.FXJLDH||' '||CASE 
+			         WHEN B.REC_CZSM = 0 THEN
+			          '保存'
+			         WHEN B.REC_CZSM = 1 THEN
+			          '提交'
+			         WHEN B.REC_CZSM = 12 THEN
+			          '修订'
+			         WHEN B.REC_CZSM = 8 THEN
+			          '作废'
+			         WHEN B.REC_CZSM = 11 THEN
+			          '修订作废'
+			      END REC_HD
+		        FROM B_S_006_REC B 
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		        WHERE 1 = 1
+	       		 <if test='paramsMap.REC_CZLS != null and paramsMap.REC_CZLS != ""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID != null and paramsMap.ID != ""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	       			and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and  (UPPER(b.fxjldh) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')  or
+	            	  UPPER(b.jlbym) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%') 
+            	)
+		         </if>
+		         <!-- 日志 机型，飞机注册号授权过滤。-->
+		        <choose>
+		        	<when test='paramsMap.LOGINED_USERTYPE != null and paramsMap.LOGINED_USERTYPE == "admin"'>
+		        		AND exists 
+			    		( SELECT 1 from D_007 D where 
+			    		B.FJZCH = D.FJZCH
+			    		AND B.DPRTCODE = D.DPRTCODE
+			    		AND D.zt = 1
+			    		)
+		        	</when>
+		        	<otherwise>
+		        		AND exists 
+			    		( SELECT 1 from V_ROLE_JX D where 
+			    		B.FJZCH = D.FJZCH
+			    		AND B.DPRTCODE = D.DPRTCODE
+			    		AND D.USER_ID = #{paramsMap.LOGINED_USERID,jdbcType=VARCHAR}
+			    		)
+		        	</otherwise>
+		        </choose>
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <!-- 查询飞行记录单差异 -->
+  <select id="queryDiff4BS006" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO
+                ,B.ID, B.FXJLDH, B.FJZCH, B.JLBYM, B.FXRQ, B.ZDDWID, B.ZDRID, B.ZDSJ
+                ,B.BZ, B.ZT, B.TBBS, B.DPRTCODE, B.XDRID, B.XDSJ, B.ZDJSYY, B.REC_XGLX
+                ,B.REC_CZRID, B.REC_CZSJ, B.REC_IP, 1 REC_CZSM, B.REC_CZLS, B.REC_ZBID
+                ,TO_CHAR(B.FXRQ,'YYYY-MM-DD') FXRQSTR
+                ,(CASE 
+			         WHEN B.zt = 1 THEN
+			          '保存'
+			         WHEN B.zt = 2 THEN
+			          '提交'
+			         WHEN B.zt = 8 THEN
+			          '作废'
+			         WHEN B.zt = 9 THEN
+			          '关闭'
+			         WHEN B.zt = 10 THEN
+			          '完成'
+			         WHEN B.zt = 11 THEN
+			          '修订作废'
+			         WHEN B.zt = 12 THEN
+			          '修订'
+			         WHEN B.zt = 99 THEN
+			          '历史'
+			      END) ZTSTR
+		        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME
+		        ,ZDR.USERNAME ||' '|| ZDR.REALNAME ZDR_REALNAME
+		        ,'飞行记录单号:'||B.FXJLDH||' '||CASE 
+			         WHEN B.REC_CZSM = 0 THEN
+			          '保存'
+			         WHEN B.REC_CZSM = 1 THEN
+			          '提交'
+			         WHEN B.REC_CZSM = 12 THEN
+			          '修订'
+			         WHEN B.REC_CZSM = 8 THEN
+			          '作废'
+			         WHEN B.REC_CZSM = 11 THEN
+			          '修订作废'
+			      END REC_HD
+                ,(CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM B_S_006_REC B 
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		        LEFT JOIN T_USER ZDR ON ZDR.ID = B.ZDRID
+         WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from b_s_006_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= B.rec_czsj 
+                   
+       ) WHERE 2 >=RNO 
+       
+  </select>
+  
+  <!-- 查询飞行记录单飞行数据差异 -->
+  <select id="queryDiff4BS00601" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, B.FXJLDID, B.HC, (CASE WHEN B.HCMS IS NULL THEN '调整值' ELSE B.HCMS END) HCMS, B.XDBS, B.FXSJ_XS, B.FXSJ_FZ, B.F1SJ_XS, B.F1SJ_FZ, B.F2SJ_XS, B.F2SJ_FZ, 
+	    B.QLJXH, B.JCSJ_XS, B.JCSJ_FZ, B.JCXH, B.YL_FXQ, B.YL_FXH, B.F1_N1, B.F1_N2, B.F1_N3, B.F1_N4, B.F1_N5, 
+	    B.F1_N6, B.F1_HY, B.F1_WDYD, B.F1_GLYD, B.F2_N1, B.F2_N2, B.F2_N3, B.F2_N4, B.F2_N5, B.F2_N6, B.F2_HY, 
+	    B.F2_WDYD, B.F2_GLYD, B.SSDSJ_XS, B.SSDSJ_FZ, B.DGXH, B.TS1, B.TS2, B.MGB, B.IGB, B.TGB, B.TSFXPZID, B.ZT, 
+	    B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.BZ, B.JH_F1, B.XLH_F1, B.JH_F2, B.XLH_F2, B.JH_JC, B.XLH_JC, B.JH_WDG, 
+	    B.XLH_WDG, B.JH_SSD, B.XLH_SSD, B.AV_FXR, B.AV_ZZH, B.ME_FXR, B.ME_ZZH, B.JZSHRK, (CASE WHEN B2.MS IS NULL THEN '无' ELSE B2.MS END) TSFXPZMS,
+	    (CASE WHEN B.FXSJ_XS IS NULL THEN 0 ELSE B.FXSJ_XS END) || ':' || (CASE WHEN B.FXSJ_FZ IS NULL THEN 0 ELSE B.FXSJ_FZ END) FXSJ,
+	    (CASE WHEN B.F1SJ_XS IS NULL THEN 0 ELSE B.F1SJ_XS END) || ':' || (CASE WHEN B.F1SJ_FZ IS NULL THEN 0 ELSE B.F1SJ_FZ END) F1SJ,
+	    (CASE WHEN B.F2SJ_XS IS NULL THEN 0 ELSE B.F2SJ_XS END) || ':' || (CASE WHEN B.F2SJ_FZ IS NULL THEN 0 ELSE B.F2SJ_FZ END) F2SJ,
+	    (CASE WHEN B.SSDSJ_XS IS NULL THEN 0 ELSE B.SSDSJ_XS END) || ':' || (CASE WHEN B.SSDSJ_FZ IS NULL THEN 0 ELSE B.SSDSJ_FZ END) SSDSJ,
+	    (CASE WHEN B.JCSJ_XS IS NULL THEN 0 ELSE B.JCSJ_XS END) || ':' || (CASE WHEN B.JCSJ_FZ IS NULL THEN 0 ELSE B.JCSJ_FZ END) JCSJ,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_00601_REC B
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	  LEFT JOIN B_S_002 B2 ON B.TSFXPZID = B2.ID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, B.FXJLDID, B.HC, (CASE WHEN B.HCMS IS NULL THEN '调整值' ELSE B.HCMS END) HCMS, B.XDBS, B.FXSJ_XS, B.FXSJ_FZ, B.F1SJ_XS, B.F1SJ_FZ, B.F2SJ_XS, B.F2SJ_FZ, 
+	    B.QLJXH, B.JCSJ_XS, B.JCSJ_FZ, B.JCXH, B.YL_FXQ, B.YL_FXH, B.F1_N1, B.F1_N2, B.F1_N3, B.F1_N4, B.F1_N5, 
+	    B.F1_N6, B.F1_HY, B.F1_WDYD, B.F1_GLYD, B.F2_N1, B.F2_N2, B.F2_N3, B.F2_N4, B.F2_N5, B.F2_N6, B.F2_HY, 
+	    B.F2_WDYD, B.F2_GLYD, B.SSDSJ_XS, B.SSDSJ_FZ, B.DGXH, B.TS1, B.TS2, B.MGB, B.IGB, B.TGB, B.TSFXPZID, B.ZT, 
+	    B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.BZ, B.JH_F1, B.XLH_F1, B.JH_F2, B.XLH_F2, B.JH_JC, B.XLH_JC, B.JH_WDG, 
+	    B.XLH_WDG, B.JH_SSD, B.XLH_SSD, B.AV_FXR, B.AV_ZZH, B.ME_FXR, B.ME_ZZH, B.JZSHRK, (CASE WHEN B2.MS IS NULL THEN '无' ELSE B2.MS END) TSFXPZMS,
+	    (CASE WHEN B.FXSJ_XS IS NULL THEN 0 ELSE B.FXSJ_XS END) || ':' || (CASE WHEN B.FXSJ_FZ IS NULL THEN 0 ELSE B.FXSJ_FZ END) FXSJ,
+	    (CASE WHEN B.F1SJ_XS IS NULL THEN 0 ELSE B.F1SJ_XS END) || ':' || (CASE WHEN B.F1SJ_FZ IS NULL THEN 0 ELSE B.F1SJ_FZ END) F1SJ,
+	    (CASE WHEN B.F2SJ_XS IS NULL THEN 0 ELSE B.F2SJ_XS END) || ':' || (CASE WHEN B.F2SJ_FZ IS NULL THEN 0 ELSE B.F2SJ_FZ END) F2SJ,
+	    (CASE WHEN B.SSDSJ_XS IS NULL THEN 0 ELSE B.SSDSJ_XS END) || ':' || (CASE WHEN B.SSDSJ_FZ IS NULL THEN 0 ELSE B.SSDSJ_FZ END) SSDSJ,
+	    (CASE WHEN B.JCSJ_XS IS NULL THEN 0 ELSE B.JCSJ_XS END) || ':' || (CASE WHEN B.JCSJ_FZ IS NULL THEN 0 ELSE B.JCSJ_FZ END) JCSJ,    
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_00601_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	   LEFT JOIN B_S_002 B2 ON B.TSFXPZID = B2.ID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_00601_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_00601_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY HC    
+  </select>
+  
+  <!-- 查询飞行记录单检查人差异 -->
+  <select id="queryDiff4BS00603" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, B.FXJLDID, B.HD, B.JCR, B.ZT, B.BZ, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B.HD = 1 THEN
+          '航前'
+         WHEN B.HD = 3 THEN
+          '航段一'
+         WHEN B.HD = 5 THEN
+          '航段二'
+         WHEN B.HD = 7 THEN
+          '航段三'
+         WHEN B.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_00603_REC B
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, B.FXJLDID, B.HD, B.JCR, B.ZT, B.BZ, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.HD = 1 THEN
+          '航前'
+         WHEN B.HD = 3 THEN
+          '航段一'
+         WHEN B.HD = 5 THEN
+          '航段二'
+         WHEN B.HD = 7 THEN
+          '航段三'
+         WHEN B.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_00603_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_00603_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_00603_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY HD    
+  </select>
+  
+  <!-- 查询飞行记录单完成工作差异 -->
+  <select id="queryDiff4BS00602" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, B.FXJLDID, B.RWLX, B.RWZLX, B.RWDID, B.XGDJID, B.GZXMBLDH, B.WCRQ, B.HD, B.HDMS, B2.RWDH,
+        B.WHNR, B.ZRRID, B.SJGS_RS, B.SJGS_XSS, B.TBBS, B.ZT, B.BZ, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+        B2.RWXX,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	ZRR.USERNAME ||' '|| ZRR.REALNAME REC_ZRR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B.HD = 1 THEN
+          '航前'
+         WHEN B.HD = 3 THEN
+          '航段一'
+         WHEN B.HD = 5 THEN
+          '航段二'
+         WHEN B.HD = 7 THEN
+          '航段三'
+         WHEN B.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+     (CASE 
+         WHEN B.RWLX = 1 THEN
+          '定检执行任务'
+         WHEN B.RWLX = 2 AND B.RWZLX = 1 THEN
+          '非例行-时控件工单'
+         WHEN B.RWLX = 2 AND B.RWZLX = 2 THEN
+          '非例行-附加工单'
+         WHEN B.RWLX = 2 AND B.RWZLX = 3 THEN
+          '非例行-排故工单'
+         WHEN B.RWLX = 3 THEN
+          'EO工单任务'
+      END) RWLXMS ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+        WHEN B.REC_CZSM = 0 THEN
+         '保存'
+        WHEN B.REC_CZSM = 1 THEN
+         '提交'
+        WHEN B.REC_CZSM = 12 THEN
+         '修订'
+        WHEN B.REC_CZSM = 8 THEN
+         '作废'
+        WHEN B.REC_CZSM = 11 THEN
+         '修订作废'
+     END REC_HD
+	  FROM B_S_00602_REC B
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	  LEFT JOIN B_S_009 B2 ON B.RWDID = B2.ID
+	  LEFT JOIN T_USER ZRR ON ZRR.ID = B.ZRRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, B.FXJLDID, B.RWLX, B.RWZLX, B.RWDID, B.XGDJID, B.GZXMBLDH, B.WCRQ, B.HD, B.HDMS, B2.RWDH,
+        B.WHNR, B.ZRRID, B.SJGS_RS, B.SJGS_XSS, B.TBBS, B.ZT, B.BZ, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+        B2.RWXX,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	ZRR.USERNAME ||' '|| ZRR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.HD = 1 THEN
+          '航前'
+         WHEN B.HD = 3 THEN
+          '航段一'
+         WHEN B.HD = 5 THEN
+          '航段二'
+         WHEN B.HD = 7 THEN
+          '航段三'
+         WHEN B.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+    (CASE 
+         WHEN B.RWLX = 1 THEN
+          '定检执行任务'
+         WHEN B.RWLX = 2 AND B.RWZLX = 1 THEN
+          '非例行-时控件工单'
+         WHEN B.RWLX = 2 AND B.RWZLX = 2 THEN
+          '非例行-附加工单'
+         WHEN B.RWLX = 2 AND B.RWZLX = 3 THEN
+          '非例行-排故工单'
+         WHEN B.RWLX = 3 THEN
+          'EO工单任务'
+      END) RWLXMS ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_00602_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	   LEFT JOIN B_S_009 B2 ON B.RWDID = B2.ID
+	   LEFT JOIN T_USER ZRR ON ZRR.ID = B.ZRRID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_00602_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_00602_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY HD    
+  </select>
+  
+  <!-- 查询飞行记录单拆下件差异 -->
+  <select id="queryDiff4BS0060201" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, B.CJJLDH, B.FXJLGLJLID, B.FXJLDID, B.ZS_IS, B.ZS_BZ, B.CX_ZJQDID, B.CX_JLDH,
+        B.CX_BZ, B.BZ, B.WHDWID, B.WHRID, B.WHSJ, B.ZT, B.TBBS, B.DPRTCODE, B.ZS_WCKCID,
+        B.ZS_KCLVID, B.CX_WCKCID, B.CX_KCLVID, B2.HD, B3.RWDH, B4.JH, B4.XLH, B4.WZ, B4.CJJH, B4.NBSBM, B4.ZWMC, B4.YWMC, B4.PCH,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B2.HD = 1 THEN
+          '航前'
+         WHEN B2.HD = 3 THEN
+          '航段一'
+         WHEN B2.HD = 5 THEN
+          '航段二'
+         WHEN B2.HD = 7 THEN
+          '航段三'
+         WHEN B2.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+    (CASE 
+         WHEN B2.RWLX = 1 THEN
+          '定检执行任务'
+         WHEN B2.RWLX = 2 AND B2.RWZLX = 1 THEN
+          '非例行-时控件工单'
+         WHEN B2.RWLX = 2 AND B2.RWZLX = 2 THEN
+          '非例行-附加工单'
+         WHEN B2.RWLX = 2 AND B2.RWZLX = 3 THEN
+          '非例行-排故工单'
+         WHEN B2.RWLX = 3 THEN
+          'EO工单任务'
+      END) RWLXMS ,
+    (CASE 
+         WHEN B4.WZ = 0 THEN '机身'
+         WHEN B4.WZ = 1 THEN '左发'
+         WHEN B4.WZ = 2 THEN '右发'
+         WHEN B4.WZ = 3 THEN '绞车'
+         WHEN B4.WZ = 4 THEN '搜索灯'
+         WHEN B4.WZ = 5 THEN '外吊挂'
+         END) WZSTR ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_0060201_REC B
+	  INNER JOIN B_S_00602_REC B2 ON B.FXJLGLJLID = B2.ID AND B.REC_CZLS = B2.REC_CZLS AND B2.REC_XGLX IN (1, 2)
+	  LEFT JOIN B_S_009 B3 ON B2.RWDID = B3.ID
+	  INNER JOIN B_S_001 B4 ON B.CX_ZJQDID = B4.ID
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, B.CJJLDH, B.FXJLGLJLID, B.FXJLDID, B.ZS_IS, B.ZS_BZ, B.CX_ZJQDID, B.CX_JLDH,
+        B.CX_BZ, B.BZ, B.WHDWID, B.WHRID, B.WHSJ, B.ZT, B.TBBS, B.DPRTCODE, B.ZS_WCKCID,
+        B.ZS_KCLVID, B.CX_WCKCID, B.CX_KCLVID, B2.HD, B3.RWDH, B4.JH, B4.XLH, B4.WZ, B4.CJJH, B4.NBSBM, B4.ZWMC, B4.YWMC, B4.PCH,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B2.HD = 1 THEN
+          '航前'
+         WHEN B2.HD = 3 THEN
+          '航段一'
+         WHEN B2.HD = 5 THEN
+          '航段二'
+         WHEN B2.HD = 7 THEN
+          '航段三'
+         WHEN B2.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+    (CASE 
+         WHEN B2.RWLX = 1 THEN
+          '定检执行任务'
+         WHEN B2.RWLX = 2 AND B2.RWZLX = 1 THEN
+          '非例行-时控件工单'
+         WHEN B2.RWLX = 2 AND B2.RWZLX = 2 THEN
+          '非例行-附加工单'
+         WHEN B2.RWLX = 2 AND B2.RWZLX = 3 THEN
+          '非例行-排故工单'
+         WHEN B2.RWLX = 3 THEN
+          'EO工单任务'
+      END) RWLXMS ,
+    (CASE 
+         WHEN B4.WZ = 0 THEN '机身'
+         WHEN B4.WZ = 1 THEN '左发'
+         WHEN B4.WZ = 2 THEN '右发'
+         WHEN B4.WZ = 3 THEN '绞车'
+         WHEN B4.WZ = 4 THEN '搜索灯'
+         WHEN B4.WZ = 5 THEN '外吊挂'
+         END) WZSTR ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_0060201_REC B
+	   INNER JOIN B_S_00602_REC B2 ON B.FXJLGLJLID = B2.ID AND B.REC_CZLS = B2.REC_CZLS AND B2.REC_XGLX IN (1, 2)
+	   LEFT JOIN B_S_009 B3 ON B2.RWDID = B3.ID
+	   INNER JOIN B_S_001 B4 ON B.CX_ZJQDID = B4.ID
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_0060201_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_0060201_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY HD, CJJLDH  
+  </select>
+  
+  <!-- 查询飞行记录单装上件差异 -->
+  <select id="queryDiff4BS006020101" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+	    B.ID, B.MAINID, B.ZS_ZJQDID, B.FJZCH, B.BJLX, B.JH, B.XLH, B.PCH, B.NBSBM, B.ZJH, B.CJJH, B.ZWMC,
+        B.YWMC, B.BJGZJL, B.ZJSL, B.WZ, B.SCRQ, B.BZ, B.AZRQ, B.AZJLDH, B.CCRQ, B.CCJLDH, B.LLKLX, B.LLKBH,
+        B.KZLX, B.IS_DJ, B.TSN, B.TSO, B.CJ, B.FJDID, B.SXRQ, B.ZT, B.TBBS, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE,
+        B.XKZH, B.SHZH, B2.CJJLDH, B3.HD, B4.RWDH,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	    CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	    TO_CHAR(B.SCRQ ,'YYYY-MM-DD') SCRQSTR,
+        TO_CHAR(B.AZRQ ,'YYYY-MM-DD') AZRQSTR,
+        TO_CHAR(B.CCRQ ,'YYYY-MM-DD') CCRQSTR,
+        ZJH.ZJH ||' '|| ZJH.ZWMS ZJHMS,
+        COALESCE(FJD.YWMC, FJD.JH, '')||'-'||COALESCE(FJD.XLH, FJD.NBSBM, '') FJDSTR,
+      CASE 
+        WHEN B.WZ = 0 THEN '机身'
+        WHEN B.WZ = 1 THEN '左发'
+        WHEN B.WZ = 2 THEN '右发'
+        WHEN B.WZ = 3 THEN '绞车'
+        WHEN B.WZ = 4 THEN '搜索灯'
+        WHEN B.WZ = 5 THEN '外吊挂'
+        END WZSTR,
+      CASE 
+        WHEN B.KZLX = 1 THEN '时控件'
+        WHEN B.KZLX = 2 THEN '时寿件'
+        WHEN B.KZLX = 3 THEN '非控制件'
+        END KZLXSTR,
+      CASE 
+        WHEN B.LLKLX = 1 THEN '无履历卡'
+        WHEN B.LLKLX = 2 THEN '原装履历卡'
+        WHEN B.LLKLX = 3 THEN '自制履历卡'
+        END LLKLXSTR,
+      CASE 
+        WHEN B.IS_DJ = 0 THEN '否'
+        WHEN B.IS_DJ = 1 THEN '是'
+        END ISDJSTR,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B3.HD = 1 THEN
+          '航前'
+         WHEN B3.HD = 3 THEN
+          '航段一'
+         WHEN B3.HD = 5 THEN
+          '航段二'
+         WHEN B3.HD = 7 THEN
+          '航段三'
+         WHEN B3.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+    (CASE 
+         WHEN B3.RWLX = 1 THEN
+          '定检执行任务'
+         WHEN B3.RWLX = 2 AND B3.RWZLX = 1 THEN
+          '非例行-时控件工单'
+         WHEN B3.RWLX = 2 AND B3.RWZLX = 2 THEN
+          '非例行-附加工单'
+         WHEN B3.RWLX = 2 AND B3.RWZLX = 3 THEN
+          '非例行-排故工单'
+         WHEN B3.RWLX = 3 THEN
+          'EO工单任务'
+      END) RWLXMS ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_006020101_REC B
+	  LEFT JOIN B_S_0060201_REC B2 ON B.MAINID = B2.ID AND B.REC_CZLS = B2.REC_CZLS AND B2.REC_XGLX IN (1, 2)
+	  LEFT JOIN B_S_00602_REC B3 ON B2.FXJLGLJLID = B3.ID AND B2.REC_CZLS = B3.REC_CZLS AND B3.REC_XGLX IN (1, 2)
+	  LEFT JOIN B_S_009 B4 ON B3.RWDID = B4.ID
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	  LEFT JOIN B_S_001 FJD ON B.FJDID = FJD.ID
+	  LEFT JOIN D_005 ZJH ON ZJH.ZJH = B.ZJH AND ZJH.DPRTCODE = B.DPRTCODE
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+	    B.ID, B.MAINID, B.ZS_ZJQDID, B.FJZCH, B.BJLX, B.JH, B.XLH, B.PCH, B.NBSBM, B.ZJH, B.CJJH, B.ZWMC,
+        B.YWMC, B.BJGZJL, B.ZJSL, B.WZ, B.SCRQ, B.BZ, B.AZRQ, B.AZJLDH, B.CCRQ, B.CCJLDH, B.LLKLX, B.LLKBH,
+        B.KZLX, B.IS_DJ, B.TSN, B.TSO, B.CJ, B.FJDID, B.SXRQ, B.ZT, B.TBBS, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE,
+        B.XKZH, B.SHZH, B2.CJJLDH, B3.HD, B4.RWDH,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	    CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	    TO_CHAR(B.SCRQ ,'YYYY-MM-DD') SCRQSTR,
+        TO_CHAR(B.AZRQ ,'YYYY-MM-DD') AZRQSTR,
+        TO_CHAR(B.CCRQ ,'YYYY-MM-DD') CCRQSTR,
+        ZJH.ZJH ||' '|| ZJH.ZWMS ZJHMS,
+        COALESCE(FJD.YWMC, FJD.JH, '')||'-'||COALESCE(FJD.XLH, FJD.NBSBM, '') FJDSTR,
+      CASE 
+        WHEN B.WZ = 0 THEN '机身'
+        WHEN B.WZ = 1 THEN '左发'
+        WHEN B.WZ = 2 THEN '右发'
+        WHEN B.WZ = 3 THEN '绞车'
+        WHEN B.WZ = 4 THEN '搜索灯'
+        WHEN B.WZ = 5 THEN '外吊挂'
+        END WZSTR,
+      CASE 
+        WHEN B.KZLX = 1 THEN '时控件'
+        WHEN B.KZLX = 2 THEN '时寿件'
+        WHEN B.KZLX = 3 THEN '非控制件'
+        END KZLXSTR,
+      CASE 
+        WHEN B.LLKLX = 1 THEN '无履历卡'
+        WHEN B.LLKLX = 2 THEN '原装履历卡'
+        WHEN B.LLKLX = 3 THEN '自制履历卡'
+        END LLKLXSTR,
+      CASE 
+        WHEN B.IS_DJ = 0 THEN '否'
+        WHEN B.IS_DJ = 1 THEN '是'
+        END ISDJSTR,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B3.HD = 1 THEN
+          '航前'
+         WHEN B3.HD = 3 THEN
+          '航段一'
+         WHEN B3.HD = 5 THEN
+          '航段二'
+         WHEN B3.HD = 7 THEN
+          '航段三'
+         WHEN B3.HD = 99 THEN
+          '航后'
+      END) HDMS ,
+    (CASE 
+         WHEN B3.RWLX = 1 THEN
+          '定检执行任务'
+         WHEN B3.RWLX = 2 AND B3.RWZLX = 1 THEN
+          '非例行-时控件工单'
+         WHEN B3.RWLX = 2 AND B3.RWZLX = 2 THEN
+          '非例行-附加工单'
+         WHEN B3.RWLX = 2 AND B3.RWZLX = 3 THEN
+          '非例行-排故工单'
+         WHEN B3.RWLX = 3 THEN
+          'EO工单任务'
+      END) RWLXMS ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_006020101_REC B
+	   LEFT JOIN B_S_0060201_REC B2 ON B.MAINID = B2.ID AND B.REC_CZLS = B2.REC_CZLS AND B2.REC_XGLX IN (1, 2)
+	   LEFT JOIN B_S_00602_REC B3 ON B2.FXJLGLJLID = B3.ID AND B2.REC_CZLS = B3.REC_CZLS AND B3.REC_XGLX IN (1, 2)
+	   LEFT JOIN B_S_009 B4 ON B3.RWDID = B4.ID
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	   LEFT JOIN B_S_001 FJD ON B.FJDID = FJD.ID
+	   LEFT JOIN D_005 ZJH ON ZJH.ZJH = B.ZJH AND ZJH.DPRTCODE = B.DPRTCODE
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_006020101_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_006020101_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY HD, CJJLDH  
+  </select>
+  
+  <!-- 查询飞行记录单装上件-时控件监控设置差异 -->
+  <select id="queryDiff4BS00602010101" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, B.MAINID, B.FJZCH, B.BJLX, B.JH, B.XLH, B.JKLBH, B.JKFLBH, B.GDSX, B.ZJYY,
+        B.BJYY, B.BJYC, B.ZJHYY, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.REC_XGLX,
+        B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     F_GETNAME_JKXM(B.JKLBH) JKLBHSTR,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_00602010101_REC B
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, B.MAINID, B.FJZCH, B.BJLX, B.JH, B.XLH, B.JKLBH, B.JKFLBH, B.GDSX, B.ZJYY,
+        B.BJYY, B.BJYC, B.ZJHYY, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.REC_XGLX,
+        B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     F_GETNAME_JKXM(B.JKLBH) JKLBHSTR,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_00602010101_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_00602010101_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_00602010101_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY JH,XLH,JKLBH
+  </select>
+  
+  <!-- 查询飞行记录单装上件-特殊情况设置差异 -->
+  <select id="queryDiff4BS00602010102" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, B.TSFXPZID, B.XSZ, B2.MS TSFXPZMS, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.TBBS, B.REC_XGLX,
+        B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID, B2.BH TSFXPZBH,
+        B3.FJZCH, B3.JH, B3.XLH,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_00602010102_REC B
+	  LEFT JOIN B_S_002 B2 ON B.TSFXPZID = B2.ID 
+	  LEFT JOIN B_S_006020101_REC B3 ON B.MAINID = B3.ID AND B.REC_CZLS = B3.REC_CZLS
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, B.TSFXPZID, B.XSZ, B2.MS TSFXPZMS, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.TBBS, B.REC_XGLX,
+        B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID, B2.BH TSFXPZBH,
+        B3.FJZCH, B3.JH, B3.XLH,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_00602010102_REC B
+	   LEFT JOIN B_S_002 B2 ON B.TSFXPZID = B2.ID 
+	   LEFT JOIN B_S_006020101_REC B3 ON B.MAINID = B3.ID AND B.REC_CZLS = B3.REC_CZLS
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_00602010102_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_00602010102_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY JH,XLH,TSFXPZBH
+  </select>
+  
+  <!-- 查询飞行记录单装上件-定检件监控设置差异 -->
+  <select id="queryDiff4BS00602010103" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, B.MAINID, B.FJZCH, B.BJLX, B.JH, B.XLH, B.DJBH, B.ZWMS, B.JKFLBH, B.JKLBH,
+        B.JK_SZ, B.BJYY, B.ZJHYY, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.TBBS, B.REC_XGLX,
+        B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     F_GETNAME_JKXM(B.JKLBH) JKLBHSTR,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_0060201010301_REC B
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, B.MAINID, B.FJZCH, B.BJLX, B.JH, B.XLH, B.DJBH, B.ZWMS, B.JKFLBH, B.JKLBH,
+        B.JK_SZ, B.BJYY, B.ZJHYY, B.WHDWID, B.WHRID, B.WHSJ, B.DPRTCODE, B.TBBS, B.REC_XGLX,
+        B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     F_GETNAME_JKXM(B.JKLBH) JKLBHSTR,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_0060201010301_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_0060201010301_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_0060201010301_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY JH,XLH,DJBH,JKLBH
+  </select>
+  
+  <!-- 查询飞行记录单装上件-子部件差异 -->
+  <select id="queryDiff4BS00602010104" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT 
+		B.ID, FBJ.FJZCH, FBJ.JH FBJJH, FBJ.XLH FBJXLH, ZBJ.JH ZBJJH, ZBJ.XLH ZBJXLH, ZBJ.CJJH ZBJCJJH, 
+		ZBJ.NBSBM ZBJNBSBM, ZBJ.ZWMC ZBJZWMC, ZBJ.YWMC ZBJYWMC, ZBJ.PCH ZBJPCH,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+    (CASE 
+         WHEN ZBJ.WZ = 0 THEN '机身'
+         WHEN ZBJ.WZ = 1 THEN '左发'
+         WHEN ZBJ.WZ = 2 THEN '右发'
+         WHEN ZBJ.WZ = 3 THEN '绞车'
+         WHEN ZBJ.WZ = 4 THEN '搜索灯'
+         WHEN ZBJ.WZ = 5 THEN '外吊挂'
+         END) WZSTR ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM B_S_00602010104_REC B
+	  LEFT JOIN B_S_006020101_REC FBJ ON B.MAINID = FBJ.ID AND B.REC_CZLS = FBJ.REC_CZLS AND FBJ.REC_XGLX IN (1, 2)
+	  LEFT JOIN B_S_001 ZBJ ON B.ZBJ_ZJQDID = ZBJ.ID
+	  LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.REC_XGLX IN (1, 2)
+	UNION ALL
+	
+	SELECT 
+		B.ID, FBJ.FJZCH, FBJ.JH FBJJH, FBJ.XLH FBJXLH, ZBJ.JH ZBJJH, ZBJ.XLH ZBJXLH, ZBJ.CJJH ZBJCJJH, 
+		ZBJ.NBSBM ZBJNBSBM, ZBJ.ZWMC ZBJZWMC, ZBJ.YWMC ZBJYWMC, ZBJ.PCH ZBJPCH,
+        B.REC_XGLX, B.REC_CZRID, B.REC_CZSJ, B.REC_IP, B.REC_CZSM, B.REC_CZLS, B.REC_ZBID,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+    (CASE 
+         WHEN ZBJ.WZ = 0 THEN '机身'
+         WHEN ZBJ.WZ = 1 THEN '左发'
+         WHEN ZBJ.WZ = 2 THEN '右发'
+         WHEN ZBJ.WZ = 3 THEN '绞车'
+         WHEN ZBJ.WZ = 4 THEN '搜索灯'
+         WHEN ZBJ.WZ = 5 THEN '外吊挂'
+         END) WZSTR ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	   FROM B_S_00602010104_REC B
+	   LEFT JOIN B_S_006020101_REC FBJ ON B.MAINID = FBJ.ID AND B.REC_CZLS = FBJ.REC_CZLS AND FBJ.REC_XGLX IN (1, 2)
+	   LEFT JOIN B_S_001 ZBJ ON B.ZBJ_ZJQDID = ZBJ.ID
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		    AND B.REC_CZLS IN
+		       (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_S_00602010104_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM B_S_00602010104_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )
+            AND B.REC_XGLX IN (1, 2)
+		    ORDER BY FBJJH, FBJXLH, ZBJJH, ZBJXLH  
+  </select>
+  
+  <select id="queryDiff4FRS2D011" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	 
+	SELECT B.*
+	,JG.DPRTNAME  DPRTCODE_STR
+	,B.WJDX||'K' WJDX_STR
+	,CASE B.YXZT WHEN 1 THEN '有效' ELSE '无效' END YXZT_STR
+	
+	,CZR.USERNAME ||' '|| CZR.REALNAME CZR_STR
+	,CZBM.DPRTNAME  CZBM_STR
+	,REC_CZR.USERNAME ||' '|| REC_CZR.REALNAME REC_CZR_STR
+	,(CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) REC_XGLX_STR
+	,'CURRENT' DATA_VERSION 
+	,CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM D_011_REC B
+	   LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+	   LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+	   
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.CZRID
+	   LEFT JOIN T_DEPARTMENT CZBM ON JG.ID = B.CZBMID
+	
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.YXZT = 1
+	   
+	UNION ALL
+	
+	SELECT B.*
+	,JG.DPRTNAME  DPRTCODE_STR 
+	,B.WJDX||'K' WJDX_STR
+	,CASE B.YXZT WHEN 1 THEN '有效' ELSE '无效' END YXZT_STR
+	
+	,CZR.USERNAME ||' '|| CZR.REALNAME CZR_STR
+	,CZBM.DPRTNAME  CZBM_STR
+	,REC_CZR.USERNAME ||' '|| REC_CZR.REALNAME REC_CZR_STR
+	,(CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) REC_XGLX_STR
+	,'LAST' DATA_VERSION 
+	,CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM D_011_REC B
+	   LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+	   LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+	   
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.CZRID
+	   LEFT JOIN T_DEPARTMENT CZBM ON JG.ID = B.CZBMID
+	   
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	         AND B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+	         AND B.YXZT = 1
+	         AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM D_011_REC A WHERE 
+	             	A.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM D_011_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            ) 
+  </select>
+  
+  <select id="queryDiff4Task2D011" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	 
+	SELECT B.*
+	,JG.DPRTNAME  DPRTCODE_STR
+	,B.WJDX||'K' WJDX_STR
+	,CASE B.YXZT WHEN 1 THEN '有效' ELSE '无效' END YXZT_STR
+	,B2.RWDH
+	,CZR.USERNAME ||' '|| CZR.REALNAME CZR_STR
+	,CZBM.DPRTNAME  CZBM_STR
+	,REC_CZR.USERNAME ||' '|| REC_CZR.REALNAME REC_CZR_STR
+	,(CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) REC_XGLX_STR
+	,'CURRENT' DATA_VERSION 
+	,CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM D_011_REC B
+	   LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+	   LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+	   
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.CZRID
+	   LEFT JOIN T_DEPARTMENT CZBM ON JG.ID = B.CZBMID
+	   LEFT JOIN B_S_009 B2 ON B.MAINID = B2.ID
+	
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   AND B.MAINID != #{paramsMap.ID,jdbcType=VARCHAR}
+	   AND B.YXZT = 1
+	   
+	UNION ALL
+	
+	SELECT B.*
+	,JG.DPRTNAME  DPRTCODE_STR 
+	,B.WJDX||'K' WJDX_STR
+	,CASE B.YXZT WHEN 1 THEN '有效' ELSE '无效' END YXZT_STR
+	,B2.RWDH
+	,CZR.USERNAME ||' '|| CZR.REALNAME CZR_STR
+	,CZBM.DPRTNAME  CZBM_STR
+	,REC_CZR.USERNAME ||' '|| REC_CZR.REALNAME REC_CZR_STR
+	,(CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) REC_XGLX_STR
+	,'LAST' DATA_VERSION 
+	,CASE 
+         WHEN B.REC_CZSM = 0 THEN
+          '保存'
+         WHEN B.REC_CZSM = 1 THEN
+          '提交'
+         WHEN B.REC_CZSM = 12 THEN
+          '修订'
+         WHEN B.REC_CZSM = 8 THEN
+          '作废'
+         WHEN B.REC_CZSM = 11 THEN
+          '修订作废'
+      END REC_HD
+	  FROM D_011_REC B
+	   LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+	   LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+	   
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.CZRID
+	   LEFT JOIN T_DEPARTMENT CZBM ON JG.ID = B.CZBMID
+	   LEFT JOIN B_S_009 B2 ON B.MAINID = B2.ID
+	   
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	         AND B.MAINID != #{paramsMap.ID,jdbcType=VARCHAR}
+	         AND B.YXZT = 1
+	         AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM D_011_REC A WHERE 
+	             	A.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM D_011_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            ) 
+      ORDER BY RWDH
+  </select>
+  
+</mapper>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.OutboundRelationsMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.OutboundRelations" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="LYLX" property="lylx" jdbcType="DECIMAL" />
+    <result column="LYID" property="lyid" jdbcType="VARCHAR" />
+    <result column="LYMXID" property="lymxid" jdbcType="VARCHAR" />
+    <result column="CKDID" property="ckdid" jdbcType="VARCHAR" />
+    <result column="CKMXID" property="ckmxid" jdbcType="VARCHAR" />
+    <result column="CKSL" property="cksl" jdbcType="DECIMAL" />
+    <result column="DW" property="dw" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, ZT, LYLX, LYID, LYMXID, CKDID, CKMXID, CKSL, DW
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_029
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_029
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByCkid" parameterType="java.lang.String" >
+    delete from B_H_029
+    where ckdid = #{ckdid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.OutboundRelations" >
+    insert into B_H_029 (ID, DPRTCODE, ZT, 
+      LYLX, LYID, LYMXID, 
+      CKDID, CKMXID, CKSL, 
+      DW)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{lylx,jdbcType=DECIMAL}, #{lyid,jdbcType=VARCHAR}, #{lymxid,jdbcType=VARCHAR}, 
+      #{ckdid,jdbcType=VARCHAR}, #{ckmxid,jdbcType=VARCHAR}, #{cksl,jdbcType=DECIMAL}, 
+      #{dw,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.OutboundRelations" >
+    insert into B_H_029
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="lylx != null" >
+        LYLX,
+      </if>
+      <if test="lyid != null" >
+        LYID,
+      </if>
+      <if test="lymxid != null" >
+        LYMXID,
+      </if>
+      <if test="ckdid != null" >
+        CKDID,
+      </if>
+      <if test="ckmxid != null" >
+        CKMXID,
+      </if>
+      <if test="cksl != null" >
+        CKSL,
+      </if>
+      <if test="dw != null" >
+        DW,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="lylx != null" >
+        #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lymxid != null" >
+        #{lymxid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdid != null" >
+        #{ckdid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmxid != null" >
+        #{ckmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="cksl != null" >
+        #{cksl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        #{dw,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.OutboundRelations" >
+    update B_H_029
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="lylx != null" >
+        LYLX = #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        LYID = #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lymxid != null" >
+        LYMXID = #{lymxid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdid != null" >
+        CKDID = #{ckdid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmxid != null" >
+        CKMXID = #{ckmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="cksl != null" >
+        CKSL = #{cksl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        DW = #{dw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <update id="updateByPrimaryKeySelectiveCk" parameterType="com.eray.thjw.material2.po.OutboundRelations" >
+    update B_H_029
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="lylx != null" >
+        LYLX = #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        LYID = #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lymxid != null" >
+        LYMXID = #{lymxid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmxid != null" >
+        CKMXID = #{ckmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="cksl != null" >
+        CKSL = #{cksl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        DW = #{dw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CKDID = #{ckdid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.OutboundRelations" >
+    update B_H_029
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      LYLX = #{lylx,jdbcType=DECIMAL},
+      LYID = #{lyid,jdbcType=VARCHAR},
+      LYMXID = #{lymxid,jdbcType=VARCHAR},
+      CKDID = #{ckdid,jdbcType=VARCHAR},
+      CKMXID = #{ckmxid,jdbcType=VARCHAR},
+      CKSL = #{cksl,jdbcType=DECIMAL},
+      DW = #{dw,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_H_029
+    	where ckmxid in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</delete>
+  
+</mapper>

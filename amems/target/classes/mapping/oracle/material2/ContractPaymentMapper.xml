@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.ContractPaymentMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.ContractPayment" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="LX" property="lx" jdbcType="DECIMAL" />
+    <result column="SFKFS" property="sfkfs" jdbcType="VARCHAR" />
+    <result column="JE" property="je" jdbcType="DECIMAL" />
+    <result column="HTMXID" property="htmxid" jdbcType="VARCHAR" />
+    <result column="FPHM" property="fphm" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    
+    <!-- 扩充字段 start -->
+    <result column="HTMXNAME" property="paramsMap.htmxName" jdbcType="VARCHAR" /><!-- 合同明细 -->
+  	 <!-- 扩充字段 end -->
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, LX, SFKFS, JE, HTMXID, FPHM, BZ, ZT
+  </sql>
+  <sql id="P_Column_List" >
+    B.ID, B.MAINID, B.LX, B.SFKFS, B.JE, B.HTMXID, B.FPHM, B.BZ, B.ZT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_02202
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="P_Column_List" />
+    ,B2.BJH HTMXNAME
+    from B_H2_02202 B
+    left join B_H2_02201 B2
+    on B.HTMXID = B2.ID
+    where B.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="P_Column_List" />
+    ,B2.BJH HTMXNAME
+    from B_H2_02202 B
+    left join B_H2_02201 B2
+    on B.HTMXID = B2.ID
+    where B.MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_02202
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from B_H2_02202
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.ContractPayment" >
+    insert into B_H2_02202 (ID, MAINID, LX, 
+      SFKFS, JE, HTMXID, 
+      FPHM, BZ, ZT)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{lx,jdbcType=DECIMAL}, 
+      #{sfkfs,jdbcType=VARCHAR}, #{je,jdbcType=DECIMAL}, #{htmxid,jdbcType=VARCHAR}, 
+      #{fphm,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.ContractPayment" >
+    insert into B_H2_02202
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="lx != null" >
+        LX,
+      </if>
+      <if test="sfkfs != null" >
+        SFKFS,
+      </if>
+      <if test="je != null" >
+        JE,
+      </if>
+      <if test="htmxid != null" >
+        HTMXID,
+      </if>
+      <if test="fphm != null" >
+        FPHM,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="lx != null" >
+        #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="sfkfs != null" >
+        #{sfkfs,jdbcType=VARCHAR},
+      </if>
+      <if test="je != null" >
+        #{je,jdbcType=DECIMAL},
+      </if>
+      <if test="htmxid != null" >
+        #{htmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="fphm != null" >
+        #{fphm,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.ContractPayment" >
+    update B_H2_02202
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="lx != null" >
+        LX = #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="sfkfs != null" >
+        SFKFS = #{sfkfs,jdbcType=VARCHAR},
+      </if>
+      <if test="je != null" >
+        JE = #{je,jdbcType=DECIMAL},
+      </if>
+      <if test="htmxid != null" >
+        HTMXID = #{htmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="fphm != null" >
+        FPHM = #{fphm,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.ContractPayment" >
+    update B_H2_02202
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      LX = #{lx,jdbcType=DECIMAL},
+      SFKFS = #{sfkfs,jdbcType=VARCHAR},
+      JE = #{je,jdbcType=DECIMAL},
+      HTMXID = #{htmxid,jdbcType=VARCHAR},
+      FPHM = #{fphm,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

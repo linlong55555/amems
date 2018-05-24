@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.BaseWorkOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.BaseWorkOrder" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="GDBH" property="gdbh" jdbcType="VARCHAR" />
+    <result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DYZT" property="dyzt" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, GDBH, ZDDWID, ZDRID, ZDSJ, DPRTCODE, DYZT
+  </sql>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.BaseWorkOrder" >
+    insert into B_G_006
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="gdbh != null" >
+        GDBH,
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+        ZDSJ,
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+        DYZT,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="gdbh != null" >
+        #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null" >
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+       sysdate,
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+       0,
+    </trim>
+  </insert>
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  
+  <insert id="insert" parameterType="com.eray.thjw.po.BaseWorkOrder" >
+    insert into B_G_006 (ID, GDBH, ZDDWID, 
+      ZDRID, ZDSJ, DPRTCODE, 
+      DYZT)
+    values (#{id,jdbcType=VARCHAR}, #{gdbh,jdbcType=VARCHAR}, #{zddwid,jdbcType=VARCHAR}, 
+      #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{dyzt,jdbcType=DECIMAL})
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.BaseWorkOrder" >
+    update B_G_006
+    <set >
+      <if test="gdbh != null" >
+        GDBH = #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="dyzt != null" >
+        DYZT = #{dyzt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.BaseWorkOrder" >
+    update B_G_006
+    set GDBH = #{gdbh,jdbcType=VARCHAR},
+      ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      DYZT = #{dyzt,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

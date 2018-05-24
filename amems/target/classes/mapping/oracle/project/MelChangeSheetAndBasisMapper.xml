@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project.dao.MelChangeSheetAndBasisMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project.po.MelChangeSheetAndBasis" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="YJLX" property="yjlx" jdbcType="VARCHAR" />
+    <result column="YJNR" property="yjnr" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, YJLX, YJNR
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01901
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01901
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_01901
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project.po.MelChangeSheetAndBasis" >
+    insert into B_G_01901 (ID, MAINID, YJLX, 
+      YJNR)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{yjlx,jdbcType=VARCHAR}, 
+      #{yjnr,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project.po.MelChangeSheetAndBasis" >
+    insert into B_G_01901
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="yjlx != null" >
+        YJLX,
+      </if>
+      <if test="yjnr != null" >
+        YJNR,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="yjlx != null" >
+        #{yjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="yjnr != null" >
+        #{yjnr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project.po.MelChangeSheetAndBasis" >
+    update B_G_01901
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="yjlx != null" >
+        YJLX = #{yjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="yjnr != null" >
+        YJNR = #{yjnr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project.po.MelChangeSheetAndBasis" >
+    update B_G_01901
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      YJLX = #{yjlx,jdbcType=VARCHAR},
+      YJNR = #{yjnr,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 插入MEL更改单-修改依据 -->
+  <insert id="insertBatch" parameterType="java.util.List" >
+     insert into B_G_01901
+     (
+      ID,
+      MAINID,
+      YJLX,
+      YJNR
+     )
+     <foreach collection="list" item="item" index="index" separator="union all">
+        (select
+           #{item.id},
+           #{item.mainid},
+           #{item.yjlx},
+           #{item.yjnr}
+         from dual
+        )
+     </foreach>
+  </insert>
+</mapper>

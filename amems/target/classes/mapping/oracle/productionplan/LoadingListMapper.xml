@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.LoadingListMapper">
+	<resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.LoadingList">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+		<result column="BJLX" property="bjlx" jdbcType="DECIMAL" />
+		<result column="JH" property="jh" jdbcType="VARCHAR" />
+		<result column="XLH" property="xlh" jdbcType="VARCHAR" />
+		<result column="NBSBM" property="nbsbm" jdbcType="VARCHAR" />
+		<result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+		<result column="CJJH" property="cjjh" jdbcType="VARCHAR" />
+		<result column="ZWMC" property="zwmc" jdbcType="VARCHAR" />
+		<result column="YWMC" property="ywmc" jdbcType="VARCHAR" />
+		<result column="BJGZJL" property="bjgzjl" jdbcType="VARCHAR" />
+		<result column="ZJSL" property="zjsl" jdbcType="DECIMAL" />
+		<result column="WZ" property="wz" jdbcType="DECIMAL" />
+		<result column="ZT" property="zt" jdbcType="DECIMAL" />
+		<result column="SCRQ" property="scrq" jdbcType="TIMESTAMP" />
+		<result column="BZ" property="bz" jdbcType="VARCHAR" />
+		<result column="AZRQ" property="azrq" jdbcType="TIMESTAMP" />
+		<result column="AZJLDH" property="azjldh" jdbcType="VARCHAR" />
+		<result column="CCRQ" property="ccrq" jdbcType="TIMESTAMP" />
+		<result column="CCJLDH" property="ccjldh" jdbcType="VARCHAR" />
+		<result column="LLKLX" property="llklx" jdbcType="DECIMAL" />
+		<result column="LLKBH" property="llkbh" jdbcType="VARCHAR" />
+		<result column="KZLX" property="kzlx" jdbcType="DECIMAL" />
+		<result column="IS_DJ" property="isDj" jdbcType="DECIMAL" />
+		<result column="TSN" property="tsn" jdbcType="VARCHAR" />
+		<result column="TSO" property="tso" jdbcType="VARCHAR" />
+		<result column="CJ" property="cj" jdbcType="DECIMAL" />
+		<result column="FJDID" property="fjdid" jdbcType="VARCHAR" />
+		<result column="SXRQ" property="sxrq" jdbcType="TIMESTAMP" />
+		<result column="SXZT" property="sxzt" jdbcType="DECIMAL" />
+		<result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+
+		<result column="gdid" property="gdid" jdbcType="DECIMAL" />
+		<result column="rwid" property="rwid" jdbcType="TIMESTAMP" />
+		<result column="jkbz" property="jkbz" jdbcType="VARCHAR" />
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, FJZCH, BJLX, JH, XLH,NBSBM, ZJH, CJJH, ZWMC, YWMC,
+		BJGZJL, ZJSL, WZ,
+		ZT, SCRQ, BZ,
+		AZRQ, AZJLDH, CCRQ, CCJLDH, LLKLX,
+		LLKBH, KZLX, IS_DJ, TSN, TSO, CJ, FJDID,
+		SXRQ,
+		SXZT, WHSJ,
+		DPRTCODE,gdid,rwid,jkbz
+	</sql>
+
+	<sql id="loadingListParamTotal">
+		where
+		1=1
+		<!-- 飞机注册号 -->
+		<if test="fjzch != null and fjzch != ''">
+			and b.fjzch = #{fjzch}
+		</if>
+		<!-- 组织机构 -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and b.dprtcode = #{dprtcode}
+		</if>
+		<!-- 飞机件号 -->
+		<if test="jh != null and jh!= ''">
+			and b.jh = #{jh}
+		</if>
+		<!-- 飞机件号 -->
+		<if test="xlh != null and xlh != ''">
+			and b.xlh = #{xlh}
+		</if>
+		<!-- 状态 -->
+		<if test="zt != null">
+			and b.zt = #{zt}
+		</if>
+		<!-- 生效状态 -->
+		<if test="sxzt != null">
+			and b.sxzt = #{sxzt}
+		</if>
+		<!-- 关键字 -->
+		<if test="keyword != null and keyword != ''">
+			and (
+			UPPER(b.jh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.xlh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.nbsbm) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.zjh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.cjjh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.zwmc) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.ywmc) like UPPER('%'||#{keyword}||'%')
+			)
+		</if>
+		<!-- 位置 -->
+		<if test="wz != null">
+			and b.wz = #{wz}
+		</if>
+		<!-- 层级 -->
+		<if test="cj != null">
+			and b.cj = #{cj}
+		</if>
+		<!-- id不等于 -->
+		<if test="notId != null and notId != ''">
+			and b.id != #{notId}
+		</if>
+		<!-- 开始生产日期 -->
+		<if test="beginScrq != null and beginScrq != ''">
+			and b.scrq &gt;= #{beginScrq}
+		</if>
+		<!-- 结束生产日期 -->
+		<if test="endScrq != null and endScrq != ''">
+			and b.scrq &lt;= #{endScrq}
+		</if>
+		<!-- 安装记录单号 -->
+		<if test="azjldh != null and azjldh != ''">
+			and b.azjldh = #{azjldh}
+		</if>
+		<!-- 开始安装日期 -->
+		<if test="beginAzrq != null and beginAzrq != ''">
+			and b.azrq &gt;= #{beginAzrq}
+		</if>
+		<!-- 结束安装日期 -->
+		<if test="endAzrq != null and endAzrq != ''">
+			and b.azrq &lt;= #{endAzrq}
+		</if>
+		<!-- 出厂记录单号 -->
+		<if test="ccjldh != null and ccjldh != ''">
+			and b.ccjldh = #{ccjldh}
+		</if>
+		<!-- 开始出厂日期 -->
+		<if test="beginCcrq != null and beginCcrq != ''">
+			and b.ccrq &gt;= #{beginCcrq}
+		</if>
+		<!-- 结束出厂日期 -->
+		<if test="endCcrq != null and endCcrq != ''">
+			and b.ccrq &lt;= #{endCcrq}
+		</if>
+		<!-- 履历卡类型 -->
+		<if test="llklx != null and llklx != ''">
+			and b.llklx = #{llklx}
+		</if>
+		<!-- 履历卡编号 -->
+		<if test="llkbh != null and llkbh != ''">
+			and b.llkbh = #{llkbh}
+		</if>
+		<!-- 备注 -->
+		<if test="bz != null and bz != ''">
+			and b.bz = #{bz}
+		</if>
+		<!-- 控制类型 -->
+		<if test="kzlx != null and kzlx != '' and kzlx!=-1">
+			and b.kzlx = #{kzlx}
+		</if>
+		<if test="kzlx != null and kzlx != '' and kzlx==-1">
+			and b.kzlx in (1,2)
+		</if>
+		<!-- 是否定检 -->
+		<if test="isDj != null and isDj != '' or isDj==0">
+			and b.is_dj = #{isDj}
+		</if>
+		<if test="notCj != null and notCj != ''">
+			and b.cj != #{notCj}
+		</if>
+		<if test="fjdid != null and fjdid != ''">
+			and b.fjdid = #{fjdid}
+		</if>
+		<if test="ids != null and ids.size > 0">
+            and b.id in 
+            <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+         </if>
+         <if test="notIds != null and notIds.size > 0">
+            and b.id not in 
+            <foreach collection="notIds" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+         </if>
+	</sql>
+
+	<!-- b_s_003.工单id = b_g_007.id -->
+	<select id="updatePlaneEditable" parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		update B_S_003
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="null != gdid  and gdid != ''">
+				gdid=#{gdid},
+			</if>
+			<if test="null != rwid and rwid != ''">
+				rwid=#{rwid},
+			</if>
+
+			ID = id
+		</trim>
+
+		where ID = #{id}
+	</select>
+
+	<!-- b_s_003.工单id = b_g_007.id -->
+	<select id="updatePlaneEditables" parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		update B_S_003
+		set rwid=#{rwid}
+		where gdid = #{gdid}
+	</select>
+
+
+	<select id="selectLoadingList" resultMap="BaseResultMap" parameterType="com.eray.thjw.productionplan.po.LoadingList">
+	  select id,jh,xlh,zwmc,ywmc,zjhms,nbsbm,cjjh,pch,wz from (
+		select b1.id,b1.jh,b1.xlh,b1.nbsbm,b1.cjjh,b1.pch,b1.wz,b2.zwms zwmc, b2.ywms ywmc,b3.zjh||' '||b3.zwms zjhms
+		  from (select t.id, t.jh,t.xlh,t.wz,t.dprtcode,t.zjh,t.nbsbm,t.cjjh,t.pch
+		          from b_s_003 t
+		         where t.fjzch = #{fjzch} and t.dprtcode=#{dprtcode}
+		           and t.zt = 1
+		           and t.bjlx = 1
+		           and t.xlh is not null
+		           and t.sxzt = 1) b1 
+		    left join d_008 b2
+		    on b1.jh = b2.bjh
+		    and b1.dprtcode = b2.dprtcode
+		    left join d_005 b3
+		    on b1.zjh = b3.zjh
+		    and b1.dprtcode = b3.dprtcode
+		    AND b2.ZT = 1  )<include refid="alertBjhParam"></include>
+	</select>
+     <!-- bjh弹框参数 -->
+	<sql id="alertBjhParam">
+	   where 
+	   1=1
+          <if test="keyword != null and keyword != ''">
+		    and (UPPER(jh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(xlh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(zwmc) like UPPER('%'||#{keyword}||'%') 
+		    	or UPPER(ywmc) like UPPER('%'||#{keyword}||'%')
+                or UPPER(zjhms) like UPPER('%'||#{keyword}||'%') 
+		    	or UPPER(cjjh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(pch) like UPPER('%'||#{keyword}||'%') )               <!-- 左右匹配 查询关键字 -->
+		  </if>
+		  <if test="wz != null">
+		     and  wz = #{wz,jdbcType=DECIMAL}
+		  </if>
+	 </sql>
+
+	<sql id="loadingListParam">
+		where
+		bjlx=1
+		<!-- 飞机注册号 -->
+		<if test="fjzch != null and fjzch != ''">
+			and fjzch = #{fjzch}
+		</if>
+		<!-- 飞机件号 -->
+		<if test="jh != null and jh!= ''">
+			and jh = #{jh}
+		</if>
+		<!-- 飞机件号 -->
+		<if test="id != null and id!= ''">
+			and id = #{id}
+		</if>
+		<!-- 状态 -->
+		and zt =1 and xlh is not null and sxzt=1
+	</sql>
+	
+	<select id="selectConutKey" resultMap="BaseResultMap"
+		parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		select
+		<include refid="Base_Column_List" />
+		from B_S_003
+		<include refid="loadingListParam" />
+	</select>
+
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		B_S_003
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		insert into B_S_003 (ID,
+		FJZCH, BJLX,
+		JH, XLH, ZJH, CJJH,
+		ZWMC, YWMC, BJGZJL,
+		ZJSL, WZ, ZT, SCRQ,
+		BZ, AZRQ, AZJLDH,
+		CCRQ, CCJLDH, LLKLX,
+		LLKBH, KZLX, IS_DJ,
+		TSN, TSO, CJ,
+		FJDID,
+		SXRQ, SXZT, WHSJ,
+		DPRTCODE)
+		values (#{id,jdbcType=VARCHAR},
+		#{fjzch,jdbcType=VARCHAR},
+		#{bjlx,jdbcType=DECIMAL},
+		#{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR},
+		#{zjh,jdbcType=VARCHAR},
+		#{cjjh,jdbcType=VARCHAR},
+		#{zwmc,jdbcType=VARCHAR}, #{ywmc,jdbcType=VARCHAR},
+		#{bjgzjl,jdbcType=VARCHAR},
+		#{zjsl,jdbcType=DECIMAL},
+		#{wz,jdbcType=DECIMAL},
+		#{zt,jdbcType=DECIMAL},
+		#{scrq,jdbcType=TIMESTAMP},
+		#{bz,jdbcType=VARCHAR},
+		#{azrq,jdbcType=TIMESTAMP},
+		#{azjldh,jdbcType=VARCHAR},
+		#{ccrq,jdbcType=TIMESTAMP}, #{ccjldh,jdbcType=VARCHAR},
+		#{llklx,jdbcType=DECIMAL},
+		#{llkbh,jdbcType=VARCHAR},
+		#{kzlx,jdbcType=DECIMAL},
+		#{isDj,jdbcType=DECIMAL},
+		#{tsn,jdbcType=VARCHAR}, #{tso,jdbcType=VARCHAR},
+		#{cj,jdbcType=DECIMAL},
+		#{fjdid,jdbcType=VARCHAR},
+		#{sxrq,jdbcType=TIMESTAMP}, #{sxzt,jdbcType=DECIMAL},
+		#{whsj,jdbcType=TIMESTAMP},
+		#{dprtcode,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		insert into B_S_003
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="fjzch != null">
+				FJZCH,
+			</if>
+			<if test="bjlx != null">
+				BJLX,
+			</if>
+			<if test="jh != null">
+				JH,
+			</if>
+			<if test="xlh != null">
+				XLH,
+			</if>
+			<if test="zjh != null">
+				ZJH,
+			</if>
+			<if test="cjjh != null">
+				CJJH,
+			</if>
+			<if test="zwmc != null">
+				ZWMC,
+			</if>
+			<if test="ywmc != null">
+				YWMC,
+			</if>
+			<if test="bjgzjl != null">
+				BJGZJL,
+			</if>
+			<if test="zjsl != null">
+				ZJSL,
+			</if>
+			<if test="wz != null">
+				WZ,
+			</if>
+			<if test="zt != null">
+				ZT,
+			</if>
+			<if test="scrq != null">
+				SCRQ,
+			</if>
+			<if test="bz != null">
+				BZ,
+			</if>
+			<if test="azrq != null">
+				AZRQ,
+			</if>
+			<if test="azjldh != null">
+				AZJLDH,
+			</if>
+			<if test="ccrq != null">
+				CCRQ,
+			</if>
+			<if test="ccjldh != null">
+				CCJLDH,
+			</if>
+			<if test="llklx != null">
+				LLKLX,
+			</if>
+			<if test="llkbh != null">
+				LLKBH,
+			</if>
+			<if test="kzlx != null">
+				KZLX,
+			</if>
+			<if test="isDj != null">
+				IS_DJ,
+			</if>
+			<if test="tsn != null">
+				TSN,
+			</if>
+			<if test="tso != null">
+				TSO,
+			</if>
+			<if test="cj != null">
+				CJ,
+			</if>
+			<if test="fjdid != null">
+				FJDID,
+			</if>
+			<if test="sxrq != null">
+				SXRQ,
+			</if>
+			<if test="sxzt != null">
+				SXZT,
+			</if>
+			<if test="whsj != null">
+				WHSJ,
+			</if>
+			<if test="dprtcode != null">
+				DPRTCODE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="fjzch != null">
+				#{fjzch,jdbcType=VARCHAR},
+			</if>
+			<if test="bjlx != null">
+				#{bjlx,jdbcType=DECIMAL},
+			</if>
+			<if test="jh != null">
+				#{jh,jdbcType=VARCHAR},
+			</if>
+			<if test="xlh != null">
+				#{xlh,jdbcType=VARCHAR},
+			</if>
+			<if test="zjh != null">
+				#{zjh,jdbcType=VARCHAR},
+			</if>
+			<if test="cjjh != null">
+				#{cjjh,jdbcType=VARCHAR},
+			</if>
+			<if test="zwmc != null">
+				#{zwmc,jdbcType=VARCHAR},
+			</if>
+			<if test="ywmc != null">
+				#{ywmc,jdbcType=VARCHAR},
+			</if>
+			<if test="bjgzjl != null">
+				#{bjgzjl,jdbcType=VARCHAR},
+			</if>
+			<if test="zjsl != null">
+				#{zjsl,jdbcType=DECIMAL},
+			</if>
+			<if test="wz != null">
+				#{wz,jdbcType=DECIMAL},
+			</if>
+			<if test="zt != null">
+				#{zt,jdbcType=DECIMAL},
+			</if>
+			<if test="scrq != null">
+				#{scrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="bz != null">
+				#{bz,jdbcType=VARCHAR},
+			</if>
+			<if test="azrq != null">
+				#{azrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="azjldh != null">
+				#{azjldh,jdbcType=VARCHAR},
+			</if>
+			<if test="ccrq != null">
+				#{ccrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ccjldh != null">
+				#{ccjldh,jdbcType=VARCHAR},
+			</if>
+			<if test="llklx != null">
+				#{llklx,jdbcType=DECIMAL},
+			</if>
+			<if test="llkbh != null">
+				#{llkbh,jdbcType=VARCHAR},
+			</if>
+			<if test="kzlx != null">
+				#{kzlx,jdbcType=DECIMAL},
+			</if>
+			<if test="isDj != null">
+				#{isDj,jdbcType=DECIMAL},
+			</if>
+			<if test="tsn != null">
+				#{tsn,jdbcType=VARCHAR},
+			</if>
+			<if test="tso != null">
+				#{tso,jdbcType=VARCHAR},
+			</if>
+			<if test="cj != null">
+				#{cj,jdbcType=DECIMAL},
+			</if>
+			<if test="fjdid != null">
+				#{fjdid,jdbcType=VARCHAR},
+			</if>
+			<if test="sxrq != null">
+				#{sxrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sxzt != null">
+				#{sxzt,jdbcType=DECIMAL},
+			</if>
+			<if test="whsj != null">
+				#{whsj,jdbcType=TIMESTAMP},
+			</if>
+			<if test="dprtcode != null">
+				#{dprtcode,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		update B_S_003
+		<set>
+			<if test="fjzch != null">
+				FJZCH = #{fjzch,jdbcType=VARCHAR},
+			</if>
+			<if test="bjlx != null">
+				BJLX = #{bjlx,jdbcType=DECIMAL},
+			</if>
+			<if test="jh != null">
+				JH = #{jh,jdbcType=VARCHAR},
+			</if>
+			<if test="xlh != null">
+				XLH = #{xlh,jdbcType=VARCHAR},
+			</if>
+			<if test="zjh != null">
+				ZJH = #{zjh,jdbcType=VARCHAR},
+			</if>
+			<if test="cjjh != null">
+				CJJH = #{cjjh,jdbcType=VARCHAR},
+			</if>
+			<if test="zwmc != null">
+				ZWMC = #{zwmc,jdbcType=VARCHAR},
+			</if>
+			<if test="ywmc != null">
+				YWMC = #{ywmc,jdbcType=VARCHAR},
+			</if>
+			<if test="bjgzjl != null">
+				BJGZJL = #{bjgzjl,jdbcType=VARCHAR},
+			</if>
+			<if test="zjsl != null">
+				ZJSL = #{zjsl,jdbcType=DECIMAL},
+			</if>
+			<if test="wz != null">
+				WZ = #{wz,jdbcType=DECIMAL},
+			</if>
+			<if test="zt != null">
+				ZT = #{zt,jdbcType=DECIMAL},
+			</if>
+			<if test="scrq != null">
+				SCRQ = #{scrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="bz != null">
+				BZ = #{bz,jdbcType=VARCHAR},
+			</if>
+			<if test="azrq != null">
+				AZRQ = #{azrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="azjldh != null">
+				AZJLDH = #{azjldh,jdbcType=VARCHAR},
+			</if>
+			<if test="ccrq != null">
+				CCRQ = #{ccrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="ccjldh != null">
+				CCJLDH = #{ccjldh,jdbcType=VARCHAR},
+			</if>
+			<if test="llklx != null">
+				LLKLX = #{llklx,jdbcType=DECIMAL},
+			</if>
+			<if test="llkbh != null">
+				LLKBH = #{llkbh,jdbcType=VARCHAR},
+			</if>
+			<if test="kzlx != null">
+				KZLX = #{kzlx,jdbcType=DECIMAL},
+			</if>
+			<if test="isDj != null">
+				IS_DJ = #{isDj,jdbcType=DECIMAL},
+			</if>
+			<if test="tsn != null">
+				TSN = #{tsn,jdbcType=VARCHAR},
+			</if>
+			<if test="tso != null">
+				TSO = #{tso,jdbcType=VARCHAR},
+			</if>
+			<if test="cj != null">
+				CJ = #{cj,jdbcType=DECIMAL},
+			</if>
+			<if test="fjdid != null">
+				FJDID = #{fjdid,jdbcType=VARCHAR},
+			</if>
+			<if test="sxrq != null">
+				SXRQ = #{sxrq,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sxzt != null">
+				SXZT = #{sxzt,jdbcType=DECIMAL},
+			</if>
+			<if test="whsj != null">
+				WHSJ = #{whsj,jdbcType=TIMESTAMP},
+			</if>
+<!-- 			<if test="dprtcode != null"> -->
+<!-- 				DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!-- 			</if> -->
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		update B_S_003
+		set
+		FJZCH = #{fjzch,jdbcType=VARCHAR},
+		BJLX = #{bjlx,jdbcType=DECIMAL},
+		JH =
+		#{jh,jdbcType=VARCHAR},
+		XLH = #{xlh,jdbcType=VARCHAR},
+		ZJH =
+		#{zjh,jdbcType=VARCHAR},
+		CJJH = #{cjjh,jdbcType=VARCHAR},
+		ZWMC =
+		#{zwmc,jdbcType=VARCHAR},
+		YWMC = #{ywmc,jdbcType=VARCHAR},
+		BJGZJL =
+		#{bjgzjl,jdbcType=VARCHAR},
+		ZJSL = #{zjsl,jdbcType=DECIMAL},
+		WZ =
+		#{wz,jdbcType=DECIMAL},
+		ZT = #{zt,jdbcType=DECIMAL},
+		SCRQ =
+		#{scrq,jdbcType=TIMESTAMP},
+		BZ = #{bz,jdbcType=VARCHAR},
+		AZRQ =
+		#{azrq,jdbcType=TIMESTAMP},
+		AZJLDH = #{azjldh,jdbcType=VARCHAR},
+		CCRQ =
+		#{ccrq,jdbcType=TIMESTAMP},
+		CCJLDH = #{ccjldh,jdbcType=VARCHAR},
+		LLKLX =
+		#{llklx,jdbcType=DECIMAL},
+		LLKBH = #{llkbh,jdbcType=VARCHAR},
+		KZLX =
+		#{kzlx,jdbcType=DECIMAL},
+		IS_DJ = #{isDj,jdbcType=DECIMAL},
+		TSN =
+		#{tsn,jdbcType=VARCHAR},
+		TSO = #{tso,jdbcType=VARCHAR},
+		CJ =
+		#{cj,jdbcType=DECIMAL},
+		FJDID = #{fjdid,jdbcType=VARCHAR},
+		SXRQ =
+		#{sxrq,jdbcType=TIMESTAMP},
+		SXZT = #{sxzt,jdbcType=DECIMAL},
+		WHSJ =
+		#{whsj,jdbcType=TIMESTAMP}
+<!-- 		DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 根据飞机分页查询部件 -->
+	<select id="queryPage" resultMap="BaseResultMap"
+		parameterType="com.eray.thjw.productionplan.po.LoadingList">
+		SELECT
+		B.ID, B.FJZCH,
+		B.BJLX, B.JH, B.XLH, B.NBSBM, 
+		(CASE WHEN D2.ZJH IS NULL THEN D4.ZJH ELSE D2.ZJH END) ZJH,
+		(CASE WHEN D3.CJJH IS NULL THEN B.CJJH ELSE D3.CJJH END) CJJH, 
+		(CASE WHEN D3.ZWMS IS NULL THEN B.ZWMC ELSE D3.ZWMS END) ZWMC, 
+		(CASE WHEN D3.YWMS IS NULL THEN B.YWMC ELSE D3.YWMS END) YWMC,
+		B.BJGZJL,
+		B.ZJSL, B.WZ, B.ZT, B.SCRQ,
+		B.BZ, B.AZRQ, B.AZJLDH, B.CCRQ, B.CCJLDH,
+		B.LLKLX, B.LLKBH, B.KZLX,
+		B.IS_DJ, B.TSN, B.TSO, B.CJ, B.FJDID, B.SXRQ, B.FLAG,
+		B.SXZT, B.WHSJ, B.DPRTCODE, B.SHZH, B.XKZH, B.PCH, D.FJJX, (CASE WHEN D2.ZJH IS NULL THEN D4.ZWMS ELSE D2.ZWMS END) AS ZJHMS
+		FROM (
+		<if test="paramsMap != null and paramsMap.cxjid != null and paramsMap.cxjid != ''">
+		select B.*, 1 flag from B_S_003 B
+		where b.id = #{paramsMap.cxjid,jdbcType=VARCHAR}
+		<!-- 关键字 -->
+		<if test="keyword != null and keyword != ''">
+			and (UPPER(b.jh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.xlh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.nbsbm) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.zjh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.cjjh) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.zwmc) like UPPER('%'||#{keyword}||'%') or
+			UPPER(b.ywmc) like UPPER('%'||#{keyword}||'%')
+			)
+		</if>
+		<!-- 位置 -->
+		<if test="wz != null and wz != ''">
+			and b.wz = #{wz}
+		</if>
+		union all
+		</if>
+		select B.*, 2 flag from (select * from B_S_003 B
+		<include refid="loadingListParamTotal" />
+		AND B.BJLX = 1 AND B.FJDID != '0') B
+		) B
+		LEFT JOIN D_007 D ON B.FJZCH = D.FJZCH AND B.DPRTCODE = D.DPRTCODE
+		LEFT JOIN D_008 D3 ON B.JH = D3.BJH AND B.DPRTCODE = D3.DPRTCODE AND D3.ZT = 1
+		LEFT JOIN D_005 D2 ON D3.ZJH = D2.ZJH AND D3.DPRTCODE = D2.DPRTCODE
+		LEFT JOIN D_005 D4 ON D4.ZJH = B.ZJH AND D4.DPRTCODE = B.DPRTCODE
+		<choose>
+			<when test='pagination.sort == "auto"'>
+				ORDER BY B.FLAG ,B.KBS, B.CJ, B.JH, B.XLH, B.NBSBM
+			</when>
+			<otherwise>
+				ORDER BY B.${pagination.sort} ${pagination.order}
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 根据条件查询 -->
+	<select id="queryList" parameterType="com.eray.thjw.productionplan.po.LoadingList"
+		resultMap="BaseResultMap">
+		SELECT
+		B.ID, B.FJZCH, B.BJLX, B.JH, B.XLH, B.NBSBM, 
+		(CASE WHEN D2.ZJH IS NULL THEN D4.ZJH ELSE D2.ZJH END) ZJH,
+		(CASE WHEN D3.CJJH IS NULL THEN B.CJJH ELSE D3.CJJH END) CJJH, 
+		(CASE WHEN D3.ZWMS IS NULL THEN B.ZWMC ELSE D3.ZWMS END) ZWMC, 
+		(CASE WHEN D3.YWMS IS NULL THEN B.YWMC ELSE D3.YWMS END) YWMC,
+		B.BJGZJL, B.ZJSL, B.WZ, B.ZT, B.SCRQ,
+		B.BZ, B.AZRQ,
+		B.AZJLDH, B.CCRQ, B.CCJLDH, B.LLKLX, B.LLKBH, B.KZLX,
+		B.IS_DJ, B.TSN,
+		B.TSO, B.CJ, B.FJDID, B.SXRQ,
+		B.SXZT, B.DPRTCODE, B.SHZH, B.XKZH,
+		B.PCH, D.FJJX, (CASE WHEN D2.ZJH IS NULL THEN D4.ZWMS ELSE D2.ZWMS END) AS ZJHMS
+		FROM B_S_003 B
+		LEFT JOIN D_007 D ON B.FJZCH = D.FJZCH AND B.DPRTCODE = D.DPRTCODE
+		LEFT JOIN D_008 D3 ON B.JH = D3.BJH AND B.DPRTCODE = D3.DPRTCODE AND D3.ZT = 1
+		LEFT JOIN D_005 D2 ON D3.ZJH = D2.ZJH AND D3.DPRTCODE = D2.DPRTCODE
+		LEFT JOIN D_005 D4 ON D4.ZJH = B.ZJH AND D4.DPRTCODE = B.DPRTCODE
+		<include refid="loadingListParamTotal" />
+		ORDER BY B.KBS, B.CJ, B.JH, B.XLH, B.NBSBM
+	</select>
+		
+	<!-- 根据部件拆解记录，判断该部件是否曾经装过飞机 -->
+    <select id="isEverDisassembled" parameterType="com.eray.thjw.aerialmaterial.po.ComponentUsage"
+  		 resultType="boolean">
+  		SELECT COUNT(1) FROM B_H_01002 WHERE JH = #{jh,jdbcType=VARCHAR} AND XLH = #{xlh,jdbcType=VARCHAR} AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  		AND IS_CX = 1 AND ZT = 1 AND ROWNUM = 1
+    </select>
+    
+    <!-- 获取部件累积使用量-->
+	<select id="getComponentUsage" parameterType="com.eray.thjw.productionplan.po.LoadingList" 
+		resultType="com.eray.thjw.aerialmaterial.po.ComponentUsage">
+		select B2.jh,
+		       B2.xlh,
+		       sum(B2.fxsj_xs) fxsjXs,
+		       sum(B2.fxsj_fz) fxsjFz,
+		       sum(B2.fsj_xs) fsjXs,
+		       sum(B2.fsj_fz) fsjFz,
+		       sum(B2.qljxh) qljxh,
+		       sum(B2.jcsj_xs) jcsjXs,
+		       sum(B2.jcsj_fz) jcsjFz,
+		       sum(B2.jcxh) jcxh,
+		       sum(B2.fdj_n1) fdjN1,
+		       sum(B2.fdj_n2) fdjN2,
+		       sum(B2.fdj_n3) fdjN3,
+		       sum(B2.fdj_n4) fdjN4,
+		       sum(B2.fdj_n5) fdjN5,
+		       sum(B2.fdj_n6) fdjN6,
+		       sum(B2.ssdsj_xs) ssdsjXs,
+		       sum(B2.ssdsj_fz) ssdsjFz,
+		       sum(B2.dgxh) dgxh,
+		       sum(B2.ts1) ts1,
+		       sum(B2.ts2) ts2
+		  from b_h_01001 B2
+		  <if test="fxjldid != null  and fxjldid != ''" >
+		  INNER JOIN B_S_006 B3 ON B3.ID = #{fxjldid,jdbcType=VARCHAR}
+		  </if>
+		 WHERE B2.IS_CYJS = 1
+		   AND B2.ZT = 1
+		   AND B2.XDBS = 0
+		   AND B2.JH = #{jh,jdbcType=VARCHAR}
+		   AND B2.XLH = #{xlh,jdbcType=VARCHAR}
+		   AND B2.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		   <if test="fxjldid != null  and fxjldid != ''" >
+		   AND (B2.CSBJ IN (1, 2) OR (B2.FXRQ &lt; B3.FXRQ) OR
+	       	  (B2.FXRQ = B3.FXRQ AND B2.FXJLDCJSJ &lt; B3.ZDSJ))
+	       </if>
+		 GROUP BY B2.JH, B2.XLH
+    </select>
+    
+    
+    <!-- 查询指定飞机无且无子部件的零件清单 -->
+    <select id="queryNoChildList" resultMap="BaseResultMap" parameterType="com.eray.thjw.productionplan.po.LoadingList" >
+	           select 
+				    b.ID, b.FJZCH, b.BJLX, b.JH, b.XLH, b.NBSBM, b.PCH,
+				    (CASE WHEN D2.ZJH IS NULL THEN D4.ZJH ELSE D2.ZJH END) ZJH,
+					(CASE WHEN D3.CJJH IS NULL THEN B.CJJH ELSE D3.CJJH END) CJJH, 
+					(CASE WHEN D3.ZWMS IS NULL THEN B.ZWMC ELSE D3.ZWMS END) ZWMC, 
+					(CASE WHEN D3.YWMS IS NULL THEN B.YWMC ELSE D3.YWMS END) YWMC,
+				    b.BJGZJL, b.ZJSL, b.WZ, b.ZT, b.SCRQ, 
+				    b.BZ, b.AZRQ, b.AZJLDH, b.CCRQ, b.CCJLDH, b.LLKLX, B.LLKBH, B.KZLX, B.IS_DJ, B.TSN, B.TSO, B.CJ, B.FJDID, B.SXRQ, 
+				    B.SXZT, B.DPRTCODE, (CASE WHEN D2.ZJH IS NULL THEN D4.ZWMS ELSE D2.ZWMS END) AS ZJHMS
+				    FROM B_S_003 B
+				    LEFT JOIN D_008 D3 ON B.JH = D3.BJH AND B.DPRTCODE = D3.DPRTCODE AND D3.ZT = 1
+				    LEFT JOIN D_005 D2 ON D3.ZJH = D2.ZJH AND D3.DPRTCODE = D2.DPRTCODE
+				    LEFT JOIN D_005 D4 ON D4.ZJH = B.ZJH AND D4.DPRTCODE = B.DPRTCODE
+				    <include refid="loadingListParamTotal" /> 
+				    and b.ZT = 1
+				    and not exists (select 1 from B_S_003 s where s.FJDID = b.ID)
+				    ORDER BY b.KBS, b.CJ, b.JH, b.XLH, b.NBSBM
+    </select>
+    <select id="getCxj" resultMap="BaseResultMap" parameterType="java.lang.String">
+    	select b1.jh,b1.xlh from  b_s_003 b1 left join b_S_0060201 b on b.cx_zjqdid=b1.id where b.fxjlgljlid=#{fxjlgljlid,jdbcType=VARCHAR}
+    	and b.zt =1
+    </select>
+    <select id="getLoadinglistByfjzch" parameterType="String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from b_s_003 where ZT=1 AND  xlh is not null and dprtcode=#{dprtcode,jdbcType=VARCHAR} and fjzch in (
+		select fjzch from d_007 where dprtcode=#{dprtcode,jdbcType=VARCHAR} and fjjx =#{fjjx,jdbcType=VARCHAR}
+		)
+    </select>
+</mapper>

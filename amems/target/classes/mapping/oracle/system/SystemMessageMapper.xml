@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.SystemMessageMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.Message">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="BT" jdbcType="VARCHAR" property="bt" />
+    <result column="NR" jdbcType="VARCHAR" property="nr" />
+    <result column="ZRDW" jdbcType="VARCHAR" property="zrdw" />
+    <result column="FBSJ" jdbcType="TIMESTAMP" property="fbsj" />
+    <result column="YXQ_KS" jdbcType="TIMESTAMP" property="yxqKs" />
+    <result column="YXQ_JS" jdbcType="TIMESTAMP" property="yxqJs" />
+    <result column="JJD" jdbcType="DECIMAL" property="jjd" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="LYBS" jdbcType="DECIMAL" property="lybs" />
+    <result column="LYXT" jdbcType="VARCHAR" property="lyxt" />
+    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    <association property="whr" javaType="com.eray.thjw.po.User">
+			<id column="whrid" property="id" />
+			<result column="whr_realname" property="realname" />
+			<result column="whr_username" property="username" />
+	</association>
+	<association property="wh_department" javaType="com.eray.thjw.po.Department">
+			<id column="whbmid" property="id" />
+			<result column="wh_dprtname" property="dprtname" />
+	</association>
+  </resultMap>
+  <resultMap id="AttachmentBaseResultMap" type="com.eray.thjw.flightdata.po.Attachment">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+		<result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+		<result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+		<result column="WJDX" property="wjdx" jdbcType="DECIMAL" />
+		<result column="HZM" property="hzm" jdbcType="VARCHAR" />
+		<result column="SM" property="sm" jdbcType="VARCHAR" />
+		<result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+		<result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+		<result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+		<result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+		<result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+		<result column="CZRNAME" property="czrname" jdbcType="VARCHAR" />
+
+	</resultMap>
+		<sql id="systemMessageParam">
+		where
+		1=1
+		<if test="searchBeginDate != null and searchBeginDate != ''">
+			and trunc(t.fbsj) &gt;= trunc(#{searchBeginDate})
+		</if>
+		<if test="searchEndDate != null and searchEndDate != ''">
+			and trunc(t.fbsj) &lt;= trunc(#{searchEndDate})
+		</if>
+		<!-- 机构id -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and t.dprtcode = #{dprtcode}
+		</if>
+		<if test="zt != null">
+			and t.zt = #{zt}
+		</if>
+		<if test="jjd != null and jjd != '' and jjd !=0">
+			and t.jjd = #{jjd}
+		</if>
+		<if test="keyword != null and keyword != ''" >
+			and ( 
+			UPPER(t.bt) like UPPER('%'||#{keyword}||'%')
+			or UPPER(t.nr) like UPPER('%'||#{keyword}||'%')
+			or UPPER(whr.username) like UPPER('%'||#{keyword}||'%')
+			or UPPER(whr.realname) like UPPER('%'||#{keyword}||'%')
+			)
+		</if>
+  		 <if test="id != null and id !='' ">
+		    and t.ID = #{id}
+		</if> 
+	</sql>
+  <sql id="Base_Column_List">
+    ID, BT, NR, ZRDW, FBSJ, YXQ_KS, YXQ_JS, JJD, ZT, LYBS, LYXT, WHBMID, WHRID, WHSJ, DPRTCODE
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_MESSAGE
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectEffective" parameterType="java.lang.String"  resultMap="BaseResultMap">
+    SELECT B1.JJD, --紧急度
+       B1.BT, --标题
+       TO_CHAR(B1.FBSJ, 'yyyy-mm-dd hh24:mi:ss') FBSJ --发布时间
+  		FROM T_MESSAGE B1
+ 	WHERE B1.ZT = 1  and NVL(B1.YXQ_KS, TO_DATE('19000101', 'yyyymmdd')) &lt;= SYSDATE
+   	AND NVL(B1.YXQ_JS, TO_DATE('30990101', 'yyyymmdd')) &gt;= SYSDATE
+    	and B1.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+     ORDER BY B1.FBSJ DESC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_MESSAGE
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.Message">
+    insert into T_MESSAGE (ID, BT, NR, ZRDW, 
+      FBSJ, YXQ_KS, YXQ_JS, 
+      JJD, ZT, LYBS, LYXT, 
+      WHBMID, WHRID, WHSJ, DPRTCODE
+      )
+    values (#{id,jdbcType=VARCHAR}, #{bt,jdbcType=VARCHAR}, #{nr,jdbcType=VARCHAR}, #{zrdw,jdbcType=VARCHAR}, 
+      #{fbsj,jdbcType=TIMESTAMP}, #{yxqKs,jdbcType=TIMESTAMP}, #{yxqJs,jdbcType=TIMESTAMP}, 
+      #{jjd,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{lybs,jdbcType=DECIMAL}, #{lyxt,jdbcType=VARCHAR}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.Message">
+    insert into T_MESSAGE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="bt != null">
+        BT,
+      </if>
+      <if test="nr != null">
+        NR,
+      </if>
+      <if test="zrdw != null">
+        ZRDW,
+      </if>
+      <if test="fbsj != null">
+        FBSJ,
+      </if>
+      <if test="yxqKs != null">
+        YXQ_KS,
+      </if>
+      <if test="yxqJs != null">
+        YXQ_JS,
+      </if>
+      <if test="jjd != null">
+        JJD,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="lybs != null">
+        LYBS,
+      </if>
+      <if test="lyxt != null">
+        LYXT,
+      </if>
+      <if test="whbmid != null">
+        WHBMID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="bt != null">
+        #{bt,jdbcType=VARCHAR},
+      </if>
+      <if test="nr != null">
+        #{nr,jdbcType=VARCHAR},
+      </if>
+      <if test="zrdw != null">
+        #{zrdw,jdbcType=VARCHAR},
+      </if>
+      <if test="fbsj != null">
+        #{fbsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqKs != null">
+        #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null">
+        #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jjd != null">
+        #{jjd,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="lybs != null">
+        #{lybs,jdbcType=DECIMAL},
+      </if>
+      <if test="lyxt != null">
+        #{lyxt,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.Message">
+    update T_MESSAGE
+    <set>
+      <if test="bt != null">
+        BT = #{bt,jdbcType=VARCHAR},
+      </if>
+      <if test="nr != null">
+        NR = #{nr,jdbcType=VARCHAR},
+      </if>
+      <if test="zrdw != null">
+        ZRDW = #{zrdw,jdbcType=VARCHAR},
+      </if>
+      <if test="fbsj != null">
+        FBSJ = #{fbsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqKs != null">
+        YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null">
+        YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jjd != null">
+        JJD = #{jjd,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="lybs != null">
+        LYBS = #{lybs,jdbcType=DECIMAL},
+      </if>
+      <if test="lyxt != null">
+        LYXT = #{lyxt,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dprtcode != null">
+        WHSJ = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.Message">
+    update T_MESSAGE
+    set BT = #{bt,jdbcType=VARCHAR},
+      NR = #{nr,jdbcType=VARCHAR},
+      ZRDW = #{zrdw,jdbcType=VARCHAR},
+      FBSJ = #{fbsj,jdbcType=TIMESTAMP},
+      YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      JJD = #{jjd,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      LYBS = #{lybs,jdbcType=DECIMAL},
+      LYXT = #{lyxt,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectMessageList" parameterType="com.eray.thjw.system.po.Message"  resultMap="BaseResultMap">
+		select
+    	 t.id, t.bt, t.nr, t.zrdw, t.fbsj, t.yxq_ks, 
+    	 t.yxq_js, t.jjd, t.zt, t.lybs, t.lyxt, 
+    	 t.whbmid, t.whrid, t.whsj, t.dprtcode,
+    	whr.username whr_username,
+    	whr.realname whr_realname,
+    	d.dprtname
+    	wh_dprtname,
+   	 	t1.dprtname 
+   		 from
+    	T_MESSAGE t 
+    	left join t_user whr on (t.whrid = whr.id)
+    	left join t_department d on  t.whbmid=d.id
+    	left join t_department t1 on t.dprtcode=t1.id
+		<include refid="systemMessageParam" />
+		<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by zt,fbsj desc 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+  </select>
+  <insert id="insertMessage" parameterType="com.eray.thjw.system.po.Message">
+    insert into T_MESSAGE (ID, BT, NR, ZRDW, 
+      FBSJ, YXQ_KS, YXQ_JS, 
+      JJD, ZT, LYBS, LYXT, 
+      WHBMID, WHRID, WHSJ, DPRTCODE
+      )
+    values (#{id,jdbcType=VARCHAR}, #{bt,jdbcType=VARCHAR}, #{nr,jdbcType=VARCHAR}, #{zrdw,jdbcType=VARCHAR}, 
+      #{fbsj,jdbcType=TIMESTAMP}, #{yxqKs,jdbcType=TIMESTAMP}, #{yxqJs,jdbcType=TIMESTAMP}, 
+      #{jjd,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, 0, #{lyxt,jdbcType=VARCHAR}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, sysdate, #{dprtcode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateMessageByPrimaryKey" parameterType="com.eray.thjw.system.po.Message">
+    update T_MESSAGE
+    set BT = #{bt,jdbcType=VARCHAR},
+      NR = #{nr,jdbcType=VARCHAR},
+      ZRDW = #{zrdw,jdbcType=VARCHAR},
+      FBSJ = #{fbsj,jdbcType=TIMESTAMP},
+      YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      JJD = #{jjd,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = sysdate
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateZtByPrimaryKey" parameterType="com.eray.thjw.system.po.Message">
+  	update T_MESSAGE set zt=1, fbsj=sysdate, WHRID = #{whrid,jdbcType=VARCHAR},
+  	 <if test="yxqKs != null">
+        YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      WHSJ = sysdate,
+      WHBMID = #{whbmid,jdbcType=VARCHAR}
+  	where id=#{id,jdbcType=VARCHAR}
+  </update>
+  <delete id="updateToClose" parameterType="com.eray.thjw.system.po.Message">
+  	update T_MESSAGE set zt=9, WHSJ = sysdate,WHRID = #{whrid,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  <select id="getYxqKsById" parameterType="com.eray.thjw.system.po.Message" resultType="java.util.Date">
+  	select yxq_Ks from t_message where id=#{id}
+  </select>
+</mapper>

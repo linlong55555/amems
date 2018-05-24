@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.DeptInfoMapper">
+	<resultMap id="BaseResultMap" type="com.eray.thjw.po.DeptInfo">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="DEPTTYPE" property="deptType" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="LXR1" property="lxr1" jdbcType="VARCHAR" />
+		<result column="LXDH1" property="lxdh1" jdbcType="VARCHAR" />
+		<result column="FAX1" property="fax1" jdbcType="VARCHAR" />
+		<result column="EMAIL1" property="email1" jdbcType="VARCHAR" />
+		<result column="LXR2" property="lxr2" jdbcType="VARCHAR" />
+		<result column="LXDH2" property="lxdh2" jdbcType="VARCHAR" />
+		<result column="FAX2" property="fax2" jdbcType="VARCHAR" />
+		<result column="EMAIL2" property="email2" jdbcType="VARCHAR" />
+		<result column="DZ" property="dz" jdbcType="VARCHAR" />
+		<result column="YXQKS" property="yxqks" jdbcType="TIMESTAMP" />
+		<result column="YXQJS" property="yxqjs" jdbcType="TIMESTAMP" />
+		<result column="ZCFJ_MAX" property="zcfj_max" jdbcType="INTEGER" />
+		<result column="ZCZH_MAX" property="zczh_max" jdbcType="INTEGER" />
+		<result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+		<result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+		<result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+		<result column="ZT" property="zt" jdbcType="INTEGER" />
+
+	</resultMap>
+	<insert id="insertDeptInfo" parameterType="com.eray.thjw.po.DeptInfo" >
+		 insert into T_DEPTINFO (ID, DEPTTYPE, REMARK, LXR1,LXDH1,FAX1,EMAIL1,LXR2,LXDH2,FAX2,
+      EMAIL2,DZ,YXQKS,YXQJS,ZCFJ_MAX,ZCZH_MAX,WHBMID,WHRID,WHSJ,ZT
+      )
+    values (#{id,jdbcType=VARCHAR}, #{deptType,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      ,#{lxr1,jdbcType=VARCHAR}, #{lxdh1,jdbcType=VARCHAR}, #{fax1,jdbcType=VARCHAR}, #{email1,jdbcType=VARCHAR}
+	 , #{lxr2,jdbcType=VARCHAR}, #{lxdh2,jdbcType=VARCHAR}, #{fax2,jdbcType=VARCHAR}, #{email2,jdbcType=VARCHAR}
+	 ,#{dz,jdbcType=VARCHAR},#{yxqks,jdbcType=TIMESTAMP},#{yxqjs,jdbcType=TIMESTAMP},#{zcfj_max,jdbcType=INTEGER}
+	 ,#{zczh_max,jdbcType=INTEGER},#{whbmid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR},sysdate
+	 ,1)
+	</insert>
+	<select id="selectById" parameterType="java.lang.String" resultType="com.eray.thjw.po.DeptInfo">
+		select id, depttype, remark, lxr1,lxdh1,fax1,email1,lxr2,lxdh2,fax2,
+      email2,dz,yxqks,yxqjs,zcfj_max,zczh_max,whbmid,whrid,whsj,zt from t_deptinfo where id=#{id}
+	</select>
+	<update id="updateById" parameterType="com.eray.thjw.po.DeptInfo">
+		update T_DEPTINFO set deptType=#{deptType,jdbcType=VARCHAR},remark=#{remark,jdbcType=VARCHAR},
+		lxr1=#{lxr1,jdbcType=VARCHAR},lxdh1=#{lxdh1,jdbcType=VARCHAR}, fax1=#{fax1,jdbcType=VARCHAR}, email1=#{email1,jdbcType=VARCHAR}
+	 , lxr2=#{lxr2,jdbcType=VARCHAR}, lxdh2=#{lxdh2,jdbcType=VARCHAR}, fax2=#{fax2,jdbcType=VARCHAR}, email2=#{email2,jdbcType=VARCHAR}
+	 ,dz=#{dz,jdbcType=VARCHAR},yxqks=#{yxqks,jdbcType=TIMESTAMP},yxqjs=#{yxqjs,jdbcType=TIMESTAMP},zcfj_max=#{zcfj_max,jdbcType=INTEGER}
+	 ,zczh_max=#{zczh_max,jdbcType=INTEGER},whbmid=#{whbmid,jdbcType=VARCHAR},whrid=#{whrid,jdbcType=VARCHAR},WHSJ=sysdate
+	 where id=#{id,jdbcType=VARCHAR}
+	</update>
+	
+  <select id="selectCounts" parameterType="java.lang.String" resultType="com.eray.thjw.po.DeptInfo">
+    select 
+  	*
+    from T_DEPTINFO
+    where zt = 1 and id= #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteDeptInfo" parameterType="java.lang.String">
+  	delete from T_DEPTINFO where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.DeptInfo" >
+    update T_DEPTINFO
+    <set >
+      <if test="deptType != null" >
+        deptType = #{deptType,jdbcType=VARCHAR},
+      </if>
+       <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="lxr1 != null" >
+        lxr1 = #{lxr1,jdbcType=VARCHAR},
+      </if>
+      <if test="lxdh1 != null" >
+        lxdh1 = #{lxdh1,jdbcType=VARCHAR},
+      </if>
+      <if test="fax1 != null" >
+        fax1 = #{fax1,jdbcType=VARCHAR},
+      </if>
+      <if test="email1 != null" >
+        email1 = #{email1,jdbcType=VARCHAR},
+      </if>
+      <if test="lxr2 != null" >
+        lxr2 = #{lxr2,jdbcType=VARCHAR},
+      </if>
+      <if test="lxdh2 != null" >
+        lxdh2 = #{lxdh2,jdbcType=VARCHAR},
+      </if>
+      <if test="fax2 != null" >
+        fax2 = #{fax2,jdbcType=VARCHAR},
+      </if>
+      <if test="email2 != null" >
+        email2 = #{email2,jdbcType=VARCHAR},
+      </if>
+      <if test="dz != null" >
+        dz = #{dz,jdbcType=VARCHAR},
+      </if>
+      <if test="yxqks != null" >
+        yxqks = #{yxqks,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqjs != null" >
+        yxqjs = #{yxqjs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zcfj_max != null" >
+        zcfj_max = #{zcfj_max,jdbcType=INTEGER},
+      </if>
+      <if test="zczh_max != null" >
+        zczh_max = #{zczh_max,jdbcType=INTEGER},
+      </if>
+      <if test="whbmid != null" >
+        whbmid = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        whrid = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

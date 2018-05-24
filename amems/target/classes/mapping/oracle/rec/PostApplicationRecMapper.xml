@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.PostApplicationRecMapper" >
+   
+  <select id="queryList4BZ005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   		   SELECT 
+               B.ID AS ID,
+		       B.DPRTCODE AS DPRTCODE,
+		       B.SQSQDH AS REC_HD,
+		       B.REC_CZSM AS REC_CZSM,
+		       
+		       B.REC_CZLS AS REC_CZLS,
+		       B.REC_XGLX AS REC_XGLX,
+		       
+               RECWHR.USERNAME||' '||RECWHR.REALNAME AS REC_CZR_NAME, 
+		       B.REC_CZSJ AS REC_CZSJ,
+		       B.REC_IP AS REC_IP
+               
+          FROM B_Z_005_REC B 
+          LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+           WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	AND B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+			        AND B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+			      </if>
+			      <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+			        AND (UPPER(B.SQSQDH) LIKE UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'))
+			      </if>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff4BZ005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS RNO,
+	   		      (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION,
+			   B.ID, B.DPRTCODE, B.WHBMID, B.WHRID, B.WHSJ, B.ZT, B.SQBMID, B.SQRID, B.SQRDAID, B.SQSJ, B.SQBZ, B.SQSQDH, 
+			    B.SQLX, B.SQGWID, B.SHBMID, B.SHRID, B.SHSJ, B.SHYJ, B.SHJL, B.PGBMID, B.PGRID, B.PGSJ, B.PGYJ, B.PGJL, B.PLKHCJ, 
+			    B.PLPGJG, B.YXQ_KS, B.YXQ_JS, B.SQSFJID, B.GBRID, B.GBRQ, B.GBYY, B.QTZZ, B.QTZZYXQ,
+			    
+               B.SQSQDH AS REC_HD,
+		       B.REC_CZSM AS REC_CZSM,
+		       
+		       B.REC_CZLS AS REC_CZLS,
+		       B.REC_XGLX AS REC_XGLX,
+		       
+               RECWHR.USERNAME||' '||RECWHR.REALNAME AS REC_CZR_NAME, 
+		       B.REC_CZSJ AS REC_CZSJ,
+		       B.REC_IP AS REC_IP
+               
+          FROM B_Z_005_REC B 
+          LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+          
+          WHERE 
+          
+          B.ID = #{paramsMap.ID,jdbcType=VARCHAR} 
+   		  AND ( 
+   		  SELECT REC_CZSJ FROM B_Z_005_REC  
+   		  WHERE  REC_CZLS = #{paramsMap.REC_CZLS,jdbcType = VARCHAR} 
+   		  AND 	 ID 	  = #{paramsMap.ID,jdbcType=VARCHAR}
+   		  ) >= B.REC_CZSJ 
+   		  
+     ) A WHERE 2 >=RNO
+       
+  </select>
+</mapper>

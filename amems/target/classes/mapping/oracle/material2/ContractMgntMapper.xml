@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.ContractMgntMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.ContractMgnt" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="HTLX" property="htlx" jdbcType="DECIMAL" />
+    <result column="HTH" property="hth" jdbcType="VARCHAR" />
+    <result column="HTRQ" property="htrq" jdbcType="TIMESTAMP" />
+    <result column="BIZ" property="biz" jdbcType="VARCHAR" />
+    <result column="JFFS" property="jffs" jdbcType="VARCHAR" />
+    <result column="XGFLX" property="xgflx" jdbcType="DECIMAL" />
+    <result column="XGFID" property="xgfid" jdbcType="VARCHAR" />
+    <result column="XGFMS" property="xgfms" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBRQ" property="gbrq" jdbcType="TIMESTAMP" />
+    <result column="GBYY" property="gbyy" jdbcType="VARCHAR" />
+    
+     <!-- 扩充字段 start -->
+     <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" /><!-- 附件数量-->
+    <result column="USERNAME" property="paramsMap.username" jdbcType="VARCHAR" /><!-- 用户名-->
+    <result column="REALNAME" property="paramsMap.realname" jdbcType="VARCHAR" /><!-- 真实名-->
+    <result column="BZRSTR" property="paramsMap.bzrstr" jdbcType="VARCHAR" /><!-- 编制人-->
+    <result column="GBRSTR" property="paramsMap.gbrstr" jdbcType="VARCHAR" /><!-- 关闭人人-->
+    <result column="DPRTNAME" property="paramsMap.dprtname" jdbcType="VARCHAR" /><!-- 机构代码-->
+    <result column="BQYDM" property="paramsMap.bqydm" jdbcType="VARCHAR" /><!-- 客户代码-->
+    <result column="CELLPHONE" property="paramsMap.cellphone" jdbcType="VARCHAR" /><!-- 手机-->
+    <result column="PHONE" property="paramsMap.phone" jdbcType="VARCHAR" /><!-- 座机-->
+    <result column="HTJE" property="paramsMap.htje" jdbcType="VARCHAR" /><!-- 合同金额-->
+    <result column="SKJE" property="paramsMap.skje" jdbcType="VARCHAR" /><!-- 收款金额-->
+    <result column="FKJE" property="paramsMap.fkje" jdbcType="VARCHAR" /><!-- 付款金额-->
+    
+    <!-- 扩充字段 end -->
+  </resultMap>
+  
+  	<!-- 配置合同与合同明细关系 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.material2.po.ContractMgnt" id="ContractToDetailMap" extends="BaseResultMap">  
+       <collection property="contractInfoList" ofType="com.eray.thjw.material2.po.ContractInfo" >  
+           <id column="FID" property="id" />  
+           <result column="FMAINID" property="mainid" />  
+           <result column="FBJID" property="bjid" /> 
+           <result column="FBJH" property="bjh" /> 
+           <result column="FXLH" property="xlh" /> 
+           <result column="FSL" property="sl" /> 
+           <result column="FDW" property="dw" /> 
+           <result column="FWLZT" property="wlzt" /> 
+           <result column="FJHQ" property="jhq" /> 
+           <result column="FJHQDW" property="jhqdw" /> 
+           <result column="FDJ" property="dj" /> 
+           <result column="FSXYY" property="sxyy" /> 
+           <result column="FCQID" property="cqid" />
+           <result column="FZT" property="zt" /> 
+           <result column="FZYWMS" property="paramsMap.zywms" /><!-- 部件中英文 --> 
+           <result column="FCQBH" property="paramsMap.cqbh" /><!-- 产权编号 --> 
+       </collection>  
+   </resultMap> 
+   
+   	<!-- 导出 -->
+	<select id="exportWord" resultMap="ContractToDetailMap" parameterType="java.lang.String" >
+	    select 
+	    	<include refid="Mgnt_Column_List" />
+	    	,U.USERNAME||' '||U.REALNAME as BZRSTR
+	    	,U.REALNAME
+	    	,U.CELLPHONE
+	    	,U.PHONE
+	    	,D.YWMS ||''|| D.ZWMS FZYWMS
+	    	,T.DPRTNAME<!-- 组织机构 -->
+	    	,D015.BQYDM<!-- 客户代码 -->
+	    	,BH202201.ID FID
+	    	,BH202201.MAINID FMAINID
+	    	,BH202201.BJID FBJID
+	    	,BH202201.BJH FBJH
+	    	,BH202201.XLH FXLH
+	    	,BH202201.SL FSL
+	    	,BH202201.DW FDW
+	    	,BH202201.WLZT FWLZT
+	    	,BH202201.JHQ FJHQ
+	    	,BH202201.JHQDW FJHQDW
+	    	,BH202201.DJ FDJ
+	    	,BH202201.SXYY FSXYY
+	    from B_H2_022 B
+	    LEFT JOIN T_USER U ON B.WHRID = U.ID
+	    LEFT JOIN D_015 D015 ON B.XGFID = D015.ID
+	    LEFT JOIN B_H2_02201 BH202201 ON BH202201.MAINID = B.ID
+	    LEFT JOIN D_008 D ON D.ID = BH202201.BJID
+	    LEFT JOIN T_DEPARTMENT T ON T.ID = B.DPRTCODE
+	    where B.ID = #{id,jdbcType=VARCHAR}
+  	</select>
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, HTLX, HTH, HTRQ, BIZ, JFFS, XGFLX, XGFID, 
+    XGFMS, BZ, GBRID, GBRQ, GBYY
+  </sql>
+  
+  <sql id="Mgnt_Column_List" >
+    B.ID, B.DPRTCODE, B.WHBMID, B.WHRID, B.WHSJ, B.ZT, B.HTLX, B.HTH, B.HTRQ, B.BIZ, B.JFFS, B.XGFLX, B.XGFID, 
+    B.XGFMS, B.BZ, B.GBRID, B.GBRQ, B.GBYY
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_022
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据查询条件分页查询合同信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.material2.po.ContractMgnt" resultMap="BaseResultMap">
+	
+		select 
+           	<include refid="Mgnt_Column_List" />
+           	,U.USERNAME||' '||U.REALNAME as BZRSTR
+           	,G.USERNAME||' '||G.REALNAME as GBRSTR
+		    ,t.DPRTNAME<!-- 组织机构 -->
+		    ,B2201.HTJE,B2202.SKJE,B2202.FKJE
+		    ,D011.ATTACHCOUNT
+        from B_H2_022 B
+        LEFT JOIN T_USER U ON B.WHRID = U.ID
+        LEFT JOIN T_USER G ON B.WHRID = G.ID
+        LEFT JOIN T_DEPARTMENT t ON t.ID = B.DPRTCODE
+        LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011
+        ON D011.MAINID = B.ID
+        LEFT JOIN (
+        	SELECT MAINID, sum(DJ*SL) HTJE
+        	FROM B_H2_02201 WHERE ZT = 1
+        	GROUP BY MAINID
+        ) B2201
+        ON B2201.MAINID = B.ID
+        LEFT JOIN (
+        	SELECT MAINID
+        		, sum(case when LX = 1 then JE else 0 end) SKJE
+        		, sum(case when LX = 2 then JE else 0 end) FKJE
+        	FROM B_H2_02202 
+        	WHERE ZT = 1
+        	GROUP BY MAINID
+        ) B2202
+        ON B2202.MAINID = B.ID
+        where 1 = 1
+           	<include refid="Mgnt_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B.ZT ASC, B.HTRQ DESC, B.HTH ASC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+		
+	</select>
+	
+	<!-- 模态框中获取合同  -->
+	<select id="queryModelList" parameterType="com.eray.thjw.material2.po.ContractMgnt" resultMap="BaseResultMap">
+		select B.ID, B.DPRTCODE, B.HTLX, B.HTH
+        from B_H2_022 B
+        where 1 = 1
+        <if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		</if>
+		<if test="htlx != null">
+		    and B.HTLX = #{htlx,jdbcType=DECIMAL}
+		</if>
+		<!-- 状态集合 -->
+        <if test="paramsMap != null and paramsMap.ztList != null and paramsMap.ztList.size > 0">
+		    AND B.ZT IN
+   			<foreach item="item" index="index" collection="paramsMap.ztList" open="(" separator=", " close=")">  
+   				#{item,jdbcType=DECIMAL}
+   			</foreach>  
+        </if>
+   		order by B.ZT ASC, B.HTRQ DESC, B.HTH ASC
+	</select>
+	
+	<!-- 根据工卡id查询工卡信息 -->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    	<include refid="Mgnt_Column_List" />
+	    	,U.USERNAME||' '||U.REALNAME as BZRSTR
+	    from B_H2_022 B
+	    LEFT JOIN T_USER U ON B.WHRID = U.ID
+	    where B.ID = #{id,jdbcType=VARCHAR}
+  	</select>
+  	
+	<!-- 根据合同号、机构代码检查合同是否存在 -->
+	<select id="getCount4CheckExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    select 
+	    	count(1)
+	    from B_H2_022
+	    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and HTH = #{hth,jdbcType=VARCHAR}
+	</select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_022
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.ContractMgnt" >
+    insert into B_H2_022 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      HTLX, HTH, HTRQ, 
+      BIZ, JFFS, XGFLX, XGFID, 
+      XGFMS, BZ, GBRID, GBRQ, 
+      GBYY)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{htlx,jdbcType=DECIMAL}, #{hth,jdbcType=VARCHAR}, #{htrq,jdbcType=TIMESTAMP}, 
+      #{biz,jdbcType=VARCHAR}, #{jffs,jdbcType=VARCHAR}, #{xgflx,jdbcType=DECIMAL}, #{xgfid,jdbcType=VARCHAR}, 
+      #{xgfms,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{gbrid,jdbcType=VARCHAR}, #{gbrq,jdbcType=TIMESTAMP}, 
+      #{gbyy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.ContractMgnt" >
+    insert into B_H2_022
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="htlx != null" >
+        HTLX,
+      </if>
+      <if test="hth != null" >
+        HTH,
+      </if>
+      <if test="htrq != null" >
+        HTRQ,
+      </if>
+      <if test="biz != null" >
+        BIZ,
+      </if>
+      <if test="jffs != null" >
+        JFFS,
+      </if>
+      <if test="xgflx != null" >
+        XGFLX,
+      </if>
+      <if test="xgfid != null" >
+        XGFID,
+      </if>
+      <if test="xgfms != null" >
+        XGFMS,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="gbrid != null" >
+        GBRID,
+      </if>
+      <if test="gbrq != null" >
+        GBRQ,
+      </if>
+      <if test="gbyy != null" >
+        GBYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="htlx != null" >
+        #{htlx,jdbcType=DECIMAL},
+      </if>
+      <if test="hth != null" >
+        #{hth,jdbcType=VARCHAR},
+      </if>
+      <if test="htrq != null" >
+        #{htrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="biz != null" >
+        #{biz,jdbcType=VARCHAR},
+      </if>
+      <if test="jffs != null" >
+        #{jffs,jdbcType=VARCHAR},
+      </if>
+      <if test="xgflx != null" >
+        #{xgflx,jdbcType=DECIMAL},
+      </if>
+      <if test="xgfid != null" >
+        #{xgfid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgfms != null" >
+        #{xgfms,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        #{gbyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.ContractMgnt" >
+    update B_H2_022
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="htlx != null" >
+        HTLX = #{htlx,jdbcType=DECIMAL},
+      </if>
+      <if test="hth != null" >
+        HTH = #{hth,jdbcType=VARCHAR},
+      </if>
+      <if test="htrq != null" >
+        HTRQ = #{htrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="biz != null" >
+        BIZ = #{biz,jdbcType=VARCHAR},
+      </if>
+      <if test="jffs != null" >
+        JFFS = #{jffs,jdbcType=VARCHAR},
+      </if>
+      <if test="xgflx != null" >
+        XGFLX = #{xgflx,jdbcType=DECIMAL},
+      </if>
+      <if test="xgfid != null" >
+        XGFID = #{xgfid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgfms != null" >
+        XGFMS = #{xgfms,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+        GBRQ = sysdate,
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.ContractMgnt" >
+    update B_H2_022
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      HTLX = #{htlx,jdbcType=DECIMAL},
+      HTH = #{hth,jdbcType=VARCHAR},
+      HTRQ = #{htrq,jdbcType=TIMESTAMP},
+      BIZ = #{biz,jdbcType=VARCHAR},
+      JFFS = #{jffs,jdbcType=VARCHAR},
+      XGFLX = #{xgflx,jdbcType=DECIMAL},
+      XGFID = #{xgfid,jdbcType=VARCHAR},
+      XGFMS = #{xgfms,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      GBRID = #{gbrid,jdbcType=VARCHAR},
+      GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      GBYY = #{gbyy,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateZtById" >
+    update B_H2_022
+    set ZT = #{zt,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据合同明细id查询 -->
+  <select id="findByChildId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_022
+    where exists (select 1
+          from b_h2_02201
+         where B_H2_022.id = b_h2_02201.mainid
+           and b_h2_02201.id = #{childId, jdbcType = VARCHAR})
+  </select>
+  
+  
+  <!-- ******************************************搜素条件区域 start********************************************************** -->
+  
+  	<!-- 合同列表查询 start -->
+	<sql id="Mgnt_Param">
+		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (
+		    	(lower(B.HTH)) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or (lower(B.XGFMS)) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or (lower(B.BZ)) like lower('%'||#{paramsMap.keyword}||'%')
+		    )
+		</if>
+		
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		</if>
+		<if test="htlx != null">
+		    and B.HTLX = #{htlx,jdbcType=DECIMAL}
+		</if>
+		<if test="bz != null">
+		    and lower(B.BZ) like lower('%'||#{bz,jdbcType=VARCHAR}||'%')
+		</if>
+		<if test="paramsMap != null and paramsMap.htrqBegin != null and paramsMap.htrqBegin != ''">
+		    and B.HTRQ &gt;= to_date(#{paramsMap.htrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.htrqEnd != null and paramsMap.htrqEnd != ''">
+		    and B.HTRQ &lt;= to_date(#{paramsMap.htrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqBegin != null and paramsMap.whrqBegin != ''">
+		    and B.WHSJ &gt;= to_date(#{paramsMap.whrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqEnd != null and paramsMap.whrqEnd != ''">
+		    and B.WHSJ &lt;= to_date(#{paramsMap.whrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B.ID = #{id,jdbcType=VARCHAR}
+		</if>
+		
+		<!-- 状态集合 -->
+        <if test="paramsMap != null and paramsMap.ztList != null and paramsMap.ztList.size > 0">
+		    AND B.ZT IN
+   			<foreach item="item" index="index" collection="paramsMap.ztList" open="(" separator=", " close=")">  
+   				#{item,jdbcType=DECIMAL}
+   			</foreach>  
+        </if>
+	</sql>
+	<!-- 合同列表查询 end -->
+	
+	<!-- ******************************************搜素条件区域 end****************************************************** -->
+  	
+</mapper>

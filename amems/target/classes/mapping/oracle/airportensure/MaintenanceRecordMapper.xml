@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.airportensure.dao.MaintenanceRecordMapper">
+	<resultMap id="MaintenanceRecordMap"
+		type="com.eray.thjw.airportensure.po.MaintenanceRecord">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="WXDBH" property="wxdbh" jdbcType="VARCHAR" />
+		<result column="WXSJ" property="wxsj" jdbcType="TIMESTAMP" />
+		<result column="WXRYID" property="wxryid" jdbcType="VARCHAR" />
+		<result column="WXRYMC" property="wxrymc" jdbcType="VARCHAR" />
+		<result column="WXDX" property="wxdx" jdbcType="VARCHAR" />
+		<result column="WXFS" property="wxfs" jdbcType="INTEGER" />
+		<result column="WXNR" property="wxnr" jdbcType="VARCHAR" />
+		<result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+		<result column="ZT" property="zt" jdbcType="INTEGER" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+		<result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+		<result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+		<result column="SEARCHBEGINDATE" property="searchBeginDate"
+			jdbcType="TIMESTAMP" />
+		<result column="SEARCHENDDATE" property="searchEndDate"
+			jdbcType="TIMESTAMP" />
+		<result column="KEYWORD" property="keyword" jdbcType="VARCHAR" />
+
+		<association property="whr" javaType="com.eray.thjw.po.User">
+			<id column="whrid" property="id" />
+			<result column="whr_realname" property="realname" />
+			<result column="whr_username" property="username" />
+		</association>
+		<association property="wh_department" javaType="com.eray.thjw.po.Department">
+			<id column="whbmid" property="id" />
+			<result column="wh_dprtname" property="dprtname" />
+		</association>
+	</resultMap>
+	<resultMap id="AttachmentBaseResultMap" type="com.eray.thjw.flightdata.po.Attachment">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+		<result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+		<result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+		<result column="WJDX" property="wjdx" jdbcType="DECIMAL" />
+		<result column="HZM" property="hzm" jdbcType="VARCHAR" />
+		<result column="SM" property="sm" jdbcType="VARCHAR" />
+		<result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+		<result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+		<result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+		<result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+		<result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+		<result column="CZRNAME" property="czrname" jdbcType="VARCHAR" />
+
+	</resultMap>
+	<insert id="insertMaintenanceRecord" parameterType="com.eray.thjw.airportensure.po.MaintenanceRecord">
+		insert into
+		b_j_001
+		(id,wxdbh,wxsj,wxryid,wxrymc,wxdx,wxfs,wxnr,zt,dprtcode,whbmid,whrid,whsj)
+		values
+		(#{id,jdbcType=VARCHAR},#{wxdbh,jdbcType=VARCHAR},#{wxsj,jdbcType=TIMESTAMP},#{wxryid,jdbcType=VARCHAR},
+		#{wxrymc,jdbcType=VARCHAR},#{wxdx,jdbcType=VARCHAR},#{wxfs,jdbcType=INTEGER},#{wxnr,jdbcType=VARCHAR},1,
+		#{dprtcode,jdbcType=VARCHAR},#{whbmid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR},sysdate)
+	</insert>
+	<sql id="MaintenanceRecordParam">
+		where
+		1=1
+		<if test="searchBeginDate != null and searchBeginDate != ''">
+			and b.wxsj &gt;= #{searchBeginDate}
+		</if>
+		<if test="searchEndDate != null and searchEndDate != ''">
+			and b.wxsj &lt;= #{searchEndDate}
+		</if>
+		<!-- 机构id -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and b.dprtcode = #{dprtcode}
+		</if>
+		<if test="wxfs != null and wxfs != '' and wxfs !=0">
+			and b.wxfs = #{wxfs}
+		</if>
+		<if test="keyword != null and keyword != ''" >
+			and ( lower(b.wxrymc) like lower('%'||#{keyword}||'%')
+			or lower(b.wxdbh) like lower('%'||#{keyword}||'%')
+			or lower(b.wxdx) like  lower('%'||#{keyword}||'%')
+			or lower(b.wxnr) like  lower('%'||#{keyword}||'%')
+			or lower(whr.USERNAME) like lower('%'||#{keyword}||'%')
+			or lower(whr.REALNAME) like lower('%'||#{keyword}||'%'))
+		</if>
+  		 <if test="id != null and id !='' ">
+		    and b.ID = #{id}
+		</if> 
+	</sql>
+	<select id="selectMaintenanceRecordList" parameterType="com.eray.thjw.airportensure.po.MaintenanceRecord"
+		resultMap="MaintenanceRecordMap">
+		select
+	    	b.id,b.wxdbh,b.wxsj,b.wxryid,b.wxrymc,b.wxdx,b.wxfs,b.wxnr,b.zt,b.dprtCode,b.whbmid,b.whrid,b.whsj,
+	    	whr.username whr_username,
+	    	whr.realname whr_realname,
+	    	d.dprtname
+	    	wh_dprtname,
+	   	 	t.dprtname
+   		 from
+    	b_j_001 b
+    	left join t_user whr on (b.whrid = whr.id)
+    	left join t_department d on
+    	b.whbmid=d.id
+    	left join t_department t on b.dprtcode=t.id
+		<include refid="MaintenanceRecordParam" />
+		and b.zt=1
+		<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by wxsj desc,whsj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+	</select>
+	<delete id="updateZtById" parameterType="java.lang.String">
+		update b_j_001 b set
+		b.zt=0 where b.id=#{id,jdbcType=VARCHAR}
+	</delete>
+	<select id="getMaintenanceRecordById" parameterType="com.eray.thjw.airportensure.po.MaintenanceRecord"
+		resultMap="MaintenanceRecordMap">
+		select
+		b.id,b.wxdbh,b.wxsj,b.wxryid,b.wxrymc,b.wxdx,b.wxfs,b.wxnr,b.zt,b.dprtCode,b.whbmid,b.whrid,b.whsj,
+		whr.username whr_username,
+		whr.realname whr_realname,
+		d.dprtname
+		wh_dprtname
+		from
+		b_j_001 b
+		left join t_user whr on (b.whrid = whr.id)
+		left join t_department d on
+		b.whbmid=d.id where
+		b.id=#{id,jdbcType=VARCHAR}
+	</select>
+	<update id="updateMaintenanceRecordById" parameterType="com.eray.thjw.airportensure.po.MaintenanceRecord">
+		update
+		b_j_001 b set
+		b.wxsj=#{wxsj,jdbcType=TIMESTAMP},
+		b.wxryid=#{wxryid,jdbcType=VARCHAR},b.wxrymc=#{wxrymc,jdbcType=VARCHAR},b.wxdx=#{wxdx,jdbcType=VARCHAR},
+		b.wxfs=#{wxfs,jdbcType=INTEGER},b.wxnr=#{wxnr,jdbcType=VARCHAR},
+		b.whbmid=#{whbmid,jdbcType=VARCHAR},b.whrid=#{whrid,jdbcType=VARCHAR},b.whsj=sysdate
+		where b.id=#{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

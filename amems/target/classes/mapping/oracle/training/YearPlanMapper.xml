@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.YearPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.YearPlan" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ND" property="nd" jdbcType="DECIMAL" />
+    <result column="NDJHMC" property="ndjhmc" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="FJSL" property="paramsMap.fjsl" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, ND, NDJHMC, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_007
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据年度、机构代码检查年度计划是否存在 -->
+  <select id="checkExistsByNdAndDprt" resultMap="BaseResultMap" parameterType="com.eray.thjw.training.po.YearPlan">
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_007
+    where ZT = 1 and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and ND = #{nd,jdbcType=DECIMAL}
+  </select>
+  
+  <!-- 根据年度、机构代码查询年度计划 -->
+  <select id="selectByNdAndDprt" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />,
+    (select count(1) from D_011 where MAINID = B_P_007.ID and YXZT = 1) FJSL
+    from B_P_007
+    where ZT = 1 and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and ND = #{nd,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_007
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.YearPlan" >
+    insert into B_P_007 (ID, DPRTCODE, ND, 
+      NDJHMC, ZT, WHBMID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{nd,jdbcType=DECIMAL}, 
+      #{ndjhmc,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.YearPlan" >
+    insert into B_P_007
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="nd != null" >
+        ND,
+      </if>
+      <if test="ndjhmc != null" >
+        NDJHMC,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="nd != null" >
+        #{nd,jdbcType=DECIMAL},
+      </if>
+      <if test="ndjhmc != null" >
+        #{ndjhmc,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.YearPlan" >
+    update B_P_007
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="nd != null" >
+        ND = #{nd,jdbcType=DECIMAL},
+      </if>
+      <if test="ndjhmc != null" >
+        NDJHMC = #{ndjhmc,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.YearPlan" >
+    update B_P_007
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ND = #{nd,jdbcType=DECIMAL},
+      NDJHMC = #{ndjhmc,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

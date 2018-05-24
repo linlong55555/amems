@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.WOAirMaterialMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.WOAirMaterial">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="JH" jdbcType="VARCHAR" property="jh" />
+    <result column="ZWMC" jdbcType="VARCHAR" property="zwmc" />
+    <result column="YWMC" jdbcType="VARCHAR" property="ywmc" />
+    <result column="SL" jdbcType="DECIMAL" property="sl" />
+    <result column="LX" jdbcType="DECIMAL" property="lx" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="XH" jdbcType="DECIMAL" property="xh" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="hcid" jdbcType="VARCHAR" property="hcid" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="kcsl" jdbcType="VARCHAR" property="kcsl" />
+    
+    <result column="REF_JHLY" jdbcType="VARCHAR" property="refJhly" />
+    <result column="KYKCSL" jdbcType="VARCHAR" property="kykcsl" />
+    <result column="dxtdsl" property="paramsMap.dxtdsl" jdbcType="DECIMAL" />
+    <result column="tdjczs" property="paramsMap.tdjczs" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    B_G_00601.ID, B_G_00601.MAINID, B_G_00601.JH, B_G_00601.BJID, B_G_00601.ZWMC, B_G_00601.YWMC, B_G_00601.SL, B_G_00601.LX, B_G_00601.BZ, B_G_00601.XH, B_G_00601.ZT, B_G_00601.WHDWID, B_G_00601.WHRID, 
+    
+    B_G_00601.WHSJ, B_G_00601.DPRTCODE ,B_G_00601.REF_JHLY
+  </sql>
+  
+    <sql id="BaseResulParam">
+	     where 
+		   1=1
+		   <!-- 工单航材的maidid -->
+		     <if test="mainid != null and mainid != ''">
+	            and  a.MAINID = #{mainid,jdbcType=VARCHAR}
+	         </if>
+		   <!-- 工单航材的dprtcode -->
+		     <if test="dprtcode != null and dprtcode != ''">
+	            and  a.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	         </if>
+   </sql>
+   <sql id="BaseResulParam1">
+	     where 
+		   1=1
+		   <!-- 工单航材的maidid -->
+		     <if test="mainid != null and mainid != ''">
+	            and  B_G_00601.MAINID = #{mainid,jdbcType=VARCHAR}
+	         </if>
+		   <!-- 工单航材的dprtcode -->
+		     <if test="dprtcode != null and dprtcode != ''">
+	            and  B_G_00601.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	         </if>
+   </sql>
+  
+  <select id="selectWOAirMaterialList" parameterType="com.eray.thjw.po.WOAirMaterial"  resultMap="BaseResultMap" >
+	
+	<!-- 2017年 1月13号修改 -->
+	<!-- select a.ID, a.MAINID, a.JH, a.BJID, a.ZWMC, a.YWMC, a.SL, a.LX, a.BZ,
+	a.XH, a.ZT, a.WHDWID, a.WHRID,
+	a.WHSJ, a.DPRTCODE ,a.REF_JHLY ,b.kykcsl
+	from B_G_00601 a left join (
+	select bjid,sum(kcsl) kykcsl from (
+	select bjid, kcsl from b_h_001 Where cklb in (4, 5, 6, 7, 8) and zt = 2
+	) Group by bjid
+	) b on a.bjid=b.bjid   -->
+	
+	
+	select a.ID,
+       a.MAINID,
+       a.BJID,
+       a.SL,
+       a.BZ,
+       a.XH,
+       a.ZT,
+       a.WHDWID,
+       a.WHRID,
+       a.WHSJ,
+       a.DPRTCODE,
+       a.REF_JHLY,
+       (CASE WHEN b.kykcsl IS NULL THEN 0 ELSE b.kykcsl END) kykcsl,
+       c.bjh jh,
+       c.zwms zwmc,
+       c.ywms ywmc,
+       c.hclx lx,
+       (select count(1) from D_017 D017 where D017.DPRTCODE = c.DPRTCODE AND D017.ZT = 1 
+	       	AND (
+	       		D017.BJH = c.BJH or (D017.TDJH = c.BJH AND D017.KNXBS = 2)
+	       	)) tdjczs,
+	      	(select sum(t.KCSL) from 
+	      		(
+		      		select bh001.bjh, bh001.kcsl, bh001.dprtcode from b_h_001 bh001 where bh001.zt = 2
+		      		and bh001.cklb in (0,4, 5, 6, 7, 8) 
+		      		union all
+                    select bh003.bjh, bh003.kcsl, bh003.dprtcode
+                      from b_h_003 bh003
+                      join d_008 d008
+                        on bh003.bjid = d008.id
+                     Where d008.hclx in (2, 3)
+	      		) t
+	      		where t.dprtcode = c.dprtcode 
+	      			and 
+		      		(
+			      	 	t.bjh in
+			            (select D017.TDJH from D_017 D017 where D017.DPRTCODE = c.DPRTCODE AND D017.BJH = c.BJH AND D017.ZT = 1)
+			            OR
+			            t.bjh in 
+			            (select D017.BJH from D_017 D017 where D017.DPRTCODE = c.DPRTCODE AND D017.TDJH = c.BJH AND D017.KNXBS = 2 AND D017.ZT = 1)
+		      		)
+	      	) dxtdsl
+  from B_G_00601 a
+  left join (select t.bjid, sum(t.kcsl) kykcsl, t.dprtcode
+               from (select b_h_001.bjid, b_h_001.kcsl, b_h_001.dprtcode
+                       from b_h_001
+                      Where b_h_001.cklb in (0, 4, 5, 6, 7, 8)
+                        and b_h_001.zt = 2
+                     union all
+                     select b_h_003.bjid, b_h_003.kcsl, b_h_003.dprtcode
+                       from b_h_003
+                       join d_008
+                         on b_h_003.bjid = d_008.id
+                      Where d_008.hclx in (2, 3)) t
+              Group by t.bjid, t.dprtcode) b
+    on a.bjid = b.bjid
+   AND A.dprtcode = B.dprtcode
+  left join D_008 c
+    on a.bjid = c.id
+   AND A.dprtcode = C.dprtcode
+
+    
+    <include refid="BaseResulParam"></include>
+  </select>
+  
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.WOAirMaterial">
+    insert into B_G_00601
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="jh != null">
+        JH,
+      </if>
+      <if test="zwmc != null">
+        ZWMC,
+      </if>
+      <if test="ywmc != null">
+        YWMC,
+      </if>
+      <if test="sl != null">
+        SL,
+      </if>
+      <if test="lx != null">
+        LX,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="xh != null">
+        XH,
+      </if>
+        ZT,
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+        WHSJ,
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="refJhly!= null">
+        REF_JHLY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null">
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwmc != null">
+        #{zwmc,jdbcType=VARCHAR},
+      </if>
+      <if test="ywmc != null">
+        #{ywmc,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null">
+        #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="lx != null">
+        #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null">
+        #{xh,jdbcType=DECIMAL},
+      </if>
+       1,
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      sysdate,
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="refJhly != null">
+        #{refJhly,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByAirMaterial" parameterType="com.eray.thjw.po.WOAirMaterial">
+    update  B_G_00601
+    <set>
+       <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null" >
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwmc != null" >
+        ZWMC = #{zwmc,jdbcType=VARCHAR},
+      </if>
+      <if test="ywmc != null" >
+        YWMC = #{ywmc,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        SL = #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="lx != null" >
+        LX = #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null" >
+        XH = #{xh,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+        WHSJ = sysdate,
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="refJhly!= null">
+        REF_JHLY=#{refJhly,jdbcType=VARCHAR},
+      </if>
+    </set>
+        where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+
+   <delete id="deleteById" parameterType="java.lang.String" >
+     delete from B_G_00601
+       where ID = #{id}
+   </delete>  
+  
+  
+  <select id="selectedHcList" parameterType="com.eray.thjw.po.WOAirMaterial"  resultMap="BaseResultMap">
+		select B_G_00601.ID,
+       B_G_00601.MAINID,
+       B_G_00601.JH,
+       B_G_00601.BJID,
+       (CASE WHEN D_008.ZWMS IS NULL THEN B_G_00601.ZWMC ELSE D_008.ZWMS END) ZWMC,
+       (CASE WHEN D_008.YWMS IS NULL THEN B_G_00601.YWMC ELSE D_008.YWMS END) YWMC,
+       B_G_00601.SL,
+       B_G_00601.LX,
+       B_G_00601.BZ,
+       B_G_00601.XH,
+       B_G_00601.ZT,
+       B_G_00601.WHDWID,
+       B_G_00601.WHRID,
+       B_G_00601.WHSJ,
+       B_G_00601.DPRTCODE,
+       B_G_00601.REF_JHLY,
+       B_h_001.id hcid,
+       (CASE WHEN B_h_001.kcsl IS NULL THEN 0 ELSE B_h_001.kcsl END) kcsl
+  from B_G_00601
+  left join B_h_001
+    on B_G_00601.bjid = B_h_001.bjid
+  LEFT JOIN D_008
+    ON B_G_00601.BJID = D_008.ID
+
+		<include refid="BaseResulParam1"></include>
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.WOAirMaterial" >
+    update B_G_00601
+     <set>
+       <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null" >
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwmc != null" >
+        ZWMC = #{zwmc,jdbcType=VARCHAR},
+      </if>
+      <if test="ywmc != null" >
+        YWMC = #{ywmc,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        SL = #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="lx != null" >
+        LX = #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null" >
+        XH = #{xh,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+       <if test="refJhly != null">
+       REF_JHLY= #{refJhly,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_00601
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+</mapper>
