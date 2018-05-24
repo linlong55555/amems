@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.GlobleSystemConfigMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.GlobleSystemConfig">
+    <result column="SYSCODE" jdbcType="VARCHAR" property="syscode" />
+    <result column="PZBM" jdbcType="VARCHAR" property="pzbm" />
+    <result column="MS" jdbcType="VARCHAR" property="ms" />
+    <result column="VALUE_1" jdbcType="VARCHAR" property="value1" />
+    <result column="VALUE_2" jdbcType="VARCHAR" property="value2" />
+    <result column="VALUE_3" jdbcType="VARCHAR" property="value3" />
+    <result column="ZT" jdbcType="INTEGER" property="zt" />
+  </resultMap>
+  <select id="getBySyscode"  parameterType="java.lang.String"  resultMap="BaseResultMap">
+ 	 select syscode,pzbm,ms,value_1,value_2,value_3 from t_sys_config where syscode=#{syscode,jdbcType=VARCHAR}
+  </select>
+  <update id="updateBySyscode" parameterType="com.eray.thjw.system.po.GlobleSystemConfig">
+  		update t_sys_config set value_1=#{value1,jdbcType=VARCHAR} where syscode=#{syscode,jdbcType=VARCHAR} and pzbm=#{pzbm,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteJglx" parameterType="com.eray.thjw.system.po.GlobleSystemConfig">
+  		delete from t_sys_config where syscode=#{syscode,jdbcType=VARCHAR} and pzbm=#{pzbm,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertJglx" parameterType="com.eray.thjw.system.po.GlobleSystemConfig">
+  		insert into t_sys_config (syscode,pzbm,ms,value_1,zt) values (#{syscode,jdbcType=VARCHAR},'AGENCY_TYPE','机构类型',#{value1,jdbcType=VARCHAR},1)
+  </insert>
+</mapper>

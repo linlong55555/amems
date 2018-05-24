@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.RoleToStoreMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.RoleToStore" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+    <result column="CK_ID" property="ckId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ROLE_ID, CK_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ROLE2WH
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_ROLE2WH
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByD" >
+    delete from T_ROLE2WH
+    where CK_ID in(select D.ID from D_009 D where D.DPRTCODE = #{dprtId})
+  </delete>
+  
+  <delete id="deleteByRD" >
+    delete from T_ROLE2WH
+    where ROLE_ID = #{roleId} and CK_ID in(select D.ID from D_009 D where D.DPRTCODE = #{dprtId})
+  </delete>
+  
+  <delete id="deleteByRC" >
+    delete from T_ROLE2WH
+    where ROLE_ID = #{roleId} and CK_ID = #{ckId}
+  </delete>
+  
+  <insert id="insertByRC" >
+    insert into T_ROLE2WH (ID, ROLE_ID, CK_ID
+      )
+    values (#{id},#{roleId}, #{ckId,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insert" parameterType="com.eray.thjw.po.RoleToStore" >
+    insert into T_ROLE2WH (ID, ROLE_ID, CK_ID
+      )
+    values (#{id},#{roleId}, #{ckId,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+   <select id="queryCount" parameterType="com.eray.thjw.po.RoleToStore" resultType="int">
+		select count(*) FROM T_ROLE2WH <include refid="roleToMenuParam"></include>
+  </select>
+  
+  	<!-- 搜索参数 -->
+	<sql id="roleToMenuParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="roleId != null and roleId != ''">
+             and ROLE_ID = #{roleId}
+         </if>
+         <if test="ckId != null and ckId != ''">
+             and CK_ID = #{ckId}
+         </if>
+	</sql>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.RoleToStore" >
+    insert into T_ROLE2WH
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+        ID,
+      <if test="roleId != null" >
+        ROLE_ID,
+      </if>
+      <if test="ckId != null" >
+        CK_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      	#{id},
+      <if test="roleId != null" >
+        #{roleId,jdbcType=DECIMAL},
+      </if>
+      <if test="ckId != null" >
+        #{ckId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.RoleToStore" >
+    update T_ROLE2WH
+    <set >
+      <if test="roleId != null" >
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="ckId != null" >
+        CK_ID = #{ckId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.RoleToStore" >
+    update T_ROLE2WH
+    set ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      CK_ID = #{ckId,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

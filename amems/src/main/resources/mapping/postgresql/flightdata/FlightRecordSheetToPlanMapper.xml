@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.FlightRecordSheetToPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="FXJLDID" property="fxjldid" jdbcType="VARCHAR" />
+    <result column="RWLX" property="rwlx" jdbcType="DECIMAL" />
+    <result column="RWZLX" property="rwzlx" jdbcType="DECIMAL" />
+    <result column="RWDID" property="rwdid" jdbcType="VARCHAR" />
+    <result column="XGDJID" property="xgdjid" jdbcType="VARCHAR" />
+    <result column="GZXMBLDH" property="gzxmbldh" jdbcType="VARCHAR" />
+    <result column="WCRQ" property="wcrq" jdbcType="TIMESTAMP" />
+    <result column="HD" property="hd" jdbcType="DECIMAL" />
+    <result column="HDMS" property="hdms" jdbcType="VARCHAR" />
+    <result column="WHNR" property="whnr" jdbcType="VARCHAR" />
+    <result column="ZRRID" property="zrrid" jdbcType="VARCHAR" />
+    <result column="SJGS_RS" property="sjgsRs" jdbcType="DECIMAL" />
+    <result column="SJGS_XSS" property="sjgsXss" jdbcType="DECIMAL" />
+    <result column="TBBS" property="tbbs" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="RWDH" property="rwdh" jdbcType="VARCHAR" />
+    <result column="RWXX" property="rwxx" jdbcType="VARCHAR" />
+    <result column="GZXX" property="gzxx" jdbcType="VARCHAR" />
+    <result column="CLCS" property="clcs" jdbcType="VARCHAR" />
+    <result column="RWDH" property="rwdh" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="DetailMap" type="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan"  extends="BaseResultMap">  
+  		<association property="zrr" javaType="com.eray.thjw.po.User">  
+	        <id column="zrrid" property="id"/>  
+	        <result column="USERNAME" property="username"/>  
+	        <result column="REALNAME" property="realname"/>  
+	   </association>  
+       <collection property="dismountRecord" ofType="com.eray.thjw.flightdata.po.FlightRecordSheetToDisassembly">  
+            <id column="B2ID" property="id" jdbcType="VARCHAR" />
+		    <result column="CJJLDH" property="cjjldh" jdbcType="VARCHAR" />
+		    <result column="FXJLGLJLID" property="fxjlgljlid" jdbcType="VARCHAR" />
+		    <result column="B2FXJLDID" property="fxjldid" jdbcType="VARCHAR" />
+		    <result column="ZS_IS" property="zsIs" jdbcType="DECIMAL" />
+		    <result column="ZS_BZ" property="zsBz" jdbcType="VARCHAR" />
+		    <result column="CX_ZJQDID" property="cxZjqdid" jdbcType="VARCHAR" />
+		    <result column="CX_BZ" property="cxBz" jdbcType="VARCHAR" />
+		    <result column="B2BZ" property="bz" jdbcType="VARCHAR" />
+		    <result column="B2ZSWCKCID" property="zsWckcid" jdbcType="VARCHAR" />
+		    <result column="B2CXJLDH" property="cxjldh" jdbcType="VARCHAR" />
+		    <association property="on" javaType="com.eray.thjw.flightdata.po.MountLoadingList">  
+		        <id column="B3ID" property="id" jdbcType="VARCHAR" />
+			    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+			    <result column="B3ZS_ZJQDID" property="zsZjqdid" jdbcType="VARCHAR" />
+			    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+			    <result column="BJLX" property="bjlx" jdbcType="DECIMAL" />
+			    <result column="JH" property="jh" jdbcType="VARCHAR" />
+			    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+			    <result column="PCH" property="pch" jdbcType="VARCHAR" />
+			    <result column="NBSBM" property="nbsbm" jdbcType="VARCHAR" />
+			    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+			    <result column="CJJH" property="cjjh" jdbcType="VARCHAR" />
+			    <result column="ZWMC" property="zwmc" jdbcType="VARCHAR" />
+			    <result column="YWMC" property="ywmc" jdbcType="VARCHAR" />
+			    <result column="BJGZJL" property="bjgzjl" jdbcType="VARCHAR" />
+			    <result column="ZJSL" property="zjsl" jdbcType="DECIMAL" />
+			    <result column="ZJSLMAX" property="zjslMax" jdbcType="DECIMAL" />
+			    <result column="WZ" property="wz" jdbcType="DECIMAL" />
+			    <result column="SCRQ" property="scrq" jdbcType="TIMESTAMP" />
+			    <result column="B3BZ" property="bz" jdbcType="VARCHAR" />
+			    <result column="AZRQ" property="azrq" jdbcType="TIMESTAMP" />
+			    <result column="AZJLDH" property="azjldh" jdbcType="VARCHAR" />
+			    <result column="CCRQ" property="ccrq" jdbcType="TIMESTAMP" />
+			    <result column="CCJLDH" property="ccjldh" jdbcType="VARCHAR" />
+			    <result column="LLKLX" property="llklx" jdbcType="DECIMAL" />
+			    <result column="LLKBH" property="llkbh" jdbcType="VARCHAR" />
+			    <result column="KZLX" property="kzlx" jdbcType="DECIMAL" />
+			    <result column="IS_DJ" property="isDj" jdbcType="DECIMAL" />
+			    <result column="TSN" property="tsn" jdbcType="VARCHAR" />
+			    <result column="TSO" property="tso" jdbcType="VARCHAR" />
+			    <result column="CJ" property="cj" jdbcType="DECIMAL" />
+			    <result column="FJDID" property="fjdid" jdbcType="VARCHAR" />
+			    <result column="SXRQ" property="sxrq" jdbcType="TIMESTAMP" />
+			    <result column="XKZH" property="xkzh" jdbcType="VARCHAR" />
+			    <result column="SHZH" property="shzh" jdbcType="VARCHAR" />
+			    <association property="parent" javaType="com.eray.thjw.productionplan.po.LoadingList">  
+			        <id column="B6ID" property="id" jdbcType="VARCHAR" />
+				    <result column="B6JH" property="jh" jdbcType="VARCHAR" />
+				    <result column="B6XLH" property="xlh" jdbcType="VARCHAR" />
+				    <result column="B6WZ" property="wz" jdbcType="DECIMAL" />
+				    <result column="B6ZWMC" property="zwmc" jdbcType="VARCHAR" />
+				    <result column="B6YWMC" property="ywmc" jdbcType="VARCHAR" />
+				    <result column="B6ZJH" property="zjh" jdbcType="VARCHAR" />
+				    <result column="B6ZJHMS" property="zjhms" jdbcType="VARCHAR" />
+				    <result column="B6CJ" property="cj" jdbcType="DECIMAL" />
+			    </association>
+			    <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+			         <id column="D1ZJH" property="zjh"/>
+			         <result column="D1ZWMS" property="zwms"/>
+			         <result column="D1YWMS" property="ywms"/>
+			    </association>
+		    </association>
+		    <association property="off" javaType="com.eray.thjw.productionplan.po.LoadingList">  
+		        <id column="B5ID" property="id" jdbcType="VARCHAR" />
+			    <result column="B5JH" property="jh" jdbcType="VARCHAR" />
+			    <result column="B5XLH" property="xlh" jdbcType="VARCHAR" />
+			    <result column="B5WZ" property="wz" jdbcType="DECIMAL" />
+			    <result column="B5ZWMC" property="zwmc" jdbcType="VARCHAR" />
+			    <result column="B5YWMC" property="ywmc" jdbcType="VARCHAR" />
+			    <result column="B5FJDID" property="fjdid" jdbcType="VARCHAR" />
+			    <result column="B5CJ" property="cj" jdbcType="DECIMAL" />
+		    </association>
+       </collection>  
+   </resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, FXJLDID, RWLX, RWZLX, RWDID, XGDJID, GZXMBLDH, WCRQ, HD, HDMS, WHNR, ZRRID, SJGS_RS, 
+    SJGS_XSS, TBBS, ZT, BZ, WHDWID, WHRID, WHSJ, DPRTCODE, RWDH
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_00602
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_00602
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" >
+    insert into B_S_00602 (ID, FXJLDID, RWLX, 
+      RWZLX, RWDID, XGDJID, 
+      GZXMBLDH, WCRQ, HD, 
+      HDMS, WHNR, ZRRID, 
+      SJGS_RS, SJGS_XSS, TBBS, 
+      ZT, BZ, WHDWID, WHRID, 
+      WHSJ, DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{fxjldid,jdbcType=VARCHAR}, #{rwlx,jdbcType=DECIMAL}, 
+      #{rwzlx,jdbcType=DECIMAL}, #{rwdid,jdbcType=VARCHAR}, #{xgdjid,jdbcType=VARCHAR}, 
+      #{gzxmbldh,jdbcType=VARCHAR}, #{wcrq,jdbcType=TIMESTAMP}, #{hd,jdbcType=DECIMAL}, 
+      #{hdms,jdbcType=VARCHAR}, #{whnr,jdbcType=VARCHAR}, #{zrrid,jdbcType=VARCHAR}, 
+      #{sjgsRs,jdbcType=DECIMAL}, #{sjgsXss,jdbcType=DECIMAL}, #{tbbs,jdbcType=DECIMAL}, 
+      #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" >
+    insert into B_S_00602
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="fxjldid != null" >
+        FXJLDID,
+      </if>
+      <if test="rwlx != null" >
+        RWLX,
+      </if>
+      <if test="rwzlx != null" >
+        RWZLX,
+      </if>
+      <if test="rwdid != null" >
+        RWDID,
+      </if>
+      <if test="xgdjid != null" >
+        XGDJID,
+      </if>
+      <if test="gzxmbldh != null" >
+        GZXMBLDH,
+      </if>
+      <if test="wcrq != null" >
+        WCRQ,
+      </if>
+      <if test="hd != null" >
+        HD,
+      </if>
+      <if test="hdms != null" >
+        HDMS,
+      </if>
+      <if test="whnr != null" >
+        WHNR,
+      </if>
+      <if test="zrrid != null" >
+        ZRRID,
+      </if>
+      <if test="sjgsRs != null" >
+        SJGS_RS,
+      </if>
+      <if test="sjgsXss != null" >
+        SJGS_XSS,
+      </if>
+      <if test="tbbs != null" >
+        TBBS,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjldid != null" >
+        #{fxjldid,jdbcType=VARCHAR},
+      </if>
+      <if test="rwlx != null" >
+        #{rwlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwzlx != null" >
+        #{rwzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwdid != null" >
+        #{rwdid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null" >
+        #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="gzxmbldh != null" >
+        #{gzxmbldh,jdbcType=VARCHAR},
+      </if>
+      <if test="wcrq != null" >
+        #{wcrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hd != null" >
+        #{hd,jdbcType=DECIMAL},
+      </if>
+      <if test="hdms != null" >
+        #{hdms,jdbcType=VARCHAR},
+      </if>
+      <if test="whnr != null" >
+        #{whnr,jdbcType=VARCHAR},
+      </if>
+      <if test="zrrid != null" >
+        #{zrrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sjgsRs != null" >
+        #{sjgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="sjgsXss != null" >
+        #{sjgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="tbbs != null" >
+        #{tbbs,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" >
+    update B_S_00602
+    <set >
+      <if test="fxjldid != null" >
+        FXJLDID = #{fxjldid,jdbcType=VARCHAR},
+      </if>
+      <if test="rwlx != null" >
+        RWLX = #{rwlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwzlx != null" >
+        RWZLX = #{rwzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwdid != null" >
+        RWDID = #{rwdid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null" >
+        XGDJID = #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="gzxmbldh != null" >
+        GZXMBLDH = #{gzxmbldh,jdbcType=VARCHAR},
+      </if>
+      <if test="wcrq != null" >
+        WCRQ = #{wcrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hd != null" >
+        HD = #{hd,jdbcType=DECIMAL},
+      </if>
+      <if test="hdms != null" >
+        HDMS = #{hdms,jdbcType=VARCHAR},
+      </if>
+      <if test="whnr != null" >
+        WHNR = #{whnr,jdbcType=VARCHAR},
+      </if>
+      <if test="zrrid != null" >
+        ZRRID = #{zrrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sjgsRs != null" >
+        SJGS_RS = #{sjgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="sjgsXss != null" >
+        SJGS_XSS = #{sjgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="tbbs != null" >
+        TBBS = #{tbbs,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" >
+    update B_S_00602
+    set FXJLDID = #{fxjldid,jdbcType=VARCHAR},
+      RWLX = #{rwlx,jdbcType=DECIMAL},
+      RWZLX = #{rwzlx,jdbcType=DECIMAL},
+      RWDID = #{rwdid,jdbcType=VARCHAR},
+      XGDJID = #{xgdjid,jdbcType=VARCHAR},
+      GZXMBLDH = #{gzxmbldh,jdbcType=VARCHAR},
+      WCRQ = #{wcrq,jdbcType=TIMESTAMP},
+      HD = #{hd,jdbcType=DECIMAL},
+      HDMS = #{hdms,jdbcType=VARCHAR},
+      WHNR = #{whnr,jdbcType=VARCHAR},
+      ZRRID = #{zrrid,jdbcType=VARCHAR},
+      SJGS_RS = #{sjgsRs,jdbcType=DECIMAL},
+      SJGS_XSS = #{sjgsXss,jdbcType=DECIMAL},
+      TBBS = #{tbbs,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+    <!-- 插入或更新 -->
+    <insert id="save" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" >
+		  select fn_b_s_00602_save(#{id,jdbcType=VARCHAR}, #{fxjldid,jdbcType=VARCHAR}, #{rwlx,jdbcType=DECIMAL}, 
+					      #{rwzlx,jdbcType=DECIMAL}, #{rwdid,jdbcType=VARCHAR}, #{xgdjid,jdbcType=VARCHAR}, 
+					      #{gzxmbldh,jdbcType=VARCHAR}, #{wcrq,jdbcType=TIMESTAMP}, #{hd,jdbcType=DECIMAL}, 
+					      #{hdms,jdbcType=VARCHAR}, #{whnr,jdbcType=VARCHAR}, #{zrrid,jdbcType=VARCHAR}, 
+					      #{sjgsRs,jdbcType=DECIMAL}, #{sjgsXss,jdbcType=DECIMAL}, #{tbbs,jdbcType=DECIMAL}, 
+					      #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+					      #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR}, #{gzxx,jdbcType=VARCHAR}, 
+					      #{clcs,jdbcType=VARCHAR}, #{rwdh,jdbcType=VARCHAR})
+    </insert>
+    
+    
+    <!-- 根据飞行记录单查询 -->
+    <select id="findByFxjldid" resultMap="DetailMap" parameterType="java.lang.String" >
+    SELECT 
+	    B1.ID, B1.FXJLDID, B1.RWLX, B1.RWZLX, B1.RWDID, B1.XGDJID, B1.GZXMBLDH, B1.WCRQ, B1.HD, B1.HDMS, B1.WHNR, B1.ZRRID, B1.SJGS_RS, 
+	    B1.SJGS_XSS, B1.TBBS, B1.ZT, B1.BZ, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.DPRTCODE, B1.GZXX, B1.CLCS,
+	    B2.ID AS B2ID, B2.CJJLDH, B2.FXJLGLJLID, B2.FXJLDID AS B2FXJLDID, B2.ZS_IS, B2.ZS_BZ, B2.CX_ZJQDID, B2.CX_BZ, B2.BZ AS B2BZ, B2.ZS_WCKCID AS B2ZSWCKCID, B2.CX_JLDH AS B2CXJLDH,
+	    B3.ID AS B3ID, B3.MAINID, B3.ZS_ZJQDID AS B3ZS_ZJQDID, B3.FJZCH, B3.BJLX, B3.JH, B3.XLH, B3.PCH, B3.NBSBM, B3.ZJH, B3.CJJH, B3.ZWMC, B3.YWMC, B3.BJGZJL, 
+	    B3.ZJSL, B3.WZ, B3.SCRQ, B3.BZ B3BZ, B3.AZRQ, B3.AZJLDH, B3.CCRQ, B3.CCJLDH, B3.LLKLX, B3.LLKBH, B3.KZLX, B3.IS_DJ, B3.TSN, B3.TSO,(CASE WHEN B3.ZJSL IS NULL THEN 0 ELSE B3.ZJSL END)+(CASE WHEN H1.KCSL IS NULL THEN 0 ELSE H1.KCSL END) ZJSLMAX,
+	    B3.CJ, B3.FJDID, B3.SXRQ, B3.XKZH, B3.SHZH, B1.RWDH, T.USERNAME, T.REALNAME,
+	    B5.ID as B5ID, B5.JH AS B5JH, B5.XLH AS B5XLH, B5.WZ AS B5WZ, (CASE WHEN D3.YWMS IS NULL THEN B5.YWMC ELSE D3.YWMS END) AS B5YWMC, (CASE WHEN D3.ZWMS IS NULL THEN B5.ZWMC ELSE D3.ZWMS END) AS B5ZWMC, B5.FJDID AS B5FJDID, B5.CJ AS B5CJ,
+	    B6.ID AS B6ID, B6.JH AS B6JH, B6.XLH AS B6XLH, B6.WZ AS B6WZ, COALESCE(D4.YWMS, B6.YWMC, B7.YWMC) AS B6YWMC, (CASE WHEN D4.ZWMS IS NULL THEN B6.ZWMC ELSE D4.ZWMS END) AS B6ZWMC,
+	    B6.CJ AS B6CJ, B6.ZJH AS B6ZJH, D6.ZWMS AS B6ZJHMS,
+	    (CASE WHEN D1.ZJH IS NULL THEN D5.ZJH ELSE D1.ZJH END) AS D1ZJH, (CASE WHEN D1.ZJH IS NULL THEN D5.ZWMS ELSE D1.ZWMS END) AS D1ZWMS,(CASE WHEN D1.ZJH IS NULL THEN D5.YWMS ELSE D1.YWMS END) AS D1YWMS
+	    FROM B_S_00602 B1 
+	    LEFT JOIN T_USER T ON B1.ZRRID = T.ID
+	    LEFT JOIN B_S_0060201 B2 ON B1.ID = B2.FXJLGLJLID AND B2.ZT = 1
+	    LEFT JOIN B_S_006020101 B3 ON B2.ID = B3.MAINID AND B3.ZT = 1
+	    LEFT JOIN b_h_003 H1 ON B2.ZS_WCKCID = H1.ID
+	    LEFt JOIN B_S_003 B5 ON B2.CX_ZJQDID = B5.ID 
+	    LEFT JOIN D_008 D3 ON B5.JH = D3.BJH AND B5.DPRTCODE = D3.DPRTCODE AND D3.ZT = 1
+	    LEFT JOIN B_S_003 B6 ON B3.FJDID = B6.ID
+	    LEFT JOIN D_008 D4 ON B6.JH = D4.BJH AND B6.DPRTCODE = D4.DPRTCODE AND D4.ZT = 1
+	    LEFT JOIN B_S_006020101 B7 ON B3.FJDID = B7.ZS_ZJQDID
+	    
+	    LEFT JOIN D_008 D2 ON B3.JH = D2.BJH AND B3.DPRTCODE = D2.DPRTCODE AND D2.ZT = 1
+	    LEFT JOIN D_005 D1 ON D1.ZJH = D2.ZJH AND D1.DPRTCODE = D2.DPRTCODE
+	    LEFT JOIN D_005 D5 ON D5.ZJH = B3.ZJH AND D5.DPRTCODE = B3.DPRTCODE
+	    LEFT JOIN D_005 D6 ON D6.ZJH = B6.ZJH AND D6.DPRTCODE = B6.DPRTCODE
+	    WHERE B1.FXJLDID = #{fxjldid,jdbcType=VARCHAR}
+	      AND B1.ZT = 1
+	    ORDER BY B1.HD,B1.RWLX,B1.RWZLX
+  </select>
+  
+  <!-- 删除 -->
+  <update id="deleteNotExist" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" >
+          UPDATE B_S_00602 
+			SET ZT = #{zt,jdbcType=DECIMAL},
+		    TBBS = #{tbbs,jdbcType=DECIMAL},
+		    WHDWID = #{whdwid,jdbcType=VARCHAR},
+		    WHRID = #{whrid,jdbcType=VARCHAR},
+		    WHSJ = #{whsj,jdbcType=TIMESTAMP}
+<!-- 		    DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+			WHERE FXJLDID = #{fxjldid,jdbcType=VARCHAR}
+			<if test="ids != null and ids.size > 0">
+            and id not in 
+            <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+	        </if>
+  </update>
+  
+  <!-- 查询此次删除的任务 -->
+  <select id="queryDelete" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" resultMap="BaseResultMap">
+          select
+          	<include refid="Base_Column_List" />
+          	from b_s_00602
+          	where FXJLDID = #{fxjldid,jdbcType=VARCHAR} and zt = 1
+			<if test="ids != null and ids.size > 0">
+            and id not in 
+            <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+	        </if>
+  </select>
+  <select id="getZlhAndId" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheetToPlan" resultMap="BaseResultMap" >
+  select g.id as xgdjid,g.gdbh as whnr,b.id  as id from  b_g_007 g   left join b_s_00602 b on b.xgdjid=g.id 
+      where g.zt in(0,1,2,3,5,6,9,10) and b.zt=1 and g.dprtcode= #{dprtcode,jdbcType=VARCHAR} and b.fxjldid=#{fxjldid,jdbcType=VARCHAR}
+  union all
+
+  select g.id as xgdjid,g.gdbh as whnr,b.id  as id  from  b_g_016 g   left join b_s_00602 b on b.xgdjid=g.id where g.zt in(0,1,2,3,5,6,9,10) 
+  and b.zt=1 and g.dprtcode= #{dprtcode,jdbcType=VARCHAR}  and b.fxjldid=#{fxjldid,jdbcType=VARCHAR}
+  union all
+
+  select g.id as xgdjid,g.gdbh as whnr,b.id  as id  from  b_g_010 g   left join b_s_00602 b on b.xgdjid=g.id 
+  where g.zt in(0,1,2,3,5,6,9,10) and b.zt=1 and g.dprtcode= #{dprtcode,jdbcType=VARCHAR}  and b.fxjldid=#{fxjldid,jdbcType=VARCHAR}
+  </select>
+</mapper>

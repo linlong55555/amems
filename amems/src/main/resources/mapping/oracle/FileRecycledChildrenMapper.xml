@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.FileRecycledChildrenMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.FileRecycledChildren" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MKDM" property="mkdm" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="MANID" property="manid" jdbcType="VARCHAR" />
+    <result column="WJID" property="wjid" jdbcType="VARCHAR" />
+    <result column="WJLX" property="wjlx" jdbcType="VARCHAR" />
+    <result column="FJDID" property="fjdid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MKDM, DPRTCODE, MANID, WJID, WJLX, FJDID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_01801
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_01801
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.FileRecycledChildren" >
+    insert into D_01801 (ID, MKDM, DPRTCODE, 
+      MANID, WJID, WJLX, 
+      FJDID)
+    values (#{id,jdbcType=VARCHAR}, #{mkdm,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{manid,jdbcType=VARCHAR}, #{wjid,jdbcType=VARCHAR}, #{wjlx,jdbcType=VARCHAR}, 
+      #{fjdid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.FileRecycledChildren" >
+    insert into D_01801
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mkdm != null" >
+        MKDM,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="manid != null" >
+        MANID,
+      </if>
+      <if test="wjid != null" >
+        WJID,
+      </if>
+      <if test="wjlx != null" >
+        WJLX,
+      </if>
+      <if test="fjdid != null" >
+        FJDID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mkdm != null" >
+        #{mkdm,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="manid != null" >
+        #{manid,jdbcType=VARCHAR},
+      </if>
+      <if test="wjid != null" >
+        #{wjid,jdbcType=VARCHAR},
+      </if>
+      <if test="wjlx != null" >
+        #{wjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjdid != null" >
+        #{fjdid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.FileRecycledChildren" >
+    update D_01801
+    <set >
+      <if test="mkdm != null" >
+        MKDM = #{mkdm,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="manid != null" >
+        MANID = #{manid,jdbcType=VARCHAR},
+      </if>
+      <if test="wjid != null" >
+        WJID = #{wjid,jdbcType=VARCHAR},
+      </if>
+      <if test="wjlx != null" >
+        WJLX = #{wjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjdid != null" >
+        FJDID = #{fjdid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.FileRecycledChildren" >
+    update D_01801
+    set MKDM = #{mkdm,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      MANID = #{manid,jdbcType=VARCHAR},
+      WJID = #{wjid,jdbcType=VARCHAR},
+      WJLX = #{wjlx,jdbcType=VARCHAR},
+      FJDID = #{fjdid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 批量插入 -->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into D_01801 (ID, MKDM, DPRTCODE, MANID, WJID, WJLX, FJDID)
+     <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		select
+		  #{item.id,jdbcType=VARCHAR}, #{item.mkdm,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, 
+	      #{item.manid,jdbcType=VARCHAR}, #{item.wjid,jdbcType=VARCHAR}, #{item.wjlx,jdbcType=VARCHAR}, 
+	      #{item.fjdid,jdbcType=VARCHAR}
+		from dual 
+	 </foreach> 
+  </insert>
+  
+  <!-- 根据mainid删除 -->
+  <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from D_01801
+    where manid = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 获取需要删除的节点（在文件和目录表的状态=0） -->
+  <select id="findInvalidDataByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from d_01801
+    where manid = #{id,jdbcType=VARCHAR}
+    <!-- 存在附件/目录无效的数据 -->
+    and (
+    	exists (select 1 from d_014 where d_014.id = d_01801.wjid and d_014.yxzt = 0)
+     or exists (select 1 from d_011 where d_011.id = d_01801.wjid and d_011.yxzt = 0)
+    )
+    and not exists (
+    	select 1 from (
+    		<!-- 除当前节点外的回收站子表id -->
+		    select distinct wjid as id from d_01801 where manid != #{id,jdbcType=VARCHAR}
+		    union 
+		    
+		    <!-- 获取除当前节店除外的回收站数据的父节点（原始文件为目录） -->
+		    select distinct id
+			  from d_014
+			 start with id in
+			            (select wjid from d_018 where id != #{id, jdbcType = VARCHAR} and wjlx = 1)
+			connect by prior fmlid = id
+			
+			union
+			<!-- 获取除当前节店除外的回收站数据的父节点（原始文件为附件） -->
+		    select distinct id
+			  from d_014
+			 start with id in (select d_011.mainid
+			                     from d_018
+			                     left join d_011
+			                       on d_018.wjid = d_011.id
+			                    where d_018.id != #{id, jdbcType = VARCHAR}
+			                      and d_018.wjlx = 2)
+			connect by prior fmlid = id
+    	)filterlist where filterlist.id = d_01801.wjid
+    )
+  </select>
+  
+  <!-- 根据模块代码获取取药删除的节点（在文件和目录表的状态=0） -->
+  <select id="findInvalidDataByMkdm" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.FileCatalog" >
+    select 
+    distinct wjid, wjlx
+    from d_01801
+    where mkdm = #{mkdm,jdbcType=VARCHAR} and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+    <!-- 存在附件/目录无效的数据 -->
+    and (
+    	exists (select 1 from d_014 where d_014.id = d_01801.wjid and d_014.yxzt = 0)
+     or exists (select 1 from d_011 where d_011.id = d_01801.wjid and d_011.yxzt = 0)
+    )
+  </select>
+  
+  <!-- 根据模块代码删除 -->
+  <delete id="deleteByMkdm" parameterType="com.eray.thjw.po.FileCatalog" >
+    delete from d_01801
+    where mkdm = #{mkdm,jdbcType=VARCHAR} and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+  </delete>
+  
+</mapper>

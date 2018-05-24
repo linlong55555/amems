@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.SpareStoreMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.SpareStore" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="CKLB" property="cklb" jdbcType="DECIMAL" />
+    <result column="CKH" property="ckh" jdbcType="VARCHAR" />
+    <result column="CKMC" property="ckmc" jdbcType="VARCHAR" />
+    <result column="KWH" property="kwh" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="PCH" property="pch" jdbcType="VARCHAR" />
+    <result column="SN" property="sn" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+    <result column="JLDW" property="jldw" jdbcType="VARCHAR" />
+    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+    <result column="HTBH_CG" property="htbhCg" jdbcType="VARCHAR" />
+    <result column="HTBH_SX" property="htbhSx" jdbcType="VARCHAR" />
+    <result column="TDDH" property="tddh" jdbcType="VARCHAR" />
+    <result column="RKSJ" property="rksj" jdbcType="TIMESTAMP" />
+    <result column="RKBMID" property="rkbmid" jdbcType="VARCHAR" />
+    <result column="RKRID" property="rkrid" jdbcType="VARCHAR" />
+    <result column="SHZH" property="shzh" jdbcType="VARCHAR" />
+    <result column="SHZWZ" property="shzwz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="YHBMID" property="yhbmid" jdbcType="VARCHAR" />
+    <result column="YHRID" property="yhrid" jdbcType="VARCHAR" />
+    <result column="YHSJ" property="yhsj" jdbcType="TIMESTAMP" />
+    <result column="HTJG" property="htjg" jdbcType="DECIMAL" />
+    <result column="JUESCB" property="juescb" jdbcType="DECIMAL" />
+    <result column="JIESCB" property="jiescb" jdbcType="DECIMAL" />
+    <result column="GSCB" property="gscb" jdbcType="DECIMAL" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="ZWMC" property="zwmc" jdbcType="VARCHAR" />
+    <result column="YWMC" property="ywmc" jdbcType="VARCHAR" />
+    <result column="CJJH" property="cjjh" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectSpareStoreList" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.SpareStore" >
+	   select jh,xlh,zwmc,ywmc,zjhms,cjjh,pch,wz from (
+	    	  select b1.bjh jh, b1.sn xlh ,b1.pch,b2.zwms zwmc,b2.cjjh,'' as wz, b2.ywms ywmc,b3.zjh||' '||b3.zwms zjhms
+			  from (select bjh, sn, dprtcode,pch
+			          from b_h_001
+			         where cklb in (5, 6, 7)
+			           and sn is not null
+			           and b_h_001.dprtcode = #{dprtcode}
+			        union
+			        select  bjh, sn, dprtcode,pch
+			          from b_h_003
+			         where cklb in (5, 6, 7)
+			           and sn is not null
+			           and b_h_003.dprtcode = #{dprtcode}) b1
+			     left join d_008 b2
+			    on b1.bjh = b2.bjh
+			    and b1.dprtcode = b2.dprtcode and b2.zt=1
+			    left join d_005 b3
+			    on b2.zjh = b3.zjh
+			    and b2.dprtcode = b3.dprtcode 
+			    ) as t <include refid="alertBjhParam"></include>
+
+  </select> 
+   <!-- bjh弹框参数 -->
+	<sql id="alertBjhParam">
+	   where 
+	   1=1
+          <if test="keyword != null and keyword != ''">
+		    and (jh like '%'||#{keyword}||'%'
+		    	or xlh like '%'||#{keyword}||'%' 
+		    	or zwmc like '%'||#{keyword}||'%' 
+		    	or ywmc like '%'||#{keyword}||'%'
+		    	or zjhms like '%'||#{keyword}||'%' 
+		    	or cjjh like '%'||#{keyword}||'%' )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+		   <if test="wz != null">
+		      and  wz = #{wz,jdbcType=DECIMAL}
+		   </if>
+	 </sql>
+ 
+
+</mapper>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.TimeControlOptionsMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.TimeControlOptions" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BJLX" property="bjlx" jdbcType="INTEGER" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+	 <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="GDSX" property="gdsx" jdbcType="VARCHAR" />
+    <result column="GDSX_DW" property="gdsx_dw" jdbcType="INTEGER" />
+    <result column="ZJYY" property="zjyy" jdbcType="VARCHAR" />
+    <result column="ZJYY_DW" property="zjyy_dw" jdbcType="INTEGER" />
+    <result column="BJYY" property="bjyy" jdbcType="VARCHAR" />
+    <result column="BJYY_DW" property="bjyy_dw" jdbcType="INTEGER" />
+    <result column="BJYC" property="bjyc" jdbcType="VARCHAR" />
+    <result column="BJYC_DW" property="bjyc_dw" jdbcType="INTEGER" />
+    <result column="PXH" property="pxh" jdbcType="INTEGER" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    
+    <result column="sj" property="sj" jdbcType="VARCHAR" />
+     <result column="ms" property="ms" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ZJQDID,FJZCH,BJLX,JH,XLH,JKLBH,JKFLBH,GDSX,GDSX_DW,ZJYY,ZJYY_DW,BJYY,BJYY_DW,BJYC,BJYC_DW,PXH,WHSJ,ZT,DPRTCODE
+  </sql>
+  
+  	<!-- 搜索参数 -->
+	<sql id="BaseResul1Param">
+         <if test="zjqdid != null and zjqdid != ''">
+             and b1.zjqdid= #{zjqdid}
+         </if>
+	</sql>
+  
+    <select id="queryAllsj" resultMap="BaseResultMap" >
+select b1.zjqdid,
+       b1.jklbh,
+       b1.fjzch,
+       b1.zjyy,
+       b1.jkflbh,
+       b3.ms,
+       b1.bjyc,
+       b1.bjyc_dw,
+      case b1.jklbh
+         when 'calendar' then
+          b1.bjyc
+         else
+          b1.gdsx
+       end gdsx,
+       b1.gdsx_dw,
+       (case b1.jklbh
+             when 'calendar' then
+              to_char(current_timestamp, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              (CASE WHEN b4.fxsj_xs_skj IS NULL THEN 0 ELSE b4.fxsj_xs_skj END) || ':' || (CASE WHEN b4.fxsj_fz_skj IS NULL THEN 0 ELSE b4.fxsj_fz_skj END)
+             when 'search_light_time' then
+              (CASE WHEN b4.ssdsj_xs IS NULL THEN 0 ELSE b4.ssdsj_xs END) || ':' || (CASE WHEN b4.ssdsj_fz IS NULL THEN 0 ELSE b4.ssdsj_fz END)
+             when 'winch_time' then
+              (CASE WHEN b4.jcsj_xs IS NULL THEN 0 ELSE b4.jcsj_xs END) || ':' || (CASE WHEN b4.jcsj_fz IS NULL THEN 0 ELSE b4.jcsj_fz END)
+             when 'landing_gear_cycle' then
+              b4.qljxh_skj || ''
+             when 'winch_cycle' then
+              b4.jcxh || ''
+             when 'ext_suspension_loop' then
+              b4.dgxh || ''
+             when 'special_first' then
+              b4.ts1 || ''
+             when 'special_second' then
+              b4.ts2 || ''
+             when 'N1' then
+              b4.fdj_n1 || ''
+             when 'N2' then
+              b4.fdj_n2 || ''
+             when 'N3' then
+              b4.fdj_n3 || ''
+             when 'N4' then
+              b4.fdj_n4 || ''
+             when 'N5' then
+              b4.fdj_n5 || ''
+             when 'N6' then
+              b4.fdj_n6 || ''
+             else
+              '0'
+           end) sj
+  from b_s_00301 b1
+  join b_s_003 b2
+    on b1.zjqdid = b2.id
+   and b2.zt = 1
+   and b2.sxzt = 1
+   and b2.kzlx in (1, 2)
+<include refid="BaseResul1Param" />
+   and b1.zt = 1
+
+  join d_00601 b3
+    on b1.jkflbh = b3.jkflbh
+   and b1.jklbh = b3.jklbh
+  left join (select jh,
+                    xlh,
+                    dprtcode,
+                    sum(fxsj_xs) fxsj_xs, 
+                    sum(fxsj_fz) fxsj_fz, 
+                    sum(fxsj_xs_skj) fxsj_xs_skj, 
+                    sum(fxsj_fz_skj) fxsj_fz_skj, 
+                    sum(fsj_xs) fsj_xs, 
+                    sum(fsj_fz) fsj_fz, 
+                    sum(qljxh) qljxh, 
+                    sum(qljxh_skj) qljxh_skj, 
+                    sum(jcsj_xs) jcsj_xs, 
+                    sum(jcsj_fz) jcsj_fz, 
+                    sum(jcxh) jcxh, 
+                    sum(fdj_n1) fdj_n1, 
+                    sum(fdj_n2) fdj_n2,
+                    sum(fdj_n3) fdj_n3,
+                    sum(fdj_n4) fdj_n4,
+                    sum(fdj_n5) fdj_n5, 
+                    sum(fdj_n6) fdj_n6, 
+                    sum(ssdsj_xs) ssdsj_xs, 
+                    sum(ssdsj_fz) ssdsj_fz, 
+                    sum(dgxh) dgxh, 
+                    sum(ts1) ts1,
+                    sum(ts2) ts2
+               from b_h_01001
+              where is_cyjs = 1
+                and zt = 1
+                and xdbs = 0
+              group by jh, xlh, dprtcode) b4
+    on b2.jh = b4.jh
+   and b2.xlh = b4.xlh
+   and b2.dprtcode = b4.dprtcode
+   order by b3.pxh asc
+   
+  </select>
+  
+  
+  <select id="queryAllList" resultMap="BaseResultMap" >
+  select b1.zjqdid,
+       b1.jklbh,
+       b1.fjzch,
+       b1.zjyy,
+       b1.jkflbh,
+       b3.ms,
+       b1.bjyc,
+       b1.bjyc_dw,
+      case b1.jklbh
+         when 'calendar' then
+          b1.bjyc
+         else
+          b1.gdsx
+       end gdsx,
+       b1.gdsx_dw,
+       (case b1.jklbh
+             when 'calendar' then
+              to_char(current_timestamp, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              (CASE WHEN b4.fxsj_xs_skj IS NULL THEN 0 ELSE b4.fxsj_xs_skj END) || ':' || (CASE WHEN b4.fxsj_fz_skj IS NULL THEN 0 ELSE b4.fxsj_fz_skj END)
+             when 'search_light_time' then
+              (CASE WHEN b4.ssdsj_xs IS NULL THEN 0 ELSE b4.ssdsj_xs END) || ':' || (CASE WHEN b4.ssdsj_fz IS NULL THEN 0 ELSE b4.ssdsj_fz END)
+             when 'winch_time' then
+              (CASE WHEN b4.jcsj_xs IS NULL THEN 0 ELSE b4.jcsj_xs END) || ':' || (CASE WHEN b4.jcsj_fz IS NULL THEN 0 ELSE b4.jcsj_fz END)
+             when 'landing_gear_cycle' then
+              b4.qljxh_skj || ''
+             when 'winch_cycle' then
+              b4.jcxh || ''
+             when 'ext_suspension_loop' then
+              b4.dgxh || ''
+             when 'special_first' then
+              b4.ts1 || ''
+             when 'special_second' then
+              b4.ts2 || ''
+             when 'N1' then
+              b4.fdj_n1 || ''
+             when 'N2' then
+              b4.fdj_n2 || ''
+             when 'N3' then
+              b4.fdj_n3 || ''
+             when 'N4' then
+              b4.fdj_n4 || ''
+             when 'N5' then
+              b4.fdj_n5 || ''
+             when 'N6' then
+              b4.fdj_n6 || ''
+             else
+              '0'
+           end) sj
+  from b_s_00301 b1
+  join b_s_003 b2
+    on b1.zjqdid = b2.id
+   and b2.zt = 1
+   and b2.sxzt = 1
+   and b2.kzlx in (1, 2)
+<include refid="BaseResul1Param" />
+   and b1.zt = 1
+
+  join d_00601 b3
+    on b1.jkflbh = b3.jkflbh
+   and b1.jklbh = b3.jklbh
+  left join (select jh,
+                    xlh,
+                    dprtcode,
+                    sum(fxsj_xs) fxsj_xs, 
+                    sum(fxsj_fz) fxsj_fz, 
+                    sum(fxsj_xs_skj) fxsj_xs_skj, 
+                    sum(fxsj_fz_skj) fxsj_fz_skj, 
+                    sum(fsj_xs) fsj_xs, 
+                    sum(fsj_fz) fsj_fz, 
+                    sum(qljxh) qljxh, 
+                    sum(qljxh_skj) qljxh_skj, 
+                    sum(jcsj_xs) jcsj_xs, 
+                    sum(jcsj_fz) jcsj_fz, 
+                    sum(jcxh) jcxh, 
+                    sum(fdj_n1) fdj_n1, 
+                    sum(fdj_n2) fdj_n2,
+                    sum(fdj_n3) fdj_n3,
+                    sum(fdj_n4) fdj_n4,
+                    sum(fdj_n5) fdj_n5, 
+                    sum(fdj_n6) fdj_n6, 
+                    sum(ssdsj_xs) ssdsj_xs, 
+                    sum(ssdsj_fz) ssdsj_fz, 
+                    sum(dgxh) dgxh, 
+                    sum(ts1) ts1,
+                    sum(ts2) ts2
+               from b_h_01001
+              where is_cyjs = 1
+                and zt = 1
+                and xdbs = 0
+              group by jh, xlh, dprtcode) b4
+    on b2.jh = b4.jh
+   and b2.xlh = b4.xlh
+   and b2.dprtcode = b4.dprtcode
+   order by b3.pxh asc
+  </select>
+  
+</mapper>

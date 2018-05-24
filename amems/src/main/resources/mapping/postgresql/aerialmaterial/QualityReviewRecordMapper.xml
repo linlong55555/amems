@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.QualityReviewRecordMapper">
+	<resultMap id="BaseMaintenanceMap"
+		type="com.eray.thjw.aerialmaterial.po.QualityReviewRecord">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		<result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+		<result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+		<result column="CZSM" property="czsm" jdbcType="VARCHAR" />
+		<result column="HD" property="hd" jdbcType="VARCHAR" />
+		<result column="FJID" property="fjid" jdbcType="VARCHAR" />
+		<result column="CZRNAME" property="czrname" jdbcType="VARCHAR" />
+	</resultMap>
+	<insert id="insertRecord" parameterType="com.eray.thjw.aerialmaterial.po.QualityReviewRecord">
+		insert into b_z_00201 (id,mainid,dprtcode,czrid,czsj,czsm,hd,fjid) values (
+			#{id,jdbcType=VARCHAR},#{mainid,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},
+			#{czrid,jdbcType=VARCHAR},current_timestamp,#{czsm,jdbcType=VARCHAR},#{hd,jdbcType=VARCHAR},
+			#{fjid,jdbcType=VARCHAR}
+		)
+	</insert>
+	<select id="selectRecordList" parameterType="com.eray.thjw.aerialmaterial.po.QualityReviewRecord"
+		resultMap="BaseMaintenanceMap">
+		select b.id,b.mainid,b.dprtcode,b.czrid,b.czsj,b.czsm,b.hd,b.fjid
+		,t.username ||' '|| t.realname as czrname
+		from b_z_00201 b left join t_user t on b.czrid=t.id
+		where b.mainid=#{mainid,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

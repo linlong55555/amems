@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.basic.dao.CoverPlateInformationMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.basic.po.CoverPlateInformation" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="GBBH" property="gbbh" jdbcType="VARCHAR" />
+    <result column="GBMC" property="gbmc" jdbcType="VARCHAR" />
+    <result column="SZQYWZ" property="szqywz" jdbcType="VARCHAR" />
+    <result column="KGGS" property="kggs" jdbcType="DECIMAL" />
+    <result column="HGGS" property="hggs" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, FJJX, GBBH, GBMC, SZQYWZ, KGGS, HGGS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_021
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="queryMultiselectByFjjx" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_021
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and ZT = 1 and FJJX = #{fjjx,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_021
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    insert into D_021 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      FJJX, GBBH, GBMC, SZQYWZ, 
+      KGGS, HGGS)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{fjjx,jdbcType=VARCHAR}, #{gbbh,jdbcType=VARCHAR}, #{gbmc,jdbcType=VARCHAR}, #{szqywz,jdbcType=VARCHAR}, 
+      #{kggs,jdbcType=DECIMAL}, #{hggs,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    insert into D_021
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="gbbh != null" >
+        GBBH,
+      </if>
+      <if test="gbmc != null" >
+        GBMC,
+      </if>
+      <if test="szqywz != null" >
+        SZQYWZ,
+      </if>
+      <if test="kggs != null" >
+        KGGS,
+      </if>
+      <if test="hggs != null" >
+        HGGS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="gbbh != null" >
+        #{gbbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gbmc != null" >
+        #{gbmc,jdbcType=VARCHAR},
+      </if>
+      <if test="szqywz != null" >
+        #{szqywz,jdbcType=VARCHAR},
+      </if>
+      <if test="kggs != null" >
+        #{kggs,jdbcType=DECIMAL},
+      </if>
+      <if test="hggs != null" >
+        #{hggs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    update D_021
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="gbbh != null" >
+        GBBH = #{gbbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gbmc != null" >
+        GBMC = #{gbmc,jdbcType=VARCHAR},
+      </if>
+      <if test="szqywz != null" >
+        SZQYWZ = #{szqywz,jdbcType=VARCHAR},
+      </if>
+      <if test="kggs != null" >
+        KGGS = #{kggs,jdbcType=DECIMAL},
+      </if>
+      <if test="hggs != null" >
+        HGGS = #{hggs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.basic.po.CoverPlateInformation" >
+    update D_021
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      FJJX = #{fjjx,jdbcType=VARCHAR},
+      GBBH = #{gbbh,jdbcType=VARCHAR},
+      GBMC = #{gbmc,jdbcType=VARCHAR},
+      SZQYWZ = #{szqywz,jdbcType=VARCHAR},
+      KGGS = #{kggs,jdbcType=DECIMAL},
+      HGGS = #{hggs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

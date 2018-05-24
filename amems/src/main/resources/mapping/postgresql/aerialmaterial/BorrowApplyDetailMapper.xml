@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.BorrowApplyDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.BorrowApplyDetail">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+    <result column="SQSL" jdbcType="DECIMAL" property="sqsl" />
+    <result column="SHSL" jdbcType="DECIMAL" property="shsl" />
+    <result column="SL" jdbcType="DECIMAL" property="sl" />
+    <result column="YT" jdbcType="VARCHAR" property="yt" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+  </resultMap>
+  
+	<resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.BorrowApplyDetail">
+	   	<association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+			<result column="HC_BJH" property="bjh" jdbcType="VARCHAR" />
+			<result column="HC_ZWMS" property="zwms" jdbcType="VARCHAR" />
+			<result column="HC_YWMS" property="ywms" jdbcType="VARCHAR" />
+			<result column="HC_JLDW" property="jldw" jdbcType="VARCHAR" />
+			<result column="HC_CJJH" property="cjjh" jdbcType="VARCHAR" />
+			<result column="HC_HCLX" property="hclx" jdbcType="DECIMAL" />
+			<result column="HC_HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+			<result column="HC_GLJB" property="gljb" jdbcType="DECIMAL" />
+	  	</association>
+	</resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, BJID, BJH, SQSL, SHSL, SL, YT, ZT, BZ, WHDWID, WHRID, WHSJ,sn
+  </sql>
+  
+	<sql id="Alias_Column_List">
+		T.ID, T.MAINID, T.BJID, T.BJH, T.SQSL, T.SHSL, T.SL, T.YT, T.ZT, T.BZ, T.WHDWID, T.WHRID, T.WHSJ,t.sn
+	</sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_01801
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+	<select id="selectByMainId" parameterType="java.lang.String" resultMap="ResultMap">
+		select 
+		<include refid="Alias_Column_List" />
+		,T1.BJH AS HC_BJH
+		,T1.ZWMS AS HC_ZWMS
+		,T1.YWMS AS HC_YWMS
+		,T1.JLDW AS HC_JLDW
+		,T1.CJJH AS HC_CJJH
+		,T1.HCLX AS HC_HCLX
+		,T1.HCLX_EJ AS HC_HCLX_EJ
+		,T1.GLJB AS HC_GLJB,t.sn
+		from B_H_01801 T
+		left join D_008 T1 on T.BJID = T1.ID
+		where T.ZT = 1 and T.MAINID = #{mainid,jdbcType=VARCHAR}
+	</select>  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_01801
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.BorrowApplyDetail">
+    insert into B_H_01801 (ID, MAINID, BJID, 
+      BJH, SQSL, SHSL, SL, 
+      YT, ZT, BZ, WHDWID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, 
+      #{bjh,jdbcType=VARCHAR}, #{sqsl,jdbcType=DECIMAL}, #{shsl,jdbcType=DECIMAL}, #{sl,jdbcType=DECIMAL}, 
+      #{yt,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.BorrowApplyDetail">
+    insert into B_H_01801
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="bjh != null">
+        BJH,
+      </if>
+      <if test="sqsl != null">
+        SQSL,
+      </if>
+      <if test="shsl != null">
+        SHSL,
+      </if>
+      <if test="sl != null">
+        SL,
+      </if>
+      <if test="yt != null">
+        YT,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsl != null">
+        #{sqsl,jdbcType=DECIMAL},
+      </if>
+      <if test="shsl != null">
+        #{shsl,jdbcType=DECIMAL},
+      </if>
+      <if test="sl != null">
+        #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="yt != null">
+        #{yt,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        current_timestamp,
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.BorrowApplyDetail">
+    update B_H_01801
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsl != null">
+        SQSL = #{sqsl,jdbcType=DECIMAL},
+      </if>
+      <if test="shsl != null">
+        SHSL = #{shsl,jdbcType=DECIMAL},
+      </if>
+      <if test="sl != null">
+        SL = #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="yt != null">
+        YT = #{yt,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = current_timestamp,
+      </if>
+        <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.BorrowApplyDetail">
+    update B_H_01801
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      SQSL = #{sqsl,jdbcType=DECIMAL},
+      SHSL = #{shsl,jdbcType=DECIMAL},
+      SL = #{sl,jdbcType=DECIMAL},
+      YT = #{yt,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

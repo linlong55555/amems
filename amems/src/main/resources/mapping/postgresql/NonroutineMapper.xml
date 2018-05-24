@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.NonroutineMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.Nonroutine">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="GDLX" jdbcType="DECIMAL" property="gdlx" />
+    <result column="GDJCID" jdbcType="VARCHAR" property="gdjcid" />
+    <result column="GDBH" jdbcType="VARCHAR" property="gdbh" />
+    <result column="ZY" jdbcType="VARCHAR" property="zy" />
+    <result column="JHGS_RS" jdbcType="DECIMAL" property="jhgs_rs" />
+    <result column="JHGS_XSS" jdbcType="DECIMAL" property="jhgs_xss" />
+    <result column="GKLY" jdbcType="VARCHAR" property="gkly" />
+    <result column="XFGDYY" jdbcType="VARCHAR" property="xfgdyy" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZDDWID" jdbcType="VARCHAR" property="zddwid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="ZDJSRID" jdbcType="VARCHAR" property="zdjsrid" />
+    <result column="ZDJSRQ" jdbcType="TIMESTAMP" property="zdjsrq" />
+    <result column="ZDJSYY" jdbcType="VARCHAR" property="zdjsyy" />
+     <result column="JKBZ" jdbcType="VARCHAR" property="jkbz" />
+     <result column="SHBMID" jdbcType="VARCHAR" property="shbmid" />
+     <result column="SHRID" jdbcType="VARCHAR" property="shrid" />
+     <result column="SHSJ" jdbcType="VARCHAR" property="shsj" />
+      <result column="SHYJ" jdbcType="VARCHAR" property="shyj" />
+      <result column="zhut" jdbcType="VARCHAR" property="zhut" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, GDLX, GDJCID, GDBH, ZY, JHGS_RS, JHGS_XSS, GKLY, XFGDYY, BZ, ZDDWID, ZDRID, ZDSJ, 
+    ZT, DPRTCODE, ZDJSRID, ZDJSRQ, ZDJSYY,JKBZ,SHBMID,SHRID,SHSJ,SHYJ
+  </sql>
+  
+    <sql id="BaseResulParam">
+	     where 
+		   1=1
+		   <!-- 工单id -->
+		     <if test="id != null and id != ''">
+	            and  b.id = #{id}
+	       </if>
+   </sql>
+  
+  <select id="selectByPrimaryKey"   resultMap="BaseResultMap">
+		select b.id,b.gdlx,b.gdjcid,b.gdbh,b.zy,b.jhgs_rs,b.jhgs_xss,b.gkly,b.xfgdyy,b.bz,b.zddwid,b.zdrid,
+		b.zdsj,b.zt,b.dprtcode,b.zdjsrid,b.zdjsrq,b.zdjsyy,b.jkbz,b.shbmid,b.shrid,b.shsj,b.shyj,
+		a.username,a.realname,b.zhut  from B_G_007 b left join t_user a on b.shrid=a.id
+		<include refid="BaseResulParam"></include>
+  </select>
+ <select id="selectByDingJianWork"   resultMap="BaseResultMap">
+		select b.id,b.gdjcid,b.gdbh,b.zy,b.xfgdyy,b.jhgs_rs,b.jhgs_xss,b.bz,b.shrid,b.shsj,b.shyj ,a.username,a.realname from B_G_016 b left join t_user a on b.shrid=a.id
+		<include refid="BaseResulParam"></include>
+  </select>
+  <select id="selectByEOWork"   resultType="com.eray.thjw.po.Nonroutine">
+		select  b.id,b.gdjcid,b.gdbh,b.zy,b.xfgdyy,b.jhgs_rs,b.jhgs_xss,b.bz ,b.shrid,b.shsj,b.shyj,a.username,a.realname from B_G_010 b left join t_user a on b.shrid=a.id
+		<include refid="BaseResulParam"></include>
+  </select>
+  
+ 	 
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.Nonroutine">
+    insert into B_G_007
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="gdlx != null">
+        GDLX,
+      </if>
+      <if test="gdjcid != null">
+        GDJCID,
+      </if>
+      <if test="gdbh != null">
+        GDBH,
+      </if>
+      <if test="zy != null">
+        ZY,
+      </if>
+      <if test="jhgs_rs != null">
+        JHGS_RS,
+      </if>
+      <if test="jhgs_xss != null">
+        JHGS_XSS,
+      </if>
+      <if test="gkly != null">
+        GKLY,
+      </if>
+      <if test="xfgdyy != null">
+        XFGDYY,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zddwid != null">
+        ZDDWID,
+      </if>
+      <if test="zdrid != null">
+        ZDRID,
+      </if>
+        ZDSJ,
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="zdjsrid != null">
+        ZDJSRID,
+      </if>
+      <if test="zdjsrq != null">
+        ZDJSRQ,
+      </if>
+      <if test="zdjsyy != null">
+        ZDJSYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="gdlx != null">
+        #{gdlx,jdbcType=DECIMAL},
+      </if>
+      <if test="gdjcid != null">
+        #{gdjcid,jdbcType=VARCHAR},
+      </if>
+      <if test="gdbh != null">
+        #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null">
+        #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgs_rs != null">
+        #{jhgs_rs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgs_xss != null">
+        #{jhgs_xss,jdbcType=DECIMAL},
+      </if>
+      <if test="gkly != null">
+        #{gkly,jdbcType=VARCHAR},
+      </if>
+      <if test="xfgdyy != null">
+        #{xfgdyy,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null">
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+       current_timestamp,
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null">
+        #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null">
+        #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null">
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+<!--   增加EO工单 -->
+  <insert id="insertSelective2" parameterType="com.eray.thjw.po.Nonroutine">
+    insert into B_G_010
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="gdjcid != null">
+        GDJCID,
+      </if>
+      <if test="gdbh != null">
+        GDBH,
+      </if>
+      <if test="gczlid != null">
+        GCZLID,
+      </if>
+      <if test="gczlzxdxid != null">
+        GCZLZXDXID,
+      </if>
+      <if test="gcbh != null">
+        ZY,
+      </if>
+      <if test="zy != null">
+        ZY2,
+      </if>
+      <if test="jhgs_rs != null">
+        JHGS_RS,
+      </if>
+      <if test="jhgs_xss != null">
+        JHGS_XSS,
+      </if>
+      <if test="gkly != null">
+        GKLY,
+      </if>
+      <if test="xfgdyy != null">
+        XFGDYY,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zddwid != null">
+        ZDDWID,
+      </if>
+      <if test="zdrid != null">
+        ZDRID,
+      </if>
+        ZDSJ,
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="zdjsrid != null">
+        ZDJSRID,
+      </if>
+      <if test="zdjsrq != null">
+        ZDJSRQ,
+      </if>
+      <if test="zdjsyy != null">
+        ZDJSYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="gdjcid != null">
+        #{gdjcid,jdbcType=VARCHAR},
+      </if>
+      <if test="gdbh != null">
+        #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gczlid != null">
+        #{gczlid,jdbcType=VARCHAR},
+      </if>
+      <if test="gczlzxdxid != null">
+        #{gczlzxdxid,jdbcType=VARCHAR},
+      </if>
+      <if test="gcbh != null">
+        #{gcbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null">
+        #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgs_rs != null">
+        #{jhgs_rs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgs_xss != null">
+        #{jhgs_xss,jdbcType=DECIMAL},
+      </if>
+      <if test="gkly != null">
+        #{gkly,jdbcType=VARCHAR},
+      </if>
+      <if test="xfgdyy != null">
+        #{xfgdyy,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null">
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+       current_timestamp,
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null">
+        #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null">
+        #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null">
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+    <!-- 审核 -->
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.Nonroutine">
+    update
+        <choose>
+			    	<when test="gdlx== 1 || gdlx == 2 || gdlx == 3">
+			    		  B_G_007
+			    	</when>
+			    	<when test="gdlx== 5 ">
+			    		  B_G_016
+			    	</when>
+			    	<otherwise>
+					     B_G_010
+			    	</otherwise>
+		 </choose>	
+    <set>
+      <if test="shbmid != null">
+        shbmid = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        shrid = #{shrid,jdbcType=VARCHAR},
+      </if>
+        shsj = current_timestamp,
+      <if test="shyj != null">
+        shyj  = #{shyj ,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+    </set>
+        where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+  <!-- 批准 -->
+  <update id="updateByPrimaryKey2" parameterType="com.eray.thjw.po.Nonroutine">
+    update
+        <choose>
+			    	<when test="gdlx== 1 || gdlx == 2 || gdlx == 3">
+			    		  B_G_007
+			    	</when>
+			    	<when test="gdlx== 5 ">
+			    		  B_G_016
+			    	</when>
+			    	<otherwise>
+					     B_G_010
+			    	</otherwise>
+		 </choose>	
+    <set>
+     <if test="pfbmid != null">
+        pfbmid = #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null">
+        pfrid = #{pfrid,jdbcType=VARCHAR},
+      </if>
+        pfsj = current_timestamp,
+      <if test="pfyj != null">
+        pfyj  = #{pfyj ,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+  </set>
+        where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+  <!-- 指定结束 -->
+  <update id="updateByPrimaryKey3" parameterType="com.eray.thjw.po.Nonroutine">
+    update
+        <choose>
+			    	<when test="gdlx== 1 || gdlx == 2 || gdlx == 3">
+			    		  B_G_007
+			    	</when>
+			    	<when test="gdlx== 5 ">
+			    		  B_G_016
+			    	</when>
+			    	<otherwise>
+					     B_G_010
+			    	</otherwise>
+		 </choose>	
+    <set>
+     <if test="zdjsrid != null">
+        zdjsrid = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+        zdjsrq = current_timestamp,
+      <if test="zdjsyy != null">
+        zdjsyy  = #{zdjsyy ,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+  </set>
+        where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+  <!-- 作废工单 -->
+  <update id="updateByPrimaryKey4" parameterType="com.eray.thjw.po.Nonroutine">
+    update
+        <choose>
+			    	<when test="gdlx== 1 || gdlx == 2 || gdlx == 3">
+			    		  B_G_007
+			    	</when>
+			    	<when test="gdlx== 5 ">
+			    		  B_G_016
+			    	</when>
+			    	<otherwise>
+					     B_G_010
+			    	</otherwise>
+		 </choose>	
+    <set>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+  </set>
+        where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Nonroutine">
+    update B_G_007
+    <set>
+      <if test="gdlx != null">
+        GDLX = #{gdlx,jdbcType=DECIMAL},
+      </if>
+      <if test="gdjcid != null">
+        GDJCID = #{gdjcid,jdbcType=VARCHAR},
+      </if>
+      <if test="gdbh != null">
+        GDBH = #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null">
+        ZY = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null">
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null">
+        JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="gkly != null">
+        GKLY = #{gkly,jdbcType=VARCHAR},
+      </if>
+      <if test="xfgdyy != null">
+        XFGDYY = #{xfgdyy,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null">
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+       sydate,
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="zdjsrid != null">
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null">
+        ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null">
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+   <update id="doEnd" parameterType="com.eray.thjw.po.Nonroutine">
+    update B_G_007
+    <set>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zdjsrid != null">
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null">
+        ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null">
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+ 
+</mapper>

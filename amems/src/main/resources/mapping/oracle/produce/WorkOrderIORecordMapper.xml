@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.produce.dao.WorkOrderIORecordMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.WorkOrderIORecord">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="CX_BS" jdbcType="DECIMAL" property="cxBs" />
+    <result column="CX_ZJQDID" jdbcType="VARCHAR" property="cxZjqdid" />
+    <result column="CX_SJ" jdbcType="TIMESTAMP" property="cxSj" />
+    <result column="CX_BZ" jdbcType="VARCHAR" property="cxBz" />
+    <result column="CX_WCKCID" jdbcType="VARCHAR" property="cxWckcid" />
+    <result column="CX_KCLVID" jdbcType="VARCHAR" property="cxKclvid" />
+    <result column="ZS_BS" jdbcType="DECIMAL" property="zsBs" />
+    <result column="ZS_ZJQDID" jdbcType="VARCHAR" property="zsZjqdid" />
+    <result column="ZS_SJ" jdbcType="TIMESTAMP" property="zsSj" />
+    <result column="ZS_BZ" jdbcType="VARCHAR" property="zsBz" />
+    <result column="ZS_WCKCID" jdbcType="VARCHAR" property="zsWckcid" />
+    <result column="ZS_KCLVID" jdbcType="VARCHAR" property="zsKclvid" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZRRID" property="zrrid" jdbcType="VARCHAR" />
+    <result column="ZRR" property="zrr" jdbcType="VARCHAR" />
+    
+     <!-- 扩充字段 -->
+   <result column="zs_bjh" property="paramsMap.zs_bjh" jdbcType="VARCHAR" /><!-- 装上部件号 -->
+   <result column="zs_xlh" property="paramsMap.zs_xlh" jdbcType="VARCHAR" /><!-- 装上序列号 -->
+   <result column="zs_zwms" property="paramsMap.zs_zwms" jdbcType="VARCHAR" /><!-- 装上中文名称 -->
+   <result column="zs_ywms" property="paramsMap.zs_ywms" jdbcType="VARCHAR" /><!-- 装上英文文名称 -->
+   <result column="cx_bjh" property="paramsMap.cx_bjh" jdbcType="VARCHAR" /><!-- 拆下部件号 -->
+   <result column="cx_xlh" property="paramsMap.cx_xlh" jdbcType="VARCHAR" /><!-- 拆下序列号 -->
+   <result column="cx_zwms" property="paramsMap.cx_zwms" jdbcType="VARCHAR" /><!-- 拆下中文名称 -->
+   <result column="cx_ywms" property="paramsMap.cx_ywms" jdbcType="VARCHAR" /><!-- 拆下英文文名称 -->
+    
+  </resultMap>
+  
+  <resultMap id="withInstallResultMap" extends="BaseResultMap" type="com.eray.thjw.produce.po.WorkOrderIORecord">
+  	<association property="cxj" javaType="com.eray.thjw.produce.po.InstallationListEditable">  
+    	<id column="CXJID" property="id" jdbcType="VARCHAR" />
+	    <result column="CXJWZ" property="wz" jdbcType="DECIMAL" />
+	    <result column="CXJCJ" property="cj" jdbcType="DECIMAL" />
+	    <result column="CXJBJH" property="bjh" jdbcType="VARCHAR" />
+	    <result column="CXJXLH" property="xlh" jdbcType="VARCHAR" />
+	    <result column="CXJPCH" property="pch" jdbcType="VARCHAR" />
+    </association>
+    <association property="zsj" javaType="com.eray.thjw.produce.po.InstallationListTemp">  
+    	<id column="ZSJID" jdbcType="VARCHAR" property="id" />
+	    <result column="ZSJWZ" jdbcType="DECIMAL" property="wz" />
+	    <result column="ZSJCJ" jdbcType="DECIMAL" property="cj" />
+	    <result column="ZSJFJDID" jdbcType="VARCHAR" property="fjdid" />
+	    <result column="ZSJBJH" jdbcType="VARCHAR" property="bjh" />
+	    <result column="ZSJXLH" jdbcType="VARCHAR" property="xlh" />
+	    <result column="ZSJPCH" jdbcType="VARCHAR" property="pch" />
+    	</association>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, ZT, WHDWID, WHRID, WHSJ, CX_BS, CX_ZJQDID, CX_SJ, CX_BZ, CX_WCKCID, CX_KCLVID, 
+    ZS_BS, ZS_ZJQDID, ZS_SJ, ZS_BZ, ZS_WCKCID, ZS_KCLVID, BZ, ZRRID, ZRR
+  </sql>
+  
+  <!-- 根据工单id获取数据 -->
+   <select id="queryAllByGdid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   select 
+    B_S2_00801.ID, B_S2_00801.MAINID, B_S2_00801.ZT,B_S2_00801.WHDWID, B_S2_00801.WHRID, B_S2_00801.WHSJ, B_S2_00801.CX_BS, B_S2_00801.CX_ZJQDID, B_S2_00801.CX_SJ, B_S2_00801.CX_BZ, B_S2_00801.CX_WCKCID, B_S2_00801.CX_KCLVID, 
+    B_S2_00801.ZS_BS, B_S2_00801.ZS_ZJQDID, B_S2_00801.ZS_SJ, B_S2_00801.ZS_BZ, B_S2_00801.ZS_WCKCID, B_S2_00801.ZS_KCLVID, B_S2_00801.BZ,
+    b_s2_004.bjh zs_bjh,b_s2_004.xlh zs_xlh,b_s2_004.zwmc zs_zwms,b_s2_004.ywmc zs_ywms,
+    b_s2_002.bjh cx_bjh,b_s2_002.xlh cx_xlh,b_s2_002.zwmc cx_zwms,b_s2_002.ywmc cx_ywms
+    from B_S2_00801
+    left join b_s2_004 on B_S2_00801.cx_zjqdid = b_s2_004.id
+    left join b_s2_002 on B_S2_00801.zs_zjqdid = b_s2_002.id
+    where B_S2_00801.zt = 1 and B_S2_00801.mainid = #{mainid,jdbcType=VARCHAR}
+   </select>
+   
+   
+   <!-- 根据工单id获取数据 -->
+   <select id="queryAllRecord145ByGdid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	   select 
+		    S201401.ID, S201401.MAINID, S201401.ZT,S201401.WHDWID, S201401.WHRID, S201401.WHSJ, S201401.CX_BS, S201401.CX_ZJQDID, S201401.CX_SJ, S201401.CX_BZ, S201401.CX_WCKCID, S201401.CX_KCLVID, 
+		    S201401.ZS_BS, S201401.ZS_ZJQDID, S201401.ZS_SJ, S201401.ZS_BZ, S201401.ZS_WCKCID, S201401.ZS_KCLVID, S201401.BZ,
+		    b_s2_004.bjh zs_bjh,b_s2_004.xlh zs_xlh,b_s2_004.zwmc zs_zwms,b_s2_004.ywmc zs_ywms,
+		    b_s2_002.bjh cx_bjh,b_s2_002.xlh cx_xlh,b_s2_002.zwmc cx_zwms,b_s2_002.ywmc cx_ywms
+	    from B_S2_01401 S201401
+	    left join b_s2_004 on S201401.zs_zjqdid = b_s2_004.id
+	    left join b_s2_002 on S201401.cx_zjqdid = b_s2_002.id
+	    where S201401.zt = 1 and S201401.mainid = #{gdid,jdbcType=VARCHAR}
+   </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_00801
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据多个id查询 -->
+  <select id="selectByIds" resultMap="BaseResultMap">
+  	SELECT ID, MAINID, CX_BS, CX_ZJQDID, CX_SJ, CX_BZ, CX_WCKCID, CX_KCLVID, 
+    	ZS_BS, ZS_ZJQDID, ZS_SJ, ZS_BZ, ZS_WCKCID, ZS_KCLVID
+    FROM B_S2_00801 WHERE ID IN 
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item, jdbcType = VARCHAR}
+		</foreach>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_S2_00801
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.WorkOrderIORecord">
+    insert into B_S2_00801 (ID, MAINID, ZT, 
+      WHDWID, WHRID, WHSJ, 
+      CX_BS, CX_ZJQDID, CX_SJ, 
+      CX_BZ, CX_WCKCID, CX_KCLVID, 
+      ZS_BS, ZS_ZJQDID, ZS_SJ, 
+      ZS_BZ, ZS_WCKCID, ZS_KCLVID, 
+      BZ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{cxBs,jdbcType=DECIMAL}, #{cxZjqdid,jdbcType=VARCHAR}, #{cxSj,jdbcType=TIMESTAMP}, 
+      #{cxBz,jdbcType=VARCHAR}, #{cxWckcid,jdbcType=VARCHAR}, #{cxKclvid,jdbcType=VARCHAR}, 
+      #{zsBs,jdbcType=DECIMAL}, #{zsZjqdid,jdbcType=VARCHAR}, #{zsSj,jdbcType=TIMESTAMP}, 
+      #{zsBz,jdbcType=VARCHAR}, #{zsWckcid,jdbcType=VARCHAR}, #{zsKclvid,jdbcType=VARCHAR}, 
+      #{bz,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.WorkOrderIORecord">
+    insert into B_S2_00801
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="cxBs != null">
+        CX_BS,
+      </if>
+      <if test="cxZjqdid != null">
+        CX_ZJQDID,
+      </if>
+      <if test="cxSj != null">
+        CX_SJ,
+      </if>
+      <if test="cxBz != null">
+        CX_BZ,
+      </if>
+      <if test="cxWckcid != null">
+        CX_WCKCID,
+      </if>
+      <if test="cxKclvid != null">
+        CX_KCLVID,
+      </if>
+      <if test="zsBs != null">
+        ZS_BS,
+      </if>
+      <if test="zsZjqdid != null">
+        ZS_ZJQDID,
+      </if>
+      <if test="zsSj != null">
+        ZS_SJ,
+      </if>
+      <if test="zsBz != null">
+        ZS_BZ,
+      </if>
+      <if test="zsWckcid != null">
+        ZS_WCKCID,
+      </if>
+      <if test="zsKclvid != null">
+        ZS_KCLVID,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zrrid != null" >
+        ZRRID,
+      </if>
+      <if test="zrr != null" >
+        ZRR,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBs != null">
+        #{cxBs,jdbcType=DECIMAL},
+      </if>
+      <if test="cxZjqdid != null">
+        #{cxZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxSj != null">
+        #{cxSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBz != null">
+        #{cxBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cxWckcid != null">
+        #{cxWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxKclvid != null">
+        #{cxKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsBs != null">
+        #{zsBs,jdbcType=DECIMAL},
+      </if>
+      <if test="zsZjqdid != null">
+        #{zsZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsSj != null">
+        #{zsSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zsBz != null">
+        #{zsBz,jdbcType=VARCHAR},
+      </if>
+      <if test="zsWckcid != null">
+        #{zsWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsKclvid != null">
+        #{zsKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zrrid != null" >
+        #{zrrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zrr != null" >
+        #{zrr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.WorkOrderIORecord">
+    update B_S2_00801
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBs != null">
+        CX_BS = #{cxBs,jdbcType=DECIMAL},
+      </if>
+      <if test="cxZjqdid != null">
+        CX_ZJQDID = #{cxZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxSj != null">
+        CX_SJ = #{cxSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBz != null">
+        CX_BZ = #{cxBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cxWckcid != null">
+        CX_WCKCID = #{cxWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxKclvid != null">
+        CX_KCLVID = #{cxKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsBs != null">
+        ZS_BS = #{zsBs,jdbcType=DECIMAL},
+      </if>
+      <if test="zsZjqdid != null">
+        ZS_ZJQDID = #{zsZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsSj != null">
+        ZS_SJ = #{zsSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zsBz != null">
+        ZS_BZ = #{zsBz,jdbcType=VARCHAR},
+      </if>
+      <if test="zsWckcid != null">
+        ZS_WCKCID = #{zsWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsKclvid != null">
+        ZS_KCLVID = #{zsKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zrrid != null" >
+        ZRRID = #{zrrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zrr != null" >
+        ZRR = #{zrr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.WorkOrderIORecord">
+    update B_S2_00801
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      CX_BS = #{cxBs,jdbcType=DECIMAL},
+      CX_ZJQDID = #{cxZjqdid,jdbcType=VARCHAR},
+      CX_SJ = #{cxSj,jdbcType=TIMESTAMP},
+      CX_BZ = #{cxBz,jdbcType=VARCHAR},
+      CX_WCKCID = #{cxWckcid,jdbcType=VARCHAR},
+      CX_KCLVID = #{cxKclvid,jdbcType=VARCHAR},
+      ZS_BS = #{zsBs,jdbcType=DECIMAL},
+      ZS_ZJQDID = #{zsZjqdid,jdbcType=VARCHAR},
+      ZS_SJ = #{zsSj,jdbcType=TIMESTAMP},
+      ZS_BZ = #{zsBz,jdbcType=VARCHAR},
+      ZS_WCKCID = #{zsWckcid,jdbcType=VARCHAR},
+      ZS_KCLVID = #{zsKclvid,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="queryInfoByMainId" parameterType="com.eray.thjw.produce.po.WorkOrderIORecord" resultMap="BaseResultMap">
+  	select 
+  		<include refid="Base_Column_List" />
+  	from B_S2_00801 B
+  	where 
+  		mainid = #{mainid,jdbcType=VARCHAR}
+  </select>
+   <!-- 删除拆装记录 -->
+  <delete id="deleteNotExist" parameterType="com.eray.thjw.produce.po.Workorder" >
+      DELETE FROM B_S2_00801 
+		WHERE MAINID = #{id,jdbcType=VARCHAR}
+		<if test="woIORecordList != null and woIORecordList.size > 0">
+            AND ID NOT IN 
+            <foreach collection="woIORecordList" item="item" index="index" open="(" close=")" separator=",">
+			nvl(#{item.id,jdbcType=VARCHAR},'0')
+	   		</foreach>
+        </if>
+  </delete>
+  <!-- 删除flb上工单删除的拆装记录 -->
+  <delete id="deleteFlbIOByWONotExist" parameterType="com.eray.thjw.produce.po.Workorder" >
+      DELETE FROM B_S2_0060401 S20060401
+      	WHERE S20060401.GDCZJLID in (select s200801.id from B_S2_00801 s200801
+		WHERE s200801.MAINID = #{id,jdbcType=VARCHAR}
+		<if test="woIORecordList != null and woIORecordList.size > 0">
+            AND s200801.ID NOT IN 
+            <foreach collection="woIORecordList" item="item" index="index" open="(" close=")" separator=",">
+			nvl(#{item.id,jdbcType=VARCHAR},'0')
+	   		</foreach>
+        </if>
+        )
+  </delete>
+  
+   <insert id="insertByWoIO145" parameterType="com.eray.thjw.produce.po.Workorder145IORecord">
+    insert into B_S2_00801
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="cxBs != null">
+        CX_BS,
+      </if>
+      <if test="cxZjqdid != null">
+        CX_ZJQDID,
+      </if>
+      <if test="cxSj != null">
+        CX_SJ,
+      </if>
+      <if test="cxBz != null">
+        CX_BZ,
+      </if>
+      <if test="cxWckcid != null">
+        CX_WCKCID,
+      </if>
+      <if test="cxKclvid != null">
+        CX_KCLVID,
+      </if>
+      <if test="zsBs != null">
+        ZS_BS,
+      </if>
+      <if test="zsZjqdid != null">
+        ZS_ZJQDID,
+      </if>
+      <if test="zsSj != null">
+        ZS_SJ,
+      </if>
+      <if test="zsBz != null">
+        ZS_BZ,
+      </if>
+      <if test="zsWckcid != null">
+        ZS_WCKCID,
+      </if>
+      <if test="zsKclvid != null">
+        ZS_KCLVID,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBs != null">
+        #{cxBs,jdbcType=DECIMAL},
+      </if>
+      <if test="cxZjqdid != null">
+        #{cxZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxSj != null">
+        #{cxSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBz != null">
+        #{cxBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cxWckcid != null">
+        #{cxWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxKclvid != null">
+        #{cxKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsBs != null">
+        #{zsBs,jdbcType=DECIMAL},
+      </if>
+      <if test="zsZjqdid != null">
+        #{zsZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsSj != null">
+        #{zsSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zsBz != null">
+        #{zsBz,jdbcType=VARCHAR},
+      </if>
+      <if test="zsWckcid != null">
+        #{zsWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsKclvid != null">
+        #{zsKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByWoIO145" parameterType="com.eray.thjw.produce.po.Workorder145IORecord">
+    update B_S2_00801
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBs != null">
+        CX_BS = #{cxBs,jdbcType=DECIMAL},
+      </if>
+      <if test="cxZjqdid != null">
+        CX_ZJQDID = #{cxZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxSj != null">
+        CX_SJ = #{cxSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cxBz != null">
+        CX_BZ = #{cxBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cxWckcid != null">
+        CX_WCKCID = #{cxWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="cxKclvid != null">
+        CX_KCLVID = #{cxKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsBs != null">
+        ZS_BS = #{zsBs,jdbcType=DECIMAL},
+      </if>
+      <if test="zsZjqdid != null">
+        ZS_ZJQDID = #{zsZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsSj != null">
+        ZS_SJ = #{zsSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zsBz != null">
+        ZS_BZ = #{zsBz,jdbcType=VARCHAR},
+      </if>
+      <if test="zsWckcid != null">
+        ZS_WCKCID = #{zsWckcid,jdbcType=VARCHAR},
+      </if>
+      <if test="zsKclvid != null">
+        ZS_KCLVID = #{zsKclvid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteNotExistWO135" parameterType="com.eray.thjw.produce.po.Workorder145" >
+      DELETE FROM B_S2_00801 
+		WHERE MAINID = #{id,jdbcType=VARCHAR}
+		<if test="woIORecordList != null and woIORecordList.size > 0">
+            AND ID NOT IN 
+            <foreach collection="woIORecordList" item="item" index="index" open="(" close=")" separator=",">
+			nvl(#{item.id,jdbcType=VARCHAR},'0')
+	   		</foreach>
+        </if>
+  </delete>
+  <!-- 删除工单拆装记录-->
+  <delete id="deleteByIds">
+  	DELETE FROM B_S2_00801
+	 WHERE  ID IN 
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+				#{item, jdbcType = VARCHAR}
+	   		</foreach>
+  </delete>
+ <!--  删除flb中引用了工单拆装记录的的数据 -->
+  <delete id="deleteHandFlbIOByIds">
+  	DELETE FROM B_S2_0060401
+	 WHERE GDCZJLID IN 
+	 	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+				#{item, jdbcType = VARCHAR}
+   		</foreach>
+  </delete>
+  
+  
+  <!-- 根据工单id查询，并附带出装上拆下信息 -->
+  <select id="selectWithCxZsByMainid" resultMap="withInstallResultMap">
+  	SELECT 
+ 		S200801.ID, S200801.MAINID, S200801.ZT, S200801.CX_BS, 
+ 		S200801.CX_ZJQDID, S200801.CX_SJ, S200801.CX_BZ, S200801.CX_WCKCID, S200801.CX_KCLVID, 
+   		S200801.ZS_BS, S200801.ZS_ZJQDID, S200801.ZS_SJ, S200801.ZS_BZ, S200801.ZS_WCKCID, S200801.ZS_KCLVID,
+	  S2004.ID CXJID,
+	  S2004.WZ CXJWZ,
+	  S2004.CJ CXJCJ,
+	  S2004.BJH CXJBJH,
+	  S2004.XLH CXJXLH,
+	  S2004.PCH CXJPCH,
+	  S2002.ID ZSJID,
+	  S2002.WZ ZSJWZ,
+	  S2002.FJDID ZSJFJDID,
+	  S2002.BJH ZSJBJH,
+	  S2002.XLH ZSJXLH,
+	  S2002.PCH ZSJPCH
+	 FROM B_S2_00801 S200801
+	LEFT JOIN B_S2_004 S2004 ON S200801.CX_ZJQDID = S2004.ID
+	LEFT JOIN B_S2_002 S2002 ON S200801.ZS_ZJQDID = S2002.ID
+	WHERE S200801.ZT=1 and S200801.MAINID = #{mainid, jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据工单拆装记录更新FLB拆装记录 -->
+  <update id="updateFlbIOByWorkorderIO">
+  	UPDATE B_S2_0060401 S20060401
+	   SET (cx_bs, cx_zjqdid, cx_sj, cx_bz, cx_wckcid, cx_kclvid, zs_bs, zs_zjqdid, zs_sj, zs_bz, zs_wckcid, zs_kclvid, zrrid, zrr) = (select S200801.cx_bs,
+	                                                                                                                              S200801.cx_zjqdid,
+	                                                                                                                              S200801.cx_sj,
+	                                                                                                                              S200801.cx_bz,
+	                                                                                                                              S200801.cx_wckcid,
+	                                                                                                                              S200801.cx_kclvid,
+	                                                                                                                              S200801.zs_bs,
+	                                                                                                                              S200801.zs_zjqdid,
+	                                                                                                                              S200801.zs_sj,
+	                                                                                                                              S200801.zs_bz,
+	                                                                                                                              S200801.zs_wckcid,
+	                                                                                                                              S200801.zs_kclvid,
+	                                                                                                                              S200801.zrrid,
+	                                                                                                                              S200801.zrr
+	                                                                                                                         FROM B_S2_00801 S200801
+	                                                                                                                        WHERE S200801.ID =
+	                                                                                                                              S20060401.gdczjlid)
+	 WHERE S20060401.gdczjlid = #{gdczjlid, jdbcType=VARCHAR}
+  </update>
+  
+ <!--  更新装上库存履历 -->
+  <update id="updateAzKcId">
+  	UPDATE B_S2_00801 SET ZS_WCKCID = #{kcid, jdbcType=VARCHAR}, ZS_KCLVID = #{kcllid, jdbcType=VARCHAR} WHERE ID = #{id, jdbcType=VARCHAR}
+  </update>
+ <!--  更新拆下库存履历 -->
+  <update id="updateCxKcId">
+  	UPDATE B_S2_00801 SET CX_WCKCID = #{kcid, jdbcType=VARCHAR}, CX_KCLVID = #{kcllid, jdbcType=VARCHAR} WHERE ID = #{id, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 拆换记录更新 -->
+  <update id="updateByWorkOrder" parameterType="com.eray.thjw.produce.po.WorkOrderIORecord">
+    update B_S2_00801
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+        CX_BS = #{cxBs,jdbcType=DECIMAL},
+        CX_ZJQDID = #{cxZjqdid,jdbcType=VARCHAR},
+        CX_SJ = #{cxSj,jdbcType=TIMESTAMP},
+        CX_BZ = #{cxBz,jdbcType=VARCHAR},
+        CX_WCKCID = #{cxWckcid,jdbcType=VARCHAR},
+        CX_KCLVID = #{cxKclvid,jdbcType=VARCHAR},
+        ZS_BS = #{zsBs,jdbcType=DECIMAL},
+        ZS_ZJQDID = #{zsZjqdid,jdbcType=VARCHAR},
+        ZS_SJ = #{zsSj,jdbcType=TIMESTAMP},
+        ZS_BZ = #{zsBz,jdbcType=VARCHAR},
+        ZS_WCKCID = #{zsWckcid,jdbcType=VARCHAR},
+        ZS_KCLVID = #{zsKclvid,jdbcType=VARCHAR},
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zrrid != null" >
+        ZRRID = #{zrrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zrr != null" >
+        ZRR = #{zrr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

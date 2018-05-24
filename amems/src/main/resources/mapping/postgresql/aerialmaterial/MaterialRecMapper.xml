@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MaterialRecMapper">
+
+	<insert id="insertStockRec" parameterType="map">
+		insert into B_H_001_REC (
+			ID,DPRTCODE,CKLB,CKID,CKH,CKMC,KWID,KWH,BJID,BJH,PCH,SN,ZWMS,YWMS,JLDW,KCSL,DJSL,CGHTID,HTBH_CG,SXHTID,HTBH_SX,
+			TDDID,TDDH,RKSJ,RKBMID,RKRID,XKZH,SHZH,SHZWZ,ZT,BZ,JYDID,HJSM,SPQX,SCRQ,XH,GG,ZZCS,TSN,TSO,HCLY,
+			CFYQ,BJGZJL,LLKLX,LLKBH,KZLX,IS_DJ,KCCB,
+			REC_XGLX,REC_CZRID,REC_CZSJ,REC_IP,REC_XGYJ,REC_YJLX,REC_YJID,REC_YJBH,REC_CZLS
+		) select 
+			ID,DPRTCODE,CKLB,CKID,CKH,CKMC,KWID,KWH,BJID,BJH,PCH,SN,ZWMS,YWMS,JLDW,KCSL,DJSL,CGHTID,HTBH_CG,SXHTID,HTBH_SX,
+			TDDID,TDDH,RKSJ,RKBMID,RKRID,XKZH,SHZH,SHZWZ,ZT,BZ,JYDID,HJSM,SPQX,SCRQ,XH,GG,ZZCS,TSN,TSO,HCLY,
+			CFYQ,BJGZJL,LLKLX,LLKBH,KZLX,IS_DJ,KCCB
+			, #{recXglx, jdbcType=DECIMAL}
+			, #{recCzrid, jdbcType=VARCHAR}
+			, current_timestamp
+			, #{recIp, jdbcType=VARCHAR}
+			, #{recXgyj, jdbcType=VARCHAR}
+			, #{recYjlx, jdbcType=DECIMAL}
+			, #{recYjid, jdbcType=VARCHAR}
+			, #{recYjbh, jdbcType=VARCHAR}
+			, #{recCzls, jdbcType=VARCHAR}
+		  from B_H_001 where ID = #{id, jdbcType=VARCHAR}
+	</insert>
+	<insert id="insertStockRecBatch" parameterType="map">
+		insert into B_H_001_REC (
+			ID,DPRTCODE,CKLB,CKID,CKH,CKMC,KWID,KWH,BJID,BJH,PCH,SN,ZWMS,YWMS,JLDW,KCSL,DJSL,CGHTID,HTBH_CG,SXHTID,HTBH_SX,
+			TDDID,TDDH,RKSJ,RKBMID,RKRID,XKZH,SHZH,SHZWZ,ZT,BZ,JYDID,HJSM,SPQX,SCRQ,XH,GG,ZZCS,TSN,TSO,HCLY,
+			CFYQ,BJGZJL,LLKLX,LLKBH,KZLX,IS_DJ,KCCB,
+			REC_XGLX,REC_CZRID,REC_CZSJ,REC_IP,REC_XGYJ,REC_YJLX,REC_YJID,REC_YJBH,REC_CZLS
+		) select 
+			ID,DPRTCODE,CKLB,CKID,CKH,CKMC,KWID,KWH,BJID,BJH,PCH,SN,ZWMS,YWMS,JLDW,KCSL,DJSL,CGHTID,HTBH_CG,SXHTID,HTBH_SX,
+			TDDID,TDDH,RKSJ,RKBMID,RKRID,XKZH,SHZH,SHZWZ,ZT,BZ,JYDID,HJSM,SPQX,SCRQ,XH,GG,ZZCS,TSN,TSO,HCLY,
+			CFYQ,BJGZJL,LLKLX,LLKBH,KZLX,IS_DJ,KCCB
+			, #{recXglx, jdbcType=DECIMAL}
+			, #{recCzrid, jdbcType=VARCHAR}
+			, current_timestamp
+			, #{recIp, jdbcType=VARCHAR}
+			, #{recXgyj, jdbcType=VARCHAR}
+			, #{recYjlx, jdbcType=DECIMAL}
+			, #{recYjid, jdbcType=VARCHAR}
+			, #{recYjbh, jdbcType=VARCHAR}
+			, #{recCzls, jdbcType=VARCHAR}
+		  from B_H_001 where ID in 
+			 <foreach collection="idList" item="columnValue" index="index" open="(" close=")" separator=",">
+				#{columnValue}
+			 </foreach>
+	</insert>
+  
+  	<insert id="insertOutfieldRec" parameterType="map">
+		insert into B_H_003_REC (
+			ID,XGDJID,KCID,DPRTCODE,SJLY,CKLB,CKID,CKH,CKMC,KWID,KWH,BJID,BJH,PCH,SN,ZWMS,YWMS,JLDW,KCSL,CGHTID,HTBH_CG,SXHTID,HTBH_SX,TDDID,TDDH,
+			RKSJ,RKBMID,RKRID,XKZH,SHZH,SHZWZ,ZT,BZ,JYDID,HJSM,SPQX,SCRQ,XH,GG,ZZCS,TSN,TSO,HCLY,CFYQ,BJGZJL,LLKLX,LLKBH,KZLX,IS_DJ,KCCB,
+			REC_XGLX,REC_CZRID,REC_CZSJ,REC_IP,REC_XGYJ,REC_YJLX,REC_YJID,REC_YJBH,REC_CZLS
+		) select 
+			ID,XGDJID,KCID,DPRTCODE,SJLY,CKLB,CKID,CKH,CKMC,KWID,KWH,BJID,BJH,PCH,SN,ZWMS,YWMS,JLDW,KCSL,CGHTID,HTBH_CG,SXHTID,HTBH_SX,TDDID,TDDH,
+			RKSJ,RKBMID,RKRID,XKZH,SHZH,SHZWZ,ZT,BZ,JYDID,HJSM,SPQX,SCRQ,XH,GG,ZZCS,TSN,TSO,HCLY,CFYQ,BJGZJL,LLKLX,LLKBH,KZLX,IS_DJ,KCCB
+			, #{recXglx, jdbcType=DECIMAL}
+			, #{recCzrid, jdbcType=VARCHAR}
+			, current_timestamp
+			, #{recIp, jdbcType=VARCHAR}
+			, #{recXgyj, jdbcType=VARCHAR}
+			, #{recYjlx, jdbcType=DECIMAL}
+			, #{recYjid, jdbcType=VARCHAR}
+			, #{recYjbh, jdbcType=VARCHAR}
+			, #{recCzls, jdbcType=VARCHAR}
+		  from B_H_003 where ID = #{id, jdbcType=VARCHAR}
+	</insert>
+</mapper>

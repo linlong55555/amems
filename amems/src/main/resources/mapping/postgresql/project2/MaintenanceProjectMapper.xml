@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.MaintenanceProjectMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.MaintenanceProject" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="WXFABH" property="wxfabh" jdbcType="VARCHAR" />
+    <result column="WXXMLX" property="wxxmlx" jdbcType="DECIMAL" />
+    <result column="RWH" property="rwh" jdbcType="VARCHAR" />
+    <result column="BB" property="bb" jdbcType="DECIMAL" />
+    <result column="YYH" property="yyh" jdbcType="VARCHAR" />
+    <result column="RWMS" property="rwms" jdbcType="VARCHAR" />
+    <result column="SYX" property="syx" jdbcType="VARCHAR" />
+    <result column="CKWJ" property="ckwj" jdbcType="VARCHAR" />
+    <result column="GZLX" property="gzlx" jdbcType="VARCHAR" />
+    <result column="XMLX" property="xmlx" jdbcType="VARCHAR" />
+    <result column="IS_BJ" property="isBj" jdbcType="DECIMAL" />
+    <result column="FJZW" property="fjzw" jdbcType="VARCHAR" />
+    <result column="ALI" property="ali" jdbcType="DECIMAL" />
+    <result column="JHGS_RS" property="jhgsRs" jdbcType="DECIMAL" />
+    <result column="JHGS_XSS" property="jhgsXss" jdbcType="DECIMAL" />
+    <result column="GKID" property="gkid" jdbcType="VARCHAR" />
+    <result column="GKBH" property="gkbh" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="ZXBS" property="zxbs" jdbcType="DECIMAL" />
+    <result column="F_BBID" property="fBbid" jdbcType="VARCHAR" />
+    <result column="B_BBID" property="bBbid" jdbcType="VARCHAR" />
+    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="WXXMDLID" property="wxxmdlid" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.project2.po.MaintenanceProject" id="MaintenanceProjectJoinMap" extends="BaseResultMap">  
+        <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+	    	<id column="D1ZJH" property="zjh"/>
+	     	<result column="D1ZWMS" property="zwms"/>
+	        <result column="D1YWMS" property="ywms"/>
+	    </association>
+	    <association property="maintenanceClass" javaType="com.eray.thjw.project2.po.MaintenanceClass">
+	    	<id column="B3ID" property="id"/>
+		    <result column="B3JX" property="jx" jdbcType="VARCHAR" />
+		    <result column="B3DLBH" property="dlbh" jdbcType="VARCHAR" />
+		    <result column="B3DLZWMS" property="dlzwms" jdbcType="VARCHAR" />
+		    <result column="B3DLYWMS" property="dlywms" jdbcType="VARCHAR" />
+	    </association>
+	    <collection property="projectMaterialList" ofType="com.eray.thjw.project2.po.ProjectMaterial">  
+		    <id column="B2ID" property="id" jdbcType="VARCHAR" />
+		    <result column="B2BJH" property="bjh" jdbcType="VARCHAR" />
+		    <result column="B2CJ" property="cj" jdbcType="VARCHAR" />
+        </collection>
+        <collection property="projectMonitors" ofType="com.eray.thjw.project2.po.ProjectMonitor">  
+		    <id column="B4ID" property="id" jdbcType="VARCHAR" />
+		    <result column="B4JKLBH" property="jklbh" jdbcType="VARCHAR" />
+		    <result column="B4JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+		    <result column="B4SCZ" property="scz" jdbcType="VARCHAR" />
+		    <result column="B4DW_SCZ" property="dwScz" jdbcType="DECIMAL" />
+		    <result column="B4ZQZ" property="zqz" jdbcType="VARCHAR" />
+		    <result column="B4DW_ZQZ" property="dwZqz" jdbcType="DECIMAL" />
+		    <result column="B4YDZ_Q" property="ydzQ" jdbcType="VARCHAR" />
+		    <result column="B4YDZ_QDW" property="ydzQdw" jdbcType="DECIMAL" />
+		    <result column="B4YDZ_H" property="ydzH" jdbcType="VARCHAR" />
+		    <result column="B4YDZ_HDW" property="ydzHdw" jdbcType="DECIMAL" />
+        </collection>
+  </resultMap>
+   
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, JX, WXFABH, WXXMLX, RWH, BB, YYH, RWMS, SYX, CKWJ, GZLX, XMLX, IS_BJ, 
+    FJZW, ALI, JHGS_RS, JHGS_XSS, GKID, GKBH, BZ, ZT, ZXBS, F_BBID, B_BBID, ZDBMID, ZDRID, 
+    ZDSJ, WXXMDLID, ZJH
+  </sql>
+  
+   <sql id="Maintenance_Project_Column_List" >
+	    B.ID, B.DPRTCODE, B.JX, B.WXFABH, B.WXXMLX, B.RWH, B.BB, B.YYH, B.RWMS, B.SYX, B.CKWJ, B.GZLX, B.XMLX, B.IS_BJ, 
+	    B.FJZW, B.ALI, B.JHGS_RS, B.JHGS_XSS, B.GKID, B.GKBH, B.BZ, B.ZT, B.ZXBS, B.F_BBID, B.B_BBID, B.ZDBMID, B.ZDRID, 
+	    ZDSJ, WXXMDLID, ZJH
+  	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_012
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="checkExist" resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_012
+    where ZT != 8 and JX = #{jx,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and BB = #{bb,jdbcType=DECIMAL} and RWH = #{rwh,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_012
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+    insert into B_G2_012 (ID, DPRTCODE, JX, 
+      WXFABH, WXXMLX, RWH, 
+      BB, YYH, RWMS, SYX, 
+      CKWJ, GZLX, XMLX, IS_BJ, 
+      FJZW, ALI, JHGS_RS, 
+      JHGS_XSS, GKID, GKBH, 
+      BZ, ZT, ZXBS, F_BBID, 
+      B_BBID, ZDBMID, ZDRID, 
+      ZDSJ, WXXMDLID, ZJH
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jx,jdbcType=VARCHAR}, 
+      #{wxfabh,jdbcType=VARCHAR}, #{wxxmlx,jdbcType=DECIMAL}, #{rwh,jdbcType=VARCHAR}, 
+      #{bb,jdbcType=DECIMAL}, #{yyh,jdbcType=VARCHAR}, #{rwms,jdbcType=VARCHAR}, #{syx,jdbcType=VARCHAR}, 
+      #{ckwj,jdbcType=VARCHAR}, #{gzlx,jdbcType=VARCHAR}, #{xmlx,jdbcType=VARCHAR}, #{isBj,jdbcType=DECIMAL}, 
+      #{fjzw,jdbcType=VARCHAR}, #{ali,jdbcType=DECIMAL}, #{jhgsRs,jdbcType=DECIMAL}, 
+      #{jhgsXss,jdbcType=DECIMAL}, #{gkid,jdbcType=VARCHAR}, #{gkbh,jdbcType=VARCHAR}, 
+      #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{zxbs,jdbcType=DECIMAL}, #{fBbid,jdbcType=VARCHAR}, 
+      #{bBbid,jdbcType=VARCHAR}, #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      #{zdsj,jdbcType=TIMESTAMP}, #{wxxmdlid,jdbcType=VARCHAR}, #{zjh,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+    insert into B_G2_012
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="wxfabh != null" >
+        WXFABH,
+      </if>
+      <if test="wxxmlx != null" >
+        WXXMLX,
+      </if>
+      <if test="rwh != null" >
+        RWH,
+      </if>
+      <if test="bb != null" >
+        BB,
+      </if>
+      <if test="yyh != null" >
+        YYH,
+      </if>
+      <if test="rwms != null" >
+        RWMS,
+      </if>
+      <if test="syx != null" >
+        SYX,
+      </if>
+      <if test="ckwj != null" >
+        CKWJ,
+      </if>
+      <if test="gzlx != null" >
+        GZLX,
+      </if>
+      <if test="xmlx != null" >
+        XMLX,
+      </if>
+      <if test="isBj != null" >
+        IS_BJ,
+      </if>
+      <if test="fjzw != null" >
+        FJZW,
+      </if>
+      <if test="ali != null" >
+        ALI,
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS,
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS,
+      </if>
+      <if test="gkid != null" >
+        GKID,
+      </if>
+      <if test="gkbh != null" >
+        GKBH,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="zxbs != null" >
+        ZXBS,
+      </if>
+      <if test="fBbid != null" >
+        F_BBID,
+      </if>
+      <if test="bBbid != null" >
+        B_BBID,
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+        ZDSJ,
+      </if>
+      <if test="wxxmdlid != null" >
+        WXXMDLID,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfabh != null" >
+        #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmlx != null" >
+        #{wxxmlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwh != null" >
+        #{rwh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="yyh != null" >
+        #{yyh,jdbcType=VARCHAR},
+      </if>
+      <if test="rwms != null" >
+        #{rwms,jdbcType=VARCHAR},
+      </if>
+      <if test="syx != null" >
+        #{syx,jdbcType=VARCHAR},
+      </if>
+      <if test="ckwj != null" >
+        #{ckwj,jdbcType=VARCHAR},
+      </if>
+      <if test="gzlx != null" >
+        #{gzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="xmlx != null" >
+        #{xmlx,jdbcType=VARCHAR},
+      </if>
+      <if test="isBj != null" >
+        #{isBj,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzw != null" >
+        #{fjzw,jdbcType=VARCHAR},
+      </if>
+      <if test="ali != null" >
+        #{ali,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsRs != null" >
+        #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="gkid != null" >
+        #{gkid,jdbcType=VARCHAR},
+      </if>
+      <if test="gkbh != null" >
+        #{gkbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zxbs != null" >
+        #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null" >
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+        current_timestamp,
+      </if>
+      <if test="wxxmdlid != null" >
+        #{wxxmdlid,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+    update B_G2_012
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfabh != null" >
+        WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmlx != null" >
+        WXXMLX = #{wxxmlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwh != null" >
+        RWH = #{rwh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="yyh != null" >
+        YYH = #{yyh,jdbcType=VARCHAR},
+      </if>
+      <if test="rwms != null" >
+        RWMS = #{rwms,jdbcType=VARCHAR},
+      </if>
+      <if test="syx != null" >
+        SYX = #{syx,jdbcType=VARCHAR},
+      </if>
+      <if test="ckwj != null" >
+        CKWJ = #{ckwj,jdbcType=VARCHAR},
+      </if>
+      <if test="gzlx != null" >
+        GZLX = #{gzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="xmlx != null" >
+        XMLX = #{xmlx,jdbcType=VARCHAR},
+      </if>
+      <if test="isBj != null" >
+        IS_BJ = #{isBj,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzw != null" >
+        FJZW = #{fjzw,jdbcType=VARCHAR},
+      </if>
+      <if test="ali != null" >
+        ALI = #{ali,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="gkid != null" >
+        GKID = #{gkid,jdbcType=VARCHAR},
+      </if>
+      <if test="gkbh != null" >
+        GKBH = #{gkbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zxbs != null" >
+        ZXBS = #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        F_BBID = #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        B_BBID = #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+        ZDSJ = current_timestamp,
+      </if>
+      <if test="wxxmdlid != null" >
+        WXXMDLID = #{wxxmdlid,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+    update B_G2_012
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      JX = #{jx,jdbcType=VARCHAR},
+      WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      WXXMLX = #{wxxmlx,jdbcType=DECIMAL},
+      RWH = #{rwh,jdbcType=VARCHAR},
+      BB = #{bb,jdbcType=DECIMAL},
+      YYH = #{yyh,jdbcType=VARCHAR},
+      RWMS = #{rwms,jdbcType=VARCHAR},
+      SYX = #{syx,jdbcType=VARCHAR},
+      CKWJ = #{ckwj,jdbcType=VARCHAR},
+      GZLX = #{gzlx,jdbcType=VARCHAR},
+      XMLX = #{xmlx,jdbcType=VARCHAR},
+      IS_BJ = #{isBj,jdbcType=DECIMAL},
+      FJZW = #{fjzw,jdbcType=VARCHAR},
+      ALI = #{ali,jdbcType=DECIMAL},
+      JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      GKID = #{gkid,jdbcType=VARCHAR},
+      GKBH = #{gkbh,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      ZXBS = #{zxbs,jdbcType=DECIMAL},
+      F_BBID = #{fBbid,jdbcType=VARCHAR},
+      B_BBID = #{bBbid,jdbcType=VARCHAR},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      WXXMDLID = #{wxxmdlid,jdbcType=VARCHAR},
+      ZJH = #{zjh,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <sql id="Common_Param">
+	   WHERE 
+	   1=1
+	   <!-- 维修项目类型 -->
+   	   <if test="paramsMap != null and paramsMap.wxxmlxList != null">
+   	   		<if test="paramsMap.wxxmlxList.size > 0">
+			    AND B1.WXXMLX IN
+	   			<foreach item="item" index="index" collection="paramsMap.wxxmlxList" open="(" separator="," close=")">  
+	       			#{item}  
+	   			</foreach>  
+   	   		</if>
+   	   		<if test="paramsMap.wxxmlxList.size == 0">
+			    AND 1 = 0
+   	   		</if>
+	   </if>
+       <!-- 关键字 -->
+   	   <if test="keyword != null and keyword != ''">
+          and  (b1.rwh like '%'||#{keyword}||'%'  or
+          	    b1.yyh like '%'||#{keyword}||'%' or
+          	    b1.rwms like '%'||#{keyword}||'%' or
+          	    b1.ckwj like '%'||#{keyword}||'%'
+          	)
+       </if>
+  </sql>
+  
+  <!-- 根据维修方案查询对应的维修项目 -->
+  <select id="selectByMaintenanceScheme" resultMap="MaintenanceProjectJoinMap" 
+  		parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+	WITH NEWESTWXXH AS
+		(
+		  SELECT * FROM (
+		    SELECT T.*, MAX(BB) OVER (PARTITION BY JX, RWH, DPRTCODE) MAXBB 
+		    FROM B_G2_012 T 
+		      WHERE T.JX = #{jx,jdbcType=VARCHAR} 
+			    AND T.BB &lt;= #{bb,jdbcType=DECIMAL} 
+			    AND T.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		  )A WHERE A.BB = A.MAXBB
+		)
+    SELECT 
+    B1.ID, B1.DPRTCODE, B1.JX, B1.WXFABH, B1.WXXMLX, B1.RWH, B1.BB, B1.YYH, B1.RWMS, B1.SYX, 
+    B1.CKWJ, B1.GZLX, B1.XMLX, B1.IS_BJ, B1.FJZW, B1.ALI, B1.JHGS_RS, B1.JHGS_XSS, B1.GKID, 
+    B1.GKBH, B1.BZ, B1.ZT, B1.ZXBS, B1.F_BBID, B1.B_BBID, B1.ZDBMID, B1.ZDRID, B1.ZDSJ, B1.WXXMDLID, B1.ZJH,
+    D1.ZJH AS D1ZJH,D1.ZWMS AS D1ZWMS,D1.YWMS AS D1YWMS,
+    B2.ID AS B2ID, B2.BJH AS B2BJH, B2.CJ AS B2CJ,
+    B3.ID AS B3ID, B3.JX AS B3JX, B3.DLBH AS B3DLBH, B3.DLZWMS AS B3DLZWMS, B3.DLYWMS AS B3DLYWMS,
+    B4.ID AS B4ID, B4.JKLBH AS B4JKLBH, B4.JKFLBH AS B4JKFLBH, B4.SCZ AS B4SCZ, B4.DW_SCZ AS B4DW_SCZ,
+    B4.ZQZ AS B4ZQZ, B4.DW_ZQZ AS B4DW_ZQZ, B4.YDZ_Q AS B4YDZ_Q, B4.YDZ_QDW AS B4YDZ_QDW, B4.YDZ_H AS B4YDZ_H,
+    B4.YDZ_HDW AS B4YDZ_HDW
+    FROM NEWESTWXXH B1
+    LEFT JOIN D_005 D1 ON B1.ZJH = D1.ZJH AND B1.DPRTCODE = D1.DPRTCODE AND D1.ZT = 1
+    LEFT JOIN B_G2_01204 B2 ON B1.ID = B2.MAINID
+    LEFT JOIN B_G2_01101 B3 ON B1.WXXMDLID = B3.ID
+    LEFT JOIN B_G2_01201 B4 ON B1.ID = B4.MAINID AND B4.ZT = 1
+    <include refid="Common_Param"></include>
+    <if test="paramsMap != null and paramsMap.type == 1">
+    	ORDER BY B1.ZJH, B1.RWH
+    </if>
+    <if test="paramsMap != null and paramsMap.type == 2">
+    	ORDER BY B3.DLBH, B1.RWH
+    </if>
+  </select>
+  
+   	<!-- 根据查询条件分页查询维修项目信息(弹窗需要的数据) -->
+  	<select id="queryWinAllPageList" resultMap="MaintenanceProjectJoinMap" parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+		select <include refid="Maintenance_Project_Column_List" />
+		from B_G2_012 B
+		where B.B_BBID is null and B.ZT in (1,2,3) and B.WXXMLX != 4
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	B.RWH like ('%'||#{keyword}||'%')
+		    	or B.YYH like ('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		</if>
+		<if test="jx != null and jx != ''">
+			and B.JX=#{jx,jdbcType=VARCHAR}
+		</if>
+		<if test="wxfabh != null and jx != ''">
+			and B.WXFABH = #{wxfabh,jdbcType=VARCHAR} 
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B.ID = #{id}
+		</if>
+		
+		and not exists ( select 1 from B_G2_01202 BG201202
+						where BG201202.JX = B.JX and BG201202.WXXMBH =B.RWH and BG201202.ZT = 1
+							and BG201202.MAINID in 
+								(select ID from B_G2_012
+									where B_BBID is null and ZT in (1,2,3)
+									<if test="dprtcode != null">
+									    and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+									</if>
+									<if test="jx != null and jx != ''">
+										and JX=#{jx,jdbcType=VARCHAR}
+									</if>
+									<if test="wxfabh != null and jx != ''">
+										and WXFABH = #{wxfabh,jdbcType=VARCHAR} 
+									</if>
+								)
+						)
+		<if test="paramsMap != null and paramsMap.codeList != null and paramsMap.codeList != ''">
+		    and B.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.codeList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		
+		<!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by B.ZDSJ DESC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+		
+  	</select>
+  	
+  	<!-- 根据查询条件查询定检包信息 -->
+  	<select id="queryFixedPackageByWxfn" resultMap="MaintenanceProjectJoinMap" parameterType="com.eray.thjw.project2.po.MaintenanceProject" >
+		select <include refid="Maintenance_Project_Column_List" />
+		from B_G2_012 B
+		where B.B_BBID is null and B.ZT in (1,2,3) and B.WXXMLX = 4
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		</if>
+		<if test="jx != null and jx != ''">
+			and B.JX=#{jx,jdbcType=VARCHAR}
+		</if>
+		<if test="wxfabh != null and jx != ''">
+			and B.WXFABH = #{wxfabh,jdbcType=VARCHAR} 
+		</if>
+	    order by B.ZDSJ DESC
+		
+  	</select>
+  	
+  	<!-- 根据多个维修项目id查询监控项目，以mainid,JKLBH进行排序 -->
+  	<select id="selectMonitorByMainIds" resultType="com.eray.thjw.project2.po.ProjectMonitor">
+  		SELECT ID,
+		       MAINID,
+		       JKLBH,
+		       JKFLBH,
+		       SCZ,
+		       DW_SCZ,
+		       ZQZ,
+		       DW_ZQZ,
+		       YDZ_Q,
+		       YDZ_QDW,
+		       YDZ_H,
+		       YDZ_HDW,
+		       JKDXID
+		 WHERE ZT = 1
+		   AND MAINID IN 
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				#{item, jdbcType=VARCHAR}
+			</foreach>
+			ORDER BY MAINID, JKLBH
+  	</select>
+  	
+</mapper>

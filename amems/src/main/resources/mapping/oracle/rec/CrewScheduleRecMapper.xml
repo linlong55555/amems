@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.CrewScheduleRecMapper">
+   
+  <select id="queryList_B_S_010_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		  SELECT B.*,       
+           WHR.USERNAME || ' '|| WHR.REALNAME WHR_REALNAME ,
+           CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME,
+             t.dprtname WHDW_DRPTNAME,       
+          TO_CHAR(B.PBRQ, 'YYYY-MM-DD')||' '||d.dprtname REC_HD
+            FROM B_S_010_Rec B
+            left join t_department d on d.id=b.jd and d.jdbs =1
+            LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+            left join t_department t on t.id=b.dprtcode 
+            LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID      
+            WHERE 1=1 AND B.PBLX=2
+	       	<if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+	        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	        </if>
+	        <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+	        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	         </if>
+	          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	         </if>
+	        <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+	        	and (
+	                 TO_CHAR(B.PBRQ, 'YYYY-MM-DD') like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+	            )
+	         </if>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff_B_S_010_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+               B.*,
+                WHR.USERNAME || ' '|| WHR.REALNAME WHR_REALNAME,
+                T.DPRTNAME WHDW_DRPTNAME,
+                CZR.USERNAME || ' '|| CZR.REALNAME CZR_REALNAME,
+                d.dprtname JDMS,
+            	TO_CHAR(B.PBRQ, 'YYYY-MM-DD') RQ,   
+               '排班日期:'||TO_CHAR(B.PBRQ, 'YYYY-MM-DD') REC_HD,
+                 (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM B_S_010_Rec B
+        LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+        left join T_DEPARTMENT T ON T.ID=B.DPRTCODE
+         left join t_department d on d.id=b.jd and d.jdbs =1       
+          WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+          AND B.PBLX=2
+           AND  (select rec_czsj
+                  from B_S_010_Rec
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+       
+  </select> 
+  <select id="queryDiff_B_S_01001_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   SELECT 
+  (select b.rec_czsj from b_s_010_rec b where B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+     AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}) rec_czsj,'CURRENT' DATA_VERSION ,
+  (CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 21 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0')
+    JXS,
+ 
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 22 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') DZS,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 23 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') JXY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 24 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') DZY,
+   (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 25 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') JXSBY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 26 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') JXYBY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 27 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') DZSBY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 28 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') DZYBY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 30 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='0') MCCDD,
+   (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+    FROM b_s_01001_rec B
+   WHERE B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+     AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+     AND B.REC_CZSM='0'
+     group by b.rec_xglx,B.REC_CZSM
+     UNION ALL  
+     SELECT (select b.rec_czsj from b_s_010_rec b where B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+     AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR})rec_czsj, 'CURRENT' DATA_VERSION ,
+  (CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 21 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8')
+    JXS,
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 22 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') DZS,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 23 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') JXY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 24 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') DZY,
+   (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 25 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') JXSBY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 26 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') JXYBY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 27 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') DZSBY,
+    (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 28 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') DZYBY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 30 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.Rec_Czls= #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND 
+    b_s_01001_rec.Rec_Czsm='8') MCCDD,
+   (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+    FROM b_s_01001_rec B
+   WHERE B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}
+     AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+     AND B.REC_CZSM='8'
+     group by b.rec_xglx,B.REC_CZSM  
+   UNION ALL
+   
+   SELECT  b.rec_czsj, 'LAST' DATA_VERSION ,
+  (CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 21 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') JXS,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 22 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') DZS,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 23 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') JXY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 24 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') DZY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 25 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') JXSBY,
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 26 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') JXYBY,
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 27 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') DZSBY,
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 28 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') DZYBY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 30 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='0') MCCDD,
+   (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+    FROM b_s_01001_REC B
+   WHERE B.MAINID =#{paramsMap.ID,jdbcType=VARCHAR}
+   AND B.REC_CZSM='0'
+      AND B.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) 
+            GROUP BY B.REC_CZSJ,B.REC_CZSM,B.REC_XGLX
+             UNION ALL
+   
+   SELECT  b.rec_czsj, 'LAST' DATA_VERSION ,
+  (CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 21 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') JXS,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 22 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') DZS,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 23 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') JXY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 24 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') DZY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 25 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') JXSBY,
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 26 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') JXYBY,
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 27 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') DZSBY,
+      (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 28 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}   AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') DZYBY,
+     (select
+    to_char(wm_concat(username || ' '||realname))
+    from t_user
+    left join b_s_01001_rec  on t_user.id = b_s_01001_rec.dxid
+    where b_s_01001_rec.dxlx = 30 and  b_s_01001_rec.MAINID = #{paramsMap.ID,jdbcType=VARCHAR}  AND b_s_01001_rec.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            ) AND 
+    b_s_01001_rec.Rec_Czsm='8') MCCDD,
+   (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+    FROM b_s_01001_REC B
+   WHERE B.MAINID =#{paramsMap.ID,jdbcType=VARCHAR}
+   AND B.REC_CZSM='8'
+      AND B.REC_CZLS IN
+           (           
+              SELECT REC_CZLS FROM (
+                SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+                  FROM B_S_010_REC A WHERE 
+                 A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+                AND A.REC_CZSJ &lt;=
+                (
+                    SELECT C.REC_CZSJ FROM B_S_010_REC C WHERE 
+                    C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+                    AND C.REC_CZLS =  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+                 )            
+               AND A.REC_CZLS !=  #{paramsMap.REC_CZLS,jdbcType=VARCHAR}  
+              ) WHERE 1 = RNO                        
+            )  GROUP BY B.REC_CZSJ,B.REC_CZSM,B.REC_XGLX               
+  </select>
+  
+</mapper>

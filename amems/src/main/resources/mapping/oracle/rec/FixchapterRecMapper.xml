@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.FixchapterRecMapper" >
+   
+  <!-- ATA章节号列表 开始 -->
+  <select id="queryList4D005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT B.*       
+		        ,WHR.USERNAME||' '||WHR.REALNAME REC_CZR_NAME
+		        ,WHDW.DPRTNAME WHDW_DRPTNAME
+		        , B.ZJH REC_HD
+		        
+		        FROM D_005_REC B 
+		        LEFT JOIN T_USER WHR ON WHR.ID = B.REC_CZRID
+		        LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.BMID
+		        WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		        	and (UPPER(B.ZJH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%') )
+		         </if>
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff4D005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+               B.*,WHR.USERNAME||' '||WHR.REALNAME REC_CZR_NAME, WHDW.DPRTNAME WHDW_DRPTNAME,
+               
+               (CASE
+				WHEN B.ZT =0 THEN '无效'
+				WHEN B.ZT =1 THEN '有效'
+				END) NEW_ZT,
+               
+               'ATA章节号:'||B.ZJH REC_HD,
+               
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM D_005_REC B LEFT JOIN T_USER WHR ON WHR.ID = B.REC_CZRID
+          LEFT JOIN T_DEPARTMENT WHDW  ON WHDW.ID = B.BMID
+          WHERE B.ZJH = #{paramsMap.ZJH,jdbcType=VARCHAR} 
+          AND B.DPRTCODE=#{paramsMap.DPRTCODE,jdbcType=VARCHAR} 
+          AND (select rec_czsj from D_005_REC
+                where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ZJH = #{paramsMap.ZJH,jdbcType=VARCHAR}
+                   and DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+       
+  </select>
+</mapper>

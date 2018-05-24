@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.system.dao.SynRelMapper" >
+  
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.SynRel" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="GXLX" property="gxlx" jdbcType="DECIMAL" />
+    <result column="DXID" property="dxid" jdbcType="VARCHAR" />
+    <result column="GLJGDM" property="gljgdm" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="JoinResultMap" extends="BaseResultMap" type="com.eray.thjw.system.po.SynRel" >
+  	<result column="OBJTEXT" property="objText" jdbcType="VARCHAR" />
+    <association property="gljg" javaType="com.eray.thjw.po.Department">
+	    <id column="GLJG_ID" property="id" jdbcType="VARCHAR" />
+	    <result column="GLJG_DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    </association> 
+    <association property="jg" javaType="com.eray.thjw.po.Department">
+	    <id column="JG_ID" property="id" jdbcType="VARCHAR" />
+	    <result column="JG_DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    </association>
+    <association property="firm" javaType="com.eray.thjw.aerialmaterial.po.Firm">
+	    <id column="fir_ID" property="id" jdbcType="VARCHAR" />
+	    <result column="GYSBM" property="gysbm" jdbcType="VARCHAR" />
+   		 <result column="GYSMC" property="gysmc" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, GXLX, DXID, GLJGDM
+  </sql>
+  
+  <sql id="Join_Column_List" >
+    r.ID, r.DPRTCODE, r.GXLX, r.DXID, r.GLJGDM
+    ,(CASE 
+	    WHEN  r.GXLX = 2 THEN (c.khbm ||' '|| c.khmc)
+	    WHEN  r.GXLX = 1 THEN (s.gysbm ||' '|| s.gysmc)  
+	    ELSE '' END) OBJTEXT
+    ,gljg.id GLJG_ID ,gljg.DPRTNAME GLJG_DPRTNAME
+    ,jg.id JG_ID ,jg.DPRTNAME JG_DPRTNAME
+  </sql>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="JoinResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Join_Column_List" />
+    from T_SYN_REL r
+    left join d_019 c on c.id = r.dxid
+    left join d_015 s on s.id = r.dxid
+    left join t_department gljg on gljg.id = r.GLJGDM
+    left join t_department jg on jg.id = r.DPRTCODE
+    where r.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectList" resultMap="JoinResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Join_Column_List" />
+    from T_SYN_REL r
+    left join d_019 c on c.id = r.dxid
+    left join d_015 s on s.id = r.dxid
+    left join t_department gljg on gljg.id = r.GLJGDM
+    left join t_department jg on jg.id = r.DPRTCODE
+    where 1=1
+     <if test="paramsMap.keyword != null and paramsMap.keyword != ''">
+        and (
+                 (UPPER(c.khbm) ||' '|| UPPER(c.khmc)) like UPPER('%'||#{paramsMap.keyword}||'%')
+	          or ((UPPER(s.gysbm) ||' '|| UPPER(s.gysmc)) like UPPER('%'||#{paramsMap.keyword}||'%'))
+          )
+  	</if> 
+  	
+  	<if test="gxlx != null">
+        and r.gxlx = #{gxlx,jdbcType=INTEGER}
+  	</if> 
+  	
+ 	<if test="dprtcode != null and dprtcode != ''">
+        and r.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+  	</if> 
+  	
+  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    <when test='pagination.sort == "auto"'>                       
+	    		order by r.dprtcode ASC
+	    </when>
+	    <otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    </otherwise>
+	</choose>  
+     
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_SYN_REL
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 批量物理删除-同步关系 -->
+  <delete id="deletes" parameterType="com.eray.thjw.po.BaseEntity" >
+    delete from T_SYN_REL
+    where ID in
+    <foreach collection="paramsMap.ids" item="id" index="index" open="(" close=")" separator=",">
+		#{id,jdbcType=VARCHAR}
+	 </foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.system.po.SynRel" >
+    insert into T_SYN_REL (ID, DPRTCODE, GXLX, 
+      DXID, GLJGDM)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{gxlx,jdbcType=DECIMAL}, 
+      #{dxid,jdbcType=VARCHAR}, #{gljgdm,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.SynRel" >
+    insert into T_SYN_REL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="gxlx != null" >
+        GXLX,
+      </if>
+      <if test="dxid != null" >
+        DXID,
+      </if>
+      <if test="gljgdm != null" >
+        GLJGDM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="gxlx != null" >
+        #{gxlx,jdbcType=DECIMAL},
+      </if>
+      <if test="dxid != null" >
+        #{dxid,jdbcType=VARCHAR},
+      </if>
+      <if test="gljgdm != null" >
+        #{gljgdm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.SynRel" >
+    update T_SYN_REL
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="gxlx != null" >
+        GXLX = #{gxlx,jdbcType=DECIMAL},
+      </if>
+      <if test="dxid != null" >
+        DXID = #{dxid,jdbcType=VARCHAR},
+      </if>
+      <if test="gljgdm != null" >
+        GLJGDM = #{gljgdm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.SynRel" >
+    update T_SYN_REL
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      GXLX = #{gxlx,jdbcType=DECIMAL},
+      DXID = #{dxid,jdbcType=VARCHAR},
+      GLJGDM = #{gljgdm,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- start 135工包中执行单位为外部，在T_SYN_REL系统同步关系表中存在 -->
+  <select id="getCount4Workpackage" parameterType="com.eray.thjw.system.po.SynRel" resultType="int">
+  	select count(1) from T_SYN_REL where  GXLX = #{gxlx,jdbcType=DECIMAL} and DXID = #{dxid,jdbcType=VARCHAR} 
+  	and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}	
+  </select>
+  <!-- start 135工包中执行单位为外部，在T_SYN_REL中的数据 -->
+  <select id="getSyrelByDxidAndDprtcode" parameterType="String"  resultType="com.eray.thjw.system.po.SynRel">
+  select ID, DPRTCODE, GXLX, DXID, GLJGDM from T_SYN_REL where  GXLX = 1 and DXID = #{0} 
+  	and DPRTCODE = #{1}	
+  </select>
+  <!-- end -->
+  <!-- start 135工包中执行单位为外部，在T_SYN_REL中的数据 -->
+  <select id="getSyrelByParams" parameterType="String" resultMap="JoinResultMap">
+  select r.ID, r.DPRTCODE, r.GXLX, r.DXID, r.GLJGDM,c.khmc OBJTEXT from T_SYN_REL r
+   left join d_019 c on c.id = r.dxid
+   where  r.GXLX = 2 and r.GLJGDM = #{0} 
+  	and r.DPRTCODE = #{1}	
+  </select>
+  <!-- end -->
+  <!-- start 145工包中下发单位为外部，在T_SYN_REL中的数据 -->
+  <select id="selectByDxidAndDprtcode" parameterType="String"  resultType="com.eray.thjw.system.po.SynRel">
+  select ID, DPRTCODE, GXLX, DXID, GLJGDM from T_SYN_REL where  GXLX = 2 and DXID = #{0} 
+  	and DPRTCODE = #{1}	
+  </select>
+   <!-- start 145工包中下发单位为外部，在T_SYN_REL中的数据 -->
+  <select id="selectSyrelByParams" parameterType="String" resultMap="JoinResultMap">
+  select r.ID, r.DPRTCODE, r.GXLX, r.DXID, r.GLJGDM,c.gysbm||' ' ||c.gysmc OBJTEXT from T_SYN_REL r
+   left join d_015 c on c.id = r.dxid
+   where  r.GXLX = 1 and r.GLJGDM = #{0} 
+  	and r.DPRTCODE = #{1}	
+  </select>
+  <!-- end -->
+</mapper>

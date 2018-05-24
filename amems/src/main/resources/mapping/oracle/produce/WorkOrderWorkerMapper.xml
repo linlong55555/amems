@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.WorkOrderWorkerMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.WorkOrderWorker" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="GZZID" property="gzzid" jdbcType="VARCHAR" />
+    <result column="GZZ" property="gzz" jdbcType="VARCHAR" />
+    <result column="FTGS" property="ftgs" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, ZT, WHDWID, WHRID, WHSJ, GZZID, GZZ, FTGS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_00802
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S2_00802
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.WorkOrderWorker" >
+    insert into B_S2_00802 (ID, MAINID, ZT, 
+      WHDWID, WHRID, WHSJ, 
+      GZZID, GZZ, FTGS)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{gzzid,jdbcType=VARCHAR}, #{gzz,jdbcType=VARCHAR}, #{ftgs,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.WorkOrderWorker" >
+    insert into B_S2_00802
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="gzzid != null" >
+        GZZID,
+      </if>
+      <if test="gzz != null" >
+        GZZ,
+      </if>
+      <if test="ftgs != null" >
+        FTGS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gzzid != null" >
+        #{gzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="gzz != null" >
+        #{gzz,jdbcType=VARCHAR},
+      </if>
+      <if test="ftgs != null" >
+        #{ftgs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.WorkOrderWorker" >
+    update B_S2_00802
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gzzid != null" >
+        GZZID = #{gzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="gzz != null" >
+        GZZ = #{gzz,jdbcType=VARCHAR},
+      </if>
+      <if test="ftgs != null" >
+        FTGS = #{ftgs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.WorkOrderWorker" >
+    update B_S2_00802
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      GZZID = #{gzzid,jdbcType=VARCHAR},
+      GZZ = #{gzz,jdbcType=VARCHAR},
+      FTGS = #{ftgs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 删除工作者 -->
+  <delete id="deleteNotExist" parameterType="com.eray.thjw.produce.po.Workorder" >
+      DELETE FROM B_S2_00802
+		WHERE MAINID = #{id,jdbcType=VARCHAR}
+		<if test="workers != null and workers.size > 0">
+            AND ID NOT IN 
+            <foreach collection="workers" item="item" index="index" open="(" close=")" separator=",">
+			NVL(#{item.id,jdbcType=VARCHAR}, '0')
+	   		</foreach>
+        </if>
+  </delete>
+  
+  <!-- 根据工单id删除flb工作者 -->
+  <delete id="deleteFlbWorkerByGdid" parameterType="java.lang.String" >
+      DELETE FROM B_S2_0060402
+		WHERE MAINID = (SELECT ID FROM B_S2_00604 WHERE GDID = #{gdid,jdbcType=VARCHAR} AND ZT = 1 AND ROWNUM = 1)
+  </delete>
+  
+  <!-- 根据工单id复制135工单的工作者到flb -->
+  <update id="copyWorkOrderWorkerToFlb" parameterType="java.lang.String" >
+    INSERT INTO B_S2_0060402(
+    	ID, MAINID, ZT, WHDWID, WHRID, WHSJ, GZZID, GZZ, FTGS) 
+      
+    SELECT SYS_GUID(), (SELECT ID FROM B_S2_00604 WHERE GDID = #{gdid,jdbcType=VARCHAR} AND ZT = 1 AND ROWNUM = 1),
+    	ZT, WHDWID, WHRID, WHSJ, GZZID, GZZ, FTGS
+    	FROM B_S2_00802 WHERE MAINID = #{gdid,jdbcType=VARCHAR} 
+  </update>
+</mapper>

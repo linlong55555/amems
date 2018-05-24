@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.CommonRecMapper" >
+  
+  <resultMap id="FieldMap" type="com.eray.thjw.log.po.Field" >
+    <result column="column_name" property="field" jdbcType="VARCHAR" />
+    <result column="comments" property="fieldName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  	<!-- 根据表名查询表字段 -->
+	<select id="queryColumnName" parameterType="String" resultType="String">
+		
+		select attname from pg_attribute where attrelid = upper(#{tableName})::regclass and attnum > 0 and attisdropped = 'f'
+		
+	</select>
+	
+	<select id="queryFields" parameterType="Map" resultMap="FieldMap">
+ 		select t.column_name ,t.comments from user_col_comments t where 1=1
+ 		 <if test="tableName != null and tableName != ''" >
+	      and t.table_name = upper(#{tableName,jdbcType=VARCHAR})
+	     </if>
+	       <if test="tables != null" >
+	      and table_name in 
+	      		<foreach collection="tables" item="item" index="index" open="(" close=")" separator=",">
+				  upper(#{item})
+			 	</foreach>
+	     </if> 
+	      <if test="fields != null" >
+	      and column_name in 
+	      		<foreach collection="fields" item="item" index="index" open="(" close=")" separator=",">
+				 upper(#{item})
+			 	</foreach>
+	     </if>  
+ 		
+	</select>
+	
+	<!-- 根据条件新增历史记录 -->
+	<!-- <insert id="insert" parameterType="Map" >
+	
+		insert into ${tableNameRec} R (
+			<foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			</foreach>,
+			REC_XGLX,
+			REC_CZRID,
+			REC_CZSJ,
+			REC_IP
+		)
+		SELECT 
+			 <foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			 </foreach>,
+			 #{recXglx,jdbcType=DECIMAL},
+			 #{recCzrid,jdbcType=VARCHAR},
+			 current_timestamp,
+			 #{clientIp,jdbcType=VARCHAR}
+		FROM ${tableName} B where B.ID = #{id,jdbcType=VARCHAR}
+		
+	</insert> -->
+	<insert id="insert" parameterType="Map" >
+	
+		insert into ${tableNameRec} (
+			<foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			</foreach>,
+			REC_XGLX,
+			REC_CZRID,
+			REC_CZSJ,
+			 <if test="recCzsm != null and recCzsm != ''" >
+		      REC_CZSM,
+		    </if>
+		    <if test="recCzls != null and recCzls != ''" >
+		      REC_CZLS,
+		    </if>
+		     <if test="recZdid != null and recZdid != ''" >
+		      REC_ZBID,
+		    </if>
+		    
+			REC_IP
+		)
+		SELECT 
+			 <foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			 </foreach>,
+			 #{recXglx,jdbcType=DECIMAL},
+			 #{recCzrid,jdbcType=VARCHAR},
+			 current_timestamp,
+			 <if test="recCzsm != null and recCzsm != ''" >
+		       #{recCzsm,jdbcType=VARCHAR},
+		    </if>
+		    <if test="recCzls != null and recCzls != ''" >
+		       #{recCzls,jdbcType=VARCHAR},
+		    </if>
+			 <if test="recZdid != null and recZdid != ''" >
+		       #{recZdid,jdbcType=VARCHAR},
+		    </if>
+			 
+			 #{clientIp,jdbcType=VARCHAR}
+		FROM ${tableName} B where B.ID = #{id,jdbcType=VARCHAR}
+		
+	</insert>
+	
+	<!-- 根据动态条件新增历史记录 -->
+	<insert id="insertList" parameterType="Map" >
+	
+		insert into ${tableNameRec} (
+			<foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			</foreach>,
+			REC_XGLX,
+			REC_CZRID,
+			REC_CZSJ,
+			 <if test="recCzsm != null and recCzsm != ''" >
+		      REC_CZSM,
+		    </if>
+		    <if test="recCzls != null and recCzls != ''" >
+		      REC_CZLS,
+		    </if>
+		     
+		      <if test="recZdid != null and recZdid != ''" >
+		      REC_ZBID,
+		    </if>
+		   
+			REC_IP
+		)
+		SELECT 
+			 <foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			 </foreach>,
+			 #{recXglx,jdbcType=DECIMAL},
+			 #{recCzrid,jdbcType=VARCHAR},
+			 current_timestamp,
+			 <if test="recCzsm != null and recCzsm != ''" >
+		       #{recCzsm,jdbcType=VARCHAR},
+		    </if>
+		    <if test="recCzls != null and recCzls != ''" >
+		       #{recCzls,jdbcType=VARCHAR},
+		    </if>
+		    
+		    <if test="recZdid != null and recZdid != ''" >
+		       #{recZdid,jdbcType=VARCHAR},
+		    </if>
+		    
+			 #{clientIp,jdbcType=VARCHAR}
+			FROM ${tableName} B where ${column} in 
+			 <foreach collection="columnValueList" item="columnValue" index="index" open="(" close=")" separator=",">
+				#{columnValue}
+			 </foreach>
+	</insert>
+	<!-- 根据自定义条件新增历史记录 -->
+	<insert id="insertListByConditions" parameterType="Map" >
+	
+		insert into ${tableNameRec} (
+			<foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			</foreach>,
+			REC_XGLX,
+			REC_CZRID,
+			REC_CZSJ,
+			 <if test="recCzsm != null and recCzsm != ''" >
+		      REC_CZSM,
+		    </if>
+		    <if test="recCzls != null and recCzls != ''" >
+		      REC_CZLS,
+		    </if>
+		    <if test="recZdid != null and recZdid != ''" >
+		      REC_ZBID,
+		    </if>
+			REC_IP
+		)
+		SELECT 
+			 <foreach collection="columnNameList" item="columnName" index="index" open="" close="" separator=",">
+				${columnName}
+			 </foreach>,
+			 #{recXglx,jdbcType=DECIMAL},
+			 #{recCzrid,jdbcType=VARCHAR},
+			 current_timestamp,
+			 <if test="recCzsm != null and recCzsm != ''" >
+		       #{recCzsm,jdbcType=VARCHAR},
+		    </if>
+		    <if test="recCzls != null and recCzls != ''" >
+		       #{recCzls,jdbcType=VARCHAR},
+		    </if>
+		     <if test="recZdid != null and recZdid != ''" >
+		       #{recZdid,jdbcType=VARCHAR},
+		    </if>
+			 #{clientIp,jdbcType=VARCHAR}
+			FROM ${tableName} B where ${conditions} 
+	</insert>
+	
+</mapper>

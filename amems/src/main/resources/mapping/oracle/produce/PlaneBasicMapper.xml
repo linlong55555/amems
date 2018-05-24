@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.PlaneBasicMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.PlaneBasic" >
+    <id column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <id column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="BZM" property="bzm" jdbcType="VARCHAR" />
+    <result column="RHYZPH" property="rhyzph" jdbcType="VARCHAR" />
+    <result column="YYYPH" property="yyyph" jdbcType="VARCHAR" />
+    <result column="FJMS" property="fjms" jdbcType="VARCHAR" />
+    <result column="IPCYXXH" property="ipcyxxh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    FJZCH, DPRTCODE, FJJX, XLH, BZM, RHYZPH, YYYPH, FJMS, IPCYXXH, ZT, WHBMID, WHRID, 
+    WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.eray.thjw.produce.po.PlaneBasic" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_010
+    where FJZCH = #{fjzch,jdbcType=VARCHAR}
+      and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByFjzchAndDprtcode" resultType="java.lang.Integer" parameterType="com.eray.thjw.produce.po.PlaneBasic" >
+    select 
+    count(1)
+    from D_010
+    where zt = 1 and FJZCH = #{fjzch,jdbcType=VARCHAR}
+      and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.eray.thjw.produce.po.PlaneBasic" >
+    delete from D_010
+    where FJZCH = #{fjzch,jdbcType=VARCHAR}
+      and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.PlaneBasic" >
+    insert into D_010 (FJZCH, DPRTCODE, FJJX, 
+      XLH, BZM, RHYZPH, YYYPH, 
+      FJMS, IPCYXXH, ZT, 
+      WHBMID, WHRID, WHSJ
+      )
+    values (#{fjzch,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{fjjx,jdbcType=VARCHAR}, 
+      #{xlh,jdbcType=VARCHAR}, #{bzm,jdbcType=VARCHAR}, #{rhyzph,jdbcType=VARCHAR}, #{yyyph,jdbcType=VARCHAR}, 
+      #{fjms,jdbcType=VARCHAR}, #{ipcyxxh,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.PlaneBasic" >
+    insert into D_010
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="bzm != null" >
+        BZM,
+      </if>
+      <if test="rhyzph != null" >
+        RHYZPH,
+      </if>
+      <if test="yyyph != null" >
+        YYYPH,
+      </if>
+      <if test="fjms != null" >
+        FJMS,
+      </if>
+      <if test="ipcyxxh != null" >
+        IPCYXXH,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+        WHSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="bzm != null" >
+        #{bzm,jdbcType=VARCHAR},
+      </if>
+      <if test="rhyzph != null" >
+        #{rhyzph,jdbcType=VARCHAR},
+      </if>
+      <if test="yyyph != null" >
+        #{yyyph,jdbcType=VARCHAR},
+      </if>
+      <if test="fjms != null" >
+        #{fjms,jdbcType=VARCHAR},
+      </if>
+      <if test="ipcyxxh != null" >
+        #{ipcyxxh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      sysdate,
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.PlaneBasic" >
+    update D_010
+    <set >
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="bzm != null" >
+        BZM = #{bzm,jdbcType=VARCHAR},
+      </if>
+      <if test="rhyzph != null" >
+        RHYZPH = #{rhyzph,jdbcType=VARCHAR},
+      </if>
+      <if test="yyyph != null" >
+        YYYPH = #{yyyph,jdbcType=VARCHAR},
+      </if>
+      <if test="fjms != null" >
+        FJMS = #{fjms,jdbcType=VARCHAR},
+      </if>
+      <if test="ipcyxxh != null" >
+        IPCYXXH = #{ipcyxxh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+        WHSJ = sysdate,
+    </set>
+    where FJZCH = #{fjzch,jdbcType=VARCHAR}
+      and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.PlaneBasic" >
+    update D_010
+    set FJJX = #{fjjx,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      BZM = #{bzm,jdbcType=VARCHAR},
+      RHYZPH = #{rhyzph,jdbcType=VARCHAR},
+      YYYPH = #{yyyph,jdbcType=VARCHAR},
+      FJMS = #{fjms,jdbcType=VARCHAR},
+      IPCYXXH = #{ipcyxxh,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where FJZCH = #{fjzch,jdbcType=VARCHAR}
+      and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  <select id="getFjList" parameterType="com.eray.thjw.produce.po.PlaneBasic" resultType="com.eray.thjw.produce.po.PlaneBasic">
+  	select 
+    <include refid="Base_Column_List" />
+    from D_010
+    where zt = 1
+      and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+      <if test="fjjx != null">
+      	and fjjx = #{fjjx,jdbcType=VARCHAR}
+      </if>
+  </select>
+</mapper>

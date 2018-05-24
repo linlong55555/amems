@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ReturnedPurchaseDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ReturnedPurchaseDetail" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="KCLLID" property="kcllid" jdbcType="VARCHAR" />
+    <result column="SHDMXID" property="shdmxid" jdbcType="VARCHAR" />
+    <result column="RKMXID" property="rkmxid" jdbcType="VARCHAR" />
+    <result column="CKDMXID" property="ckdmxid" jdbcType="VARCHAR" />
+    <result column="SL" property="sl" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ReturnedPurchaseDetail">
+   		 <!--b_h_017 部件库存履历  -->
+	    <association property="materialHistory"  javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+	    <id column="LLID" jdbcType="VARCHAR" property="id" />
+	    <result column="KCID" jdbcType="VARCHAR" property="kcid" />
+	    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+	    <result column="CKLB" jdbcType="DECIMAL" property="cklb" />
+	    <result column="CKID" jdbcType="VARCHAR" property="ckid" />
+	    <result column="CKH" jdbcType="VARCHAR" property="ckh" />
+	    <result column="CKMC" jdbcType="VARCHAR" property="ckmc" />
+	    <result column="KWID" jdbcType="VARCHAR" property="kwid" />
+	    <result column="KWH" jdbcType="VARCHAR" property="kwh" />
+	    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+	    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+	    <result column="PCH" jdbcType="VARCHAR" property="pch" />
+	    <result column="SN" jdbcType="VARCHAR" property="sn" />
+	    <result column="ZWMS" jdbcType="VARCHAR" property="zwms" />
+	    <result column="YWMS" jdbcType="VARCHAR" property="ywms" />
+	    <result column="JLDW" jdbcType="VARCHAR" property="jldw" />
+	    <result column="KCSL" jdbcType="DECIMAL" property="kcsl" />
+	    <result column="DJSL" jdbcType="DECIMAL" property="djsl" />
+	    <result column="CGHTID" jdbcType="VARCHAR" property="cghtid" />
+	    <result column="HTBH_CG" jdbcType="VARCHAR" property="htbhCg" />
+	    <result column="SXHTID" jdbcType="VARCHAR" property="sxhtid" />
+	    <result column="HTBH_SX" jdbcType="VARCHAR" property="htbhSx" />
+	    <result column="TDDID" jdbcType="VARCHAR" property="tddid" />
+	    <result column="TDDH" jdbcType="VARCHAR" property="tddh" />
+	    <result column="RKSJ" jdbcType="TIMESTAMP" property="rksj" />
+	    <result column="RKBMID" jdbcType="VARCHAR" property="rkbmid" />
+	    <result column="RKRID" jdbcType="VARCHAR" property="rkrid" />
+	    <result column="SHZH" jdbcType="VARCHAR" property="shzh" />
+	    <result column="SHZWZ" jdbcType="VARCHAR" property="shzwz" />
+	    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+	    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+	    <result column="JYDID" jdbcType="VARCHAR" property="jydid" />
+	    <result column="HJSM" jdbcType="TIMESTAMP" property="hjsm" />
+	    <result column="SPQX" jdbcType="TIMESTAMP" property="spqx" />
+	    <result column="SCRQ" jdbcType="TIMESTAMP" property="scrq" />
+	    <result column="XH" jdbcType="VARCHAR" property="xh" />
+	    <result column="GG" jdbcType="VARCHAR" property="gg" />
+	    <result column="ZZCS" jdbcType="VARCHAR" property="zzcs" />
+	    <result column="TSN" jdbcType="VARCHAR" property="tsn" />
+	    <result column="TSO" jdbcType="VARCHAR" property="tso" />
+	    <result column="HCLY" jdbcType="VARCHAR" property="hcly" />
+	    <result column="CFYQ" jdbcType="VARCHAR" property="cfyq" />
+	    <result column="BJGZJL" jdbcType="VARCHAR" property="bjgzjl" />
+	    <result column="LLKLX" jdbcType="DECIMAL" property="llklx" />
+	    <result column="LLKBH" jdbcType="VARCHAR" property="llkbh" />
+	    <result column="KZLX" jdbcType="DECIMAL" property="kzlx" />
+	    <result column="IS_DJ" jdbcType="DECIMAL" property="isDj" />
+	    <result column="KCCB" jdbcType="DECIMAL" property="kccb" />
+	    <result column="XKZH" jdbcType="VARCHAR" property="xkzh" />
+	    </association>
+	    <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+	        <id column="HCMAINDATAID" property="id"/>  
+	        <result column="CJJH" jdbcType="VARCHAR" property="cjjh" />
+		    <result column="HCLX" jdbcType="VARCHAR" property="hclx" />
+		    <result column="GLJB" jdbcType="VARCHAR" property="gljb" />
+	    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, KCLLID, SHDMXID, RKMXID, CKDMXID, SL, ZT, WHRID, WHSJ
+  </sql>
+   <select id="selectByMainId" resultMap="ResultMap" parameterType="java.lang.String" >
+    select  t1.id,t1.mainid,t1.kcllid,t1.shdmxid,t1.rkmxid,t1.ckdmxid,t1.sl,t1.zt,t1.id,t1.whrid,t1.whsj
+      ,t2.id as llid,t2.kcid,t2.cklb,t2.ckid,t2.kwid,t2.bjid,t2.bjh,t2.pch,t2.sn,t2.zwms,t2.ywms,t2.jldw,t2.jldw
+      ,t3.id as hcmaindataid,t3.gljb,t3.hclx,t3.cjjh,t4.kcsl
+    from B_H_02201 t1
+LEFT JOIN B_H_017 t2 on t1.kcllid=t2.id
+ left join d_008 t3 on t2.bjid=t3.id
+ left join b_h_001 t4 on t2.kcid = t4.id
+    where t1.mainid = #{mainid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_02201
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_02201
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchaseDetail" >
+    insert into B_H_02201 (ID, MAINID, KCLLID, 
+      SHDMXID, RKMXID, CKDMXID, 
+      SL, ZT, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+      #{shdmxid,jdbcType=VARCHAR}, #{rkmxid,jdbcType=VARCHAR}, #{ckdmxid,jdbcType=VARCHAR}, 
+      #{sl,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchaseDetail" >
+    insert into B_H_02201
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="kcllid != null" >
+        KCLLID,
+      </if>
+      <if test="shdmxid != null" >
+        SHDMXID,
+      </if>
+      <if test="rkmxid != null" >
+        RKMXID,
+      </if>
+      <if test="ckdmxid != null" >
+        CKDMXID,
+      </if>
+      <if test="sl != null" >
+        SL,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null" >
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdmxid != null" >
+        #{shdmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="rkmxid != null" >
+        #{rkmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdmxid != null" >
+        #{ckdmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchaseDetail" >
+    update B_H_02201
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null" >
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdmxid != null" >
+        SHDMXID = #{shdmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="rkmxid != null" >
+        RKMXID = #{rkmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckdmxid != null" >
+        CKDMXID = #{ckdmxid,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        SL = #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ReturnedPurchaseDetail" >
+    update B_H_02201
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCLLID = #{kcllid,jdbcType=VARCHAR},
+      SHDMXID = #{shdmxid,jdbcType=VARCHAR},
+      RKMXID = #{rkmxid,jdbcType=VARCHAR},
+      CKDMXID = #{ckdmxid,jdbcType=VARCHAR},
+      SL = #{sl,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

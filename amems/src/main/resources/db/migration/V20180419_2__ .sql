@@ -1,0 +1,2 @@
+insert into t_menu (id, menucode, menuname, menufname, menutype, parentid, menuorder, path, fullorder, iconpath,xtlx) values ('025100035','produce:materialhistory:main','物料履历','Component History',2,'025100',35,'produce/materialhistory/main','','','AMEMS');
+insert into t_menu (id, menucode, menuname, menufname, menutype, parentid, menuorder, path, fullorder, iconpath,xtlx) values ('025910','produce:worktimesubsidy:main','工时补贴统计','Work Time Subsidy',2,'025',910,'produce/worktimesubsidy/main','','icon-list-alt','AMEMS');

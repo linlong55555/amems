@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.system.dao.PrintinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.Printinfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YWLX" property="ywlx" jdbcType="DECIMAL" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="CASJ" property="casj" jdbcType="TIMESTAMP" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+    <result column="CZIP" property="czip" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, YWLX, YWID, CASJ, CZRID, CZIP
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_PRINTINFO
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_PRINTINFO
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.Printinfo" >
+    insert into T_PRINTINFO (ID, DPRTCODE, YWLX, 
+      YWID, CASJ, CZRID, 
+      CZIP)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{ywlx,jdbcType=DECIMAL}, 
+      #{ywid,jdbcType=VARCHAR}, #{casj,jdbcType=TIMESTAMP}, #{czrid,jdbcType=VARCHAR}, 
+      #{czip,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.Printinfo" >
+    insert into T_PRINTINFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="ywlx != null" >
+        YWLX,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="casj != null" >
+        CASJ,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+      <if test="czip != null" >
+        CZIP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="casj != null" >
+        #{casj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czrid != null" >
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czip != null" >
+        #{czip,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.Printinfo" >
+    update T_PRINTINFO
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        YWLX = #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="casj != null" >
+        CASJ = #{casj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czrid != null" >
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czip != null" >
+        CZIP = #{czip,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.Printinfo" >
+    update T_PRINTINFO
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      YWLX = #{ywlx,jdbcType=DECIMAL},
+      YWID = #{ywid,jdbcType=VARCHAR},
+      CASJ = #{casj,jdbcType=TIMESTAMP},
+      CZRID = #{czrid,jdbcType=VARCHAR},
+      CZIP = #{czip,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

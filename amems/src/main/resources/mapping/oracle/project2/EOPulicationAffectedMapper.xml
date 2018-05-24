@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.EOPulicationAffectedMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.EOPulicationAffected" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="LX" property="lx" jdbcType="VARCHAR" />
+    <result column="WJH" property="wjh" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, XC, LX, WJH, SM, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+ 
+  <!--  新增,EO-受影响出版物 -->
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.EOPulicationAffected" >
+    insert into B_G2_01003 (ID, MAINID, XC, 
+      LX, WJH, SM, ZT, 
+      WHDWID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{xc,jdbcType=DECIMAL}, 
+      #{lx,jdbcType=VARCHAR}, #{wjh,jdbcType=VARCHAR}, #{sm,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <!-- 批量新增,EO-受影响出版物 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+		into B_G2_01003 (ID, MAINID, XC, LX, WJH, SM, ZT,  WHDWID, WHRID, WHSJ)
+		values (
+			#{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.xc,jdbcType=DECIMAL}, 
+      		#{item.lx,jdbcType=VARCHAR}, #{item.wjh,jdbcType=VARCHAR}, #{item.sm,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, 
+      		#{item.whdwid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, #{item.whsj,jdbcType=TIMESTAMP}
+      	)
+		</foreach>
+		select 1 from dual
+  </insert>
+  
+  <!--  修改,EO-受影响出版物 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.EOPulicationAffected" >
+    update B_G2_01003
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="lx != null" >
+        LX = #{lx,jdbcType=VARCHAR},
+      </if>
+      <if test="wjh != null" >
+        WJH = #{wjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+	
+	<!-- 根据条件查询相关参考文件列表 -->
+	<select id="queryAllList" parameterType="com.eray.thjw.project2.po.EOPulicationAffected" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+        from B_G2_01003
+        where 1 = 1
+	      	<if test="id != null" >
+        		and ID = #{id,jdbcType=VARCHAR}
+      		</if>
+      		<if test="mainid != null" >
+        		and MAINID = #{mainid,jdbcType=VARCHAR}
+      		</if>
+        order by XC asc
+	</select>
+	
+	<!-- 根据业务ID删除数据 -->
+	<delete id="deleteByMainid" parameterType="java.lang.String">
+		delete from B_G2_01003
+		where MAINID = #{mainid,jdbcType=VARCHAR}
+	</delete>
+</mapper>

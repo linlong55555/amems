@@ -1,0 +1,2308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.PlanTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlanTask" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="RWDH" property="rwdh" jdbcType="VARCHAR" />
+    <result column="RWLX" property="rwlx" jdbcType="DECIMAL" />
+    <result column="RWZLX" property="rwzlx" jdbcType="DECIMAL" />
+    <result column="FXJLDID" property="fxjldid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="XSZT" property="xszt" jdbcType="DECIMAL" />
+    <result column="XGGDID" property="xggdid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    
+    <result column="RWXX" property="rwxx" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="DYSJ" property="dysj" jdbcType="TIMESTAMP" />
+    <result column="DYBMID" property="dybmid" jdbcType="VARCHAR" />
+    <result column="DYRID" property="dyrid" jdbcType="VARCHAR" />
+    <result column="JHGS_RS" property="jhgsRs" jdbcType="DECIMAL" />
+    <result column="JHGS_XS" property="jhgsXs" jdbcType="DECIMAL" />
+    <result column="SJGS_RS" property="sjgsRs" jdbcType="DECIMAL" />
+    <result column="SJGS_XS" property="sjgsXs" jdbcType="DECIMAL" />
+    <result column="GSSH_ZT" property="gsshZt" jdbcType="DECIMAL" />
+    <result column="GSSH_DCBBH" property="gsshDcbbh" jdbcType="VARCHAR" />
+    <result column="GSSH_TJRID" property="gsshTjrid" jdbcType="VARCHAR" />
+    <result column="GSSH_TJRQ" property="gsshTjrq" jdbcType="TIMESTAMP" />
+    <result column="GSSH_BZ" property="gsshBz" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+    <result column="ZDJSRID" property="zdjsrid" jdbcType="VARCHAR" />
+    <result column="ZDJSRQ" property="zdjsrq" jdbcType="TIMESTAMP" />
+    <result column="ZDJSYY" property="zdjsyy" jdbcType="VARCHAR" />
+    <result column="GZXX" property="gzxx" jdbcType="VARCHAR" />
+    <result column="CLCS" property="clcs" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="HistroyMap" type="com.eray.thjw.productionplan.po.PlanTaskHistory"  extends="BaseResultMap">
+	         <result column="FXJLDH" property="fxjldh" jdbcType="VARCHAR" />
+	         <result column="JLBYM" property="jlbym" jdbcType="VARCHAR" />
+	         <result column="WCRQSTART" property="wcrqStart" jdbcType="TIMESTAMP" />
+	         <result column="WCRQEND" property="wcrqEnd" jdbcType="TIMESTAMP" />
+	         <result column="DYRQSTART" property="dyrqStart" jdbcType="TIMESTAMP" />
+	         <result column="DYRQEND" property="dyrqEnd" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="JoinResultMap" type="com.eray.thjw.productionplan.po.PlanTask"  extends="BaseResultMap">
+	    <association property="dyr" javaType="com.eray.thjw.po.User">  
+	        <id column="dyrid" property="id"/>  
+	        <result column="USERNAME" property="username"/>  
+	        <result column="REALNAME" property="realname"/>  
+	    </association> 
+	     <association property="zdjsr" javaType="com.eray.thjw.po.User">  
+	        <id column="zdjsrid" property="id"/>  
+	        <result column="ZDJSR_USERNAME" property="username"/>  
+	        <result column="ZDJSR_REALNAME" property="realname"/>  
+	    </association>
+	    
+  </resultMap>
+  
+   <resultMap id="PanelResultMap" type="com.eray.thjw.productionplan.po.PlanTask"  extends="BaseResultMap">
+	    <result column="BJMC" property="bjmc" jdbcType="VARCHAR" />
+	    <result column="HCXH" property="hcxh" jdbcType="VARCHAR" />
+	    <association property="dyr" javaType="com.eray.thjw.po.User">  
+	        <id column="dyrid" property="id"/>  
+	        <result column="DYR_USERNAME" property="username"/>  
+	        <result column="DYR_REALNAME" property="realname"/>  
+	    </association> 
+  </resultMap>
+  
+  <resultMap id="PlanTaskResultMap" type="com.eray.thjw.productionplan.po.PlanTaskExt"  extends="BaseResultMap">
+	    
+	    <result column="JKXMBH_F" property="jkxmbh_f" jdbcType="VARCHAR" />
+	    <result column="JKFLBH_F" property="jkflbh_f" jdbcType="VARCHAR" />
+	    <result column="MS_F" property="ms_f" jdbcType="VARCHAR" />
+	    <result column="JKZ_F" property="jkz_f" jdbcType="VARCHAR" />
+	    <result column="SJ_F" property="sj_f" jdbcType="DECIMAL" />
+	    
+	     <result column="JKXMBH_S" property="jkxmbh_s" jdbcType="VARCHAR" />
+	    <result column="JKFLBH_S" property="jkflbh_s" jdbcType="VARCHAR" />
+	    <result column="MS_S" property="ms_s" jdbcType="VARCHAR" />
+	    <result column="JKZ_S" property="jkz_s" jdbcType="VARCHAR" />
+	    <result column="SJ_S" property="sj_s" jdbcType="DECIMAL" />
+	    
+	     <result column="JKXMBH_T" property="jkxmbh_t" jdbcType="VARCHAR" />
+	    <result column="JKFLBH_T" property="jkflbh_t" jdbcType="VARCHAR" />
+	    <result column="MS_T" property="ms_t" jdbcType="VARCHAR" />
+	    <result column="JKZ_T" property="jkz_t" jdbcType="VARCHAR" />
+	    <result column="SJ_T" property="sj_t" jdbcType="DECIMAL" />
+	    
+	    <result column="ZYXS" property="zyxs" jdbcType="DECIMAL" />
+	    <result column="ZJQDID" property="zjqdid" jdbcType="DECIMAL" />
+	    
+	    <result column="DJXMID" property="djxmid" jdbcType="DECIMAL" />
+	    <result column="DJBH" property="djxmbh" jdbcType="DECIMAL" />
+	    
+	    <association property="dyr" javaType="com.eray.thjw.po.User">  
+	        <id column="dyrid" property="id"/>  
+	        <result column="DYR_USERNAME" property="username"/>  
+	        <result column="DYR_REALNAME" property="realname"/>  
+	    </association> 
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    ID, RWDH, RWLX, RWZLX, FXJLDID, ZT, XSZT, XGGDID, DPRTCODE, RWXX, FJZCH, BJH, XLH, 
+    DYSJ, DYBMID, DYRID, JHGS_RS, JHGS_XS, SJGS_RS, SJGS_XS, GSSH_ZT, GSSH_DCBBH, GSSH_TJRID, 
+    GSSH_TJRQ, GSSH_BZ, BZ, WHDWID, WHRID, WHSJ
+  </sql>
+  
+  <sql id="Jobin_Column_List" >
+    pt.ID, pt.RWDH, pt.RWLX, pt.RWZLX, pt.FXJLDID, pt.ZT, pt.XSZT, pt.XGGDID, 
+    pt.DPRTCODE, d.DPRTNAME,
+    pt.RWXX, pt.FJZCH, pt.BJH, pt.XLH, 
+    pt.DYSJ, pt.DYBMID, pt.DYRID, pt.JHGS_RS, pt.JHGS_XS, pt.SJGS_RS, pt.SJGS_XS, pt.GSSH_ZT, pt.GSSH_DCBBH, pt.GSSH_TJRID, 
+    pt.GSSH_TJRQ, pt.GSSH_BZ, pt.BZ, pt.WHDWID, pt.WHRID, pt.WHSJ,
+    u.USERNAME ,u.REALNAME, zdjsr.USERNAME as ZDJSR_USERNAME ,zdjsr.REALNAME as ZDJSR_REALNAME
+    
+  </sql>
+  
+  
+  <sql id="condition" >
+     where 1 = 1
+     
+       <if test="keyword != null and keyword != ''">
+          and (
+             UPPER(pt.RWDH) like UPPER('%'||#{keyword}||'%'
+          or UPPER(pt.RWXX) like UPPER('%'||#{keyword}||'%')
+          or UPPER(pt.FJZCH) like UPPER('%'||#{keyword}||'%')
+          or UPPER(pt.BJH) like UPPER('%'||#{keyword}||'%')
+          or UPPER(pt.XLH) like UPPER('%'||#{keyword}||'%')
+          )
+       </if>
+       
+       <if test="isLoadedParts != null and isLoadedParts == 0">
+          and  pt.FJZCH is null
+       </if>
+       
+       <if test="isLoadedParts != null and isLoadedParts == 1">
+          and  pt.FJZCH is not null
+          <if test="fjzch != null and fjzch != ''">
+	          and  pt.FJZCH = #{fjzch} 
+	           <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+			     <choose>                                                                 
+				    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+				    		 AND exists 
+				    		( SELECT 1 from D_007 where 
+				    			pt.fjzch = FJZCH
+				    		AND pt.dprtcode = DPRTCODE
+				    		AND zt = 1
+				    		)
+				    	</when>
+				    	<when test='paramsMap.userId != null and paramsMap.userId !=""'>                       
+				    		AND exists 
+					    		( SELECT 1 from V_ROLE_JX where 
+					    			pt.fjzch= FJZCH
+					    		AND pt.dprtcode = DPRTCODE
+					    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+					    		)
+			    		</when>
+			   	</choose>
+	       </if>
+	       <if test="fjzch == null or fjzch == ''">
+	       		AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    			pt.fjzch= FJZCH
+	    		AND pt.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	       </if>
+       </if>
+       
+       <if test="zt != null and zt != ''">
+          and  pt.zt  = #{zt} 
+       </if>
+       
+       <if test="dprtcode != null and dprtcode!=''">
+          and  pt.dprtcode  = #{dprtcode} 
+       </if>
+       
+       <if test="idNotEquals != null">
+       	  and pt.id not in 
+            <foreach collection="idNotEquals" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+       </if>
+       
+       <if test="idEquals != null ">
+       	  and pt.id in 
+            <foreach collection="idEquals" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+       </if>
+       
+       <if test="zts != null">
+       	  and pt.zt in 
+            <foreach collection="zts" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+       </if>
+       
+       
+  </sql>
+  
+  <sql id="planTask2FlightRecordSheetParam" >
+    <if test="idNotEquals != null and idNotEquals != ''">
+       	  and pt.id not in 
+            <foreach collection="idNotEquals" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+    </if>
+    <if test="keyword != null and keyword != ''">
+         and (
+            UPPER(pt.RWDH) like UPPER('%'||#{keyword}||'%')
+         or UPPER(pt.RWXX) like UPPER('%'||#{keyword}||'%')
+         )
+   	</if>
+   	<if test="xszt != null and xszt != ''">
+         and pt.xszt = #{xszt}
+   	</if>
+  </sql>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Jobin_Column_List" />
+    from B_S_009 pt 
+    left join t_user u on pt.dyrid = u.id
+    left join t_user zdjsr on pt.zdjsrid = zdjsr.id
+    left join t_department d on pt.DPRTCODE = d.id
+    where pt.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByXggdid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Jobin_Column_List" />
+    from B_S_009 pt 
+    left join t_user u on pt.dyrid = u.id
+    left join t_user zdjsr on pt.zdjsrid = zdjsr.id
+    left join t_department d on pt.DPRTCODE = d.id
+    where pt.XGGDID = #{xggdid,jdbcType=VARCHAR}
+          and pt.zt in (1,2)
+  </select>
+  
+  <select id="queryListCount" resultType="java.lang.Integer"  parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+    select count(1) TOTAL from B_S_009 pt
+     <include refid="condition" />
+  </select>
+  
+  <select id="queryList" resultMap="JoinResultMap"  parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+    select 
+    <include refid="Jobin_Column_List" />
+    from B_S_009 pt 
+    left join t_user u on pt.dyrid = u.id
+    left join t_user zdjsr on pt.zdjsrid = zdjsr.id
+    left join t_department d on pt.DPRTCODE = d.id
+    <include refid="condition" /> 
+    <if test="pagination != null and pagination.sort  != null and pagination.sort  != '' and pagination.sort  != 'auto' and pagination.order  != null and pagination.order  != ''">
+        order by ${pagination.sort} ${pagination.order}
+    </if>
+  </select>
+  
+  <select id="queryNotLoadedParts" resultMap="JoinResultMap"  parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+		    select 
+		    <include refid="Jobin_Column_List" />
+		    from B_S_009 pt 
+		    left join t_user u on pt.dyrid = u.id
+		    left join t_user zdjsr on pt.zdjsrid = zdjsr.id
+		    left join t_department d on pt.DPRTCODE = d.id
+		    where pt.fjzch is null and pt.zt = 2 and pt.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		    <include refid="planTask2FlightRecordSheetParam" />
+		    order by pt.rwdh asc
+  </select>
+  
+  <select id="queryAllList" resultMap="JoinResultMap"  parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+	    select 
+		    pt.ID, pt.RWDH, pt.RWLX, pt.RWZLX, pt.FXJLDID, pt.ZT, pt.XSZT, pt.XGGDID, 
+		    pt.DPRTCODE, d.DPRTNAME,
+		    pt.RWXX, pt.FJZCH, pt.BJH, pt.XLH, 
+		    pt.DYSJ, pt.DYBMID, pt.DYRID, pt.JHGS_RS, pt.JHGS_XS, pt.SJGS_RS, pt.SJGS_XS, pt.GSSH_ZT, pt.GSSH_DCBBH, pt.GSSH_TJRID, 
+		    pt.GSSH_TJRQ, pt.GSSH_BZ, pt.BZ, pt.WHDWID, pt.WHRID, pt.WHSJ,pt.zdjsrid,
+		    u.USERNAME ,u.REALNAME, zdjsr.USERNAME as ZDJSR_USERNAME ,zdjsr.REALNAME as ZDJSR_REALNAME 
+	    from
+	    (select pt.ID, pt.RWDH, pt.RWLX, pt.RWZLX, pt.FXJLDID, pt.ZT, pt.XSZT, pt.XGGDID, 
+		    pt.DPRTCODE, pt.RWXX, pt.FJZCH, pt.BJH, pt.XLH, 
+		    pt.DYSJ, pt.DYBMID, pt.DYRID, pt.JHGS_RS, pt.JHGS_XS, pt.SJGS_RS, pt.SJGS_XS, pt.GSSH_ZT, pt.GSSH_DCBBH, pt.GSSH_TJRID, 
+		    pt.GSSH_TJRQ, pt.GSSH_BZ, pt.BZ, pt.WHDWID,pt.zdjsrid, pt.WHRID, pt.WHSJ
+    	 from B_S_009 pt
+	    where pt.fjzch is null and pt.zt = 2 and pt.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	    <include refid="planTask2FlightRecordSheetParam" />
+	    union all
+	    select pt.ID, pt.RWDH, pt.RWLX, pt.RWZLX, pt.FXJLDID, pt.ZT, pt.XSZT, pt.XGGDID, 
+		    pt.DPRTCODE, pt.RWXX, pt.FJZCH, pt.BJH, pt.XLH, 
+		    pt.DYSJ, pt.DYBMID, pt.DYRID, pt.JHGS_RS, pt.JHGS_XS, pt.SJGS_RS, pt.SJGS_XS, pt.GSSH_ZT, pt.GSSH_DCBBH, pt.GSSH_TJRID, 
+		    pt.GSSH_TJRQ, pt.GSSH_BZ, pt.BZ, pt.WHDWID,pt.zdjsrid, pt.WHRID, pt.WHSJ
+		  from B_S_009 pt 
+	    where pt.fjzch = #{fjzch,jdbcType=VARCHAR} and pt.dprtcode = #{dprtcode,jdbcType=VARCHAR} and pt.zt = 2
+	    <include refid="planTask2FlightRecordSheetParam" />)pt
+	    left join t_user u on pt.dyrid = u.id
+	    left join t_user zdjsr on pt.zdjsrid = zdjsr.id
+	    left join t_department d on pt.DPRTCODE = d.id
+	    order by pt.rwdh asc
+  </select>
+  
+  <select id="queryLoadedParts" resultMap="JoinResultMap"  parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+		            select 
+				    <include refid="Jobin_Column_List" />
+				    from B_S_009 pt 
+				    left join t_user u on pt.dyrid = u.id
+				    left join t_user zdjsr on pt.zdjsrid = zdjsr.id
+				    left join t_department d on pt.DPRTCODE = d.id
+				    where PT.ZT = 2 and pt.fjzch = #{fjzch,jdbcType=VARCHAR} and pt.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+				    <include refid="planTask2FlightRecordSheetParam" />
+				    <if test="pagination != null and pagination.sort  != null and pagination.sort  != ''">
+				        order by ${pagination.sort}
+				        <if test=" pagination.order  != null and pagination.order  != ''">
+					        ${pagination.order}
+					    </if>
+				    </if>
+    
+  </select>
+  
+  <select id="queryPlanTaskList" resultMap="PlanTaskResultMap"  parameterType="com.eray.thjw.productionplan.po.PlanTaskExt" >
+     
+     <!-- 主表 -->
+	   select 
+       u.username DYR_USERNAME,
+       u.realname DYR_REALNAME,
+	   b1.id,
+	   b1.rwdh,
+       b1.rwlx,
+       b1.rwzlx,
+       b1.zt,
+       b1.xszt,
+       b1.xggdid,
+       b1.dprtcode,
+       d.dprtname,
+       b1.rwxx,
+       b1.fjzch,
+       b1.bjh,
+       b1.xlh,
+       b1.dysj,
+       b1.dyrxm,
+       b1.dyrid,
+       
+       b1.bz,
+       b2.zjqdid,
+       (CASE WHEN b2.zyxs IS NULL THEN 1 ELSE b2.zyxs END) zyxs,
+       <!-- 第一个监控项 -->
+       b2.jkxmbh_f,
+       b2.jkflbh_f,
+       (select t1.ms
+          from d_00601 t1
+         where t1.jklbh = b2.jkxmbh_f
+           and t1.jkflbh = b2.jkflbh_f) ms_f,
+       b2.jkz_f,
+       (case b2.jkxmbh_f
+             when 'calendar' then
+              to_char(sysdate, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.fxsj_xs_skj IS NULL THEN 0 ELSE b3.fxsj_xs_skj END) || ':' || (CASE WHEN b3.fxsj_fz_skj IS NULL THEN 0 ELSE b3.fxsj_fz_skj END)
+                else
+                 (CASE WHEN b6.fxsj_xs IS NULL THEN 0 ELSE b6.fxsj_xs END) || ':' || (CASE WHEN b6.fxsj_fz IS NULL THEN 0 ELSE b6.fxsj_fz END)
+              end
+             when 'search_light_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.ssdsj_xs IS NULL THEN 0 ELSE b3.ssdsj_xs END) || ':' || (CASE WHEN b3.ssdsj_fz IS NULL THEN 0 ELSE b3.ssdsj_fz END)
+                else
+                 (CASE WHEN b5.ssdsj_xs IS NULL THEN 0 ELSE b5.ssdsj_xs END) || ':' || (CASE WHEN b5.ssdsj_fz IS NULL THEN 0 ELSE b5.ssdsj_fz END)
+              end
+             when 'winch_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.jcsj_xs IS NULL THEN 0 ELSE b3.jcsj_xs END) || ':' || (CASE WHEN b3.jcsj_fz IS NULL THEN 0 ELSE b3.jcsj_fz END)
+                else
+                 (CASE WHEN b5.jcsj_xs IS NULL THEN 0 ELSE b5.jcsj_xs END) || ':' || (CASE WHEN b5.jcsj_fz IS NULL THEN 0 ELSE b5.jcsj_fz END)
+              end
+             when 'landing_gear_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.qljxh_skj || ''
+                else
+                 b6.qljxh || ''
+              end
+             when 'winch_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.jcxh || ''
+                else
+                 b5.jcxh || ''
+              end
+             when 'ext_suspension_loop' then
+              case b1.rwzlx
+                when 1 then
+                 b3.dgxh || ''
+                else
+                 b5.dgxh || ''
+              end
+           
+             when 'special_first' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts1 || ''
+                else
+                 b6.ts1 || ''
+              end
+           
+             when 'special_second' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts2 || ''
+                else
+                 b6.ts2 || ''
+              end
+             when 'N1' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n1 || ''
+                else
+                 b5.fdj_n1 || ''
+              end
+           
+             when 'N2' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n2 || ''
+                else
+                 b5.fdj_n2 || ''
+              end
+             when 'N3' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n3 || ''
+                else
+                 b5.fdj_n3 || ''
+              end
+             when 'N4' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n4 || ''
+                else
+                 b5.fdj_n4 || ''
+              end
+             when 'N5' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n5 || ''
+                else
+                 b5.fdj_n5 || ''
+              end
+             when 'N6' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n6 || ''
+                else
+                 b5.fdj_n6 || ''
+              end
+             else
+              '0'
+           end) sj_f,
+       <!-- 第二个监控项 -->
+       b2.jkxmbh_s,
+       b2.jkflbh_s,
+       (select t1.ms
+          from d_00601 t1
+         where t1.jklbh = b2.jkxmbh_s
+           and t1.jkflbh = b2.jkflbh_s) ms_s,
+       b2.jkz_s,
+       (case b2.jkxmbh_s
+             when 'calendar' then
+              to_char(sysdate, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.fxsj_xs_skj IS NULL THEN 0 ELSE b3.fxsj_xs_skj END) || ':' || (CASE WHEN b3.fxsj_fz_skj IS NULL THEN 0 ELSE b3.fxsj_fz_skj END)
+                else
+                 (CASE WHEN b6.fxsj_xs IS NULL THEN 0 ELSE b6.fxsj_xs END) || ':' || (CASE WHEN b6.fxsj_fz IS NULL THEN 0 ELSE b6.fxsj_fz END)
+              end
+             when 'search_light_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.ssdsj_xs IS NULL THEN 0 ELSE b3.ssdsj_xs END) || ':' || (CASE WHEN b3.ssdsj_fz IS NULL THEN 0 ELSE b3.ssdsj_fz END)
+                else
+                 (CASE WHEN b5.ssdsj_xs IS NULL THEN 0 ELSE b5.ssdsj_xs END) || ':' || (CASE WHEN b5.ssdsj_fz IS NULL THEN 0 ELSE b5.ssdsj_fz END)
+              end
+             when 'winch_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.jcsj_xs IS NULL THEN 0 ELSE b3.jcsj_xs END) || ':' || (CASE WHEN b3.jcsj_fz IS NULL THEN 0 ELSE b3.jcsj_fz END)
+                else
+                 (CASE WHEN b5.jcsj_xs IS NULL THEN 0 ELSE b5.jcsj_xs END) || ':' || (CASE WHEN b5.jcsj_fz IS NULL THEN 0 ELSE b5.jcsj_fz END)
+              end
+             when 'landing_gear_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.qljxh_skj || ''
+                else
+                 b6.qljxh || ''
+              end
+             when 'winch_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.jcxh || ''
+                else
+                 b5.jcxh || ''
+              end
+             when 'ext_suspension_loop' then
+              case b1.rwzlx
+                when 1 then
+                 b3.dgxh || ''
+                else
+                 b5.dgxh || ''
+              end
+           
+             when 'special_first' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts1 || ''
+                else
+                 b6.ts1 || ''
+              end
+           
+             when 'special_second' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts2 || ''
+                else
+                 b6.ts2 || ''
+              end
+             when 'N1' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n1 || ''
+                else
+                 b5.fdj_n1 || ''
+              end
+           
+             when 'N2' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n2 || ''
+                else
+                 b5.fdj_n2 || ''
+              end
+             when 'N3' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n3 || ''
+                else
+                 b5.fdj_n3 || ''
+              end
+             when 'N4' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n4 || ''
+                else
+                 b5.fdj_n4 || ''
+              end
+             when 'N5' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n5 || ''
+                else
+                 b5.fdj_n5 || ''
+              end
+             when 'N6' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n6 || ''
+                else
+                 b5.fdj_n6 || ''
+              end
+             else
+              '0'
+           end) sj_s,
+       <!-- 第三个监控项 -->
+       b2.jkxmbh_t,
+       b2.jkflbh_t,
+       (select t1.ms
+          from d_00601 t1
+         where t1.jklbh = b2.jkxmbh_t
+           and t1.jkflbh = b2.jkflbh_t) ms_t,
+       b2.jkz_t,
+       (case b2.jkxmbh_t
+             when 'calendar' then
+              to_char(sysdate, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.fxsj_xs_skj IS NULL THEN 0 ELSE b3.fxsj_xs_skj END) || ':' || (CASE WHEN b3.fxsj_fz_skj IS NULL THEN 0 ELSE b3.fxsj_fz_skj END)
+                else
+                 (CASE WHEN b6.fxsj_xs IS NULL THEN 0 ELSE b6.fxsj_xs END) || ':' || (CASE WHEN b6.fxsj_fz IS NULL THEN 0 ELSE b6.fxsj_fz END)
+              end
+             when 'search_light_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.ssdsj_xs IS NULL THEN 0 ELSE b3.ssdsj_xs END) || ':' || (CASE WHEN b3.ssdsj_fz IS NULL THEN 0 ELSE b3.ssdsj_fz END)
+                else
+                 (CASE WHEN b5.ssdsj_xs IS NULL THEN 0 ELSE b5.ssdsj_xs END) || ':' || (CASE WHEN b5.ssdsj_fz IS NULL THEN 0 ELSE b5.ssdsj_fz END)
+              end
+             when 'winch_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.jcsj_xs IS NULL THEN 0 ELSE b3.jcsj_xs END) || ':' || (CASE WHEN b3.jcsj_fz IS NULL THEN 0 ELSE b3.jcsj_fz END)
+                else
+                 (CASE WHEN b5.jcsj_xs IS NULL THEN 0 ELSE b5.jcsj_xs END) || ':' || (CASE WHEN b5.jcsj_fz IS NULL THEN 0 ELSE b5.jcsj_fz END)
+              end
+             when 'landing_gear_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.qljxh_skj || ''
+                else
+                 b6.qljxh || ''
+              end
+             when 'winch_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.jcxh || ''
+                else
+                 b5.jcxh || ''
+              end
+             when 'ext_suspension_loop' then
+              case b1.rwzlx
+                when 1 then
+                 b3.dgxh || ''
+                else
+                 b5.dgxh || ''
+              end
+           
+             when 'special_first' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts1 || ''
+                else
+                 b6.ts1 || ''
+              end
+           
+             when 'special_second' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts2 || ''
+                else
+                 b6.ts2 || ''
+              end
+             when 'N1' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n1 || ''
+                else
+                 b5.fdj_n1 || ''
+              end
+           
+             when 'N2' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n2 || ''
+                else
+                 b5.fdj_n2 || ''
+              end
+             when 'N3' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n3 || ''
+                else
+                 b5.fdj_n3 || ''
+              end
+             when 'N4' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n4 || ''
+                else
+                 b5.fdj_n4 || ''
+              end
+             when 'N5' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n5 || ''
+                else
+                 b5.fdj_n5 || ''
+              end
+             when 'N6' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n6 || ''
+                else
+                 b5.fdj_n6 || ''
+              end
+             else
+              '0'
+           end) sj_t
+  from (select id,
+               dyrid,
+               rwdh,
+               rwlx,
+               rwzlx,
+               zt,
+               xszt,
+               xggdid,
+               dprtcode,
+               rwxx,
+               fjzch,
+               bjh,
+               xlh,
+               to_char(dysj, 'yyyy-mm-dd hh24:mi:ss') dysj,
+               (select t_user.username || ' ' || t_user.realname
+                  from t_user
+                 where t_user.id = dyrid) dyrxm,
+                 whsj,
+               bz
+          from b_s_009
+        
+         where b_s_009.zt in (1, 2)
+         	
+         	<if test="dprtcode != null and dprtcode != ''">
+	           and b_s_009.dprtcode = #{dprtcode}
+	       </if>
+          
+           <!-- 选择飞机注册号时是第一个条件，选择非装机件时是第二个条件 -->
+        
+	       <if test="keyword != null and keyword != ''">
+	          and (
+	             UPPER(RWDH) like UPPER('%'||#{keyword}||'%'
+	          or UPPER(RWXX) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(FJZCH) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(BJH) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(XLH) like UPPER('%'||#{keyword}||'%')
+	          )
+	       </if>
+	       
+	       <if test="fjzch != null and fjzch != ''">
+	          and  FJZCH = #{fjzch} 
+	          
+	          <if test="id == null or id == ''" >
+	           		<!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+				     <choose>                                                                 
+					    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+					    		 AND exists 
+					    		( SELECT 1 from D_007 where 
+					    			B_S_009.FJZCH = FJZCH
+					    		AND B_S_009.DPRTCODE = DPRTCODE
+					    		AND zt = 1
+					    		)
+					    	</when>
+					    	<when test='paramsMap.userId!=null and paramsMap.userId != ""'>                       
+					    		 AND exists 
+					    		( SELECT 1 from V_ROLE_JX where 
+					    			B_S_009.FJZCH= FJZCH
+					    		AND B_S_009.DPRTCODE = DPRTCODE
+					    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+					    		)
+					    	</when>
+				   	</choose>
+	           </if>
+	           
+	       </if>
+	       
+	       <if test="isLoadedParts != null and isLoadedParts == 0">
+	          and  FJZCH is null
+	       </if>
+	       <if test="id != null and id != ''">
+	          and id = #{id}
+	       </if>
+	       <if test="xggdid != null and xggdid != ''">
+	          and xggdid = #{xggdid}
+	       </if>
+       
+        ) b1
+  left join (select b_g_014.id,
+                    b_g_01401.zjqdid,
+                    b_g_01401.jkxmbh_f,
+                    b_g_01401.jkflbh_f,
+                    b_g_01401.jkz_f,
+                    b_g_01401.jkxmbh_s,
+                    b_g_01401.jkflbh_s,
+                    b_g_01401.jkz_s,
+                    b_g_01401.jkxmbh_t,
+                    b_g_01401.jkflbh_t,
+                    b_g_01401.jkz_t,
+                    b_g_014.zyxs
+               from b_g_014
+               join b_g_01401
+                 on b_g_014.id = b_g_01401.mainid
+                and b_g_014.zt = 3
+             union all
+             select b_g_007.id,
+                    b_g_00604.zjqdid,
+                    b_g_00604.jkxmbh_f,
+                    b_g_00604.jkflbh_f,
+                    b_g_00604.jkz_f,
+                    b_g_00604.jkxmbh_s,
+                    b_g_00604.jkflbh_s,
+                    b_g_00604.jkz_s,
+                    b_g_00604.jkxmbh_t,
+                    b_g_00604.jkflbh_t,
+                    b_g_00604.jkz_t,
+                    1 zyxs
+               from b_g_007
+               join b_g_00604
+                 on b_g_007.gdjcid = b_g_00604.mainid
+                and b_g_007.zt = 3
+             union all
+             select b_g_010.id,
+                    b_g_00604.zjqdid,
+                    b_g_00604.jkxmbh_f,
+                    b_g_00604.jkflbh_f,
+                    b_g_00604.jkz_f,
+                    b_g_00604.jkxmbh_s,
+                    b_g_00604.jkflbh_s,
+                    b_g_00604.jkz_s,
+                    b_g_00604.jkxmbh_t,
+                    b_g_00604.jkflbh_t,
+                    b_g_00604.jkz_t,
+                    1 zyxs
+               from b_g_010
+               join b_g_00604
+                 on b_g_010.gdjcid = b_g_00604.mainid
+                and b_g_010.zt = 3) b2
+    on b1.xggdid = b2.id
+<!-- 自身实际统计 -->
+  left join (select jh,
+                    xlh,
+                    dprtcode,
+                    sum(fxsj_xs) fxsj_xs, <!-- 飞行时间-小时 -->
+                    sum(fxsj_fz) fxsj_fz, <!-- 飞行时间-分钟 -->
+                    sum(fxsj_xs_skj) fxsj_xs_skj, <!-- 飞行时间-小时-时控件 -->
+                    sum(fxsj_fz_skj) fxsj_fz_skj, <!-- 飞行时间-分钟-时控件 -->
+                    sum(fsj_xs) fsj_xs, <!-- 发动机时间-小时 -->
+                    sum(fsj_fz) fsj_fz, <!-- 发动机时间-分钟 -->
+                    sum(qljxh) qljxh, <!-- 起落架循环 -->
+                    sum(qljxh_skj) qljxh_skj, <!-- 起落架循环-时控件 -->
+                    sum(jcsj_xs) jcsj_xs, <!-- 绞车时间-小时 -->
+                    sum(jcsj_fz) jcsj_fz, <!-- 绞车时间-分钟 -->
+                    sum(jcxh) jcxh, <!-- 绞车循环 -->
+                    sum(fdj_n1) fdj_n1, <!-- N1 -->
+                    sum(fdj_n2) fdj_n2, <!-- N2 -->
+                    sum(fdj_n3) fdj_n3, <!-- N3 -->
+                    sum(fdj_n4) fdj_n4, <!-- N4 -->
+                    sum(fdj_n5) fdj_n5, <!-- N5 -->
+                    sum(fdj_n6) fdj_n6, <!-- N6 -->
+                    sum(ssdsj_xs) ssdsj_xs, <!-- 搜索灯时间-小时 -->
+                    sum(ssdsj_fz) ssdsj_fz, <!-- 搜索灯时间-分钟 -->
+                    sum(dgxh) dgxh, <!-- 吊挂循环 -->
+                    sum(ts1) ts1, <!-- TS1 -->
+                    sum(ts2) ts2 <!-- TS2 -->
+               from b_h_01001
+              where is_cyjs = 1
+                and zt = 1
+                and xdbs = 0
+              group by jh, xlh, dprtcode) b3
+    on b1.bjh = b3.jh
+   and b1.xlh = b3.xlh
+   and b1.dprtcode = b3.dprtcode
+<!-- 获取一级件数据 -->
+  left join (select t1.fjzch,
+                    t1.jh,
+                    t1.xlh,
+                    t1.dprtcode,
+                    case t1.cj
+                      when 2 then
+                       t2.jh
+                      when 1 then
+                       t1.jh
+                      else
+                       t1.jh
+                    end fjdjh,
+                    case t1.cj
+                      when 2 then
+                       t2.xlh
+                      when 1 then
+                       t1.xlh
+                      else
+                       t1.xlh
+                    end fjdxlh,
+                    t1.cj
+               from b_s_003 t1
+               left join b_s_003 t2
+                 on t2.id = t1.fjdid
+              where t1.zt = 1
+                and t1.sxzt = 1
+                
+               <if test="fjzch != null and fjzch != ''">
+		          and t1.fjzch = #{fjzch} 
+		       </if>
+		       
+                ) b4
+    on b1.fjzch = b4.fjzch
+   and b1.bjh = b4.jh
+   and b1.xlh = b4.xlh
+   and b1.dprtcode = b4.dprtcode
+  left join (select jh,
+                    xlh,
+                    dprtcode,
+                    sum(fxsj_xs) fxsj_xs, <!-- 飞行时间-小时 -->
+                    sum(fxsj_fz) fxsj_fz, <!-- 飞行时间-分钟 -->
+                    sum(fsj_xs) fsj_xs, <!-- 发动机时间-小时 -->
+                    sum(fsj_fz) fsj_fz, <!-- 发动机时间-分钟 -->
+                    sum(qljxh) qljxh, <!-- 起落架循环 -->
+                    sum(jcsj_xs) jcsj_xs, <!-- 绞车时间-小时 -->
+                    sum(jcsj_fz) jcsj_fz, <!-- 绞车时间-分钟 -->
+                    sum(jcxh) jcxh, <!-- 绞车循环 -->
+                    sum(fdj_n1) fdj_n1, <!-- N1 -->
+                    sum(fdj_n2) fdj_n2, <!-- N2 -->
+                    sum(fdj_n3) fdj_n3, <!-- N3 -->
+                    sum(fdj_n4) fdj_n4, <!-- N4 -->
+                    sum(fdj_n5) fdj_n5, <!-- N5 -->
+                    sum(fdj_n6) fdj_n6, <!-- N6 -->
+                    sum(ssdsj_xs) ssdsj_xs, <!-- 搜索灯时间-小时 -->
+                    sum(ssdsj_fz) ssdsj_fz, <!-- 搜索灯时间-分钟 -->
+                    sum(dgxh) dgxh, <!-- 吊挂循环 -->
+                    sum(ts1) ts1, <!-- TS1 -->
+                    sum(ts2) ts2 <!-- TS2 -->
+               from b_h_01001
+              where is_cyjs = 1
+                and zt = 1
+                and xdbs = 0
+              group by jh, xlh, dprtcode) b5
+    on b4.fjdjh = b5.jh
+   and b4.fjdxlh = b5.xlh
+   and b4.dprtcode = b5.dprtcode
+<!-- 获取飞机汇总数据（缺少飞机注册时的数据） -->
+  left join (select b_s_006.fjzch,b_s_006.dprtcode,
+                    sum(b_s_00601.fxsj_xs) fxsj_xs,
+                    sum(b_s_00601.fxsj_fz) fxsj_fz,
+                    sum(b_s_00601.qljxh) qljxh,
+                    sum(b_s_00601.ts1) ts1,
+                    sum(b_s_00601.ts2) ts2
+               from b_s_00601
+               join b_s_006
+                 on b_s_006.id = b_s_00601.fxjldid
+                
+                <if test="fjzch != null and fjzch != ''">
+		          and b_s_006.fjzch =  #{fjzch} 
+		        </if>
+		       and b_s_006.zt in (2, 12, 99)
+		       
+		       and b_s_00601.zt = 1
+			   and b_s_00601.xdbs = 0
+				
+              group by b_s_006.fjzch,b_s_006.dprtcode) b6
+    on b6.fjzch = b1.fjzch and b6.dprtcode = b1.dprtcode
+    left join t_user u on u.id = b1.dyrid
+    left join t_department d on b1.DPRTCODE = d.id
+     
+      <choose>   
+             <when test='pagination == null'>                       
+	    		 order by b1.whsj desc
+	    	</when>                                                          
+	    	<when test='pagination != null and pagination.order == "auto"'>                       
+	    		 order by b1.whsj desc
+	    	</when>
+	    	<when test='pagination.order != null and pagination.order != ""  and pagination.sort != null and pagination.sort != "" '>                       
+	    		order by ${pagination.sort} ${pagination.order}
+	    	</when>
+	    	<!-- <otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise> -->
+   </choose>  
+   
+  </select>
+  
+  <select id="queryListPanel" resultMap="PanelResultMap"  parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+   <!-- 主表 -->
+	select b1.id,
+		   b1.rwdh,
+	       b1.rwlx,
+	       b1.rwzlx,
+	       b1.zt,
+	       b1.xszt,
+	       b1.xggdid,
+	       b1.dprtcode,
+	       b1.rwxx,
+	       b1.fjzch,
+	       (CASE WHEN b1.bjh IS NULL THEN b1.fjzch ELSE b1.bjh END) bjh,
+	       b1.xlh,
+	      <!-- 部件名称 -->
+	       case
+	         when b1.fjzch is not null then
+	          case
+	            when b1.bjh is not null then
+	             (select b_s_003.ywmc
+	                from b_s_003
+	               where b_s_003.fjzch = b1.fjzch
+	                 and b_s_003.jh = b1.bjh
+	                 and b_s_003.xlh = b1.xlh
+	                 and b_s_003.dprtcode = b1.dprtcode)
+	            else
+	             ''
+	          end
+	         else
+	          (select d_008.ywms
+	             from d_008
+	            where d_008.bjh = b1.bjh
+	              and d_008.dprtcode = b1.dprtcode
+	              and d_008.zt = 1)
+	       end bjmc,
+	       b1.dysj,
+	     
+	         case
+	            when b1.bz is null then
+	              ''
+                when b1.bz = 'null' then
+                 ''
+	            else
+	             b1.bz
+	          end  BZ,
+	      <!-- 航材耗材工具 -->
+	       (select wm_concat((CASE
+		WHEN c1.lx = 1 THEN
+			'航材'
+		ELSE
+			CASE
+		WHEN c1.lx = 2 THEN
+			'设备'
+		ELSE
+			CASE
+		WHEN c1.lx = 3 THEN
+			'工具'
+		ELSE
+			CASE
+		WHEN c1.lx = 4 THEN
+			'危险品'
+		ELSE
+			CASE
+		WHEN c1.lx = 5 THEN
+			'低值易耗品'
+		ELSE
+			'其他'
+		END
+		END
+		END
+		END
+		END) || '`##`' || replace(c2.ywms || c2.zwms,',','`') ||
+                         '`##`' || (CASE WHEN c1.sl IS NULL THEN 0 ELSE c1.sl END)) hcxh
+          from (select t1.xggdid, t2.lx, sum(t2.sl) sl, t2.bjid
+                  from (
+                        <!-- 定检任务(自身工单基础id) -->
+                        select a1.xggdid, a3.gdjcid
+                          from b_s_009 a1
+                          join b_g_014 a2
+                            on a1.xggdid = a2.id
+                          join b_g_016 a3
+                            on a3.djrwdid = a2.id
+                        union all
+                        <!-- 定检任务（相关工单基础id） -->
+                        select b1.xggdid, b5.xgjcgdid gdjcid
+                          from b_s_009 b1
+                          join b_g_014 b2
+                            on b1.xggdid = b2.id
+                          join b_g_016 b3
+                            on b3.djrwdid = b2.id
+                          join b_g_013 b4
+                            on b3.djgkid = b4.id
+                          join b_g_00605 b5
+                            on b4.gdjcid = b5.mainid
+                        union all
+                        <!-- 非例行任务（自身工单基础id。包含：1时控件任务、2附加任务、3排故任务） -->
+                        select c1.xggdid, c2.gdjcid
+                          from b_s_009 c1
+                          join b_g_007 c2
+                            on c1.xggdid = c2.id
+                        union all
+                        <!-- 非例行任务（相关工单基础id） -->
+                        select d1.xggdid, d3.xgjcgdid gdjcid
+                          from b_s_009 d1
+                          join b_g_007 d2
+                            on d1.xggdid = d2.id
+                          join b_g_00605 d3
+                            on d2.gdjcid = d3.mainid
+                        union all
+                        <!-- EO工单任务（自身工单基础id） -->
+                        select e1.xggdid, e2.gdjcid
+                          from b_s_009 e1
+                          join b_g_010 e2
+                            on e1.xggdid = e2.id
+                        union all
+                        <!-- EO工单任务（相关工单基础id） -->
+                        select f1.xggdid, f3.xgjcgdid gdjcid
+                          from b_s_009 f1
+                          join b_g_010 f2
+                            on f1.xggdid = f2.id
+                          join b_g_00605 f3
+                            on f2.gdjcid = f3.mainid) t1
+                  join b_g_00601 t2
+                    on t1.gdjcid = t2.mainid
+                   and t2.zt = 1
+                 group by t1.xggdid, t2.lx, t2.bjid) c1
+          left join d_008 c2
+            on c1.bjid = c2.id
+         where c1.xggdid = b1.xggdid) hcxh,
+	         b1.dyrid,
+	         u.username DYR_USERNAME,
+	         u.realname DYR_REALNAME
+	         
+	  from (select id,
+	  			   rwdh,
+	               rwlx,
+	               rwzlx,
+	               zt,
+	               xszt,
+	               xggdid,
+	               dprtcode,
+	               rwxx,
+	               fjzch,
+	               bjh,
+	               xlh,
+	               to_char(dysj, 'yyyy-mm-dd hh24:mi:ss') dysj,
+	               bz,
+	               whsj,
+	               dyrid
+	          from b_s_009
+	         where b_s_009.zt in (1,2)
+	           and b_s_009.dprtcode = #{dprtcode}
+	            <!-- 选择飞机注册号时是第一个条件，选择非装机件时是第二个条件 -->
+	            
+				<choose>
+	                <when test="isLoadedParts != null and isLoadedParts == 1">
+	                        <if test="fjzch != null and fjzch  != ''" >
+					        	and b_s_009.fjzch = #{fjzch} 
+					        	 <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+							     <choose>                                                                 
+								    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+								    		 AND exists 
+								    		( SELECT 1 from D_007 where 
+								    			b_s_009.fjzch = FJZCH
+								    		AND b_s_009.dprtcode = DPRTCODE
+								    		AND zt = 1
+								    		)
+								    	</when>
+								    	<otherwise>
+										     AND exists 
+								    		( SELECT 1 from V_ROLE_JX where 
+								    			b_s_009.fjzch= FJZCH
+								    		AND b_s_009.dprtcode = DPRTCODE
+								    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+								    		)
+								    	</otherwise>
+							   	</choose>
+					    	</if>
+					    	<if test="fjzch == null or fjzch  == ''" >
+					        	 AND exists 
+								    		( SELECT 1 from V_ROLE_JX where 
+								    			b_s_009.fjzch= FJZCH
+								    		AND b_s_009.dprtcode = DPRTCODE
+								    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+								    		)
+					    	</if>
+	                </when>
+	                <otherwise>
+	                        and b_s_009.fjzch is null
+	                 </otherwise>
+	         	</choose>
+	         
+	        ) b1
+	        left join t_user u on b1.dyrid = u.id
+	        
+	        where 1=1 
+	        <if test="keyword != null and keyword != ''">
+	          and (
+	             UPPER(b1.RWDH) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(b1.RWXX) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(b1.BJH) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(b1.XLH) like UPPER('%'||#{keyword}||'%')
+	          )
+	       </if>
+       
+	 order by b1.fjzch,b1.xszt ,b1.whsj asc
+
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>  
+  
+  <insert id="insert" parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+    insert into B_S_009 (ID, RWDH, RWLX, 
+      RWZLX, FXJLDID, ZT, 
+      XSZT, XGGDID, DPRTCODE, 
+      RWXX, FJZCH, BJH, XLH, 
+      DYSJ, DYBMID, DYRID, 
+      JHGS_RS, JHGS_XS, SJGS_RS, 
+      SJGS_XS, GSSH_ZT, GSSH_DCBBH, 
+      GSSH_TJRID, GSSH_TJRQ, GSSH_BZ, 
+      BZ, WHDWID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{rwdh,jdbcType=VARCHAR}, #{rwlx,jdbcType=DECIMAL}, 
+      #{rwzlx,jdbcType=DECIMAL}, #{fxjldid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{xszt,jdbcType=DECIMAL}, #{xggdid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{rwxx,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, 
+      #{dysj,jdbcType=TIMESTAMP}, #{dybmid,jdbcType=VARCHAR}, #{dyrid,jdbcType=VARCHAR}, 
+      #{jhgsRs,jdbcType=DECIMAL}, #{jhgsXs,jdbcType=DECIMAL}, #{sjgsRs,jdbcType=DECIMAL}, 
+      #{sjgsXs,jdbcType=DECIMAL}, #{gsshZt,jdbcType=DECIMAL}, #{gsshDcbbh,jdbcType=VARCHAR}, 
+      #{gsshTjrid,jdbcType=VARCHAR}, #{gsshTjrq,jdbcType=TIMESTAMP}, #{gsshBz,jdbcType=VARCHAR}, 
+      #{bz,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+    insert into B_S_009
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="rwdh != null" >
+        RWDH,
+      </if>
+      <if test="rwlx != null" >
+        RWLX,
+      </if>
+      <if test="rwzlx != null" >
+        RWZLX,
+      </if>
+      <if test="fxjldid != null" >
+        FXJLDID,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="xszt != null" >
+        XSZT,
+      </if>
+      <if test="xggdid != null" >
+        XGGDID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="rwxx != null" >
+        RWXX,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="dysj != null" >
+        DYSJ,
+      </if>
+      <if test="dybmid != null" >
+        DYBMID,
+      </if>
+      <if test="dyrid != null" >
+        DYRID,
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS,
+      </if>
+      <if test="jhgsXs != null" >
+        JHGS_XS,
+      </if>
+      <if test="sjgsRs != null" >
+        SJGS_RS,
+      </if>
+      <if test="sjgsXs != null" >
+        SJGS_XS,
+      </if>
+      <if test="gsshZt != null" >
+        GSSH_ZT,
+      </if>
+      <if test="gsshDcbbh != null" >
+        GSSH_DCBBH,
+      </if>
+      <if test="gsshTjrid != null" >
+        GSSH_TJRID,
+      </if>
+      <if test="gsshTjrq != null" >
+        GSSH_TJRQ,
+      </if>
+      <if test="gsshBz != null" >
+        GSSH_BZ,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="rwdh != null" >
+        #{rwdh,jdbcType=VARCHAR},
+      </if>
+      <if test="rwlx != null" >
+        #{rwlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwzlx != null" >
+        #{rwzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="fxjldid != null" >
+        #{fxjldid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="xszt != null" >
+        #{xszt,jdbcType=DECIMAL},
+      </if>
+      <if test="xggdid != null" >
+        #{xggdid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="rwxx != null" >
+        #{rwxx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="dysj != null" >
+        #{dysj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dybmid != null" >
+        #{dybmid,jdbcType=VARCHAR},
+      </if>
+      <if test="dyrid != null" >
+        #{dyrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null" >
+        #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXs != null" >
+        #{jhgsXs,jdbcType=DECIMAL},
+      </if>
+      <if test="sjgsRs != null" >
+        #{sjgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="sjgsXs != null" >
+        #{sjgsXs,jdbcType=DECIMAL},
+      </if>
+      <if test="gsshZt != null" >
+        #{gsshZt,jdbcType=DECIMAL},
+      </if>
+      <if test="gsshDcbbh != null" >
+        #{gsshDcbbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gsshTjrid != null" >
+        #{gsshTjrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gsshTjrq != null" >
+        #{gsshTjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gsshBz != null" >
+        #{gsshBz,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+    update B_S_009
+    <set >
+      <if test="rwdh != null" >
+        RWDH = #{rwdh,jdbcType=VARCHAR},
+      </if>
+      <if test="rwlx != null" >
+        RWLX = #{rwlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwzlx != null" >
+        RWZLX = #{rwzlx,jdbcType=DECIMAL},
+      </if>
+      <if test="fxjldid != null" >
+        FXJLDID = #{fxjldid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="xszt != null" >
+        XSZT = #{xszt,jdbcType=DECIMAL},
+      </if>
+      <if test="xggdid != null" >
+        XGGDID = #{xggdid,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="rwxx != null" >
+        RWXX = #{rwxx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="dysj != null" >
+        DYSJ = #{dysj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dybmid != null" >
+        DYBMID = #{dybmid,jdbcType=VARCHAR},
+      </if>
+      <if test="dyrid != null" >
+        DYRID = #{dyrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXs != null" >
+        JHGS_XS = #{jhgsXs,jdbcType=DECIMAL},
+      </if>
+      <if test="sjgsRs != null" >
+        SJGS_RS = #{sjgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="sjgsXs != null" >
+        SJGS_XS = #{sjgsXs,jdbcType=DECIMAL},
+      </if>
+      <if test="gsshZt != null" >
+        GSSH_ZT = #{gsshZt,jdbcType=DECIMAL},
+      </if>
+      <if test="gsshDcbbh != null" >
+        GSSH_DCBBH = #{gsshDcbbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gsshTjrid != null" >
+        GSSH_TJRID = #{gsshTjrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gsshTjrq != null" >
+        GSSH_TJRQ = #{gsshTjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gsshBz != null" >
+        GSSH_BZ = #{gsshBz,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsrid != null" >
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null" >
+        zdjsrq = #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+       <if test="zdjsyy != null" >
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="doEnd" parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+    update B_S_009
+    <set >
+      <if test="zdjsrid != null" >
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null" >
+        zdjsrq = #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      zt = 9
+    </set>
+    where XGGDID = #{xggdid,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.PlanTask" >
+    update B_S_009
+    set RWDH = #{rwdh,jdbcType=VARCHAR},
+      RWLX = #{rwlx,jdbcType=DECIMAL},
+      RWZLX = #{rwzlx,jdbcType=DECIMAL},
+      FXJLDID = #{fxjldid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      XSZT = #{xszt,jdbcType=DECIMAL},
+      XGGDID = #{xggdid,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      RWXX = #{rwxx,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      DYSJ = #{dysj,jdbcType=TIMESTAMP},
+      DYBMID = #{dybmid,jdbcType=VARCHAR},
+      DYRID = #{dyrid,jdbcType=VARCHAR},
+      JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      JHGS_XS = #{jhgsXs,jdbcType=DECIMAL},
+      SJGS_RS = #{sjgsRs,jdbcType=DECIMAL},
+      SJGS_XS = #{sjgsXs,jdbcType=DECIMAL},
+      GSSH_ZT = #{gsshZt,jdbcType=DECIMAL},
+      GSSH_DCBBH = #{gsshDcbbh,jdbcType=VARCHAR},
+      GSSH_TJRID = #{gsshTjrid,jdbcType=VARCHAR},
+      GSSH_TJRQ = #{gsshTjrq,jdbcType=TIMESTAMP},
+      GSSH_BZ = #{gsshBz,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="doEndByTimecontrolpart" parameterType="java.lang.String" >
+    update b_s_003 
+	set GDID = null,RWID = null
+	 where id = (
+	 select e.zjqdid from B_G_00604  e where e.mainid = 
+		 ( select n.gdjcid from  B_G_007 n where n.id = 
+			 (select t.xggdid from b_s_009 t where
+			  t.rwzlx = 1 and
+			 t.id = #{id,jdbcType=VARCHAR}
+			 )
+		 )
+	 )
+  </update>
+  
+  <update id="doEndByCheckbill" parameterType="java.lang.String" >
+    update b_s_00303 set RWID = NULL
+	 where zjqdid = (
+	   select zjqdid  from B_G_01401 where mainid = (
+	     select t.id from  b_g_014 t where t.id = (
+	      select p.xggdid  from b_s_009 p where id =  #{id,jdbcType=VARCHAR}
+	      )
+	    )
+	 ) 
+	 and djxmid = (
+	 select t.djxmid from  b_g_014 t where t.id = (
+	  select p.xggdid  from b_s_009 p where id =  #{id,jdbcType=VARCHAR}
+	  )
+	 )
+  </update>
+  
+ 
+  <select id="queryHistoryList" resultMap="HistroyMap"  parameterType="com.eray.thjw.productionplan.po.PlanTaskHistory" >
+		   select 
+        a.rwdh 
+        ,a.id
+      	,a.rwxx
+      	,a.rwlx
+      	,a.rwzlx
+     	,a.fjzch
+     	,a.bjh
+      	,a.xlh
+      	,a.dysj
+      	,a.dyrid
+      	,a.zt
+      	,a.bz
+      	,a.xggdid
+      	,a.zdjsyy
+      	,(select username||' '||realname from t_user where id = a.dyrid ) dyrstr
+        , a.zdjsrq zdjsrq
+        ,(select username||' '||realname from t_user where id = a.zdjsrid ) zdjsrid   
+       ,a.fxjldid
+       ,a.jhgs_rs
+       ,a.jhgs_xs
+       ,a.sjgs_rs
+       ,a.sjgs_xs
+       ,b.fxjldh
+       ,b.jlbym
+       ,t.dprtname
+       ,a.gzxx
+       ,a.clcs
+      from b_s_009 a 
+      left join b_s_006 b 
+      on  
+       b.id = a.fxjldid
+       left join t_department t on a.dprtcode=t.id
+       left join t_user zrr on zrr.id = a.zdjsrid
+      where 1=1
+			 
+	       <if test="fjzch != null and fjzch != ''" >
+		       and a.fjzch = #{fjzch,jdbcType=VARCHAR}
+		    </if>
+		    <if test="fjzch == null or fjzch == ''" >
+		       and a.fjzch is null
+		    </if>
+		    
+		    <if test="isLoadedParts != null and isLoadedParts == '1'" >
+		       	<if test="id == null or id == ''" >
+	           		<!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+				     <choose>                                                                 
+					    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+					    		 AND exists 
+					    		( SELECT 1 from D_007 where 
+					    			B_S_009.FJZCH = FJZCH
+					    		AND B_S_009.DPRTCODE = DPRTCODE
+					    		AND zt = 1
+					    		)
+					    	</when>
+					    	<when test='paramsMap.userId!=null and paramsMap.userId != ""'>                       
+					    		 AND exists 
+					    		( SELECT 1 from V_ROLE_JX where 
+					    			B_S_009.FJZCH= FJZCH
+					    		AND B_S_009.DPRTCODE = DPRTCODE
+					    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+					    		)
+					    	</when>
+				   	</choose>
+	           </if>
+		    </if>
+		    
+		     <if test="rwlx != null and rwlx != ''" >
+		       and a.rwlx = #{rwlx}
+		    </if>
+		    <if test="rwzlx != null and rwzlx != ''" >
+		       and a.rwzlx = #{rwzlx}
+		    </if>
+		     <if test="dprtcode != null and dprtcode != ''" >
+		       and a.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		    </if>
+		    <if test="paramsMap!=null and paramsMap.wcrqStart != null and paramsMap.wcrqStart != ''">
+		    	and a.zdjsrq &gt;= to_date(#{paramsMap.wcrqStart},'yyyy-mm-dd hh24:mi:ss')
+		    </if>
+		    <if test="paramsMap!=null and paramsMap.wcrqEnd != null and paramsMap.wcrqEnd != ''">
+		    	and a.zdjsrq &lt;= to_date(#{paramsMap.wcrqEnd},'yyyy-mm-dd hh24:mi:ss')
+		    </if>
+		    <if test="paramsMap!=null and paramsMap.dyrqStart != null and paramsMap.dyrqStart != ''">
+		    	and a.dysj &gt;= to_date(#{paramsMap.dyrqStart},'yyyy-mm-dd hh24:mi:ss')
+		    </if>
+		    <if test="paramsMap!=null and paramsMap.dyrqEnd != null and paramsMap.dyrqEnd != ''">
+		    	and a.dysj &lt;=  to_date(#{paramsMap.dyrqEnd},'yyyy-mm-dd hh24:mi:ss')
+		    </if>
+		    <if test="keyword != null and keyword != ''">
+	          and (
+	             UPPER(a.RWDH) like UPPER('%'||#{keyword}||'%'
+	          or UPPER(a.RWXX) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(a.BJH) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(a.XLHv like UPPER('%'||#{keyword}||'%')
+	          or UPPER(a.fjzch) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(b.jlbym) like UPPER('%'||#{keyword}||'%')
+	          or UPPER(a.bz) like UPPER('%'||#{keyword}||'%')
+ 	          or UPPER(zrr.username) like UPPER('%'||#{keyword}||'%' )
+ 	          or UPPER(zrr.realname) like UPPER('%'||#{keyword}||'%' )  
+	          )
+	    	</if>
+		     <choose>                                              
+				<when test="zt != null  and zt!='' ">    
+			    		and a.zt =#{zt}
+			    	</when>
+			    	<otherwise>
+					    and a.zt in (9,10) 
+			    	</otherwise>
+		   </choose>
+		    <choose>                                                                 
+			    	<when test='pagination.order == "auto"'>                       
+			    		order by a.WHSJ desc
+			    	</when>
+			    	<otherwise>
+					    order by a.${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		   </choose>
+  </select>
+  
+  <!-- 生成快照 -->
+  <select id="genPlanTaskSnap" resultMap="PlanTaskResultMap" parameterType="com.eray.thjw.productionplan.po.PlanTask"  >
+    select b1.id, <!-- 任务id -->
+       b1.rwdh, <!-- 任务编号 -->
+       b1.rwlx, <!-- 任务类型 -->
+       b1.rwzlx, <!-- 任务子类型 -->
+       b1.xggdid, <!-- 相关工单id -->
+       b1.dprtcode, <!-- 组织机构 -->
+       b1.fjzch, <!-- 飞机注册号 -->
+       b1.bjh, <!-- 部件号 -->
+       b1.xlh, <!-- 序列号 -->
+       b2.zjqdid, <!-- 装机清单id -->
+       b2.djxmid, <!-- 定检项目id -->
+       b2.djbh, <!-- 定检项目编号 -->
+       <!-- 第一个监控项 -->
+       b2.jkxmbh_f,
+       b2.jkflbh_f,
+       b2.jkz_f,
+       (case b2.jkxmbh_f
+             when 'calendar' then
+              to_char(sysdate, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.fxsj_xs_skj IS NULL THEN 0 ELSE b3.fxsj_xs_skj END) || ':' || (CASE WHEN b3.fxsj_fz_skj IS NULL THEN 0 ELSE b3.fxsj_fz_skj END)
+                else
+                 ((CASE WHEN b6.fxsj_xs IS NULL THEN 0 ELSE b6.fxsj_xs END) + (CASE WHEN b7.init_time_jsfx_xs IS NULL THEN '0' ELSE b7.init_time_jsfx_xs END)) || ':' ||
+                 ((CASE WHEN b6.fxsj_fz IS NULL THEN 0 ELSE b6.fxsj_fz END) + (CASE WHEN b7.init_time_jsfx_fz IS NULL THEN '0' ELSE b7.init_time_jsfx_fz END))
+              end
+             when 'search_light_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.ssdsj_xs IS NULL THEN 0 ELSE b3.ssdsj_xs END) || ':' || (CASE WHEN b3.ssdsj_fz IS NULL THEN 0 ELSE b3.ssdsj_fz END)
+                else
+                 (CASE WHEN b5.ssdsj_xs IS NULL THEN 0 ELSE b5.ssdsj_xs END) || ':' || (CASE WHEN b5.ssdsj_fz IS NULL THEN 0 ELSE b5.ssdsj_fz END)
+              end
+             when 'winch_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.jcsj_xs IS NULL THEN 0 ELSE b3.jcsj_xs END) || ':' || (CASE WHEN b3.jcsj_fz IS NULL THEN 0 ELSE b3.jcsj_fz END)
+                else
+                 (CASE WHEN b5.jcsj_xs IS NULL THEN 0 ELSE b5.jcsj_xs END) || ':' || (CASE WHEN b5.jcsj_fz IS NULL THEN 0 ELSE b5.jcsj_fz END)
+              end
+             when 'landing_gear_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.qljxh_skj || ''
+                else
+                 ((CASE WHEN b6.qljxh IS NULL THEN 0 ELSE b6.qljxh END) + (CASE WHEN b7.init_loop_qlj IS NULL THEN '0' ELSE b7.init_loop_qlj END)) || ''
+              end
+             when 'winch_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.jcxh || ''
+                else
+                 b5.jcxh || ''
+              end
+             when 'ext_suspension_loop' then
+              case b1.rwzlx
+                when 1 then
+                 b3.dgxh || ''
+                else
+                 b5.dgxh || ''
+              end
+           
+             when 'special_first' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts1 || ''
+                else
+                 ((CASE WHEN b6.ts1 IS NULL THEN 0 ELSE b6.ts1 END) + (CASE WHEN b7.init_loop_ts1 IS NULL THEN '0' ELSE b7.init_loop_ts1 END)) || ''
+              end
+           
+             when 'special_second' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts2 || ''
+                else
+                 ((CASE WHEN b6.ts2 IS NULL THEN 0 ELSE b6.ts2 END) + (CASE WHEN b7.init_loop_ts2 IS NULL THEN '0' ELSE b7.init_loop_ts2 END)) || ''
+              end
+             when 'N1' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n1 || ''
+                else
+                 b5.fdj_n1 || ''
+              end
+           
+             when 'N2' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n2 || ''
+                else
+                 b5.fdj_n2 || ''
+              end
+             when 'N3' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n3 || ''
+                else
+                 b5.fdj_n3 || ''
+              end
+             when 'N4' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n4 || ''
+                else
+                 b5.fdj_n4 || ''
+              end
+             when 'N5' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n5 || ''
+                else
+                 b5.fdj_n5 || ''
+              end
+             when 'N6' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n6 || ''
+                else
+                 b5.fdj_n6 || ''
+              end
+             else
+              '0'
+           end) sj_f,
+       <!-- 第二个监控项 -->
+       b2.jkxmbh_s,
+       b2.jkflbh_s,
+       b2.jkz_s,
+       (case b2.jkxmbh_s
+             when 'calendar' then
+              to_char(sysdate, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.fxsj_xs_skj IS NULL THEN 0 ELSE b3.fxsj_xs_skj END) || ':' || (CASE WHEN b3.fxsj_fz_skj IS NULL THEN 0 ELSE b3.fxsj_fz_skj END)
+                else
+                 ((CASE WHEN b6.fxsj_xs IS NULL THEN 0 ELSE b6.fxsj_xs END) + (CASE WHEN b7.init_time_jsfx_xs IS NULL THEN '0' ELSE b7.init_time_jsfx_xs END)) || ':' ||
+                 ((CASE WHEN b6.fxsj_fz IS NULL THEN 0 ELSE b6.fxsj_fz END) + (CASE WHEN b7.init_time_jsfx_fz IS NULL THEN '0' ELSE b7.init_time_jsfx_fz END))
+              end
+             when 'search_light_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.ssdsj_xs IS NULL THEN 0 ELSE b3.ssdsj_xs END) || ':' || (CASE WHEN b3.ssdsj_fz IS NULL THEN 0 ELSE b3.ssdsj_fz END)
+                else
+                 (CASE WHEN b5.ssdsj_xs IS NULL THEN 0 ELSE b5.ssdsj_xs END) || ':' || (CASE WHEN b5.ssdsj_fz IS NULL THEN 0 ELSE b5.ssdsj_fz END)
+              end
+             when 'winch_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.jcsj_xs IS NULL THEN 0 ELSE b3.jcsj_xs END) || ':' || (CASE WHEN b3.jcsj_fz IS NULL THEN 0 ELSE b3.jcsj_fz END)
+                else
+                 (CASE WHEN b5.jcsj_xs IS NULL THEN 0 ELSE b5.jcsj_xs END) || ':' || (CASE WHEN b5.jcsj_fz IS NULL THEN 0 ELSE b5.jcsj_fz END)
+              end
+             when 'landing_gear_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.qljxh_skj || ''
+                else
+                 ((CASE WHEN b6.qljxh IS NULL THEN 0 ELSE b6.qljxh END) + (CASE WHEN b7.init_loop_qlj IS NULL THEN '0' ELSE b7.init_loop_qlj END)) || ''
+              end
+             when 'winch_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.jcxh || ''
+                else
+                 b5.jcxh || ''
+              end
+             when 'ext_suspension_loop' then
+              case b1.rwzlx
+                when 1 then
+                 b3.dgxh || ''
+                else
+                 b5.dgxh || ''
+              end
+           
+             when 'special_first' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts1 || ''
+                else
+                 ((CASE WHEN b6.ts1 IS NULL THEN 0 ELSE b6.ts1 END) + (CASE WHEN b7.init_loop_ts1 IS NULL THEN '0' ELSE b7.init_loop_ts1 END)) || ''
+              end
+           
+             when 'special_second' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts2 || ''
+                else
+                 ((CASE WHEN b6.ts2 IS NULL THEN 0 ELSE b6.ts2 END) + (CASE WHEN b7.init_loop_ts2 IS NULL THEN '0' ELSE b7.init_loop_ts2 END)) || ''
+              end
+             when 'N1' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n1 || ''
+                else
+                 b5.fdj_n1 || ''
+              end
+           
+             when 'N2' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n2 || ''
+                else
+                 b5.fdj_n2 || ''
+              end
+             when 'N3' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n3 || ''
+                else
+                 b5.fdj_n3 || ''
+              end
+             when 'N4' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n4 || ''
+                else
+                 b5.fdj_n4 || ''
+              end
+             when 'N5' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n5 || ''
+                else
+                 b5.fdj_n5 || ''
+              end
+             when 'N6' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n6 || ''
+                else
+                 b5.fdj_n6 || ''
+              end
+             else
+              '0'
+           end) sj_s,
+       <!-- 第三个监控项 -->
+       b2.jkxmbh_t,
+       b2.jkflbh_t,
+       b2.jkz_t,
+       (case b2.jkxmbh_t
+             when 'calendar' then
+              to_char(sysdate, 'yyyy-mm-dd')
+             when 'fuselage_flight_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.fxsj_xs_skj IS NULL THEN 0 ELSE b3.fxsj_xs_skj END) || ':' || (CASE WHEN b3.fxsj_fz_skj IS NULL THEN 0 ELSE b3.fxsj_fz_skj END)
+                else
+                 ((CASE WHEN b6.fxsj_xs IS NULL THEN 0 ELSE b6.fxsj_xs END) + (CASE WHEN b7.init_time_jsfx_xs IS NULL THEN '0' ELSE b7.init_time_jsfx_xs END)) || ':' ||
+                 ((CASE WHEN b6.fxsj_fz IS NULL THEN 0 ELSE b6.fxsj_fz END) + (CASE WHEN b7.init_time_jsfx_fz IS NULL THEN '0' ELSE b7.init_time_jsfx_fz END))
+              end
+             when 'search_light_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.ssdsj_xs IS NULL THEN 0 ELSE b3.ssdsj_xs END) || ':' || (CASE WHEN b3.ssdsj_fz IS NULL THEN 0 ELSE b3.ssdsj_fz END)
+                else
+                 (CASE WHEN b5.ssdsj_xs IS NULL THEN 0 ELSE b5.ssdsj_xs END) || ':' || (CASE WHEN b5.ssdsj_fz IS NULL THEN 0 ELSE b5.ssdsj_fz END)
+              end
+             when 'winch_time' then
+              case b1.rwzlx
+                when 1 then
+                 (CASE WHEN b3.jcsj_xs IS NULL THEN 0 ELSE b3.jcsj_xs END) || ':' || (CASE WHEN b3.jcsj_fz IS NULL THEN 0 ELSE b3.jcsj_fz END)
+                else
+                 (CASE WHEN b5.jcsj_xs IS NULL THEN 0 ELSE b5.jcsj_xs END) || ':' || (CASE WHEN b5.jcsj_fz IS NULL THEN 0 ELSE b5.jcsj_fz END)
+              end
+             when 'landing_gear_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.qljxh_skj || ''
+                else
+                 ((CASE WHEN b6.qljxh IS NULL THEN 0 ELSE b6.qljxh END) + (CASE WHEN b7.init_loop_qlj IS NULL THEN '0' ELSE b7.init_loop_qlj END)) || ''
+              end
+             when 'winch_cycle' then
+              case b1.rwzlx
+                when 1 then
+                 b3.jcxh || ''
+                else
+                 b5.jcxh || ''
+              end
+             when 'ext_suspension_loop' then
+              case b1.rwzlx
+                when 1 then
+                 b3.dgxh || ''
+                else
+                 b5.dgxh || ''
+              end
+           
+             when 'special_first' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts1 || ''
+                else
+                 ((CASE WHEN b6.ts1 IS NULL THEN 0 ELSE b6.ts1 END) + (CASE WHEN b7.init_loop_ts1 IS NULL THEN '0' ELSE b7.init_loop_ts1 END)) || ''
+              end
+           
+             when 'special_second' then
+              case b1.rwzlx
+                when 1 then
+                 b3.ts2 || ''
+                else
+                 ((CASE WHEN b6.ts2 IS NULL THEN 0 ELSE b6.ts2 END) + (CASE WHEN b7.init_loop_ts2 IS NULL THEN '0' ELSE b7.init_loop_ts2 END)) || ''
+              end
+             when 'N1' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n1 || ''
+                else
+                 b5.fdj_n1 || ''
+              end
+           
+             when 'N2' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n2 || ''
+                else
+                 b5.fdj_n2 || ''
+              end
+             when 'N3' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n3 || ''
+                else
+                 b5.fdj_n3 || ''
+              end
+             when 'N4' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n4 || ''
+                else
+                 b5.fdj_n4 || ''
+              end
+             when 'N5' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n5 || ''
+                else
+                 b5.fdj_n5 || ''
+              end
+             when 'N6' then
+              case b1.rwzlx
+                when 1 then
+                 b3.fdj_n6 || ''
+                else
+                 b5.fdj_n6 || ''
+              end
+             else
+              '0'
+           end) sj_t
+  from (select id,
+               rwdh,
+               rwlx,
+               rwzlx,
+               zt,
+               xszt,
+               xggdid,
+               dprtcode,
+               rwxx,
+               fjzch,
+               bjh,
+               xlh,
+               to_char(dysj, 'yyyy-mm-dd hh24:mi:ss') dysj,
+               bz
+          from b_s_009
+         where b_s_009.id = #{id,jdbcType=VARCHAR}) b1
+  left join (select b_g_01401.mainid id,
+                    b_g_01401.zjqdid,
+                    b_g_01401.jkxmbh_f,
+                    b_g_01401.jkflbh_f,
+                    b_g_01401.jkz_f,
+                    b_g_01401.jkxmbh_s,
+                    b_g_01401.jkflbh_s,
+                    b_g_01401.jkz_s,
+                    b_g_01401.jkxmbh_t,
+                    b_g_01401.jkflbh_t,
+                    b_g_01401.jkz_t,
+                    b_g_014.djxmid,
+                    b_g_014.djbh
+               from b_g_014
+               join b_g_01401
+                 on b_g_014.id = b_g_01401.mainid
+                and b_g_01401.mainid = #{xggdid,jdbcType=VARCHAR}
+             union all
+             select b_g_007.id,
+                    b_g_00604.zjqdid,
+                    b_g_00604.jkxmbh_f,
+                    b_g_00604.jkflbh_f,
+                    b_g_00604.jkz_f,
+                    b_g_00604.jkxmbh_s,
+                    b_g_00604.jkflbh_s,
+                    b_g_00604.jkz_s,
+                    b_g_00604.jkxmbh_t,
+                    b_g_00604.jkflbh_t,
+                    b_g_00604.jkz_t,
+                    '' djxmid,
+                    '' djbh
+               from b_g_007
+               join b_g_00604
+                 on b_g_007.gdjcid = b_g_00604.mainid
+                and b_g_007.id = #{xggdid,jdbcType=VARCHAR}
+             union all
+             select b_g_010.id,
+                    b_g_00604.zjqdid,
+                    b_g_00604.jkxmbh_f,
+                    b_g_00604.jkflbh_f,
+                    b_g_00604.jkz_f,
+                    b_g_00604.jkxmbh_s,
+                    b_g_00604.jkflbh_s,
+                    b_g_00604.jkz_s,
+                    b_g_00604.jkxmbh_t,
+                    b_g_00604.jkflbh_t,
+                    b_g_00604.jkz_t,
+                    '' djxmid,
+                    '' djbh
+               from b_g_010
+               join b_g_00604
+                 on b_g_010.gdjcid = b_g_00604.mainid
+                and b_g_010.id = #{xggdid,jdbcType=VARCHAR}) b2
+    on b1.xggdid = b2.id
+<!-- 自身实际统计 -->
+  left join (select jh,
+                    xlh,
+					dprtcode,
+                    sum(fxsj_xs) fxsj_xs, <!-- 飞行时间-小时 -->
+                    sum(fxsj_fz) fxsj_fz, <!-- 飞行时间-分钟 -->
+                    sum(fxsj_xs_skj) fxsj_xs_skj, <!-- 飞行时间-小时-时控件 -->
+                    sum(fxsj_fz_skj) fxsj_fz_skj, <!-- 飞行时间-分钟-时控件 -->
+                    sum(fsj_xs) fsj_xs, <!-- 发动机时间-小时 -->
+                    sum(fsj_fz) fsj_fz, <!-- 发动机时间-分钟 -->
+                    sum(qljxh) qljxh, <!-- 起落架循环 -->
+                    sum(qljxh_skj) qljxh_skj, <!-- 起落架循环-时控件 -->
+                    sum(jcsj_xs) jcsj_xs, <!-- 绞车时间-小时 -->
+                    sum(jcsj_fz) jcsj_fz, <!-- 绞车时间-分钟 -->
+                    sum(jcxh) jcxh, <!-- 绞车循环 -->
+                    sum(fdj_n1) fdj_n1, <!-- N1 -->
+                    sum(fdj_n2) fdj_n2, <!-- N2 -->
+                    sum(fdj_n3) fdj_n3, <!-- N3 -->
+                    sum(fdj_n4) fdj_n4, <!-- N4 -->
+                    sum(fdj_n5) fdj_n5, <!-- N5 -->
+                    sum(fdj_n6) fdj_n6, <!-- N6 -->
+                    sum(ssdsj_xs) ssdsj_xs, <!-- 搜索灯时间-小时 -->
+                    sum(ssdsj_fz) ssdsj_fz, <!-- 搜索灯时间-分钟 -->
+                    sum(dgxh) dgxh, <!-- 吊挂循环 -->
+                    sum(ts1) ts1, <!-- TS1 -->
+                    sum(ts2) ts2 <!-- TS2 -->
+               from b_h_01001
+              where is_cyjs = 1
+                and zt = 1
+                and xdbs = 0
+                and jh = #{bjh,jdbcType=VARCHAR}
+                and xlh = #{xlh,jdbcType=VARCHAR}
+				and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+              group by jh, xlh, dprtcode) b3
+    on b1.bjh = b3.jh
+   and b1.xlh = b3.xlh
+   and b1.dprtcode = b3.dprtcode
+<!-- 获取一级件数据 -->
+  left join (select t1.fjzch,
+                    t1.jh,
+                    t1.xlh,
+					t1.dprtcode,
+                    case t1.cj
+                      when 2 then
+                       t2.jh
+                      when 1 then
+                       t1.jh
+                      else
+                       t1.jh
+                    end fjdjh,
+                    case t1.cj
+                      when 2 then
+                       t2.xlh
+                      when 1 then
+                       t1.xlh
+                      else
+                       t1.xlh
+                    end fjdxlh,
+                    t1.cj
+               from b_s_003 t1
+               left join b_s_003 t2
+                 on t2.id = t1.fjdid
+              where t1.zt = 1
+                and t1.sxzt = 1
+                and t1.fjzch = #{fjzch,jdbcType=VARCHAR}
+                and t1.jh = #{bjh,jdbcType=VARCHAR}
+                and t1.xlh = #{xlh,jdbcType=VARCHAR}
+				and t1.dprtcode = #{dprtcode,jdbcType=VARCHAR} ) b4
+    on b1.fjzch = b4.fjzch
+   and b1.bjh = b4.jh
+   and b1.xlh = b4.xlh
+   and b1.dprtcode = b4.dprtcode
+  left join (select jh,
+                    xlh,
+					dprtcode,
+                    sum(fxsj_xs) fxsj_xs, <!-- 飞行时间-小时 -->
+                    sum(fxsj_fz) fxsj_fz, <!-- 飞行时间-分钟 -->
+                    sum(fsj_xs) fsj_xs, <!-- 发动机时间-小时 -->
+                    sum(fsj_fz) fsj_fz, <!-- 发动机时间-分钟 -->
+                    sum(qljxh) qljxh, <!-- 起落架循环 -->
+                    sum(jcsj_xs) jcsj_xs, <!-- 绞车时间-小时 -->
+                    sum(jcsj_fz) jcsj_fz, <!-- 绞车时间-分钟 -->
+                    sum(jcxh) jcxh, <!-- 绞车循环 -->
+                    sum(fdj_n1) fdj_n1, <!-- N1 -->
+                    sum(fdj_n2) fdj_n2, <!-- N2 -->
+                    sum(fdj_n3) fdj_n3, <!-- N3 -->
+                    sum(fdj_n4) fdj_n4, <!-- N4 -->
+                    sum(fdj_n5) fdj_n5, <!-- N5 -->
+                    sum(fdj_n6) fdj_n6, <!-- N6 -->
+                    sum(ssdsj_xs) ssdsj_xs, <!-- 搜索灯时间-小时 -->
+                    sum(ssdsj_fz) ssdsj_fz, <!-- 搜索灯时间-分钟 -->
+                    sum(dgxh) dgxh, <!-- 吊挂循环 -->
+                    sum(ts1) ts1, <!-- TS1 -->
+                    sum(ts2) ts2 <!-- TS2 -->
+               from b_h_01001
+              where is_cyjs = 1
+                and zt = 1
+                and xdbs = 0
+				and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+              group by jh, xlh, dprtcode) b5
+    on b4.fjdjh = b5.jh
+   and b4.fjdxlh = b5.xlh
+   and b4.dprtcode = b5.dprtcode
+<!-- 获取飞机汇总数据（缺少飞机注册时的数据） -->
+  left join (select b_s_006.fjzch,
+                    b_s_006.dprtcode,
+                    sum(b_s_00601.fxsj_xs) fxsj_xs,
+                    sum(b_s_00601.fxsj_fz) fxsj_fz,
+                    sum(b_s_00601.qljxh) qljxh,
+                    sum(b_s_00601.ts1) ts1,
+                    sum(b_s_00601.ts2) ts2
+               from b_s_00601
+               join b_s_006
+                 on b_s_006.id = b_s_00601.fxjldid
+                and b_s_006.fjzch = #{fjzch,jdbcType=VARCHAR}
+				and b_s_006.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+                and b_s_006.zt in (2, 12, 99)
+				and b_s_00601.zt = 1
+				and b_s_00601.xdbs = 0
+              group by b_s_006.fjzch, b_s_006.dprtcode) b6
+    on b6.fjzch = b1.fjzch
+   and b6.dprtcode = b1.dprtcode
+<!-- 飞机初始化数据 -->
+  left join (select fjzch,dprtcode,
+                    CASE
+                      WHEN INSTR(init_time_jsfx, ':') > 0 THEN
+                       SUBSTR(init_time_jsfx,
+                              0,
+                              INSTR(init_time_jsfx, ':') - 1)
+                      WHEN INSTR(init_time_jsfx, '.') > 0 THEN
+                       SUBSTR(init_time_jsfx,
+                              0,
+                              INSTR(init_time_jsfx, '.') - 1)
+                      ELSE
+                       init_time_jsfx
+                    END init_time_jsfx_xs,
+                    CASE
+                      WHEN INSTR(init_time_jsfx, ':') > 0 THEN
+                       SUBSTR(init_time_jsfx,
+                              INSTR(init_time_jsfx, ':') + 1,
+                              length(init_time_jsfx))
+                      WHEN INSTR(init_time_jsfx, '.') > 0 THEN
+                       SUBSTR(init_time_jsfx,
+                              INSTR(init_time_jsfx, '.') + 1,
+                              length(init_time_jsfx))
+                      ELSE
+                       '0'
+                    END init_time_jsfx_fz,
+                    init_time_jsfx,
+                    init_loop_qlj,
+                    init_loop_ts1,
+                    init_loop_ts2
+               from (select d_00701.fjzch,d_00701.dprtcode,
+                            max(case init_xmbh
+                                  when 'init_time_jsfx' then
+                                   init_value
+                                  else
+                                   null
+                                end) init_time_jsfx,
+                            max(case init_xmbh
+                                  when 'init_loop_qlj' then
+                                   init_value
+                                  else
+                                   null
+                                end) init_loop_qlj,
+                            max(case init_xmbh
+                                  when 'init_loop_ts1' then
+                                   init_value
+                                  else
+                                   null
+                                end) init_loop_ts1,
+                            max(case init_xmbh
+                                  when 'init_loop_ts2' then
+                                   init_value
+                                  else
+                                   null
+                                end) init_loop_ts2
+                       from d_00701
+                      where d_00701.fjzch = #{fjzch,jdbcType=VARCHAR}
+					    and d_00701.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+                        and d_00701.init_xmbh in
+                            ('init_time_jsfx',
+                             'init_loop_qlj',
+                             'init_loop_ts1',
+                             'init_loop_ts2')
+                      group by d_00701.fjzch, d_00701.dprtcode)) b7
+    on b7.fjzch = b1.fjzch and b7.dprtcode = b1.dprtcode
+
+  </select>
+  
+     <select id="selectDjWorkOrder" parameterType="java.lang.String" resultType="map">  
+        SELECT djrwdid FROM b_g_016 WHERE id = #{id}  
+    </select>  
+    
+  
+  
+</mapper>

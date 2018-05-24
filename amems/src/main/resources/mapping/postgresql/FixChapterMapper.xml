@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.FixChapterMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.FixChapter" >
+    <id column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+    <result column="R_JCSJ" property="rJcsj" jdbcType="VARCHAR" />
+    <result column="BMID" property="bmid" jdbcType="VARCHAR" />
+    <result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" />
+    
+    <result column="DISPLAYNAME" property="displayname" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ZJH, DPRTCODE, ZWMS, YWMS, R_JCSJ, BMID, CJRID, CJSJ
+  </sql>
+    
+     <!-- 根据章节号查询记录数 -->
+   <select id="selectCount"  parameterType="com.eray.thjw.po.FixChapter" resultType="int">
+		select count(1) FROM D_005 where zjh =#{zjh,jdbcType=VARCHAR} and dprtcode =#{dprtcode,jdbcType=VARCHAR} and zt=1
+ 	 </select> 
+ 	 
+   <!-- 增加章节号 -->
+   <insert id="insert" parameterType="com.eray.thjw.po.FixChapter" >
+    insert into D_005
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zwms != null" >
+        ZWMS,
+      </if>
+      <if test="ywms != null" >
+        YWMS,
+      </if>
+      <if test="rJcsj != null" >
+        R_JCSJ,
+      </if>
+      <if test="bmid != null" >
+        BMID,
+      </if>
+        CJSJ,
+      <if test="cjrid != null" >
+        CJRID,
+      </if>
+      ZT,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null" >
+        #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null" >
+        #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="rJcsj != null" >
+        #{rJcsj,jdbcType=VARCHAR},
+      </if>
+      <if test="bmid != null" >
+        #{bmid,jdbcType=VARCHAR},
+      </if>
+       current_timestamp,
+      <if test="cjrid != null" >
+        #{cjrid,jdbcType=DECIMAL},
+      </if>
+          1
+    </trim>
+  </insert> 
+  
+  
+      <!-- 查询章节号参数 -->
+	<sql id="fixchapterParam">
+	   where 
+	   1=1
+	     <if test="keyword != null and keyword != ''">
+		    and (a.zjh like '%'||#{keyword}||'%'
+		       or a.zwms like '%'||#{keyword}||'%'
+		       or a.ywms like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+		<if test="dprtcode != null and dprtcode != ''">
+		    and a.dprtcode = #{dprtcode}
+		</if>
+         and a.zt=1
+	</sql>
+	
+    <select id="selectFixChapterList" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.FixChapter">
+	
+	select a.ZJH, a.DPRTCODE, a.ZWMS, a.YWMS, a.R_JCSJ, a.BMID, a.CJRID, a.CJSJ,
+	
+	b.username||' '||b.realname  displayname ,c.dprtname
+	
+	from d_005 a
+    
+    left join t_user b on a.cjrid=b.id
+    
+    left join t_department c on a.DPRTCODE=c.id
+	
+	<include refid="fixchapterParam"></include>
+	<choose>
+		<when test='pagination.sort == "auto"'>
+			order by a.CJSJ DESC
+		</when>
+		<otherwise>
+			order by a.${pagination.sort} ${pagination.order}
+		</otherwise>
+	</choose>
+  </select>
+  
+ 	 
+    <select id="selectFixChapter"  parameterType="com.eray.thjw.po.FixChapter"  resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include>  from D_005
+		where zjh = #{zjh,jdbcType=VARCHAR} and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findAllFixChapter" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include>  from D_005
+		where zt = 1
+		order by zjh asc    
+	</select>
+ 	 
+ 	  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.FixChapter" >
+    update D_005
+    <set >
+      <if test="zwms != null" >
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null" >
+        YWMS = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="rJcsj != null" >
+        R_JCSJ = #{rJcsj,jdbcType=VARCHAR},
+      </if>
+      <if test="bmid != null" >
+        BMID = #{bmid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjrid != null" >
+        CJRID = #{cjrid,jdbcType=DECIMAL},
+      </if>
+        CJSJ = current_timestamp,
+    </set>
+    where ZJH = #{zjh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+       
+  <delete id="deleteFixChapter" parameterType="java.lang.String" >
+    delete from D_005
+    where ZJH = #{zjh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </delete>
+  
+    <!-- 刘兵使用 根据章节号查询  一条信息 -->
+    <select id="selectPrimaryKeyFixChapter" resultType="com.eray.thjw.po.FixChapter" >
+		select <include refid="Base_Column_List"></include> FROM D_005 
+		where ZJH=#{0} and DPRTCODE=#{1}
+ 	 </select>
+ 	 <!-- 插入或更新 -->
+  <insert id="batchMerge" parameterType="com.eray.thjw.po.FixChapter" >
+		<foreach collection="list" item="item" index="index" separator="union all" > 
+			select fn_d_005_batchmerge(#{item.zjh},#{item.dprtcode},#{item.zwms},#{item.ywms}
+			,#{item.zt},#{item.bmid},#{item.cjrid},#{item.cjsj})
+		</foreach>
+  </insert>
+  
+  <select id="selectByDprtcode"  parameterType="com.eray.thjw.po.FixChapter"  resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include>  from D_005
+		where dprtcode = #{dprtcode,jdbcType=VARCHAR} and zt = 1
+  </select>
+  
+</mapper>

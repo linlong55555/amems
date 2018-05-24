@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.airportensure.dao.ContactpersonRecMapper" >
+   
+  <!-- 联系人日志列表 开始 -->
+  
+  <select id="queryList4D016" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT   
+	       		 B.ID AS "ID",
+       B.LXR AS "LXR",
+       B.ZW AS "ZW",
+       B.SJ AS "SJ",
+       B.ZJ AS "ZJ",
+       B.CZ AS "CZ",
+       B.YXDZ AS "YXDZ",
+       B.QQ AS "QQ",
+       B.WX AS "WX",
+       B.BZ AS "BZ",
+       B.DPRTCODE AS "DPRTCODE",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID"
+            ,CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_NAME",
+            WHR.REALNAME AS "WHR_REALNAME"
+            ,WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+            JG.DPRTNAME AS "DPRTNAME"
+            , '联系人:'||B.lxr||' '||(
+            F_GETREC_HD(B.REC_CZSM)) AS "REC_HD"
+            FROM D_016_REC B 
+            LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+            LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.whrid
+                 LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+            LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+            WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+	        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	        </if>
+	        <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+	        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	         </if>
+	         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	         </if>
+	         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+	        	and (
+	                 B.lxr like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+	            )
+	         </if>
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff4D016" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+               
+             	       		 B.ID AS "ID",
+       B.LXR AS "LXR",
+       B.ZW AS "ZW",
+       B.SJ AS "SJ",
+       B.ZJ AS "ZJ",
+       B.CZ AS "CZ",
+       B.YXDZ AS "YXDZ",
+       B.QQ AS "QQ",
+       B.WX AS "WX",
+       B.BZ AS "BZ",
+       B.DPRTCODE AS "DPRTCODE",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID"
+            ,CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_NAME",
+            WHR.REALNAME AS "WHR_REALNAME"
+            ,WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+            JG.DPRTNAME AS "DPRTNAME"
+            , '联系人:'||B.lxr||' '||(
+            F_GETREC_HD(B.REC_CZSM)) AS "REC_HD"
+ 
+              
+                          FROM D_016_REC B 
+            LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+            LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.whrid
+                 LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+            LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+              
+         WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from D_016_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+       
+  </select>
+
+  
+</mapper>

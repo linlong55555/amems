@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.LoadingListToSpecialConditionEditableMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.LoadingListToSpecialCondition" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="TSFXPZID" property="tsfxpzid" jdbcType="VARCHAR" />
+    <result column="XSZ" property="xsz" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="TBBS" property="tbbs" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ZJQDID, TSFXPZID, XSZ, ZT, WHDWID, WHRID, WHSJ, DPRTCODE, TBBS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_00102
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_00102
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.productionplan.po.LoadingListToSpecialCondition" >
+    insert into B_S_00102 (ID, ZJQDID, TSFXPZID, 
+      XSZ, ZT, WHDWID, WHRID, 
+      WHSJ, DPRTCODE, TBBS
+      )
+    values (#{id,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR}, #{tsfxpzid,jdbcType=VARCHAR}, 
+      #{xsz,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR}, #{tbbs,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.LoadingListToSpecialCondition" >
+    insert into B_S_00102
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID,
+      </if>
+      <if test="tsfxpzid != null" >
+        TSFXPZID,
+      </if>
+      <if test="xsz != null" >
+        XSZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="tbbs != null" >
+        TBBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="tsfxpzid != null" >
+        #{tsfxpzid,jdbcType=VARCHAR},
+      </if>
+      <if test="xsz != null" >
+        #{xsz,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="tbbs != null" >
+        #{tbbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.LoadingListToSpecialCondition" >
+    update B_S_00102
+    <set >
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="tsfxpzid != null" >
+        TSFXPZID = #{tsfxpzid,jdbcType=VARCHAR},
+      </if>
+      <if test="xsz != null" >
+        XSZ = #{xsz,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="tbbs != null" >
+        TBBS = #{tbbs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.LoadingListToSpecialCondition" >
+    update B_S_00102
+    set ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      TSFXPZID = #{tsfxpzid,jdbcType=VARCHAR},
+      XSZ = #{xsz,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      TBBS = #{tbbs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <sql id="Param">
+	   where 
+	   1=1
+	      <!-- 装机清单id-->
+	     <if test="zjqdid != null and zjqdid != ''">
+            and  B.ZJQDID = #{zjqdid,jdbcType=VARCHAR}
+         </if>
+	     <!-- 状态-->
+         <if test="zt != null and zt != ''">
+            and  B.zt = #{zt,jdbcType=DECIMAL}
+         </if>
+	</sql>
+  
+  <!-- 根据所有条件查询 -->
+   <select id="select" resultMap="BaseResultMap" parameterType="com.eray.thjw.productionplan.po.LoadingListToSpecialCondition" >
+    SELECT 
+	 <include refid="Base_Column_List" />
+    FROM B_S_00102 B
+    <include refid="Param" /> 
+    ORDER BY B.ID
+  </select>
+  
+  <!-- 根据条件删除 -->
+  <update id="deleteByParam" parameterType="com.eray.thjw.productionplan.po.LoadingListToSpecialCondition" >
+    update B_S_00102 B set B.ZT = 0 
+    <include refid="Param" /> 
+  </update>
+</mapper>

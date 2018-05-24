@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.AttachmentMapper" >
+  
+  <resultMap id="BaseResultMap" type="com.eray.thjw.flightdata.po.Attachment" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+    <result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+    <result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+    <result column="WJDX" property="wjdx" jdbcType="DECIMAL" />
+    <result column="HZM" property="hzm" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+    <result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+    <result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+    <result column="CZRNAME" property="czrname" jdbcType="VARCHAR" />
+    <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, DPRTCODE, YSWJM, WBWJM, NBWJM, WJDX, HZM, SM, CFLJ, YXZT, CZSJ, CZBMID, 
+    CZRID
+  </sql>
+     <update id="updateById" parameterType="com.eray.thjw.flightdata.po.Attachment">
+    update d_011
+    <set>
+      <if test="mainid != null">
+        mainid = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null">
+        YSWJM = #{yswjm,jdbcType=VARCHAR},
+      </if>
+       <if test="wbwjm != null">
+        WBWJM = #{wbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="nbwjm != null">
+        NBWJM = #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wjdx != null">
+        WJDX = #{wjdx,jdbcType=DECIMAL},
+      </if>
+      <if test="cflj != null">
+        CFLJ = #{cflj,jdbcType=DECIMAL},
+      </if>
+    </set>
+        where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+     
+     <insert id="insertSelective" parameterType="com.eray.thjw.flightdata.po.Attachment" >
+				    insert into D_011
+				    <trim prefix="(" suffix=")" suffixOverrides="," >
+				      <if test="id != null" >
+				        ID,
+				      </if>
+				      <if test="mainid != null" >
+				        MAINID,
+				      </if>
+				      <if test="dprtcode != null" >
+				        DPRTCODE,
+				      </if>
+				      <if test="yswjm != null" >
+				        YSWJM,
+				      </if>
+				      <if test="wbwjm != null" >
+				        WBWJM,
+				      </if>
+				      <if test="nbwjm != null" >
+				        NBWJM,
+				      </if>
+				      <if test="wjdx != null" >
+				        WJDX,
+				      </if>
+				      <if test="hzm != null" >
+				        HZM,
+				      </if>
+				      <if test="sm != null" >
+				        SM,
+				      </if>
+				      <if test="cflj != null" >
+				        CFLJ,
+				      </if>
+				        YXZT,
+				        CZSJ,
+				      <if test="czbmid != null" >
+				        CZBMID,
+				      </if>
+				      <if test="czrid != null" >
+				        CZRID,
+				      </if>
+				    </trim>
+				    <trim prefix="values (" suffix=")" suffixOverrides="," >
+				      <if test="id != null" >
+				        #{id,jdbcType=VARCHAR},
+				      </if>
+				      <if test="mainid != null" >
+				        #{mainid,jdbcType=VARCHAR},
+				      </if>
+				      <if test="dprtcode != null" >
+				        #{dprtcode,jdbcType=VARCHAR},
+				      </if>
+				      <if test="yswjm != null" >
+				        #{yswjm,jdbcType=VARCHAR},
+				      </if>
+				      <if test="wbwjm != null" >
+				        #{wbwjm,jdbcType=VARCHAR},
+				      </if>
+				      <if test="nbwjm != null" >
+				        #{nbwjm,jdbcType=VARCHAR},
+				      </if>
+				      <if test="wjdx != null" >
+				        #{wjdx,jdbcType=DECIMAL},
+				      </if>
+				      <if test="hzm != null" >
+				        #{hzm,jdbcType=VARCHAR},
+				      </if>
+				      <if test="sm != null" >
+				        #{sm,jdbcType=VARCHAR},
+				      </if>
+				      <if test="cflj != null" >
+				        #{cflj,jdbcType=VARCHAR},
+				      </if>
+				        1 ,
+				       current_timestamp,
+				      <if test="czbmid != null" >
+				        #{czbmid,jdbcType=VARCHAR},
+				      </if>
+				      <if test="czrid != null" >
+				        #{czrid,jdbcType=VARCHAR},
+				      </if>
+		       </trim>
+		  </insert>
+		  
+		  
+		  
+   <select id="queryListAttachments" resultMap="BaseResultMap"  parameterType="com.eray.thjw.flightdata.po.Attachment" >
+    select 
+     t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID, 
+     t1.username || ' ' ||t1.realname as CZRNAME
+    from d_011 t left join T_USER t1 on t.czrid=t1.id 
+    where t.mainid = #{mainid} and t.yxzt = 1
+  </select>
+  
+  
+  <select id="selectListAttachments" resultMap="BaseResultMap"  parameterType="com.eray.thjw.flightdata.po.Attachment" >
+	select
+	t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM,
+	t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID,
+	t1.username || ' ' ||t1.realname as CZRNAME from d_011 t left join T_USER t1 on
+	t.czrid=t1.id
+	where t.mainid in (select id from b_p_00201 where mainid= #{mainid} )and t.yxzt = 1
+  </select>
+  
+  <select id="selectListAttachmentsByPlane" resultMap="BaseResultMap"  parameterType="com.eray.thjw.flightdata.po.Attachment" >
+	select
+	t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM,
+	t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID,
+	t1.username || ' ' ||t1.realname as CZRNAME from d_011 t left join T_USER t1 on
+	t.czrid=t1.id
+	where t.mainid in (select id from B_P_00201 where mainid= #{mainid} )and t.yxzt = 1
+  </select>
+  
+   <select id="selectAttachments" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+	select
+	* from d_011   where mainid= #{mainid} and yxzt = 1
+  </select>
+  
+  
+  
+  
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+    select 
+     t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID, 
+     t1.username || ' ' ||t1.realname as CZRNAME
+    from d_011 t left join T_USER t1 on t.czrid=t1.id 
+    where t.id = #{id} and t.yxzt = 1
+  </select>
+  
+  
+  
+  
+  <update id="delFile" parameterType="com.eray.thjw.flightdata.po.Attachment" >
+    update d_011 set YXZT = 0 where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <delete id="delFiles" parameterType="com.eray.thjw.flightdata.po.Attachment" >
+    update d_011 set YXZT = 0  where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  
+   <delete id="delFileByids" parameterType="java.util.List" >
+    update d_011 set YXZT = 0
+			where ID in 
+			 <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+			 </foreach>
+  </delete>
+   
+  <insert id="addFile" parameterType="com.eray.thjw.flightdata.po.Attachment" >
+    insert into d_011
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="yswjm != null" >
+        YSWJM,
+      </if>
+      
+      <if test="wbwjm != null" >
+        WBWJM,
+      </if>
+      <if test="nbwjm != null" >
+        NBWJM,
+      </if>
+      <if test="wjdx != null" >
+        WJDX,
+      </if>
+      <if test="hzm != null" >
+        HZM,
+      </if>
+      
+      
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="cflj != null" >
+        CFLJ,
+      </if>
+      <if test="czbmid != null" >
+        CZBMID,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+      CZSJ,
+      YXZT
+       
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    
+      <if test="id != null" >
+          #{id},
+      </if>
+      <if test="mainid != null" >
+        #{mainid},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode},
+      </if>
+      <if test="yswjm != null" >
+        #{yswjm},
+      </if>
+      
+      
+      <if test="wbwjm != null" >
+        #{wbwjm},
+      </if>
+      <if test="nbwjm != null" >
+        #{nbwjm},
+      </if>
+      <if test="wjdx != null" >
+        #{wjdx},
+      </if>
+      <if test="hzm != null" >
+        #{hzm},
+      </if>
+      
+      <if test="sm != null" >
+         #{sm},
+      </if>
+      <if test="cflj != null" >
+        #{cflj},
+      </if>
+      <if test="czbmid != null" >
+        #{czbmid},
+      </if>
+      <if test="czrid != null" >
+        #{czrid},
+      </if>
+        current_timestamp,      
+        1
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="java.lang.String">
+    update d_011
+    set YXZT = 0
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <update id="updateByPrimaryKeySelitive" parameterType="com.eray.thjw.flightdata.po.Attachment">
+    update d_011
+    <set>
+      <if test="mainid != null">
+        mainid = #{mainid,jdbcType=VARCHAR},
+      </if>
+    </set>
+        where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  <!-- 附件对应的单据作废修改附件状态 -->
+  <update id="updateByMainid" parameterType="java.lang.String">
+  	 update d_011
+    set YXZT = 0
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 获取技术文件附件 -->
+  <select id="selectTechnicalByPrimaryKey" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+    select 
+     t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID, 
+     t1.username || ' ' ||t1.realname as CZRNAME
+    from B_G_00101 t left join T_USER t1 on t.czrid=t1.id 
+    where t.id = #{id} and t.yxzt = 1
+  </select>
+  
+  <!-- 获取工单附件 -->
+  <select id="selectWOJobEnclosureByPrimaryKey" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+    select 
+     t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, 
+     t1.username || ' ' ||t1.realname as CZRNAME
+    from B_G_00603 t left join T_USER t1 on t.czrid=t1.id 
+    where t.id = #{id} and t.yxzt = 1
+  </select>
+  <!-- 飞机注册 -->
+  <select id="queryPlaneDataListAttachments" resultMap="BaseResultMap"  parameterType="com.eray.thjw.flightdata.po.Attachment" >
+    select 
+     t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID, 
+     t1.username || ' ' ||t1.realname as CZRNAME
+    from d_011 t left join T_USER t1 on t.czrid=t1.id 
+    where t.mainid = #{mainid} and t.dprtcode=#{dprtcode} and t.yxzt = 1
+  </select>
+  
+  <select id="queryPlaneDataListAttachmentsByMainIds" resultMap="BaseResultMap" >
+    select 
+     t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID, 
+     t1.username || ' ' ||t1.realname as CZRNAME
+    from d_011 t left join T_USER t1 on t.czrid=t1.id 
+    where   t.yxzt = 1
+    	and t.mainid in 
+		<foreach collection="list" item="mainid" index="index" open="(" close=")" separator=",">
+			#{mainid}
+		 </foreach>
+    
+  </select>
+</mapper>

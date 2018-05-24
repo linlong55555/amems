@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.DestructionDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.DestructionDetail">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="mainid" jdbcType="VARCHAR" property="mainid" />
+    <result column="kcllid" jdbcType="VARCHAR" property="kcllid" />
+    
+      <association property="destruction" javaType="com.eray.thjw.aerialmaterial.po.Destruction">
+         <id column="mainid" property="id"/>
+         <result column="xhdh" property="xhdh"/>
+         <result column="xhrq" property="xhrq"/>
+         <result column="zt" property="zt"/>
+         <result column="zdsj" property="zdsj"/>
+         <result column="dprtcode" property="dprtcode"/>
+     </association>
+     
+      <association property="materialHistory" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+         <id column="MID" property="id"/>
+         <result column="pch" property="pch"/>
+         <result column="sn" property="sn"/>
+         <result column="kcsl" property="kcsl"/>
+         <result column="kccb" property="kccb"/>
+     </association>
+      <association property="hCMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">
+         <id column="HID" property="id"/>
+         <result column="zwms" property="zwms"/>
+         <result column="ywms" property="ywms"/>
+         <result column="jldw" property="jldw"/>
+         <result column="bjh" property="bjh"/>
+         <result column="cjjh" property="cjjh"/>
+         <result column="hclx" property="hclx"/>
+         <result column="gljb" property="gljb"/>
+         <result column="hcjz" property="hcjz"/>
+     </association>
+     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mainid, kcllid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_h_02101
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from b_h_02101
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.DestructionDetail">
+    insert into b_h_02101 (id, mainid, kcllid
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.DestructionDetail">
+    insert into b_h_02101
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mainid != null">
+        mainid,
+      </if>
+      <if test="kcllid != null">
+        kcllid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.DestructionDetail">
+    update b_h_02101
+    <set>
+      <if test="mainid != null">
+        mainid = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        kcllid = #{kcllid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.DestructionDetail">
+    update b_h_02101
+    set mainid = #{mainid,jdbcType=VARCHAR},
+      kcllid = #{kcllid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByMainid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_h_02101
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+      <select id="queryAll" parameterType="com.eray.thjw.aerialmaterial.po.DestructionDetail" resultMap="BaseResultMap">
+  select * from (
+				select 
+				    b_h_02101.id, b_h_02101.mainid, b_h_02101.kcllid,
+				    D_008.zwms,D_008.ywms,D_008.jldw,D_008.cjjh,D_008.hclx,D_008.gljb,D_008.bjh,D_008.hcjz,D_008.id as HID,
+				    b_h_017.pch,b_h_017.sn,b_h_017.kcsl,b_h_017.kccb,b_h_017.id as MID,
+				    b_h_021.xhdh,b_h_021.xhrq,b_h_021.zt,b_h_021.dprtCode,b_h_021.zdsj,
+				    t_department.dprtname jg_dprtname
+				    from b_h_02101 left join b_h_021 on b_h_02101.mainid = b_h_021.id 
+				    			   left join b_h_017 on b_h_02101.kcllid=b_h_017.id
+				    			   left join D_008 on b_h_017.bjid = D_008.id 
+				    			    left join t_department on(b_h_021.dprtcode=t_department.id)
+							           where b_h_021.zt in(2,11)
+								     <if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode  != ''">
+							            and  b_h_021.dprtcode = #{paramsMap.dprtcode}
+							         </if> 
+								     <if test="paramsMap != null and paramsMap.zt != null and paramsMap.zt  != ''">
+							            and  b_h_021.zt = cast(#{paramsMap.zt} as NUMERIC)
+							         </if>
+								     <if test="paramsMap != null and paramsMap.hclx != null and paramsMap.hclx  != ''">
+							            and  D_008.hclx = cast(#{paramsMap.hclx} as NUMERIC)  
+							         </if>
+							         
+									<if test="paramsMap != null and paramsMap.xhrqBegin != null and paramsMap.xhrqBegin != ''">
+									    and b_h_021.xhrq &gt;= to_timestamp(#{paramsMap.xhrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									<if test="paramsMap != null and paramsMap.xhrqEnd != null and paramsMap.xhrqEnd != ''">
+									    and b_h_021.xhrq &lt;= to_timestamp(#{paramsMap.xhrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									 <if test="keyword != null and keyword != ''">
+									    and (   b_h_021.xhdh like '%'||#{keyword}||'%'
+									    	or D_008.bjh like '%'||#{keyword}||'%'
+									    	or b_h_017.pch like '%'||#{keyword}||'%'
+									    	or b_h_017.sn like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+									</if>
+													)  t
+						  	<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+								    	<when test='pagination.sort == "auto"'>                       
+								    		order by zdsj asc
+								    		
+								    	</when>
+								    	<otherwise>
+										    order by ${pagination.sort} ${pagination.order}
+								    	</otherwise>
+							 </choose>
+   
+  </select>
+      <select id="queryAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.DestructionDetail" resultMap="BaseResultMap">
+  select * from (
+				select 
+				    b_h_02101.id, b_h_02101.mainid, b_h_02101.kcllid,
+				    D_008.zwms,D_008.ywms,D_008.jldw,D_008.cjjh,D_008.hclx,D_008.gljb,D_008.bjh,D_008.hcjz,D_008.id as HID,
+				    b_h_017.pch,b_h_017.sn,b_h_017.kcsl,b_h_017.kccb,b_h_017.id as MID,
+				    b_h_021.xhdh,b_h_021.xhrq,b_h_021.zt,b_h_021.dprtCode,b_h_021.zdsj,
+				    t_department.dprtname jg_dprtname
+				    from b_h_02101 left join b_h_021 on b_h_02101.mainid = b_h_021.id 
+				    			   left join b_h_017 on b_h_02101.kcllid=b_h_017.id
+				    			   left join D_008 on b_h_017.bjid = D_008.id 
+				    			    left join t_department on(b_h_021.dprtcode=t_department.id)
+							           where b_h_021.zt in(2,11)
+								     <if test="dprtcode != null and dprtcode  != ''">
+							            and  b_h_021.dprtcode = #{dprtcode}
+							         </if> 
+								     <if test="zt != null and zt  != ''">
+							            and  b_h_021.zt = cast(#{zt} as NUMERIC)
+							         </if>
+								     <if test="hclx != null and hclx  != ''">
+							            and  D_008.hclx = cast(#{hclx} as NUMERIC)  
+							         </if>
+							         
+									<if test="xhrqBegin != null and xhrqBegin != ''">
+									    and b_h_021.xhrq &gt;= to_timestamp(#{xhrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									<if test="xhrqEnd != null and xhrqEnd != ''">
+									    and b_h_021.xhrq &lt;= to_timestamp(#{xhrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									 <if test="keyword != null and keyword != ''">
+									    and (   b_h_021.xhdh like '%'||#{keyword}||'%'
+									    	or D_008.bjh like '%'||#{keyword}||'%'
+									    	or b_h_017.pch like '%'||#{keyword}||'%'
+									    	or b_h_017.sn like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+									</if>
+													)  t
+								    		order by zdsj asc
+   
+  </select>
+  
+  
+  
+</mapper>

@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ReceiptSheetMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ReceiptSheet">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="dprtcode" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="shlx" jdbcType="INTEGER" property="shlx" />
+    <result column="shdh" jdbcType="VARCHAR" property="shdh" />
+    <result column="shbmid" jdbcType="VARCHAR" property="shbmid" />
+    <result column="shrid" jdbcType="VARCHAR" property="shrid" />
+    <result column="shrq" jdbcType="TIMESTAMP" property="shrq" />
+    <result column="jddxid" jdbcType="VARCHAR" property="jddxid" />
+    <result column="jdfzr" jdbcType="VARCHAR" property="jdfzr" />
+    <result column="zt" jdbcType="INTEGER" property="zt" />
+    <result column="zdrid" jdbcType="VARCHAR" property="zdrid" />
+    <result column="zdsj" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="bz" jdbcType="VARCHAR" property="bz" />
+    <result column="xgdjid" jdbcType="VARCHAR" property="xgdjid" />
+    <result column="xgdjbh" jdbcType="VARCHAR" property="xgdjbh" />
+    <result column="fhdw" jdbcType="VARCHAR" property="fhdw" />
+  </resultMap>
+  <!-- 配置收货人与用户关系  -->
+  <resultMap type="com.eray.thjw.aerialmaterial.po.ReceiptSheet" id="ReceiptToUserMap" extends="BaseResultMap">  
+	  	<association property="shr" javaType="com.eray.thjw.po.User">  
+	        <id column="SHRID" property="id"/>  
+	        <result column="SHRUSERNAME" property="username"/>  
+	        <result column="SHRREALNAME" property="realname"/>  
+	    </association>  
+	    <association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZDRID" property="id"/>  
+	        <result column="ZDRUSERNAME" property="username"/>  
+	        <result column="ZDRREALNAME" property="realname"/>  
+	    </association> 
+	    <association property="secondment" javaType="com.eray.thjw.aerialmaterial.po.Secondment">  
+	        <id column="SECONDMENTID" property="id"/>  
+	        <result column="JDDXBH" property="jddxbh"/>  
+	        <result column="JDDXLX" property="jddxlx"/>  
+	        <result column="JDDXMS" property="jddxms"/>  
+	    </association> 
+	    <collection property="inspections" ofType="com.eray.thjw.aerialmaterial.po.Inspection">  
+            <id column="INSPECTIONID" property="id"/>  
+		    <result column="JYDH" property="jydh" jdbcType="VARCHAR" />
+		    <result column="JYJG" property="jyjg" jdbcType="VARCHAR" />
+        </collection>  
+        <collection property="details" ofType="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail">  
+            <id column="DETAILID" property="id"/>  
+		    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+		    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+		    <result column="YJID" jdbcType="VARCHAR" property="yjid" />
+		    <result column="DXGDJID" jdbcType="VARCHAR" property="xgdjid" />
+		    <result column="PCH" jdbcType="VARCHAR" property="pch" />
+		    <result column="SN" jdbcType="VARCHAR" property="sn" />
+		    <result column="KWID" jdbcType="VARCHAR" property="kwid" />
+		    <result column="SL" jdbcType="NUMERIC" property="sl" />
+		    <result column="THSL" jdbcType="NUMERIC" property="thsl" />
+		    <result column="IS_ZJ" jdbcType="INTEGER" property="isZj" />
+		    <result column="CKID" jdbcType="VARCHAR" property="ckid" />
+		    <result column="KCLLID" jdbcType="VARCHAR" property="kcllid" />
+		    <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+		        <id column="HCMAINDATAID" property="id"/>  
+		        <result column="BJH" property="bjh" jdbcType="VARCHAR"/>  
+		        <result column="ZWMS" property="zwms" jdbcType="VARCHAR"/>  
+		        <result column="YWMS" property="ywms" jdbcType="VARCHAR"/>  
+		        <result column="GLJB" property="gljb" jdbcType="INTEGER"/>  
+		    </association>
+		    <association property="yjMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+		        <id column="YJMAINDATAID" property="id"/>  
+		        <result column="YJBJH" property="bjh" jdbcType="VARCHAR"/>  
+		        <result column="YJZWMS" property="zwms" jdbcType="VARCHAR"/>  
+		        <result column="YJYWMS" property="ywms" jdbcType="VARCHAR"/>  
+		        <result column="YJGLJB" property="gljb" jdbcType="INTEGER"/>  
+		    </association>  
+        </collection>  
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dprtcode, shlx, shdh, shbmid, shrid, shrq, jddxid, jdfzr, zt, zdrid, zdsj, bz, 
+    xgdjid, fhdw
+  </sql>
+  <sql id="User_Column_List" >
+    B1.ID, B1.DPRTCODE, B1.SHLX, B1.SHDH, B1.SHBMID, B1.SHRID, B1.SHRQ, B1.JDDXID, B1.JDFZR,
+    B1.ZT, B1.ZDRID, B1.ZDSJ, B1.BZ, B1.XGDJID, B1.FHDW,
+    CASE 
+    	WHEN B1.SHLX = 1 OR B1.SHLX = 2 
+    		THEN B2.HTLSH 
+    	WHEN B1.SHLX = 3 
+    		THEN B3.SQDH 
+    	ELSE '' 
+    	END XGDJBH,
+    U1.USERNAME AS SHRUSERNAME, U1.REALNAME AS SHRREALNAME,
+    U2.USERNAME AS ZDRUSERNAME, U2.REALNAME AS ZDRREALNAME
+  </sql>
+  <sql id="Detail_Column_List" >
+    <include refid="User_Column_List" />,
+    B5.ID AS DETAILID, B5.BJID, B5.XGDJID AS DXGDJID, B5.SN, B5.PCH, B5.KWID, B5.SL, B5.THSL, B5.IS_ZJ, B5.KCLLID, B5.YJID,
+	D1.ID AS HCMAINDATAID,D1.BJH, D1.ZWMS, D1.YWMS, D1.GLJB,
+	D3.ID AS YJMAINDATAID,D3.BJH AS YJBJH, D3.ZWMS AS YJZWMS, D3.YWMS AS YJYWMS, D3.GLJB AS YJGLJB,
+	D2.MAINID AS CKID,B6.ID AS SECONDMENTID,B6.JDDXBH ,B6.JDDXLX ,B6.JDDXMS
+  </sql>
+  <sql id="Common_Param">
+	   where 
+	   1=1
+	   <!-- 收货类型 -->
+   	   <if test="shlx != null">
+          and  b1.shlx = #{shlx, jdbcType=DECIMAL}
+       </if>
+       <!-- 状态 -->
+   	   <if test="zt != null">
+          and  b1.zt = #{zt, jdbcType=DECIMAL}
+       </if>
+       <!-- 收货日期-->
+	   <if test="shrq != null and shrq != ''">
+          and  b1.shrq = to_date(#{shrq, jdbcType=VARCHAR},'yyyy-mm-dd')
+       </if>
+       <!-- 机构id-->
+	   <if test="dprtcode != null and dprtcode != ''">
+          and  b1.dprtcode = #{dprtcode, jdbcType=VARCHAR}
+       </if>
+       <if test="shrqBegin != null and shrqBegin != ''">
+          and  b1.shrq &gt;= to_date(#{shrqBegin},'yyyy-mm-dd')
+       </if>
+       <if test="shrqEnd != null and shrqEnd != ''">
+          and  b1.shrq &lt;= to_date(#{shrqEnd},'yyyy-mm-dd')
+       </if>
+       <!-- 关键字 -->
+   	   <if test="keyword != null and keyword != ''">
+          and  (b1.shdh like '%'||#{keyword}||'%'  or
+          	    b2.htlsh like '%'||#{keyword}||'%' or
+          	    b3.sqdh like '%'||#{keyword}||'%' or
+          	    u1.username like '%'||#{keyword}||'%' or
+          	    u1.realname like '%'||#{keyword}||'%'
+          	)
+       </if>
+  </sql>
+  <sql id="componentParam">
+	   <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+          and  (d008.bjh like '%'||#{paramsMap.keyword}||'%'
+          	)
+       </if>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_h_020
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from b_h_020
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet">
+    insert into b_h_020 (id, dprtcode, shlx, 
+      shdh, shbmid, shrid, 
+      shrq, jddxid, jdfzr, 
+      zt, zdrid, zdsj, 
+      bz, xgdjid)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{shlx,jdbcType=INTEGER}, 
+      #{shdh,jdbcType=VARCHAR}, #{shbmid,jdbcType=VARCHAR}, #{shrid,jdbcType=VARCHAR}, 
+      #{shrq,jdbcType=TIMESTAMP}, #{jddxid,jdbcType=VARCHAR}, #{jdfzr,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=INTEGER}, #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, 
+      #{bz,jdbcType=VARCHAR}, #{xgdjid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet">
+    insert into b_h_020
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dprtcode != null">
+        dprtcode,
+      </if>
+      <if test="shlx != null">
+        shlx,
+      </if>
+      <if test="shdh != null">
+        shdh,
+      </if>
+      <if test="shbmid != null">
+        shbmid,
+      </if>
+      <if test="shrid != null">
+        shrid,
+      </if>
+      <if test="shrq != null">
+        shrq,
+      </if>
+      <if test="jddxid != null">
+        jddxid,
+      </if>
+      <if test="jdfzr != null">
+        jdfzr,
+      </if>
+      <if test="zt != null">
+        zt,
+      </if>
+      <if test="zdrid != null">
+        zdrid,
+      </if>
+      <if test="zdsj != null">
+        zdsj,
+      </if>
+      <if test="bz != null">
+        bz,
+      </if>
+      <if test="xgdjid != null">
+        xgdjid,
+      </if>
+      <if test="fhdw != null">
+        fhdw,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="shlx != null">
+        #{shlx,jdbcType=INTEGER},
+      </if>
+      <if test="shdh != null">
+        #{shdh,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null">
+        #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrq != null">
+        #{shrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jddxid != null">
+        #{jddxid,jdbcType=VARCHAR},
+      </if>
+      <if test="jdfzr != null">
+        #{jdfzr,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        current_timestamp,
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null">
+        #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="fhdw != null">
+        #{fhdw,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet">
+    update b_h_020
+    <set>
+      <if test="shlx != null">
+        shlx = #{shlx,jdbcType=INTEGER},
+      </if>
+      <if test="shdh != null">
+        shdh = #{shdh,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null">
+        shbmid = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null">
+        shrid = #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrq != null">
+        shrq = #{shrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jddxid != null">
+        jddxid = #{jddxid,jdbcType=VARCHAR},
+      </if>
+      <if test="jdfzr != null">
+        jdfzr = #{jdfzr,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        zt = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="zdrid != null">
+        zdrid = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        zdsj = current_timestamp,
+      </if>
+      <if test="bz != null">
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null">
+        xgdjid = #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="fhdw != null">
+        fhdw = #{fhdw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet">
+    update b_h_020
+    set 
+      shlx = #{shlx,jdbcType=INTEGER},
+      shdh = #{shdh,jdbcType=VARCHAR},
+      shbmid = #{shbmid,jdbcType=VARCHAR},
+      shrid = #{shrid,jdbcType=VARCHAR},
+      shrq = #{shrq,jdbcType=TIMESTAMP},
+      jddxid = #{jddxid,jdbcType=VARCHAR},
+      jdfzr = #{jdfzr,jdbcType=VARCHAR},
+      zt = #{zt,jdbcType=INTEGER},
+      zdrid = #{zdrid,jdbcType=VARCHAR},
+      zdsj = #{zdsj,jdbcType=TIMESTAMP},
+      bz = #{bz,jdbcType=VARCHAR},
+      xgdjid = #{xgdjid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据条件分页查询机型列表 -->  
+  <select id="queryPage" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet" resultMap="ReceiptToUserMap">
+	 SELECT 
+		 <include refid="User_Column_List" />
+		 FROM B_H_020 B1
+		 LEFT JOIN B_H_004 B2 ON B1.XGDJID = B2.ID
+		 LEFT JOIN B_H_018 B3 ON B1.XGDJID = B3.ID
+		 LEFT JOIN T_USER U1 ON B1.SHRID = U1.ID
+		 LEFT JOIN T_USER U2 ON B1.ZDRID = U2.ID
+     <include refid="Common_Param"></include>
+     AND B1.ZT IN (1,2)
+     <choose>
+	 	<when test='pagination.sort == "auto"'>
+	 		ORDER BY B1.SHDH DESC 
+	 	</when>
+	 	<otherwise>
+		    ORDER BY B1.${pagination.sort} ${pagination.order}
+	 	</otherwise>
+ 	</choose>	
+  </select>
+  
+  <!-- 采购部件分页查询 -->  
+  <select id="queryPurchasePage" parameterType="com.eray.thjw.po.BaseEntity" resultType="map">
+  	  select 
+  		B.ID AS "ID", B.MAINID AS "MAINID",  B.DHSL AS "DHSL" , B.RKSL AS "RKSL" , 
+			B.BJID AS "BJID", B.BJH AS "BJH", 
+			B.ZWMS AS "ZWMS", B.YWMS AS "YWMS", 
+			B.HCLX AS "HCLX", B.GLJB AS "GLJB", B.JLDW AS "JLDW", b.zdsl as "ZDSL"
+	    FROM
+	  (SELECT 
+	  		t.*,
+		CASE 
+		  <choose>                                                                 
+		   	  <when test='paramsMap.choose.size > 0'>   
+		   	  	  <foreach collection="paramsMap.choose" item="item" index="index">
+					when t.bjid = #{item.bjid}
+						then t.zdsltemp - cast(#{item.sl} as numeric)
+			   	  </foreach>
+		   	  </when>
+		   	  <otherwise>   
+		   	  		when 1 = 1
+					   then t.zdsltemp            
+		   	  </otherwise>
+ 		  </choose>
+	    else t.zdsltemp
+	    	end zdsl
+	  from 
+	 (select bh00401.id, bh00401.mainid,  bh00401.dhsl, bh00401.rksl, 
+	 		bh00401.ht_sl - bh00401.dhsl as ZDSLTEMP,
+			d008.id as bjid, d008.bjh, 
+			d008.zwms, d008.ywms, 
+			d008.hclx, d008.gljb, d008.jldw
+		from b_h_00401 bh00401
+		left join b_h_00201 bh00201 on bh00401.tddhcid = bh00201.id 
+		left join d_008 d008 on bh00201.bjid = d008.id 
+		where  bh00401.ht_sl > bh00401.dhsl 
+			and bh00401.zt = 1 
+			and bh00401.mainid = #{paramsMap.id,jdbcType=VARCHAR}
+			<include refid="componentParam"></include>) T) B
+	  where b.zdsl > 0
+  </select>
+  
+  <!-- 送修部件分页查询 -->  
+  <select id="queryRepairPage" parameterType="com.eray.thjw.po.BaseEntity" resultType="map">
+  	select
+  		b.id as "ID", b.mainid as "MAINID",  b.dhsl as "DHSL", b.rksl as "RKSL" , 
+			b.bjid as "BJID", b.bjh as "BJH", 
+			b.zwms as "ZWMS", b.ywms as "YWMS", 
+			b.hclx as "HCLX", b.gljb as "GLJB", b.jldw as "JLDW", b.zdsl as "ZDSL",
+			b.sn as "SN"
+	   from
+  		(SELECT 
+	  		t.*,
+		CASE 
+		  <choose>                                                                 
+		   	  <when test='paramsMap.choose.size > 0'>   
+		   	  	  <foreach collection="paramsMap.choose" item="item" index="index">
+					when t.bjid = #{item.bjid}
+						then t.zdsltemp - cast(#{item.sl} as numeric)
+			   	  </foreach>
+		   	  </when>
+		   	  <otherwise>   
+		   	  		when 1 = 1
+					   then t.zdsltemp            
+		   	  </otherwise>
+ 		  </choose>
+	    else t.zdsltemp
+	    	end ZDSL
+	  from 
+	 (select bh00401.id, bh00401.mainid,  bh00401.dhsl, bh00401.rksl, 
+	 		bh00401.ht_sl - bh00401.dhsl as ZDSLTEMP,
+			d008.id as BJID, d008.bjh, 
+			d008.zwms, d008.ywms, 
+			d008.hclx, d008.gljb, d008.jldw, bh017.sn
+		from b_h_00401 bh00401
+		left join b_h_00203 bh00203 on bh00401.tddhcid = bh00203.id 
+		left join b_h_017 bh017 on bh00203.kcllid = bh017.id
+		left join d_008 d008 on bh017.bjid = d008.id 
+		where  bh00401.ht_sl > bh00401.dhsl 
+			and bh00401.zt = 1 
+			and bh00401.mainid = #{paramsMap.id,jdbcType=VARCHAR}
+			<include refid="componentParam"></include>) T) B
+		where b.zdsl > 0
+  </select>
+  
+  <!-- 借入申请部件分页查询 -->  
+  <select id="queryBorrowPage" parameterType="com.eray.thjw.po.BaseEntity" resultType="map">
+  	select
+  		b.id as "ID", b.mainid as "MAINID",  b.jlsl as "JLSL",
+			b.bjid as "BJID", b.bjh as "BJH", 
+			b.zwms as "ZWMS", b.ywms as "YWMS", 
+			b.hclx as "HCLX", b.gljb as "GLJB", b.jldw as "JLDW", b.zdsl as "ZDSL"
+	 from
+  	  (SELECT 
+	  		t.*,
+		CASE 
+		  <choose>                                                                 
+		   	  <when test='paramsMap.choose.size > 0'>   
+		   	  	  <foreach collection="paramsMap.choose" item="item" index="index">
+					when t.bjid = #{item.bjid}
+						then t.zdsltemp - cast(#{item.sl} as numeric)
+			   	  </foreach>
+		   	  </when>
+		   	  <otherwise>   
+		   	  		when 1 = 1
+					   then t.zdsltemp            
+		   	  </otherwise>
+ 		  </choose>
+	    else t.zdsltemp
+	    	end ZDSL
+	  from
+	 (SELECT
+		bh01801.ID,
+		bh01801.mainid,
+		bh01801.sl AS JLSL,
+		bh01801.shsl - bh01801.sl as zdsltemp,
+		d008.ID AS BJID,
+		d008.bjh,
+		d008.zwms,
+		d008.ywms,
+		d008.hclx,
+		d008.gljb,
+		d008.jldw
+	FROM
+		b_h_01801 bh01801
+	LEFT JOIN d_008 d008 ON bh01801.bjid = d008.ID
+		where  bh01801.shsl > bh01801.sl 
+			and bh01801.zt = 1 
+			and bh01801.mainid = #{paramsMap.id,jdbcType=VARCHAR}
+			<include refid="componentParam"></include>) T) B
+		where b.zdsl > 0
+  </select>
+  
+  <!-- 根据id查询收货数据 -->  
+  <select id="queryById" parameterType="java.lang.String" resultMap="ReceiptToUserMap">
+	 SELECT
+		<include refid="Detail_Column_List" />
+		 FROM B_H_020 B1
+			 LEFT JOIN B_H_004 B2 ON B1.XGDJID = B2.ID
+			 LEFT JOIN B_H_018 B3 ON B1.XGDJID = B3.ID
+			 LEFT JOIN B_H_006_NEW B4 ON B1.ID = B4.SHDID AND B4.ZT IN (2, 10)
+			 LEFT JOIN B_H_02001 B5 ON B1.ID = B5.MAINID
+			 LEFT JOIN B_H_014 B6 ON B1.JDDXID = B6.ID
+			 LEFT JOIN D_008 D1 ON B5.BJID = D1.ID
+			 LEFT JOIN D_00901 D2 ON B5.KWID = D2.ID
+			 LEFT JOIN D_008 D3 ON B5.YJID = D3.ID
+			 LEFT JOIN T_USER U1 ON B1.SHRID = U1.ID
+			 LEFT JOIN T_USER U2 ON B1.ZDRID = U2.ID
+		where b1.id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 更新合同到货数量 -->  
+  <update id="updateContractDhsl" parameterType="map">
+	 UPDATE B_H_00401  
+	 <choose>
+	 	<when test='revoke != null and revoke == 1'>
+	 		SET DHSL = DHSL - #{sl, jdbcType=DECIMAL}
+	 	</when>
+	 	<otherwise>
+			SET DHSL = DHSL + #{sl, jdbcType=DECIMAL}
+	 	</otherwise>
+ 	 </choose>	
+		WHERE ID =  #{xgdjid, jdbcType=VARCHAR}
+  </update>
+  
+    <!-- 更新合同入库数量 -->  
+  <update id="updateContractRksl" parameterType="map">
+	 UPDATE B_H_00401  
+ 		SET DHSL = rksl - #{sl, jdbcType=DECIMAL}
+		WHERE ID =  #{xgdjid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 更新合同到货数量状态 -->  
+  <update id="updateContractDhslZt" parameterType="map">
+	 UPDATE B_H_004 
+	 SET 
+	     DHZT =  (CASE 
+					WHEN (SELECT COUNT(1) FROM B_H_00401 T1 WHERE T1.MAINID = #{htid, jdbcType=VARCHAR} AND T1.ZT=1 AND T1.DHSL>0) = 0 
+						THEN 1 
+					WHEN (SELECT COUNT(1) FROM B_H_00401 T1 WHERE T1.MAINID = #{htid, jdbcType=VARCHAR} AND T1.ZT=1 AND T1.HT_SL>T1.DHSL) = 0 
+						THEN 3 	
+					ELSE 2 END),
+		 ZT = (CASE
+		 			WHEN (SELECT COUNT(1) FROM B_H_00401 T1 WHERE T1.MAINID = #{htid, jdbcType=VARCHAR} AND T1.ZT=1 AND T1.HT_SL>T1.DHSL) = 0 
+						THEN 10 	
+					ELSE 2 END)
+	 WHERE ID = #{htid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据序列号找到外派清单数据 -->  
+  <select id="findExpatriateByXlh" parameterType="map" resultType="com.eray.thjw.aerialmaterial.po.Expatriate">
+	 SELECT
+		ID, DPRTCODE, JDLX, WPDXID, BJID, BJH, PCH, SN, KCSL, GHSL, WPSJ, ZT, BZ, SXQX, SPQX
+	   		FROM B_H_012
+	   	WHERE DPRTCODE = #{dprtcode, jdbcType=VARCHAR} AND JDLX = #{jdlx, jdbcType=DECIMAL}
+	   		AND BJID = #{bjid, jdbcType=VARCHAR} AND SN = #{sn, jdbcType=VARCHAR} AND KCSL > GHSL
+	   		AND ZT = 1
+	   		AND EXISTS (	
+				SELECT 1 FROM 
+					B_H_00401 BH00401
+					INNER JOIN B_H_004 BH004 ON BH00401.MAINID = BH004.ID
+				WHERE BH00401.ID = #{xgdjid, jdbcType=VARCHAR} AND WPDXID = BH004.GYSID
+			)
+  </select>
+  
+  <!-- 更新外派清单归还数量 -->  
+  <update id="updateExpatriateGhsl" parameterType="map">
+	 UPDATE B_H_012  
+	 <choose>
+	 	<when test='revoke != null and revoke == 1'>
+	 		SET GHSL = GHSL - #{sl, jdbcType=DECIMAL}
+	 	</when>
+	 	<otherwise>
+	 		SET GHSL = GHSL + #{sl, jdbcType=DECIMAL}
+	 	</otherwise>
+ 	 </choose>	
+		WHERE ID =  #{wpqdid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 新增外派清单详细 -->  
+  <insert id="insertExpatriateDetail" parameterType="map">
+	 INSERT INTO B_H_01201 (ID, MAINID, SJLX, 
+       GLDJLX, DJID, KCLLID, 
+       DPRTCODE)
+     VALUES (#{wpqdxxid,jdbcType=VARCHAR}, #{wpqdid,jdbcType=VARCHAR}, #{sjlx,jdbcType=DECIMAL}, 
+       #{gldjlx,jdbcType=DECIMAL}, #{djid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+       #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 更新外派清单归还数量 -->  
+  <update id="updateBorrowApplySl" parameterType="map">
+	 UPDATE B_H_01801  
+	 <choose>
+	 	<when test='revoke != null and revoke == 1'>
+	 		SET SL = SL - #{sl, jdbcType=DECIMAL}
+	 	</when>
+	 	<otherwise>
+	 		SET SL = SL + #{sl, jdbcType=DECIMAL}
+	 	</otherwise>
+ 	 </choose>
+		WHERE ID =  #{xgdjid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 新增外派清单 -->  
+  <insert id="insertExpatriate" parameterType="map">
+	 INSERT INTO B_H_012 (ID, DPRTCODE, JDLX, 
+       WPDXID, BJID, BJH, 
+       PCH, SN, KCSL, GHSL, 
+       WPSJ, ZT)
+     VALUES (#{wpqdid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jdlx,jdbcType=DECIMAL}, 
+       #{jddxid,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, 
+       #{pch,jdbcType=VARCHAR}, #{sn,jdbcType=VARCHAR}, #{kcsl,jdbcType=DECIMAL}, #{ghsl,jdbcType=DECIMAL}, 
+       #{wpsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL})
+  </insert>
+  
+  <!-- 删除外派清单 -->
+  <delete id="deleteExpatriate" parameterType="map">
+    DELETE FROM B_H_012
+	   	WHERE ID = #{wpqdid, jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 删除外派清单详细 -->
+  <delete id="deleteExpatriateDetail" parameterType="map">
+    DELETE FROM B_H_01201
+    WHERE ID = #{wpqdxxid, jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 找到外派清单详细数据 -->  
+  <select id="findExpatriateDetail" parameterType="map" resultType="com.eray.thjw.aerialmaterial.po.ExpatriateDetail">
+	 SELECT ID, MAINID, SJLX, GLDJLX, DJID, KCLLID, DPRTCODE, CXSL 
+	 	FROM B_H_01201
+	  WHERE DJID = #{djid, jdbcType=VARCHAR} AND DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 撤销质检单 -->  
+  <update id="revokeInspection" parameterType="com.eray.thjw.aerialmaterial.po.Inspection">
+	 UPDATE B_H_006_NEW  
+	 		SET ZT = 8,
+	 		  ZDBMID = #{zdbmid, jdbcType=VARCHAR},
+	 		  ZDRID = #{zdrid, jdbcType=VARCHAR},
+	 		  ZDSJ = #{zdsj, jdbcType=TIMESTAMP}
+		WHERE SHDMXID =  #{shdmxid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 撤销入库单 -->  
+  <update id="revokeGodownEntry" parameterType="com.eray.thjw.aerialmaterial.po.GodownEntry">
+	 UPDATE B_H_008_NEW  
+	 		SET ZT = 8,
+	 		  ZDBMID = #{zdbmid, jdbcType=VARCHAR},
+	 		  ZDRID = #{zdrid, jdbcType=VARCHAR},
+	 		  ZDSJ = #{zdsj, jdbcType=TIMESTAMP}
+		WHERE SHDMXID =  #{shdmxid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 撤销入库单详细 -->  
+  <update id="revokeGodownEntryDetail" parameterType="com.eray.thjw.aerialmaterial.po.GodownEntryDetail">
+	 UPDATE B_H_00801_NEW  
+	 		SET ZT = 0,
+	 		  WHDWID = #{whdwid, jdbcType=VARCHAR},
+	 		  WHRID = #{whrid, jdbcType=VARCHAR},
+	 		  WHSJ = #{whsj, jdbcType=TIMESTAMP}
+		WHERE KCLLID =  #{kcllid, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 找到不完整的收货单-库存数据 -->  
+  <select id="findIncompleteStockCount" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet" resultType="int">
+	 SELECT COUNT(1) FROM B_H_02001 B1
+		LEFT JOIN B_H_017 B2 ON B1.KCLLID = B2.ID
+		LEFT JOIN B_H_001 B3 ON B2.KCID = B3.ID
+	  WHERE B1.MAINID = #{id, jdbcType=VARCHAR} AND 
+	  (CASE WHEN B1.SL IS NULL THEN 0 ELSE B1.SL END)!=
+		(CASE WHEN B3.KCSL IS NULL THEN 0 ELSE B3.KCSL END)
+  </select>
+  
+  <!-- 检查合同到货数量是否超出 -->  
+  <select id="checkContractDhsl" parameterType="map" resultType="com.eray.thjw.aerialmaterial.po.Contract">
+	 SELECT 
+		 B2.ID, B2.DPRTCODE, B2.HTLX, B2.HTLSH, B2.HTH, B2.JJCD, B2.GYSID, B2.GYSBM, B2.GYSMC, 
+		 B2.HTQDRQ, B2.BZ, B2.ZT, B2.DHZT, B2.ZDBMID, B2.ZDRID, B2.ZDSJ, B2.ZDJSRID, B2.ZDJSRQ,
+		 B2.ZDJSYY, B2.FJFY
+     FROM B_H_00401 B1
+	 	LEFT JOIN B_H_004 B2 ON B1.MAINID = B2.ID
+		WHERE B1.ID =  #{xgdjid, jdbcType=VARCHAR} AND B1.DHSL > B1.HT_SL
+  </select>
+  
+  <!-- 检查借入申请到货数量是否超出 -->  
+  <select id="checkBorrowApplySl" parameterType="map" resultType="com.eray.thjw.aerialmaterial.po.BorrowApply">
+	 SELECT 
+		 B2.ID, B2.DPRTCODE, B2.SQDH, B2.FJZCH, B2.JDDXID, B2.BZ, B2.ZT, B2.SQDWID, B2.SQRID, B2.SQSJ
+     FROM B_H_01801 B1
+	 	LEFT JOIN B_H_018 B2 ON B1.MAINID = B2.ID
+		WHERE B1.ID =  #{xgdjid, jdbcType=VARCHAR} AND B1.SL > B1.SHSL
+  </select>
+  
+  <!-- 找到已经入库的数量 -->  
+  <select id="findInstockCount" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet" resultType="int">
+  	SELECT COUNT(1) FROM B_H_008_NEW B1
+		INNER JOIN B_H_020 B2 ON B1.SHDID = B2.ID
+	WHERE B2.ID = #{id, jdbcType=VARCHAR} AND B1.ZT IN (2, 10)
+  </select>
+  
+  <!-- 根据件号找到外派清单数据集合 -->  
+  <select id="findExpatriateByJh" parameterType="map" resultType="com.eray.thjw.aerialmaterial.po.Expatriate">
+	 SELECT
+		ID, DPRTCODE, JDLX, WPDXID, BJID, BJH, PCH, SN, KCSL - GHSL AS KCSL, GHSL, WPSJ, ZT, BZ, SXQX, SPQX
+	   		FROM B_H_012
+	   	WHERE DPRTCODE = #{dprtcode, jdbcType=VARCHAR} AND JDLX = #{jdlx, jdbcType=DECIMAL}
+	   		AND BJID = #{bjid, jdbcType=VARCHAR} AND KCSL > GHSL
+	   		AND WPDXID = #{jddxid, jdbcType=VARCHAR} AND ZT = 1
+	   		ORDER BY WPSJ DESC
+  </select>
+  
+  <!-- 根据收货单找到外派清单数据集合 -->  
+  <select id="findExpatriateDetailByDjid" parameterType="map" resultType="com.eray.thjw.aerialmaterial.po.ExpatriateDetail">
+	 SELECT B1.ID, B1.MAINID, B1.SJLX, B1.GLDJLX, B1.DJID, B1.KCLLID, B1.DPRTCODE, B1.CXSL 
+	 	FROM B_H_01201 B1
+	  INNER JOIN B_H_02001 B2 ON B1.DJID = B2.ID
+   	    WHERE B2.ID = #{djid, jdbcType=VARCHAR}
+  </select>
+</mapper>

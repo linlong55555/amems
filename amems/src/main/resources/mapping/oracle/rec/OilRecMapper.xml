@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.OilRecMapper" >
+   
+  <!-- 故障保留单日志列表 开始 -->
+  <select id="queryList4B_J_005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT B.*       
+		        ,WHR.USERNAME ||' '|| WHR.REALNAME CZR_REALNAME
+		       
+		        ,WHDW.DPRTNAME WHDW_DRPTNAME
+		        
+		        , B.ypgg||' '||(
+		        CASE 
+		           WHEN B.REC_CZSM = 0 THEN '创建'
+		           WHEN B.REC_CZSM = 1 THEN '提交'
+		           WHEN B.REC_CZSM = 2 THEN '已审核'
+		           WHEN B.REC_CZSM = 3 THEN '已批准'
+		           WHEN B.REC_CZSM = 4 THEN '中止（关闭）'
+		           WHEN B.REC_CZSM = 5 THEN '审核驳回'
+		           WHEN B.REC_CZSM = 6 THEN '批准驳回'
+		           WHEN B.REC_CZSM = 8 THEN '作废'
+		           WHEN B.REC_CZSM = 9 THEN '指定结束'
+		          
+		           WHEN B.REC_CZSM = 10 THEN '完成'
+		           WHEN B.REC_CZSM = 11 THEN '撤销'
+		           WHEN B.REC_CZSM = 12 THEN '修改'
+		           WHEN B.REC_CZSM = 13 THEN '改版'
+		           WHEN B.REC_CZSM = 14 THEN '已生效'
+		           WHEN B.REC_CZSM = 15 THEN '提交生产确认'
+		           WHEN B.REC_CZSM = 16 THEN '借出确认'
+		           WHEN B.REC_CZSM = 17 THEN '归还'
+		           WHEN B.REC_CZSM = 18 THEN '导入'
+		         END 
+		        ) REC_HD
+		        FROM b_j_005_REC B 
+		        LEFT JOIN T_USER WHR ON WHR.ID = B.rec_czrid
+		       
+		        LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.rec_czrid
+		        WHERE 1=1
+	       		 <if test='czls!=null and czls!=""'>
+		        	and B.REC_CZLS = #{czls,jdbcType=VARCHAR}
+		         </if>
+		         <if test='id!=null and id!=""'>
+		        	and B.ID = #{id,jdbcType=VARCHAR}
+		         </if>
+	         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		        and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		     </if>
+		     <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		        and ( UPPER(B.ypgg) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'))
+		     </if>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff4B_J_005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+               B.*,
+               WHR.USERNAME ||' '|| WHR.REALNAME WHR_REALNAME,
+               CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME,
+               WHDW.DPRTNAME WHDW_DRPTNAME,
+                 (CASE
+				WHEN B.ZT =0 THEN '保存'
+				WHEN B.ZT =1 THEN '提交'
+				WHEN B.ZT =2 THEN '已审核'
+				WHEN B.ZT =3 THEN '已批准'
+				WHEN B.ZT =4 THEN '中止（关闭）'
+				WHEN B.ZT =5 THEN '审核驳回'
+				WHEN B.ZT =6 THEN '批准驳回'
+				WHEN B.ZT =8 THEN '作废'
+				WHEN B.ZT =9 THEN '指定结束'
+				WHEN B.ZT =10 THEN '完成'
+				END) NEW_ZT,
+               '油品规格:'||B.ypgg || ' ' || (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD,
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM b_j_005_REC B
+          LEFT JOIN T_USER WHR
+            ON WHR.ID = B.WHRID
+          LEFT JOIN T_USER CZR
+            ON CZR.ID = B.rec_czrid
+          LEFT JOIN T_DEPARTMENT WHDW
+            ON WHDW.ID = B.WHBMID
+         WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from b_j_005_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+       
+  </select>
+   
+  
+  
+ 
+
+  
+  
+</mapper>

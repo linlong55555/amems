@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.HasScrappedListMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.HasScrappedList" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="KCLLID" property="kcllid" jdbcType="VARCHAR" />
+    <result column="CKID" property="ckid" jdbcType="VARCHAR" />
+    <result column="KWID" property="kwid" jdbcType="VARCHAR" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+    <result column="KYSL" property="kysl" jdbcType="DECIMAL" />
+    <result column="BFSL" property="bfsl" jdbcType="DECIMAL" />
+    <result column="BFCK" property="bfck" jdbcType="VARCHAR" />
+    <result column="BFKW" property="bfkw" jdbcType="VARCHAR" />
+    <result column="YSCK" property="ysck" jdbcType="VARCHAR" />
+    <result column="YSKW" property="yskw" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="PCH" property="pch" jdbcType="VARCHAR" />
+    <result column="SN" property="sn" jdbcType="VARCHAR" />
+    <result column="KCCB" property="kccb" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+  </resultMap>
+  
+   <resultMap type="com.eray.thjw.aerialmaterial.po.HasScrappedList" id="HasScrappedListMap" extends="BaseResultMap">  
+	       <association property="scrapList" javaType="com.eray.thjw.aerialmaterial.po.ScrapList">
+		         <id column="mainid" property="id"/>
+		         <result column="bfdh" property="bfdh"/>
+		         <result column="spsj" property="spsj"/>
+		         <result column="bfsj" property="bfsj"/>
+		         <result column="zdsj" property="zdsj"/>
+		         <result column="szt" property="zt"/>
+		         <result column="zdjsyy" property="zdjsyy"/>
+		         <result column="zdjsrq" property="zdjsrq"/>
+		         <result column="zdjsrid" property="zdjsrid"/>
+		         <result column="bflx" property="bflx"/>
+		         <result column="dprtcode" property="dprtcode"/>
+		     </association>
+		     
+		      <association property="materialHistory" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+		         <id column="MID" property="id"/>
+		         <result column="pch" property="pch"/>
+		         <result column="sn" property="sn"/>
+		         <result column="kcsl" property="kcsl"/>
+		         <result column="kccb" property="kccb"/>
+		         <result column="ckmc" property="ckmc"/>
+		         
+		         <result column="kwh" property="kwh"/>
+		     </association>
+		      <association property="hCMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">
+		         <id column="HID" property="id"/>
+		         <result column="zwms" property="zwms"/>
+		         <result column="ywms" property="ywms"/>
+		         <result column="jldw" property="jldw"/>
+		         <result column="bjh" property="bjh"/>
+		         <result column="cjjh" property="cjjh"/>
+		         <result column="hclx" property="hclx"/>
+		         <result column="gljb" property="gljb"/>
+		         <result column="hcjz" property="hcjz"/>
+		     </association>
+		     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+		         <id column="dprtcode" property="id"/>
+		         <result column="jg_dprtname" property="dprtname"/>
+		     </association>
+   </resultMap>
+   
+ <resultMap type="com.eray.thjw.aerialmaterial.po.HasScrappedList" id="HasScrappedListToMaterialHistoryMap" extends="BaseResultMap">  
+	 <association property="bjll" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+	       <id column="bjllid" property="id"/>
+	       <result column="BJH" property="bjh"/>
+	       <result column="PCH" property="pch"/>
+	       <result column="SN" property="sn"/>
+	       <result column="CKMC" property="ckmc"/>
+	       <result column="KWH" property="kwh"/>
+	       <result column="ZWMS" property="zwms"/>
+	       <result column="YWMS" property="ywms"/>
+	       <result column="KCCB" property="kccb"/>
+	       <result column="KCSL" property="kcsl"/>
+	     </association>
+   </resultMap>
+  <sql id="Base_Column_List" >
+    B_H_00901.ID, B_H_00901.MAINID, B_H_00901.KCLLID, B_H_00901.CKID, B_H_00901.KWID, B_H_00901.KCID,
+    
+    B_H_00901.WHDWID, B_H_00901.WHRID, B_H_00901.WHSJ, B_H_00901.ZT
+  </sql>
+  
+  
+   <select id="selectHasScrappedList" parameterType="java.lang.String"  resultMap="HasScrappedListToMaterialHistoryMap">
+	select <include refid="Base_Column_List"></include>,bjll.bjh,
+	
+	bjll.pch,bjll.sn, (CASE WHEN T3.ZWMS IS NULL THEN bjll.zwms ELSE T3.ZWMS END) zwms,
+	(CASE WHEN T3.YWMS IS NULL THEN bjll.ywms ELSE T3.YWMS END) ywms,bjll.kccb,bjll.kcsl
+	,bjll.ckh,bjll.ckmc,bjll.kwh
+	from B_H_00901 left join B_H_017 bjll on(B_H_00901.KCLLID=bjll.id)
+	left join D_008 T3 ON bjll.bjid = T3.ID
+	where MAINID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_00901
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_00901
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.HasScrappedList" >
+    insert into B_H_00901 (ID, MAINID, KCLLID, 
+      BZ, SPBMID, SPRID, 
+      SPSJ, SPYJ, WHDWID, 
+      WHRID, WHSJ, ZT)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+      #{bz,jdbcType=VARCHAR}, #{spbmid,jdbcType=VARCHAR}, #{sprid,jdbcType=VARCHAR}, 
+      #{spsj,jdbcType=TIMESTAMP}, #{spyj,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.HasScrappedList" >
+    insert into B_H_00901
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="kcllid != null" >
+        KCLLID,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="ckid != null" >
+        CKID,
+      </if>
+      <if test="kwid != null" >
+        KWID,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null" >
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        current_timestamp,
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="ckid != null" >
+        #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null" >
+        #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.HasScrappedList" >
+    update B_H_00901
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null" >
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckid != null" >
+        CKID = #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null" >
+        KWID = #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHSJ = current_timestamp,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.HasScrappedList" >
+    update B_H_00901
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCLLID = #{kcllid,jdbcType=VARCHAR},
+      SPBMID = #{spbmid,jdbcType=VARCHAR},
+      SPRID = #{sprid,jdbcType=VARCHAR},
+      SPSJ = #{spsj,jdbcType=TIMESTAMP},
+      SPYJ = #{spyj,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectHasScrappedList4Revoke" parameterType="java.lang.String"  resultMap="BaseResultMap">
+	select <include refid="Base_Column_List"></include>
+	from B_H_00901 
+	where MAINID = #{id,jdbcType=VARCHAR} and zt=2
+  </select>
+  <select id="queryAll" parameterType="com.eray.thjw.aerialmaterial.po.HasScrappedList" resultMap="HasScrappedListMap">
+  select * from ( 
+				select 
+				    B_H_00901.id, B_H_00901.mainid, B_H_00901.kcllid,
+				    D_008.zwms,D_008.ywms,D_008.jldw,D_008.cjjh,D_008.hclx,D_008.gljb,D_008.bjh,D_008.hcjz,D_008.id as HID,
+				    b_h_017.pch,b_h_017.sn,b_h_017.kcsl,b_h_017.kccb,b_h_017.ckmc,b_h_017.kwh,b_h_017.id as MID,
+				    B_H_009.bfdh,B_H_009.zt szt,B_H_009.spsj,B_H_009.bfsj,B_H_009.dprtCode,B_H_009.zdsj,B_H_009.bflx,
+				     t_department.dprtname jg_dprtname,B_H_009.zdjsyy,
+	        		B_H_009.zdjsrq,E.USERNAME ||' '||E.REALNAME AS zdjsrid
+				    from B_H_00901 left join B_H_009 on B_H_00901.mainid = B_H_009.id 
+				    			   left join b_h_017 on B_H_00901.kcllid=b_h_017.id
+				    			   left join D_008 on b_h_017.bjid = D_008.id
+				    			   LEFT JOIN T_USER E ON B_H_009.ZDJSRID=E.ID  
+				    			    left join t_department on(B_H_009.dprtcode=t_department.id)
+							           where B_H_009.zt in(3,9,11) and B_H_00901.zt=1
+								     <if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode  != ''">
+							            and  B_H_009.dprtcode = #{paramsMap.dprtcode}
+							         </if> 
+								     <if test="paramsMap != null and paramsMap.zt != null and paramsMap.zt  != ''">
+							            and  B_H_009.zt = cast(#{paramsMap.zt} as NUMERIC)
+							         </if>
+								     <if test="paramsMap != null and paramsMap.hclx != null and paramsMap.hclx  != ''">
+							            and  D_008.hclx = cast(#{paramsMap.hclx} as NUMERIC)  
+							         </if>
+							         
+									<if test="paramsMap != null and paramsMap.spsjBegin != null and paramsMap.spsjBegin != ''">
+									    and B_H_009.spsj &gt;= to_timestamp(#{paramsMap.spsjBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									<if test="paramsMap != null and paramsMap.xhrqEnd != null and paramsMap.spsjEnd != ''">
+									    and B_H_009.spsj &lt;= to_timestamp(#{paramsMap.spsjEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									 <if test="keyword != null and keyword != ''">
+									    and (   B_H_009.bfdh like '%'||#{keyword}||'%'
+									    	or D_008.bjh like '%'||#{keyword}||'%'
+									    	or b_h_017.pch like '%'||#{keyword}||'%'
+									    	or b_h_017.sn like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+									</if>
+													)  t
+						  	<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+								    	<when test='pagination.sort == "auto"'>                       
+								    		order by zdsj asc
+								    		
+								    	</when>
+								    	<otherwise>
+										    order by ${pagination.sort} ${pagination.order}
+								    	</otherwise>
+							 </choose>
+   
+  </select>
+  <select id="queryAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.HasScrappedList" resultMap="HasScrappedListMap">
+  select * from ( 
+				select 
+				    B_H_00901.id, B_H_00901.mainid, B_H_00901.kcllid,
+				    D_008.zwms,D_008.ywms,D_008.jldw,D_008.cjjh,D_008.hclx,D_008.gljb,D_008.bjh,D_008.hcjz,D_008.id as HID,
+				    b_h_017.pch,b_h_017.sn,b_h_017.kcsl,b_h_017.kccb,b_h_017.ckmc,b_h_017.kwh,b_h_017.id as MID,
+				    B_H_009.bfdh,B_H_009.zt szt,B_H_009.spsj,B_H_009.bfsj,B_H_009.dprtCode,B_H_009.zdsj,B_H_009.bflx,
+				    t_department.dprtname jg_dprtname
+				    from B_H_00901 left join B_H_009 on B_H_00901.mainid = B_H_009.id 
+				    			   left join b_h_017 on B_H_00901.kcllid=b_h_017.id
+				    			   left join D_008 on b_h_017.bjid = D_008.id 
+				    			    left join t_department on(B_H_009.dprtcode=t_department.id)
+							           where B_H_009.zt in(3,9,11) and B_H_00901.zt=1
+								     <if test="dprtcode != null and dprtcode  != ''">
+							            and  B_H_009.dprtcode = #{dprtcode}
+							         </if> 
+								     <if test="zt != null and zt  != ''">
+							            and  B_H_009.zt = cast(#{zt} as NUMERIC)
+							         </if>
+								     <if test="hclx != null and hclx  != ''">
+							            and  D_008.hclx = cast(#{hclx} as NUMERIC)  
+							         </if>
+							         
+									<if test="spsjBegin != null and spsjBegin != ''">
+									    and B_H_009.spsj &gt;= to_timestamp(#{spsjBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									<if test="spsjEnd != null and spsjEnd != ''">
+									    and B_H_009.spsj &lt;= to_timestamp(#{spsjEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+									</if>
+									 <if test="keyword != null and keyword != ''">
+									    and (   B_H_009.bfdh like '%'||#{keyword}||'%'
+									    	or D_008.bjh like '%'||#{keyword}||'%'
+									    	or b_h_017.pch like '%'||#{keyword}||'%'
+									    	or b_h_017.sn like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+									</if>
+													)  t
+								    		order by zdsj asc
+   
+  </select>
+  
+  <!-- 查询报废单详情 -->
+  <select id="queryscrapdetail" parameterType="java.lang.String"  resultMap="HasScrappedListMap">
+	SELECT
+	       B1.ID, B1.MAINID, B1.KCLLID, B1.CKID, B1.KWID, B1.KCID, B1.ZT,
+	       B1.WHDWID, B1.WHRID, B1.WHSJ , B3.KCSL AS BFSL, D3.CKMC AS BFCK, D2.KWH AS BFKW,
+	       CASE WHEN B2.BFLX = 1 THEN B4.KCCB ELSE B5.KCCB END AS KCCB,
+	       CASE WHEN B2.BFLX = 1 THEN B4.CKH ELSE B5.CKH END AS YSCK,
+	       CASE WHEN B2.BFLX = 1 THEN B4.KWH ELSE B5.KWH END AS YSKW,
+	       CASE WHEN B2.BFLX = 1 THEN B4.SN ELSE B5.SN END AS SN,  
+	       CASE WHEN B2.BFLX = 1 THEN B4.PCH ELSE B5.PCH END AS PCH,  
+	       CASE WHEN B2.BFLX = 1 THEN B4.KCSL ELSE B5.KCSL END AS KCSL,  
+	       CASE WHEN B2.BFLX = 1 THEN B4.KCSL-(CASE WHEN B4.DJSL IS NULL THEN 0 ELSE B4.DJSL END) 
+	       		ELSE B5.KCSL-(CASE WHEN B5.DJSL IS NULL THEN 0 ELSE B5.DJSL END)  END AS KYSL,  
+	       D1.ID AS HCMAINDATAID,D1.BJH, D1.ZWMS, D1.YWMS, D1.HCJZ, D1.CJJH, D1.HCLX, D1.GLJB,B3.CKMC
+	  FROM B_H_00901 B1
+		  LEFT JOIN B_H_009 B2 ON B1.MAINID = B2.ID
+		  LEFT JOIN B_H_017 B3 ON B1.KCLLID = B3.ID
+		  LEFT JOIN B_H_001 B4 ON B3.KCID = B4.ID
+		  LEFT JOIN B_H_003 B5 ON B3.KCID = B5.ID
+		  LEFT JOIN D_008 D1 ON B3.BJID = D1.ID
+		  LEFT JOIN D_00901 D2 ON B1.KWID = D2.ID
+		  LEFT JOIN D_009 D3 ON D3.ID =B1.CKID
+	  WHERE B1.ZT=1 AND B1.MAINID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 删除 -->
+  <update id="deleteNotExist" parameterType="com.eray.thjw.aerialmaterial.po.ScrapList" >
+      UPDATE B_H_00901 
+      	SET ZT = 1
+		WHERE MAINID = #{id,jdbcType=VARCHAR}
+		<if test="hasScrappedList != null and hasScrappedList.size > 0">
+            AND ID NOT IN 
+            <foreach collection="hasScrappedList" item="item" index="index" open="(" close=")" separator=",">
+			#{item.id,jdbcType=VARCHAR}
+	   		</foreach>
+        </if>
+  </update>
+  
+  <!-- 查询所有报废单详情 -->
+  <select id="queryAllData" parameterType="java.lang.String"  resultMap="BaseResultMap">
+	SELECT
+	       B1.ID, B1.MAINID, B1.KCLLID, B1.CKID, B1.KWID, B1.KCID AS SJKC, B1.ZT,
+	       B1.WHDWID, B1.WHRID, B1.WHSJ , B3.KCSL AS BFSL, B3.KCID
+	  FROM B_H_00901 B1
+		  LEFT JOIN B_H_017 B3 ON B1.KCLLID = B3.ID
+	  WHERE B1.MAINID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 删除无效的数据（zt=0） -->
+  <delete id="deleteInvalidData" parameterType="java.lang.String">
+	  DELETE FROM B_H_00901
+	  	WHERE MAINID = #{id,jdbcType=VARCHAR} AND ZT = 0
+  </delete>
+  
+</mapper>

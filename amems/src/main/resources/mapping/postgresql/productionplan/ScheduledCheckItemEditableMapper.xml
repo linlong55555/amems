@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.ScheduledCheckItemEditableMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BJLX" property="bjlx" jdbcType="INTEGER" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="DJXMID" property="djxmid" jdbcType="VARCHAR" />
+    <result column="DJBH" property="djbh" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="zwmc" property="zwmc" jdbcType="VARCHAR" />
+  	<result column="ywmc" property="ywmc" jdbcType="VARCHAR" />
+  	<result column="jhc" property="jhc" jdbcType="VARCHAR" />
+  	<result column="sj" property="sj" jdbcType="VARCHAR" />
+  	<result column="sy" property="sy" jdbcType="VARCHAR" />
+  	<result column="syts" property="syts" jdbcType="VARCHAR" />
+  	<result column="wz" property="wz" jdbcType="VARCHAR" />
+  	<result column="JKBZ" property="jkbz" jdbcType="VARCHAR" />
+  	<result column="rwdh" property="rwdh" jdbcType="VARCHAR" />
+  	<result column="whrxm" property="whsj1" jdbcType="VARCHAR" />
+  	<result column="whsj" property="whrid1" jdbcType="VARCHAR" />
+  	<result column="BB" property="bb" jdbcType="VARCHAR" />
+  	
+  	<result column="FJ_XLH" property="fjXlh" jdbcType="VARCHAR" />
+  	<result column="ZF_XLH" property="zfXlh" jdbcType="VARCHAR" />
+  	<result column="YF_XLH" property="yfXlh" jdbcType="VARCHAR" />
+  
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.productionplan.po.ScheduledCheckItem" id="ScheduledCheckItemToMonitorItemMap" extends="BaseResultMap">  
+  	 	<collection property="monitorItemList" ofType="com.eray.thjw.productionplan.po.ScheduledCheckMonitorItem">  
+            <id column="ITEMID" property="id" jdbcType="VARCHAR" />
+            <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+            <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+            <result column="JKLMS" property="jklms" jdbcType="VARCHAR" />
+            <result column="ZQZ" property="zqz" jdbcType="VARCHAR" />
+		    <result column="JK_SZ" property="jkSz" jdbcType="VARCHAR" />
+		    <result column="MS" property="ms" jdbcType="VARCHAR" />
+		    <result column="JK_DW" property="jkDw" jdbcType="DECIMAL" />
+  		</collection>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    B.ID, B.ZJQDID, B.FJZCH, B.BJLX, JH, XLH, NBSBM, DJBH, ZWMS, ZT, WHSJ, DPRTCODE
+  </sql>
+ 
+  
+  <!--  meizhiliang 查询工单序列号 -->
+ 
+    <select id="selectXlh" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckItem" resultMap="BaseResultMap">
+        select b1.xlh fj_xlh, b2.xlh zf_xlh, b3.xlh yf_xlh
+		  from d_007 b1
+		  left join b_s_003 b2
+		    on b1.fjzch = b2.fjzch
+		   and b1.dprtcode = b2.dprtcode
+		   and b2.zt = 1
+		   and b2.sxzt = 1
+		   and b2.wz = 1
+		   and b2.cj = 1
+		  left join b_s_003 b3
+		    on b1.fjzch = b3.fjzch
+		   and b1.dprtcode = b3.dprtcode
+		   and b3.zt = 1
+		   and b3.sxzt = 1
+		   and b3.wz = 2
+		   and b3.cj = 1
+		 where b1.fjzch = #{fjzch,jdbcType=VARCHAR} and b1.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+   </select>
+   
+  
+  
+  <sql id="BaseResulParam">
+	   where 1=1
+       <if test="fjzch != null and fjzch != ''">
+             and t1.fjzch = #{fjzch}
+         </if>
+	</sql>
+	
+	
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+    insert into B_S_00103
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="bjlx != null" >
+        BJLX,
+      </if>
+      <if test="jh != null" >
+        JH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="nbsbm != null" >
+        NBSBM,
+      </if>
+      <if test="djbh != null" >
+        DJBH,
+      </if>
+      <if test="zwms != null" >
+        ZWMS,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="tbbs != null" >
+        TBBS,
+      </if>
+      <if test="wxfabh != null" >
+        WXFABH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bjlx != null" >
+        #{bjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null" >
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="nbsbm != null" >
+        #{nbsbm,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null" >
+        #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null" >
+        #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="tbbs != null" >
+        #{tbbs,jdbcType=DECIMAL},
+      </if>
+      <if test="wxfabh != null" >
+        #{wxfabh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+   <!-- 根据装机清单id查询定检项目 -->
+   <select id="queryByZjqdid" resultMap="ScheduledCheckItemToMonitorItemMap" parameterType="java.lang.String" >
+	    WITH 
+	      NEWESTDJXH AS
+	      (
+	        SELECT * FROM (
+	          SELECT B_G_012.WXFABH,B_G_012.DJBH,B_G_012.ID,B_G_012.ZWMS,B_G_012.BZ,B_G_012.BB,B_G_012.DPRTCODE,MAX(BB) OVER (PARTITION BY WXFABH, DJBH, DPRTCODE) MAXBB 
+	          FROM B_G_012 WHERE ZT = 3
+	          AND YXX = 1
+	        )A WHERE A.BB = A.MAXBB 
+	      )
+
+		SELECT 
+		S1.ID, S1.ZJQDID, S1.FJZCH, B1.DJBH, B1.ZWMS, B1.BB, B2.JKLBH, B2.JKFLBH, B2.ZQZ, S2.ID AS ITEMID, S2.JK_SZ, B2.DW AS JK_DW, D2.MS as JKLMS, D2.MS as MS
+		FROM B_S_00103 S1 
+		INNER JOIN NEWESTDJXH B1 ON S1.DJBH = B1.DJBH AND S1.WXFABH = B1.WXFABH AND S1.DPRTCODE = B1.DPRTCODE
+		INNER JOIN B_G_01201 B2 ON B1.ID = B2.DJXMID AND B2.ZT = 1
+		LEFT JOIN B_S_0010301 S2 ON S1.ID = S2.MAINID AND B2.JKLBH = S2.JKLBH AND S2.ZT = 1
+		LEFT JOIN D_006 D1 ON B2.JKFLBH = D1.JKFLBH
+		LEFT JOIN D_00601 D2 ON B2.JKLBH = D2.JKLBH
+		WHERE S1.ZJQDID = #{zjqdid,jdbcType=VARCHAR} AND S1.ZT = 1
+		ORDER BY D1.PXH,D2.PXH
+  </select>
+  
+   <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+    update B_S_00103
+    <set >
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bjlx != null" >
+        BJLX = #{bjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="nbsbm != null" >
+        NBSBM = #{nbsbm,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null" >
+        DJBH = #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null" >
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="tbbs != null" >
+        TBBS = #{tbbs,jdbcType=DECIMAL},
+      </if>
+      <if test="wxfabh != null" >
+        WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <!-- 级联删除 -->
+   <update id="deleteByZjqdid" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+          UPDATE B_S_00103 
+			set ZT = 0 , TBBS = 1,
+			WHDWID = #{whdwid,jdbcType=VARCHAR},
+			WHRID = #{whrid,jdbcType=VARCHAR},
+			WHSJ = #{whsj,jdbcType=TIMESTAMP}
+			WHERE ZJQDID = #{zjqdid,jdbcType=VARCHAR}
+   </update>
+  
+   <!-- 级联删除 -->
+   <update id="cascadeDeleteByZjqdid" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+		WITH RECURSIVE IDS AS
+		(
+			SELECT A.ID FROM B_S_001 A WHERE A.ID = #{zjqdid,jdbcType=VARCHAR}
+				UNION ALL 
+			SELECT Z.ID FROM B_S_001 Z INNER JOIN IDS F ON F.ID = Z.FJDID
+		)
+          UPDATE B_S_00103 
+			set ZT = 0 , TBBS = 1,
+			WHDWID = #{whdwid,jdbcType=VARCHAR},
+			WHRID = #{whrid,jdbcType=VARCHAR},
+			WHSJ = #{whsj,jdbcType=TIMESTAMP}
+			WHERE ZJQDID IN
+			(SELECT ID FROM IDS)
+   </update>
+   
+   <!-- 找到维修方案改版影响的定检项目 -->
+   <select id="selectInfluencedByWxfaData" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        SELECT B1.ID, B1.ZJQDID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.NBSBM, B1.DJBH, B1.ZWMS, B1.ZT, B1.WHSJ, B1.DPRTCODE
+         FROM B_S_00103 B1
+			WHERE EXISTS(
+			    SELECT 1 FROM  B_S_001 B2
+			    INNER JOIN D_007 D1 ON B2.FJZCH = D1.FJZCH AND B2.DPRTCODE = D1.DPRTCODE
+			    INNER JOIN B_G_011 B3 ON D1.FJJX = B3.JX AND D1.DPRTCODE = B3.DPRTCODE 
+			    		AND B3.WXFABH = #{wxfabh,jdbcType=VARCHAR} AND B3.BB = #{wxfabb,jdbcType=DECIMAL}
+			    INNER JOIN B_G_012 B4 ON B4.WXFABH = B3.WXFABH AND B4.DPRTCODE = B3.DPRTCODE AND B4.ZT NOT IN(8,9) 
+			    <if test="djbhs != null and djbhs.size > 0">
+		            AND B4.DJBH IN 
+		            <foreach collection="djbhs" item="item" index="index" open="(" close=")" separator=",">
+					#{item}
+			   		</foreach>
+		         </if>
+			    WHERE B1.ZJQDID = B2.ID AND B1.ZT = 1 AND B1.DJBH = B4.DJBH AND B1.WXFABH = B4.WXFABH
+			)
+   </select>
+   
+   <!-- 更新同步标识 -->
+   <update id="updateTbbs" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+          UPDATE B_S_00103 
+			set TBBS = 1,
+			WHDWID = #{whdwid,jdbcType=VARCHAR},
+			WHRID = #{whrid,jdbcType=VARCHAR},
+			WHSJ = #{whsj,jdbcType=TIMESTAMP}
+	      where id in 
+	      <foreach collection="items" item="item" index="index" open="(" close=")" separator=",">
+		     #{item.id}
+   		  </foreach>
+   </update>
+
+</mapper>

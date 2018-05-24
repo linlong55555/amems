@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.StockFreezeHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="KCLX" property="kclx" jdbcType="DECIMAL" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="YWLX" property="ywlx" jdbcType="DECIMAL" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="DJSL" property="djsl" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, KCLX, KCID, YWLX, YWID, DJSL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_023
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_023
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" >
+    insert into B_H_023 (ID, KCLX, KCID, 
+      YWLX, YWID, DJSL)
+    values (#{id,jdbcType=VARCHAR}, #{kclx,jdbcType=DECIMAL}, #{kcid,jdbcType=VARCHAR}, 
+      #{ywlx,jdbcType=DECIMAL}, #{ywid,jdbcType=VARCHAR}, #{djsl,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" >
+    insert into B_H_023
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="kclx != null" >
+        KCLX,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="ywlx != null" >
+        YWLX,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="djsl != null" >
+        DJSL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="kclx != null" >
+        #{kclx,jdbcType=DECIMAL},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="djsl != null" >
+        #{djsl,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" >
+    update B_H_023
+    <set >
+      <if test="kclx != null" >
+        KCLX = #{kclx,jdbcType=DECIMAL},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        YWLX = #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="djsl != null" >
+        DJSL = #{djsl,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" >
+    update B_H_023
+    set KCLX = #{kclx,jdbcType=DECIMAL},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      YWLX = #{ywlx,jdbcType=DECIMAL},
+      YWID = #{ywid,jdbcType=VARCHAR},
+      DJSL = #{djsl,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 获取该库存的所有冻结数量之和 -->
+  <select id="sumFreezeCount" resultType="java.math.BigDecimal" parameterType="java.lang.String" >
+    SELECT SUM(DJSL) FROM B_H_023 WHERE KCID = #{kcid,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 获取该库存的所有冻结数量之和 -->
+  <select id="queryByYwid" resultType="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" 
+  			parameterType="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" >
+    SELECT 
+    	B1.ID, B1.KCLX, B1.KCID, B1.YWLX,  B1.YWID, B1.DJSL 
+      FROM B_H_023 B1
+        WHERE B1.KCID = #{kcid,jdbcType=VARCHAR} AND B1.YWID = #{ywid,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据业务id和库存id刪除 -->
+  <delete id="deleteByYwid" parameterType="com.eray.thjw.aerialmaterial.po.StockFreezeHistory" >
+    DELETE FROM B_H_023
+        WHERE KCID = #{kcid,jdbcType=VARCHAR} AND YWID = #{ywid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

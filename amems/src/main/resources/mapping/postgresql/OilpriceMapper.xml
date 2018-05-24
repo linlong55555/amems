@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.OilpriceMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.Oilprice" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="YPGG" property="ypgg" jdbcType="VARCHAR" />
+    <result column="YPJG" property="ypjg" jdbcType="DECIMAL" />
+    <result column="KSRQ" property="ksrq" jdbcType="TIMESTAMP" />
+    <result column="JZRQ" property="jzrq" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="YPGGID" property="ypggid" jdbcType="VARCHAR" />
+    
+    <result column="mc" property="mc" jdbcType="VARCHAR" />
+    <result column="sz" property="sz" jdbcType="VARCHAR" />
+    
+    <association property="whr" javaType="com.eray.thjw.po.User">
+         <id column="whrid" property="id"/>
+         <result column="whr_realname" property="realname"/>
+         <result column="whr_username" property="username"/>
+     </association>
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    B_J_004.ID, B_J_004.YPGG, B_J_004.YPJG, B_J_004.KSRQ, B_J_004.JZRQ, B_J_004.ZT, B_J_004.DPRTCODE, B_J_004.WHBMID, B_J_004.WHRID, B_J_004.WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_J_004
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_J_004
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.Oilprice" >
+    insert into B_J_004 (ID, YPGG, YPJG, 
+      KSRQ, JZRQ, ZT, 
+      DPRTCODE, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{ypgg,jdbcType=VARCHAR}, #{ypjg,jdbcType=DECIMAL}, 
+      #{ksrq,jdbcType=TIMESTAMP}, #{jzrq,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.Oilprice" >
+    insert into B_J_004
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="ypgg != null" >
+        YPGG,
+      </if>
+      <if test="ypjg != null" >
+        YPJG,
+      </if>
+      <if test="ksrq != null" >
+        KSRQ,
+      </if>
+      <if test="jzrq != null" >
+        JZRQ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+        <if test="ypggid != null" >
+        ypggid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="ypgg != null" >
+        #{ypgg,jdbcType=VARCHAR},
+      </if>
+      <if test="ypjg != null" >
+        #{ypjg,jdbcType=DECIMAL},
+      </if>
+      <if test="ksrq != null" >
+        #{ksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jzrq != null" >
+        #{jzrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ypggid != null" >
+        #{ypggid,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Oilprice" >
+    update B_J_004
+    <set >
+      <if test="ypgg != null" >
+        YPGG = #{ypgg,jdbcType=VARCHAR},
+      </if>
+      <if test="ypjg != null" >
+        YPJG = #{ypjg,jdbcType=DECIMAL},
+      </if>
+      <if test="ksrq != null" >
+        KSRQ = #{ksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jzrq != null" >
+        JZRQ = #{jzrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+       <if test="ypggid != null" >
+        ypggid = #{ypggid,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.Oilprice" >
+    update B_J_004
+    set YPGG = #{ypgg,jdbcType=VARCHAR},
+      YPJG = #{ypjg,jdbcType=DECIMAL},
+      KSRQ = #{ksrq,jdbcType=TIMESTAMP},
+      JZRQ = #{jzrq,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		   <!-- select 
+		   		b1.id,
+		   		b1.mc, 
+		       b1.sz, 
+		       b2.ypjg 
+				  from d_00101 b1
+				  left join (SELECT t1.ypgg, t1.ypjg
+				               FROM (SELECT ROW_NUMBER() OVER(PARTITION BY b_j_004.ypgg ORDER BY b_j_004.ksrq desc,b_j_004.whsj desc) rn,
+				                            b_j_004.ypgg,
+				                            b_j_004.ypjg
+				                       FROM b_j_004
+				                      where b_j_004.ksrq &lt;= current_timestamp
+				                        and b_j_004.dprtcode =#{dprtcode}
+				                        and b_j_004.zt = 1) t1
+				              WHERE rn = 1) b2
+				    on b1.sz = b2.ypgg
+				 where b1.lxid = 22 -->
+				select b1.ypgg, 
+				       b1.id, 
+				       b2.ypjg 
+				  from b_j_005 b1
+				  left join (SELECT t1.ypggid, t1.ypjg
+				               FROM (SELECT ROW_NUMBER() OVER(PARTITION BY b_j_004.ypgg ORDER BY b_j_004.ksrq desc, b_j_004.whsj desc) rn,
+				                            b_j_004.ypggid,
+				                            b_j_004.ypjg
+				                       FROM b_j_004
+				                      where b_j_004.ksrq &lt;= current_timestamp
+				                        and b_j_004.dprtcode =  #{dprtcode,jdbcType=VARCHAR}
+				                        and b_j_004.zt = 1) t1
+				              WHERE rn = 1) b2
+				    on b1.id = b2.ypggid
+				 where b1.zt = 1
+				   and b1.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+				 order by b1.ypgg
+				 
+			
+  </select>
+  
+  <select id="selectByYpgg" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.Oilprice">
+      select
+        <include refid="Base_Column_List"></include>,whr.realname whr_realname,whr.username whr_username
+      from B_J_004 
+      left join t_user whr on (B_J_004.whrid=whr.id)
+       
+      where B_J_004.zt=1 and B_J_004.ypggid=#{ypggid}
+      		 
+      		 and B_J_004.dprtcode=#{dprtcode}
+      		 
+      		 <if test="keyword != null and keyword != ''">
+			    and (   B_J_004.ypjg::VARCHAR like '%'||#{keyword}||'%'
+			    	or whr.USERNAME like '%'||#{keyword}||'%'
+			    	or whr.REALNAME like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+			</if>
+       <choose>
+		   	<when test='pagination.sort == "auto"'>
+		   		 order by ksrq desc,whsj desc
+		   	</when>
+		   	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+		   	</otherwise>
+		</choose>
+  </select>
+  
+</mapper>

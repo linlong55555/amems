@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.FlightRecordSheetMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.flightdata.po.FlightRecordSheet" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="FXJLDH" property="fxjldh" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="JLBYM" property="jlbym" jdbcType="VARCHAR" />
+    <result column="FXRQ" property="fxrq" jdbcType="TIMESTAMP" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="XDRID" property="xdrid" jdbcType="VARCHAR" />
+    <result column="XDSJ" property="xdsj" jdbcType="TIMESTAMP" />
+    <result column="ZDJSYY" property="zdjsyy" jdbcType="VARCHAR" />
+    <result column="IS_XDTX" property="isXdtx" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  
+  <!-- 配置飞行记录单与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+  <resultMap type="com.eray.thjw.flightdata.po.FlightRecordSheet" id="FlightRecordToUserMap" extends="BaseResultMap">  
+	  	<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZDRID" property="id"/>  
+	        <result column="ZDRUSERNAME" property="username"/>  
+	        <result column="ZDRREALNAME" property="realname"/>  
+	    </association>  
+	    <association property="xdr" javaType="com.eray.thjw.po.User">  
+	        <id column="XDRID" property="id"/>  
+	        <result column="XDRUSERNAME" property="username"/>  
+	        <result column="XDRREALNAME" property="realname"/>  
+	    </association>  
+  </resultMap>
+  
+  <!-- 配置飞行记录单与飞行记录单详情关系 注意：在写对应关系时,id字段需要重命名 -->
+  <resultMap id="FlightRecordToDetailMap" type="com.eray.thjw.flightdata.po.FlightRecordSheet"  extends="BaseResultMap">  
+       <collection property="flightData" ofType="com.eray.thjw.flightdata.po.FlightRecord">  
+            <id column="DETAILID" property="id"/>  
+	        <result column="FXSJ" property="fxsj"/>  
+	        <result column="FXJLDID" property="fxjldid" jdbcType="VARCHAR" />
+		    <result column="HC" property="hc" jdbcType="INTEGER" />
+		    <result column="HCMS" property="hcms" jdbcType="VARCHAR" />
+		    <result column="XDBS" property="xdbs" jdbcType="INTEGER" />
+		    <result column="FXSJ_XS" property="fxsjXs" jdbcType="INTEGER" />
+		    <result column="FXSJ_FZ" property="fxsjFz" jdbcType="INTEGER" />
+		    <result column="F1SJ_XS" property="f1sjXs" jdbcType="INTEGER" />
+		    <result column="F1SJ_FZ" property="f1sjFz" jdbcType="INTEGER" />
+		    <result column="F2SJ_XS" property="f2sjXs" jdbcType="INTEGER" />
+		    <result column="F2SJ_FZ" property="f2sjFz" jdbcType="INTEGER" />
+		    <result column="QLJXH" property="qljxh" jdbcType="DECIMAL" />
+		    <result column="JCSJ_XS" property="jcsjXs" jdbcType="INTEGER" />
+		    <result column="JCSJ_FZ" property="jcsjFz" jdbcType="INTEGER" />
+		    <result column="JCXH" property="jcxh" jdbcType="DECIMAL" />
+		    <result column="YL_FXQ" property="ylFxq" jdbcType="DECIMAL" />
+		    <result column="YL_FXH" property="ylFxh" jdbcType="DECIMAL" />
+		    <result column="F1_N1" property="f1N1" jdbcType="DECIMAL" />
+		    <result column="F1_N2" property="f1N2" jdbcType="DECIMAL" />
+		    <result column="F1_N3" property="f1N3" jdbcType="DECIMAL" />
+		    <result column="F1_N4" property="f1N4" jdbcType="DECIMAL" />
+		    <result column="F1_N5" property="f1N5" jdbcType="DECIMAL" />
+		    <result column="F1_N6" property="f1N6" jdbcType="DECIMAL" />
+		    <result column="F1_HY" property="f1Hy" jdbcType="DECIMAL" />
+		    <result column="F1_WDYD" property="f1Wdyd" jdbcType="DECIMAL" />
+		    <result column="F1_GLYD" property="f1Glyd" jdbcType="DECIMAL" />
+		    <result column="F2_N1" property="f2N1" jdbcType="DECIMAL" />
+		    <result column="F2_N2" property="f2N2" jdbcType="DECIMAL" />
+		    <result column="F2_N3" property="f2N3" jdbcType="DECIMAL" />
+		    <result column="F2_N4" property="f2N4" jdbcType="DECIMAL" />
+		    <result column="F2_N5" property="f2N5" jdbcType="DECIMAL" />
+		    <result column="F2_N6" property="f2N6" jdbcType="DECIMAL" />
+		    <result column="F2_HY" property="f2Hy" jdbcType="DECIMAL" />
+		    <result column="F2_WDYD" property="f2Wdyd" jdbcType="DECIMAL" />
+		    <result column="F2_GLYD" property="f2Glyd" jdbcType="DECIMAL" />
+		    <result column="SSDSJ_XS" property="ssdsjXs" jdbcType="INTEGER" />
+		    <result column="SSDSJ_FZ" property="ssdsjFz" jdbcType="INTEGER" />
+		    <result column="DGXH" property="dgxh" jdbcType="DECIMAL" />
+		    <result column="TS1" property="ts1" jdbcType="DECIMAL" />
+		    <result column="TS2" property="ts2" jdbcType="DECIMAL" />
+		    <result column="MGB" property="mgb" jdbcType="DECIMAL" />
+		    <result column="IGB" property="igb" jdbcType="DECIMAL" />
+		    <result column="TGB" property="tgb" jdbcType="DECIMAL" />
+		    <result column="TSFXPZID" property="tsfxpzid" jdbcType="VARCHAR" />
+		    <result column="ZT" property="zt" jdbcType="INTEGER" />
+		    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+		    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+		    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+		    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+		    <result column="JH_F1" property="jhF1" jdbcType="VARCHAR" />
+		    <result column="XLH_F1" property="xlhF1" jdbcType="VARCHAR" />
+		    <result column="JH_F2" property="jhF2" jdbcType="VARCHAR" />
+		    <result column="XLH_F2" property="xlhF2" jdbcType="VARCHAR" />
+		    <result column="JH_JC" property="jhJc" jdbcType="VARCHAR" />
+		    <result column="XLH_JC" property="xlhJc" jdbcType="VARCHAR" />
+		    <result column="JH_WDG" property="jhWdg" jdbcType="VARCHAR" />
+		    <result column="XLH_WDG" property="xlhWdg" jdbcType="VARCHAR" />
+		    <result column="JH_SSD" property="jhSsd" jdbcType="VARCHAR" />
+		    <result column="XLH_SSD" property="xlhSsd" jdbcType="VARCHAR" />
+		    <result column="SSDSJ" property="ssdsj" jdbcType="VARCHAR" />
+		    <result column="JCSJ" property="jcsjZ" jdbcType="VARCHAR" />
+		    <result column="F1SJN16Z" property="f1SjN16Z" jdbcType="VARCHAR" />
+		    <result column="F2SJN16Z" property="f2SjN16Z" jdbcType="VARCHAR" />
+		    <result column="AV_FXR" property="avFxr" jdbcType="VARCHAR" />
+		    <result column="AV_ZZH" property="avZzh" jdbcType="VARCHAR" />
+		    <result column="ME_FXR" property="meFxr" jdbcType="VARCHAR" />
+		    <result column="ME_ZZH" property="meZzh" jdbcType="VARCHAR" />
+		    <result column="JZSHRK" property="jzshrk" jdbcType="VARCHAR" />
+       </collection>  
+   </resultMap> 
+	
+  <sql id="Base_Column_List" >
+    ID, FXJLDH, FJZCH, JLBYM, FXRQ, BZ, ZDDWID, ZDRID, ZDSJ, ZT, DPRTCODE, XDRID, XDSJ, IS_XDTX, HBH,
+    ZDJSYY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet" >
+    insert into B_S_006 (ID, FXJLDH, FJZCH, 
+      JLBYM, FXRQ, BZ, 
+      ZDDWID, ZDRID, ZDSJ, 
+      ZT, DPRTCODE, XDRID, 
+      XDSJ, ZDJSYY)
+    values (#{id,jdbcType=VARCHAR}, #{fxjldh,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, 
+      #{jlbym,jdbcType=VARCHAR}, #{fxrq,jdbcType=TIMESTAMP}, #{bz,jdbcType=VARCHAR}, 
+      #{zddwid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, 
+      #{zt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR}, #{xdrid,jdbcType=VARCHAR}, 
+      #{xdsj,jdbcType=TIMESTAMP}, #{zdjsyy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet" >
+    insert into B_S_006
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="fxjldh != null" >
+        FXJLDH,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="jlbym != null" >
+        JLBYM,
+      </if>
+      <if test="fxrq != null" >
+        FXRQ,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="xdrid != null" >
+        XDRID,
+      </if>
+      <if test="xdsj != null" >
+        XDSJ,
+      </if>
+      <if test="zdjsyy != null" >
+        ZDJSYY,
+      </if>
+      <if test="tbbs != null" >
+        TBBS,
+      </if>
+      <if test="isXdtx != null" >
+        IS_XDTX,
+      </if>
+      <if test="hbh != null" >
+        HBH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjldh != null" >
+        #{fxjldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jlbym != null" >
+        #{jlbym,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrq != null" >
+      	to_date(#{fxrq,jdbcType=TIMESTAMP}, 'yyyy-mm-dd'),
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null" >
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="xdrid != null" >
+        #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdsj != null" >
+        #{xdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null" >
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="tbbs != null" >
+        #{tbbs,jdbcType=VARCHAR},
+      </if>
+      <if test="isXdtx != null" >
+        #{isXdtx,jdbcType=DECIMAL},
+      </if>
+      <if test="hbh != null" >
+        #{hbh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet" >
+    update B_S_006
+    <set >
+      <if test="fxjldh != null" >
+        FXJLDH = #{fxjldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jlbym != null" >
+        JLBYM = #{jlbym,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrq != null" >
+        FXRQ = #{fxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="xdrid != null" >
+        XDRID = #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdsj != null" >
+        XDSJ = current_timestamp,
+      </if>
+      <if test="zdjsyy != null" >
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="tbbs != null" >
+        TBBS = #{tbbs,jdbcType=VARCHAR},
+      </if>
+      <if test="isXdtx != null" >
+        IS_XDTX = #{isXdtx,jdbcType=DECIMAL},
+      </if>
+      <if test="hbh != null" >
+        HBH = #{hbh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet" >
+    update B_S_006
+    set FXJLDH = #{fxjldh,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      JLBYM = #{jlbym,jdbcType=VARCHAR},
+      FXRQ = #{fxrq,jdbcType=TIMESTAMP},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      XDRID = #{xdrid,jdbcType=VARCHAR},
+      XDSJ = #{xdsj,jdbcType=TIMESTAMP},
+      ZDJSYY = #{zdjsyy,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 飞行记录单查询条件 -->
+  <sql id="flightRecordParam">
+	   where 
+	   1=1
+	   	 <!-- 飞行记录单号-->
+	     <if test="fxjldh != null and fxjldh != ''">
+            and  b1.fxjldh = #{fxjldh}
+         </if>
+         <!-- 飞机注册号 -->
+   	     <if test="fjzch != null and fjzch != ''">
+            and  b1.fjzch = #{fjzch}
+         </if>
+         <!-- 记录本页面-->
+   	     <if test="jlbym != null and jlbym != ''">
+            and  b1.jlbym = #{jlbym}
+         </if>
+         <!-- 飞行日期 -->
+   	     <if test="fxrq != null and fxrq != ''">
+            and  b1.fxrq = to_date(#{fxrq},'yyyy-mm-dd')
+         </if>
+         <if test="fxrqBegin != null and fxrqBegin != ''">
+            and  date_trunc('day',b1.fxrq) &gt;= to_date(#{fxrqBegin},'yyyy-mm-dd')
+         </if>
+         <if test="fxrqEnd != null and fxrqEnd != ''">
+            and  date_trunc('day',b1.fxrq) &lt;= to_date(#{fxrqEnd},'yyyy-mm-dd')
+         </if>
+         <!-- 机构id-->
+	     <if test="dprtcode != null and dprtcode != ''">
+            and  b1.dprtcode = #{dprtcode}
+         </if>
+         <if test="dprtcodes != null and dprtcodes.size > 0">
+            and b1.dprtcode in 
+            <foreach collection="dprtcodes" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+         </if>
+         <if test="dprtcodes != null and dprtcodes.size == 0">
+            and 1=0
+         </if>
+         <!-- 状态-->
+	     <if test="zt != null and zt != -1">
+            and  b1.zt = #{zt}
+         </if>
+         <if test="zt != null and zt == -1">
+            and  b1.zt in (1,2,10,12,99)
+         </if>
+         
+          <if test="valid != null and valid == 1">
+            and  b1.zt in (2, 12, 99)
+         </if>
+         
+         <!-- 关键字 -->
+   	     <if test="keyword != null and keyword != ''">
+            and  (b1.fxjldh like '%'||#{keyword}||'%'  or
+            	  b1.jlbym like '%'||#{keyword}||'%' or
+            	  b1.bz like '%'||#{keyword}||'%' or
+            	  u1.username like '%'||#{keyword}||'%' or
+            	  u1.realname like '%'||#{keyword}||'%' or
+            	  u2.username like '%'||#{keyword}||'%' or
+            	  u2.realname like '%'||#{keyword}||'%'
+            	)
+         </if>
+         <if test="id != null and id != ''">
+            and  b1.id = #{id}
+         </if>
+         <if test="paramsMap != null and paramsMap.notId != null and paramsMap.notId != ''">
+		    and  b1.id != #{paramsMap.notId}
+		 </if>
+	</sql>
+  
+  
+  <!-- 飞行记录单分页查询 -->
+  <select id="queryByPage" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet" resultMap="FlightRecordToUserMap">
+           SELECT B1.ID, B1.FXJLDH, B1.FJZCH, B1.JLBYM, B1.FXRQ, B1.ZDDWID, B1.ZDRID, B1.ZDSJ, 
+           B1.ZT, B1.DPRTCODE, B1.BZ ,B1.XDRID, B1.XDSJ, B1.ZDJSYY, B1.IS_XDTX, B1.HBH, 
+           U1.USERNAME AS ZDRUSERNAME, U1.REALNAME AS ZDRREALNAME, U2.USERNAME AS XDRUSERNAME, U2.REALNAME AS XDRREALNAME 
+           		FROM B_S_006 B1
+				LEFT JOIN T_USER U1 ON B1.ZDRID = U1.ID
+				LEFT JOIN T_USER U2 ON B1.XDRID = U2.ID
+                   <include refid="flightRecordParam" />
+                   <choose>
+			    	   <when test='pagination.sort == "auto"'>
+			    	    	ORDER BY B1.FXJLDH DESC
+			    	   </when>
+			    	   <otherwise>
+					        ORDER BY B1.${pagination.order} ${pagination.sort} 
+			    	   </otherwise>
+			       </choose>
+  </select>
+  
+  <!-- 根据飞机查询部件数量 -->
+  <select id="countUsageByFjzch" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet"  resultType="com.eray.thjw.flightdata.po.FlightRecord">
+  		SELECT B1.FJZCH,
+		       (CASE WHEN SUM(B2.FXSJ_XS) IS NULL THEN 0 ELSE SUM(B2.FXSJ_XS) END) || ':' || (CASE WHEN SUM(B2.FXSJ_FZ) IS NULL THEN 0 ELSE SUM(B2.FXSJ_FZ) END) FXSJ,
+		       (CASE WHEN SUM(B2.QLJXH) IS NULL THEN 0 ELSE SUM(B2.QLJXH) END) QLJXH,
+		       (CASE WHEN SUM(B2.TS1) IS NULL THEN 0 ELSE SUM(B2.TS1) END) TS1,
+		       (CASE WHEN SUM(B2.TS2) IS NULL THEN 0 ELSE SUM(B2.TS2) END) TS2,
+		       (CASE WHEN SUM(B2.F1_N1) IS NULL THEN 0 ELSE SUM(B2.F1_N1) END) F1N1,
+		       (CASE WHEN SUM(B2.F1_N2) IS NULL THEN 0 ELSE SUM(B2.F1_N2) END) F1N2,
+		       (CASE WHEN SUM(B2.F1_N3) IS NULL THEN 0 ELSE SUM(B2.F1_N3) END) F1N3,
+		       (CASE WHEN SUM(B2.F1_N4) IS NULL THEN 0 ELSE SUM(B2.F1_N4) END) F1N4,
+		       (CASE WHEN SUM(B2.F1_N5) IS NULL THEN 0 ELSE SUM(B2.F1_N5) END) F1N5,
+		       (CASE WHEN SUM(B2.F1_N6) IS NULL THEN 0 ELSE SUM(B2.F1_N6) END) F1N6,
+		       (CASE WHEN SUM(B2.F2_N1) IS NULL THEN 0 ELSE SUM(B2.F2_N1) END) F2N1,
+		       (CASE WHEN SUM(B2.F2_N2) IS NULL THEN 0 ELSE SUM(B2.F2_N2) END) F2N2,
+		       (CASE WHEN SUM(B2.F2_N3) IS NULL THEN 0 ELSE SUM(B2.F2_N3) END) F2N3,
+		       (CASE WHEN SUM(B2.F2_N4) IS NULL THEN 0 ELSE SUM(B2.F2_N4) END) F2N4,
+		       (CASE WHEN SUM(B2.F2_N5) IS NULL THEN 0 ELSE SUM(B2.F2_N5) END) F2N5,
+		       (CASE WHEN SUM(B2.F2_N6) IS NULL THEN 0 ELSE SUM(B2.F2_N6) END) F2N6,
+		       (CASE WHEN SUM(B2.JCSJ_XS) IS NULL THEN 0 ELSE SUM(B2.JCSJ_XS) END) || ':' || (CASE WHEN SUM(B2.JCSJ_FZ) IS NULL THEN 0 ELSE SUM(B2.JCSJ_FZ) END) JCSJ,
+		       (CASE WHEN SUM(B2.JCXH) IS NULL THEN 0 ELSE SUM(B2.JCXH) END) JCXH,
+		       (CASE WHEN SUM(B2.SSDSJ_XS) IS NULL THEN 0 ELSE SUM(B2.SSDSJ_XS) END) || ':' || (CASE WHEN SUM(B2.SSDSJ_FZ) IS NULL THEN 0 ELSE SUM(B2.SSDSJ_FZ) END) SSDSJ,
+		       (CASE WHEN SUM(B2.DGXH) IS NULL THEN 0 ELSE SUM(B2.DGXH) END) DGXH
+		  FROM B_S_006 B1
+		  LEFT JOIN B_S_00601 B2
+		  <if test="id != null  and id != ''" >
+		  INNER JOIN B_S_006 B3 ON B3.ID = #{id,jdbcType=VARCHAR}
+		  </if>
+		    ON B2.FXJLDID = B1.ID
+		   AND B1.ZT IN (2, 12, 99)
+		   AND B2.ZT = 1
+		   <if test="id != null  and id != ''" >
+		   AND ((B1.FXRQ &lt; B3.FXRQ) OR
+	       	   (B1.FXRQ = B3.FXRQ AND B1.ZDSJ &lt; B3.ZDSJ))
+	       </if>
+		 WHERE B1.FJZCH = #{fjzch,jdbcType=VARCHAR} and b1.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		 GROUP BY B1.FJZCH
+  </select>
+  
+  
+  <!-- 根据条件查询飞行记录单 -->
+  <select id="queryList" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet"  resultMap="FlightRecordToUserMap">
+  		
+         SELECT B1.ID, B1.FXJLDH, B1.FJZCH, B1.JLBYM, B1.FXRQ, B1.ZDDWID, B1.ZDRID, B1.ZDSJ, 
+         B1.ZT, B1.DPRTCODE, B1.BZ ,B1.XDRID, B1.XDSJ, B1.ZDJSYY, 
+         U1.USERNAME AS ZDRUSERNAME, U1.REALNAME AS ZDRREALNAME, U2.USERNAME AS XDRUSERNAME, U2.REALNAME AS XDRREALNAME 
+         		FROM B_S_006 B1
+			LEFT JOIN T_USER U1 ON B1.ZDRID = U1.ID
+			LEFT JOIN T_USER U2 ON B1.XDRID = U2.ID
+	                <include refid="flightRecordParam" />
+	    	    	ORDER BY B1.FXJLDH ASC
+		      
+  </select>
+  
+  <!-- 根据飞机注册号查询记录本页码 -->
+  <select id="queryRecordNumByFjzch" parameterType="java.lang.String"  resultType="java.lang.String">
+  		
+         SELECT DISTINCT JLBYM FROM B_S_006 
+         WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} AND ZT IN (2, 12, 99)
+         ORDER BY JLBYM
+		      
+  </select>
+  
+  
+  <!-- 获取飞行数据详细 -->
+  <select id="getFlightDataDetail" parameterType="java.lang.String"  resultMap="FlightRecordToDetailMap">
+  		SELECT 
+			B1.ID, B1.FXJLDH, B1.FJZCH, B1.JLBYM, B1.FXRQ, B1.BZ, B1.ZDDWID, B1.ZDRID, B1.ZDSJ, B1.ZT, B1.DPRTCODE, B1.XDRID, B1.XDSJ, 
+			    B1.ZDJSYY,
+			    B2.ID AS DETAILID, B2.FXJLDID, B2.HC, B2.HCMS, B2.XDBS,
+			    B2.QLJXH, B2.JCSJ_XS, B2.JCSJ_FZ, B2.JCXH, B2.YL_FXQ, B2.YL_FXH, B2.F1_N1, B2.F1_N2, B2.F1_N3, B2.F1_N4, B2.F1_N5, 
+			    B2.F1_N6, B2.F1_HY, B2.F1_WDYD, B2.F1_GLYD, B2.F2_N1, B2.F2_N2, B2.F2_N3, B2.F2_N4, B2.F2_N5, B2.F2_N6, B2.F2_HY, 
+			    B2.F2_WDYD, B2.F2_GLYD, B2.DGXH, B2.TS1, B2.TS2, B2.MGB, B2.IGB, B2.TGB, B2.TSFXPZID, B2.ZT, 
+			    B2.WHDWID, B2.WHRID, B2.WHSJ, B2.DPRTCODE, B2.BZ, B2.JH_F1, B2.XLH_F1, B2.JH_F2, B2.XLH_F2, B2.JH_JC, B2.XLH_JC, B2.JH_WDG, 
+			    B2.XLH_WDG, B2.JH_SSD, B2.XLH_SSD, B2.AV_FXR,  B2.AV_ZZH, B2.ME_FXR,ME_ZZH, B2.JZSHRK
+			   ,(CASE WHEN B2.FXSJ_XS IS NULL THEN 0 ELSE B2.FXSJ_XS END) || ':' || (CASE WHEN B2.FXSJ_FZ IS NULL THEN 0 ELSE B2.FXSJ_FZ END) FXSJ
+			   ,(CASE WHEN B2.F1SJ_XS IS NULL THEN 0 ELSE B2.F1SJ_XS END) || ':' || (CASE WHEN B2.F1SJ_FZ IS NULL THEN 0 ELSE B2.F1SJ_FZ END) F1SJN16Z
+			   ,(CASE WHEN B2.F2SJ_XS IS NULL THEN 0 ELSE B2.F2SJ_XS END) || ':' || (CASE WHEN B2.F2SJ_FZ IS NULL THEN 0 ELSE B2.F2SJ_FZ END) F2SJN16Z
+			   ,(CASE WHEN B2.SSDSJ_XS IS NULL THEN 0 ELSE B2.SSDSJ_XS END) || ':' || (CASE WHEN B2.SSDSJ_FZ IS NULL THEN 0 ELSE B2.SSDSJ_FZ END) SSDSJ
+			   ,(CASE WHEN B2.JCSJ_XS IS NULL THEN 0 ELSE B2.JCSJ_XS END) || ':' || (CASE WHEN B2.JCSJ_FZ IS NULL THEN 0 ELSE B2.JCSJ_FZ END) JCSJ
+			      FROM B_S_006 B1
+			      INNER JOIN B_S_00601 B2
+			        ON B2.FXJLDID = B1.ID
+			       AND B2.ZT = 1
+			     WHERE B1.ID = #{id,jdbcType=VARCHAR}
+			        ORDER BY B2.HC
+  </select>
+  
+  
+  <!-- 获取最小的飞行日期 -->
+  <select id="findMaxFxrq" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet"  resultType="java.util.Date">
+         
+	SELECT MAX(FXRQ) FXRQ FROM B_S_006 b1
+	<include refid="flightRecordParam" /> 
+		      
+  </select>
+  
+  <!-- 获取部件在库存中的数量 -->
+  <select id="getCountInStock" parameterType="com.eray.thjw.productionplan.po.LoadingList"  resultType="int">
+	        SELECT COUNT(1)
+	          FROM B_H_001
+	         WHERE BJH = #{jh,jdbcType=VARCHAR}
+	           AND SN = #{xlh,jdbcType=VARCHAR}
+	           AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		      
+  </select>
+  
+  <!-- 判断部件是否在外场库存中 -->
+  <select id="getCountInOutStock" parameterType="com.eray.thjw.productionplan.po.LoadingList"  resultType="int">
+	        SELECT COUNT(1)
+	          FROM B_H_003
+	         WHERE BJH = #{jh,jdbcType=VARCHAR}
+	           <if test="xlh != null and xlh != ''">
+	           AND SN = #{xlh,jdbcType=VARCHAR}
+	           </if>
+	           AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		      
+  </select>
+  
+  <!-- 获取上一页 -->
+  <select id="getPreviousPage" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet"  resultType="java.lang.String">
+	
+		SELECT ID
+		  FROM (SELECT B1.ID, B1.FXRQ, B1.ZDSJ, ROW_NUMBER() OVER (ORDER BY B1.FXRQ DESC, B1.ZDSJ DESC) AS ROW_NUM
+		          FROM B_S_006 B1
+		         <if test="id != null and id != ''">
+		         INNER JOIN B_S_006 B2
+		            ON B2.ID = #{id,jdbcType=VARCHAR}
+		         WHERE B1.FJZCH = B2.FJZCH
+		           AND B1.DPRTCODE = B2.DPRTCODE
+		           AND B1.FXRQ &lt;= B2.FXRQ
+		           AND B1.ZDSJ &lt;= B2.ZDSJ
+		           AND B1.ID != #{id,jdbcType=VARCHAR}
+		           AND B1.ZT IN (1,2,10,12,99)
+		         </if>
+		         ) AS TT
+		 WHERE ROW_NUM = 1
+		 
+  </select>
+  
+  <!-- 获取下一页 -->
+  <select id="getNextPage" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet"  resultType="java.lang.String">
+	
+		SELECT ID
+		  FROM (SELECT B1.ID, B1.FXRQ, B1.ZDSJ, ROW_NUMBER() OVER (ORDER BY B1.FXRQ, B1.ZDSJ) AS ROW_NUM
+		          FROM B_S_006 B1
+		         INNER JOIN B_S_006 B2
+		            ON B2.ID = #{id,jdbcType=VARCHAR}
+		         WHERE B1.FJZCH = B2.FJZCH
+		           AND B1.DPRTCODE = B2.DPRTCODE
+		           AND B1.FXRQ &gt;= B2.FXRQ
+		           AND B1.ZDSJ &gt;= B2.ZDSJ
+		           AND B1.ID != #{id,jdbcType=VARCHAR}
+		           AND B1.ZT IN (1,2,10,12,99)
+		         ) AS TT
+		 WHERE ROW_NUM = 1
+		      
+  </select>
+  
+  <!-- 装机清单导入获取飞行记录单数据 -->
+  <select id="getCountByLoadingListImport" parameterType="com.eray.thjw.productionplan.po.PlaneData"  resultType="int">
+	
+		SELECT COUNT(1) FROM B_S_006 
+			WHERE FJZCH = #{fjzch,jdbcType=VARCHAR} 
+				AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+				AND ZT IN(1,2,10,12,99)
+		
+  </select>
+  
+  <!-- 获取上一个飞行记录单-->
+  <select id="getPreviousRecord" parameterType="java.lang.String" resultMap="BaseResultMap">
+	
+		SELECT ID, FXRQ, ZDSJ, IS_XDTX
+		  FROM (SELECT B1.ID, B1.FXRQ, B1.ZDSJ, B1.IS_XDTX, ROW_NUMBER() OVER (ORDER BY B1.FXRQ DESC, B1.ZDSJ DESC) AS ROW_NUM
+		          FROM B_S_006 B1
+		         INNER JOIN B_S_006 B2
+		            ON B2.ID = #{id,jdbcType=VARCHAR}
+		         WHERE B1.FJZCH = B2.FJZCH
+		           AND B1.DPRTCODE = B2.DPRTCODE
+		           AND B1.FXRQ &lt;= B2.FXRQ
+		           AND B1.ZDSJ &lt;= B2.ZDSJ
+		           AND B1.ID != #{id,jdbcType=VARCHAR}
+		           AND B1.ZT IN (1,2,10,12,99)
+		         ) AS TT
+		 WHERE ROW_NUM = 1
+		 
+  </select>
+  
+  <!-- 更新后面的飞行记录单的提醒标识-->
+  <update id="updateAfterNoticeFlag" parameterType="java.lang.String">
+  		update b_s_006 b1 
+  			set is_xdtx = 1
+  		  where exists (
+  		  		select 1 from b_s_006 b2 where b2.fjzch = b1.fjzch and b2.dprtcode = b1.dprtcode and b2.id = #{id,jdbcType=VARCHAR}
+  		  			and ((b1.fxrq &gt; b2.fxrq) or (b1.fxrq = b2.fxrq and b1.zdsj &gt; b2.zdsj))
+  		  
+  		  )
+  		  and b1.zt in (1,2,10,12,99)
+  		  and b1.id != #{id,jdbcType=VARCHAR}
+	
+  </update>
+    <select id="getHbhFxrqFlightRecord" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet" resultMap="BaseResultMap">
+  		select id, fjzch, fxrq ,hbh from  b_s_006 where fjzch=#{fjzch,jdbcType=VARCHAR} and zt in (1,2,10,12,99) and dprtcode=#{dprtcode,jdbcType=VARCHAR}
+  </select>
+</mapper>

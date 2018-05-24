@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.MaintenanceRecMapper" >
+   
+	<!-- 维修方案日志列表 开始 -->
+  
+	<select id="queryList_BG011_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+				SELECT 
+				B.ID AS "ID",
+       B.WXFABH AS "WXFABH",
+       B.BB AS "BB",
+       B.ZWMS AS "ZWMS",
+       B.YWMS AS "YWMS",
+       B.JX AS "JX",
+       B.JH_SXRQ AS "JH_SXRQ",
+       B.SJ_SXRQ AS "SJ_SXRQ",
+       B.BZ AS "BZ",
+       B.ZDBMID AS "ZDBMID",
+       B.ZDRID AS "ZDRID",
+       B.ZDSJ AS "ZDSJ",
+       B.SXBMID AS "SXBMID",
+       B.SXRID AS "SXRID",
+       B.SXJYRID AS "SXJYRID",
+       B.SXSJ AS "SXSJ",
+       B.ZT AS "ZT",
+       B.ZXBS AS "ZXBS",
+       B.F_BBID AS "F_BBID",
+       B.B_BBID AS "B_BBID",
+       B.DPRTCODE AS "DPRTCODE",
+       B.XDTZSID AS "XDTZSID",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",    
+		        	WHR.USERNAME||' '||WHR.REALNAME AS "WHR_REALNAME",
+		        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+		        	WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+			        B.WXFABH||' '||'版本'||B.BB||' '||(
+			       F_GETREC_HD(B.REC_CZSM)
+			        ) AS "REC_HD"
+				FROM B_G_011_REC B 
+	        	LEFT JOIN T_USER WHR ON WHR.ID = B.ZDRID
+	        	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	        	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.ZDBMID
+		        WHERE 1=1
+				<if test='paramsMap!=null and paramsMap.REC_CZLS!=null and paramsMap.REC_CZLS!=""'>
+					and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	       	 	</if>
+	        	<if test='paramsMap!=null and paramsMap.ID!=null and paramsMap.ID!=""'>
+	        		and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	        	</if>
+	        	<if test='paramsMap!=null and paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		       		and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		        </if>
+		        <if test='paramsMap!=null and paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and (
+		                B.WXFABH like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+		           	)
+		    	</if>
+				order by B.REC_CZSJ DESC,B.BB DESC
+	</select>
+  
+	<select id="queryDiff_BG011_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT * FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+            	
+            	B.ID AS "ID",
+       B.WXFABH AS "WXFABH",
+       B.BB AS "BB",
+       B.ZWMS AS "ZWMS",
+       B.YWMS AS "YWMS",
+       B.JX AS "JX",
+       B.JH_SXRQ AS "JH_SXRQ",
+       B.SJ_SXRQ AS "SJ_SXRQ",
+       B.BZ AS "BZ",
+       B.ZDBMID AS "ZDBMID",
+       B.ZDRID AS "ZDRID",
+       B.ZDSJ AS "ZDSJ",
+       B.SXBMID AS "SXBMID",
+       B.SXRID AS "SXRID",
+       B.SXJYRID AS "SXJYRID",
+       B.SXSJ AS "SXSJ",
+       B.ZT AS "ZT",
+       B.ZXBS AS "ZXBS",
+       B.F_BBID AS "F_BBID",
+       B.B_BBID AS "B_BBID",
+       B.DPRTCODE AS "DPRTCODE",
+       B.XDTZSID AS "XDTZSID",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",  
+            	WHR.USERNAME||' '||WHR.REALNAME AS "WHR_REALNAME",
+	        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+	        	WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+	        	SXR.USERNAME||' '||SXR.REALNAME AS "SXR_REALNAME",
+	        	SXDW.DPRTNAME AS "SXDW_DRPTNAME",
+	        	JXR.USERNAME||' '||JXR.REALNAME AS "JXR_REALNAME",
+            	to_char(B.JH_SXRQ,'YYYY-MM-DD') AS "JHSXRQ",
+		        to_char(B.SJ_SXRQ,'YYYY-MM-DD') AS "SJSXRQ",
+            	(
+         		CASE 
+		          	WHEN B.ZT = 1 THEN '未生效'
+		          	WHEN B.ZT = 2 THEN '待生效'
+		          	WHEN B.ZT = 3 THEN '生效'
+		          	WHEN B.ZT = 8 THEN '作废'
+		          	WHEN B.ZT = 9 THEN '关闭'
+         		END 
+     	   		) AS "STATUS_NAME",
+     	   		(
+         		CASE 
+		          	WHEN B.ZXBS = 0 THEN '未生效'
+		          	WHEN B.ZXBS = 1 THEN '生效'
+		          	WHEN B.ZXBS = 2 THEN '失效'
+         		END 
+     	   		) AS "ZT_NAME",
+            	'维修方案编号:'||B.WXFABH || ' ' || (
+            F_GETREC_HD(B.REC_CZSM)
+            	) AS "REC_HD",
+            	(CASE 
+            		WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+            		ELSE 'LAST'
+            	END
+            	) AS "DATA_VERSION"
+               
+			FROM B_G_011_REC B
+          	LEFT JOIN T_USER WHR ON WHR.ID = B.ZDRID
+          	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+          	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.ZDBMID
+          	LEFT JOIN T_USER SXR ON SXR.ID = B.SXRID
+          	LEFT JOIN T_DEPARTMENT SXDW ON SXDW.ID = B.SXBMID
+          	LEFT JOIN T_USER JXR ON JXR.ID = B.SXJYRID
+         	WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           	AND (select rec_czsj from B_G_011_REC where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+	</select>
+   
+	<select id="queryDiff_BG01101_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT 
+		B.ID AS "ID",
+       B.MAINID AS "MAINID",
+       B.XDTZSID AS "XDTZSID",
+       B.WHBMID AS "WHBMID",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.ZT AS "ZT",
+       B.DPRTCODE AS "DPRTCODE",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+		'CURRENT' AS "CURRENT" ,
+		BG005.JSZLH AS "JSZLH",
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+			(CASE 
+	         	WHEN B.REC_XGLX = 1 THEN '新增'
+	         	WHEN B.REC_XGLX = 2 THEN '修改'
+	         	WHEN B.REC_XGLX = 3 THEN '删除'
+	      	END
+	      	) AS "REC_XGLX_TEXT" ,
+		 F_GETREC_HD(B.REC_CZSM) AS "REC_HD"
+	  	FROM B_G_01101_REC B
+	  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	  	LEFT JOIN B_G_005 BG005 ON BG005.ID = B.XDTZSID
+	 	WHERE B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	 	
+		UNION ALL
+	
+		SELECT 
+		B.ID AS "ID",
+       B.MAINID AS "MAINID",
+       B.XDTZSID AS "XDTZSID",
+       B.WHBMID AS "WHBMID",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.ZT AS "ZT",
+       B.DPRTCODE AS "DPRTCODE",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+		'LAST' AS "DATA_VERSION" ,
+		BG005.JSZLH AS "JSZLH",
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+			(CASE 
+         		WHEN B.REC_XGLX = 1 THEN '新增'
+         		WHEN B.REC_XGLX = 2 THEN '修改'
+         		WHEN B.REC_XGLX = 3 THEN '删除'
+      		END) AS "REC_XGLX_TEXT" ,
+	 	F_GETREC_HD(B.REC_CZSM) AS "REC_HD"
+		FROM B_G_01101_REC B
+		LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+		LEFT JOIN B_G_005 BG005 ON BG005.ID = B.XDTZSID
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_G_011_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_G_011_REC C WHERE 
+		              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) AS T WHERE 1 = RNO                        
+            )  
+  	</select>
+  	<!-- 维修方案日志 结束 -->
+</mapper>

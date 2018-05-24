@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.SecondmentMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Secondment">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="JDDXBH" jdbcType="VARCHAR" property="jddxbh" />
+    <result column="JDDXLX" jdbcType="DECIMAL" property="jddxlx" />
+    <result column="JDDXMS" jdbcType="VARCHAR" property="jddxms" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+    <result column="DPRTNAME" jdbcType="VARCHAR" property="dprtname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, JDDXBH, JDDXLX, JDDXMS, BZ, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+  
+  <select id="selectSecondmentList" resultMap="BaseResultMap" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+	         
+        select a.ID, a.DPRTCODE, a.JDDXBH, a.JDDXLX, a.JDDXMS, a.BZ, 
+        
+	        a.ZT, a.WHDWID, a.WHRID, a.WHSJ,b.username,b.realname,c.dprtname
+	        
+	        FROM B_H_014 a left join t_user b on a.WHRID=b.id
+	        
+	        left join t_department c on a.DPRTCODE=c.id
+	              
+	           <include refid="SecondmentParam"></include>
+	           <choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		order by a.WHSJ DESC 
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	     </choose>	
+  </select>
+    <!-- 查询借调对象参数 -->
+	<sql id="SecondmentParam">
+	   where  a.zt=1
+	     <if test="keyword != null and keyword != ''">
+		    and (	a.JDDXMS like '%'||#{keyword}||'%'
+		          <!-- or a.JDDXBH like '%'||#{keyword}||'%' -->)              <!-- 左右匹配 查询关键字 -->
+		</if>
+		<if test="jddxlx != null">
+		    and a.JDDXLX = #{jddxlx}
+		</if>
+         <if test="dprtcode != null and dprtcode != ''">
+		    and (a.DPRTCODE = #{dprtcode} or (a.DPRTCODE is null and a.JDDXBH &lt;&gt; #{dprtcode}))
+		</if>  
+         <if test="id != null and id !='' ">
+		    and a.ID = #{id}
+		</if>
+	</sql>
+ 	 
+	<select id="queryOtherOrg"   resultMap="BaseResultMap" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+     select a.ID, a.DPRTCODE, a.JDDXBH, a.JDDXLX, a.JDDXMS , a.BZ, 
+	        a.ZT, a.WHDWID, a.WHRID, a.WHSJ,b.username,b.realname,c.dprtname
+	        FROM B_H_014 a left join t_user b on a.WHRID=b.id
+	        left join t_department c on a.DPRTCODE=c.id
+    where a.JDDXLX = 1 and zt=1  and (a.DPRTCODE = #{0} or (a.DPRTCODE is null and a.JDDXBH &lt;&gt; #{0}))
+  </select>
+ 	 
+ 	 <select id="selectCount"  resultType="int" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+		select count(1) FROM (
+		    
+	         select <include refid="Base_Column_List" />
+	         
+	         FROM B_H_014 where JDDXBH=#{jddxbh} and DPRTCODE=#{dprtcode}
+	          <if test="oldjddxbh != null">
+		      and  jddxbh!=#{oldjddxbh,jdbcType=VARCHAR}
+		      </if>
+		)
+ 	 </select>
+ 	 <select id="queryByDprtcode"  resultMap="BaseResultMap" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+	         select <include refid="Base_Column_List" />
+	         	FROM B_H_014 where  DPRTCODE is null and zt=1
+ 	 </select>
+  
+    <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+    insert into B_H_014
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="jddxbh != null">
+        JDDXBH,
+      </if>
+      <if test="jddxlx != null">
+        JDDXLX,
+      </if>
+      <if test="jddxms != null">
+        JDDXMS,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+        ZT,
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+        WHSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jddxbh != null">
+        #{jddxbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jddxlx != null">
+        #{jddxlx,jdbcType=DECIMAL},
+      </if>
+      <if test="jddxms != null">
+        #{jddxms,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+       1,
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+       current_timestamp
+    </trim>
+  </insert>
+ 
+ 
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_014
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+    
+  <select id="selectByIds" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_014
+    where jddxbh = #{jddxbh,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+    update B_H_014
+    <set>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="jddxbh != null">
+        JDDXBH = #{jddxbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jddxlx != null">
+        JDDXLX = #{jddxlx,jdbcType=DECIMAL},
+      </if>
+      <if test="jddxms != null">
+        JDDXMS = #{jddxms,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+       WHSJ = current_timestamp,
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_014
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByType" parameterType="com.eray.thjw.aerialmaterial.po.Secondment" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_014
+    where ZT = 1 and JDDXLX = #{jddxlx, jdbcType=DECIMAL}
+     <if test="dprtcode != null and dprtcode !='' ">
+      	and (DPRTCODE = #{dprtcode} or (DPRTCODE is null and JDDXBH &lt;&gt; #{dprtcode}))
+     </if>
+    
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_014
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+    insert into B_H_014 (ID, DPRTCODE, JDDXBH, 
+      JDDXLX, JDDXMS, BZ, 
+      ZT, WHDWID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jddxbh,jdbcType=VARCHAR}, 
+      #{jddxlx,jdbcType=DECIMAL}, #{jddxms,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.Secondment">
+    update B_H_014
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set JDDXBH = #{jddxbh,jdbcType=VARCHAR},
+      JDDXLX = #{jddxlx,jdbcType=DECIMAL},
+      JDDXMS = #{jddxms,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByBH" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+  	from B_H_014 where JDDXBH = #{1, jdbcType=VARCHAR} and zt =1
+  </select>
+  
+  <!-- 查询所有的借调对象 -->
+  <select id="queryAll" parameterType="com.eray.thjw.aerialmaterial.po.Secondment" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_014
+	    where ZT = 1 and (DPRTCODE = #{dprtcode} or (DPRTCODE is null and JDDXBH &lt;&gt; #{dprtcode}))
+	  order by jddxms
+  </select>
+</mapper>

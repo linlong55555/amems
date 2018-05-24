@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.MaintenanceMonthlyReportMapper">
+
+	<!-- 查询机身及发动机小时数 -->
+	<select id="queryHoursStatistics" resultType="map" parameterType="com.eray.thjw.produce.po.MaintenanceReportConfig" >
+      select 11 wz,
+       d007.fjzch,
+       d007.xlh,
+       ydsj,
+       ydxh,
+       sj,
+       xh,
+       d00701.sj_csz,
+       d00701.xh_csz
+	  from (select d007.dprtcode,
+	               d007.fjzch,
+	               d007.xlh,
+	               sum(case
+	                     when to_char(s200601.kcsj, 'yyyy-mm') = #{yf,jdbcType=VARCHAR} then
+	                      s200601.fxsj_fz
+	                     else
+	                      0
+	                   end) ydsj, <!-- 月度时间 -->
+	               sum(case
+	                     when to_char(s200601.kcsj, 'yyyy-mm') = #{yf,jdbcType=VARCHAR} then
+	                      s200601.fxxh
+	                     else
+	                      0
+	                   end) ydxh, <!-- 月度循环 -->
+	               sum(s200601.fxsj_fz) sj, <!-- 全部时间 -->
+	               sum(s200601.fxxh) xh <!-- 全部循环 -->
+	          from d_007 d007
+	          left join (select s2006.dprtcode,
+	                           s2006.fjzch,
+	                           s200601.kcsj,
+	                           s200601.fxsj_fz,
+	                           s200601.fxxh
+	                      from b_s2_00601 s200601
+	                      join b_s2_006 s2006 on s200601.zt = 1
+	                                         and s2006.zt in (2, 12)
+	                                         and s200601.mainid = s2006.id) s200601 on d007.dprtcode =
+	                                                                                   s200601.dprtcode
+	                                                                               and s200601.kcsj &lt;
+	                                                                                   least(sysdate,
+	                                                                                         last_day(to_date(#{yf,jdbcType=VARCHAR},
+	                                                                                                          'yyyy-mm')) + 1)
+	                                                                               and d007.fjzch =
+	                                                                                   s200601.fjzch
+	         where d007.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and d007.fjzch = #{fjzch,jdbcType=VARCHAR}
+	         group by d007.fjzch, d007.dprtcode, d007.xlh) d007
+	  left join (select dprtcode, fjzch,
+	                    max(case
+	                          when jklbh = '2_10_FH' then
+	                           csz
+	                          else
+	                           null
+	                        end) sj_csz,
+	                    max(case
+	                          when jklbh = '3_10_FC' then
+	                           csz
+	                          else
+	                           null
+	                        end) xh_csz
+	               from d_00701
+	              where jklbh in ('2_10_FH', '3_10_FC')
+	                and wz = 11
+	              group by dprtcode, fjzch) d00701 on d00701.dprtcode =
+	                                                  d007.dprtcode
+	                                              and d00701.fjzch = d007.fjzch
+	  union all
+	  
+	  select s2004.wz, s2004.bjh, s2004.xlh, ydsj, ydxh, sj, xh, 
+	       case wz
+	            when 31 then s200401.apu_sj_csz
+	            else  s200401.f_sj_csz end sj_csz,
+	        case wz
+	            when 31 then s200401.apu_xh_csz
+	            else  s200401.f_xh_csz end xh_csz   
+	 from(
+	select s2004.id, s2004.wz, s2004.bjh, s2004.xlh,       
+	       case wz 
+	       when 21 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f1_sj_fz else 0 end)
+	       when 22 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f2_sj_fz else 0 end)
+	       when 23 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f3_sj_fz else 0 end)
+	       when 24 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f4_sj_fz else 0 end)
+	       else sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.apu_sj_fz else 0 end) end ydsj, <!-- 月度时间 -->
+	       case wz 
+	       when 21 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f1_xh else 0 end)
+	       when 22 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f2_xh else 0 end)
+	       when 23 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f3_xh else 0 end)
+	       when 24 then sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.f4_xh else 0 end)
+	       else sum(case when to_char(s200601.kcsj, 'yyyy-mm')= #{yf,jdbcType=VARCHAR}  then s200601.apu_xh else 0 end) end ydxh, <!-- 月度循环 -->
+	       case wz 
+	       when 21 then sum(s200601.f1_sj_fz)
+	       when 22 then sum(s200601.f2_sj_fz)
+	       when 23 then sum(s200601.f3_sj_fz)
+	       when 24 then sum(s200601.f4_sj_fz)
+	       else sum (s200601.apu_sj_fz) end sj, <!-- 全部时间 -->
+	       case wz 
+	       when 21 then sum(s200601.f1_xh)
+	       when 22 then sum(s200601.f2_xh)
+	       when 23 then sum(s200601.f3_xh)
+	       when 24 then sum(s200601.f4_xh)
+	       else sum (apu_xh) end xh <!-- 全部循环 -->
+	  from b_s2_004 s2004
+	  left join (select s2006.dprtcode,
+	                    s2006.fjzch,
+	                    s200601.kcsj,
+	                    s200601.f1_sj_fz,
+	                    s200601.f1_xh,
+	                    s200601.f2_sj_fz,
+	                    s200601.f2_xh,
+	                    s200601.f3_sj_fz,
+	                    s200601.f3_xh,
+	                    s200601.f4_sj_fz,
+	                    s200601.f4_xh,
+	                    s200601.apu_sj_fz,
+	                    s200601.apu_xh
+	               from b_s2_00601 s200601
+	               join b_s2_006 s2006 on s200601.zt = 1
+	                                  and s2006.zt in (2, 12) 
+	                                  and  s200601.mainid = s2006.id      
+	             ) s200601 on s2004.dprtcode = s200601.dprtcode
+	                      and s2004.azsj &lt;= s200601.kcsj
+	                      and s200601.kcsj &lt; least(sysdate, last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) +1 ) 
+	                      and s2004.fjzch = s200601.fjzch                         
+	                where s2004.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	                  and s2004.yxbs = 1
+	                  and s2004.azsj &lt; least(sysdate, last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) +1 ) 
+	                  and coalesce(s2004.ccsj, to_date('9999-12-31 23:59:59', 'yyyy-mm-dd hh24:mi:ss')) &gt;= least(sysdate, last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) +1 ) 
+	                  and s2004.fjzch = #{fjzch,jdbcType=VARCHAR}
+	                  and s2004.wz != 11 
+	                  and s2004.cj = 1
+	   group by s2004.id,s2004.wz,s2004.bjh,s2004.xlh
+	   ) s2004 left join (
+	   select mainid,
+	       max(case
+	             when jklbh = '2_30_EH' then
+	              zssyy
+	             else
+	              null
+	           end) f_sj_csz,
+	       max(case
+	             when jklbh = '2_20_AH' then
+	              zssyy
+	             else
+	              null
+	           end) apu_sj_csz,
+	       max(case
+	             when jklbh = '3_20_AC' then
+	              zssyy
+	             else
+	              null
+	           end) apu_xh_csz,
+	       max(case
+	             when jklbh = '3_30_EC' then
+	              zssyy
+	             else
+	              null
+	           end) f_xh_csz
+	  from b_s2_00401
+	 where jklbh in ('2_30_EH', '2_20_AH', '3_20_AC', '3_30_EC')
+	 group by mainid
+	   ) s200401 on s200401.mainid = s2004.id
+	 order by wz
+    </select>
+    
+    <!-- 查询航线例行维修工作 -->
+	<select id="queryRoutineWork" resultType="map" parameterType="com.eray.thjw.produce.po.MaintenanceReportConfig" >
+	  select to_char(s2006.fxrq, 'yyyy-mm-dd') fxrq,
+       s2006.qfz,
+       s2006.zlz,
+       case
+         when px = 1 and dx = 1 then
+          coalesce(d028.hqgs, 0) + coalesce(d028.hhgs, 0)
+         when px = 1 and dx &gt; 1 then
+          coalesce(d028.hqgs, 0) + coalesce(d028.gzgs, 0)
+         when px &gt; 1 and dx = 1 then
+          coalesce(d028.hhgs, 0)
+         else
+          coalesce(d028.gzgs, 0)
+       end as gs
+	  from (select s2006.fxrq,
+	               s2006.gjbs,
+	               s200601.qfz,
+	               s200601.zlz,
+               	   s200601.kcsj,
+	               ROW_NUMBER() OVER(partition by fxrq order by s200601.kcsj) px,
+	               ROW_NUMBER() OVER(partition by fxrq order by s200601.kcsj desc) dx
+	          from b_s2_00601 s200601
+	          join b_s2_006 s2006 on s200601.mainid = s2006.id
+	                             and s2006.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	                             and s200601.zt = 1
+	                             and s2006.zt in (2, 12)
+	                             and s2006.fxrq &lt;
+	                                 (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) + 1)
+	                             and s2006.fxrq &gt;=
+	                                 to_date(#{yf,jdbcType=VARCHAR} || '-01', 'yyyy-mm-dd')
+	                             and s2006.fjzch = #{fjzch,jdbcType=VARCHAR}) s2006
+	   left join (select hqgs, gzgs, hhgs from 
+	   		(select hqgs, gzgs, hhgs from d_028 d028
+          where d028.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+                and d028.yf &lt;= #{yf,jdbcType=VARCHAR}
+                and d028.fjzch = #{fjzch,jdbcType=VARCHAR}
+          order by d028.yf desc) where rownum = 1
+	   ) d028 on 1 = 1                         
+	 where s2006.gjbs = 1
+	 order by s2006.fxrq, s2006.kcsj
+	</select>
+	
+	<!-- 查询航线非例行维修工作 -->
+	<select id="queryNonRoutineWork" resultType="map" parameterType="com.eray.thjw.produce.po.MaintenanceReportConfig" >
+	  select s200604.id, to_char(s2006.fxrq, 'yyyy-mm-dd') fxrq, s200604.gdbh, s200604.gznr
+	  from b_s2_00604 s200604
+	  join b_s2_006 s2006 on s200604.mainid = s2006.id
+	                     and s2006.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	                     and s200604.zt = 1
+	                     and s2006.fxrq &lt; (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) +1)
+	                     and s2006.fxrq &gt;= to_date(#{yf,jdbcType=VARCHAR}||'-01', 'yyyy-mm-dd')
+	                     and s2006.zt in (2, 12)
+	                     and s2006.fjzch = #{fjzch,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询EO/MAO执行情况 -->
+	<select id="queryEoMaoImplementation" resultType="map" parameterType="com.eray.thjw.produce.po.MaintenanceReportConfig" >
+	  select g2010.eobh, g2010.eozt,
+       case when coalesce(g201001.gbrq, g2010.gbrq) &lt; last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm'))+1
+            then 1 else 0 end wczt <!-- 完成状态 1完成、0未完成 -->
+		from b_g2_010 g2010
+		join b_g2_01001 g201001 on g2010.id = g201001.mainid
+		                        and g201001.zt = 1
+		                        and g2010.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		                        and g2010.sylb=1
+		                        and trunc(pfsj) &lt;= least(sysdate, last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm'))) 
+		                        and ((g201001.gbrq is null and g2010.gbrq is null) or  trunc(coalesce(g201001.gbrq, g2010.gbrq)) &gt;= to_date(#{yf,jdbcType=VARCHAR}||'-01', 'yyyy-mm-dd'))
+		                        and g2010.pfjl = 4
+		                        and g2010.zxbs = 2
+		                        and g201001.bh = #{fjzch,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询适航指令,厂家服务通告等评估情况 -->
+	<select id="queryEvaluationSituations" resultType="map" parameterType="com.eray.thjw.produce.po.MaintenanceReportConfig" >
+	  select g2000.jswjbh,
+       g2000.zdsj,
+       case g2001.pfjl
+         when 4 then
+          g2001.gcpgjl
+         else
+          null
+       end pgjg,
+       g2001.bz
+	  from b_g2_000 g2000
+	  join b_g2_00001 g200001 on g200001.mainid = g2000.id
+	                         and g2000.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	                         and g2000.zdsj &lt;
+	                             (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) + 1)
+	                         and g2000.zdsj &gt;=
+	                             to_date(#{yf,jdbcType=VARCHAR} || '-01', 'yyyy-mm-dd')
+	                         and g200001.fjjx = #{fjjx,jdbcType=VARCHAR}
+	  left join (select g2001.jswjid,
+	                    g2001.zt,
+	                    g2001.pfjl,
+	                    g200100.gcpgjl,
+	                    g2001.bz,
+                    	g2001.jx
+	               from b_g2_001 g2001
+	               join b_g2_00100 g200100 on g2001.id = g200100.mainid
+	              where lylx = 1
+	                and b_bbid is null) g2001 on g2001.jx = g200001.fjjx and g2001.jswjid = g2000.id
+	</select>
+	
+	<!-- 查询飞机故障/缺陷监控 -->
+	<select id="queryFaultMonitor" resultType="map" parameterType="com.eray.thjw.produce.po.MaintenanceReportConfig" >
+	   select s2013.bldh, s2013.gzms, 
+	   case when (s2013.zc_sqrq is not null and s2013.zc_sqrq &lt; (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) + 1))
+	   then (to_char(s2013.zc_sqrq, 'yyyy-mm-dd')||'#__#'||s2013.zc_blyy||'#__#'||s201301.zc_qx)
+	   else (to_char(s2013.sc_sqrq, 'yyyy-mm-dd')||'#__#'||s2013.blyy||'#__#'||s201301.sc_qx)
+	   end as detail <!-- 格式  保留日期#__#保留原因#__#到期日期（到期日期格式：监控项#_#监控值,监控项#_#监控值...注意时间要转小时） -->
+	  from b_s2_013 s2013
+	  left join (
+	       select mainid, wm_concat(
+	       case jd when 1 then jklbh||'#_#'||jkz else null end)  sc_qx,
+	        wm_concat( case jd when 2 then jklbh||'#_#'||jkz else null end) zc_qx
+	       from b_s2_01301 s201301 
+	       group by s201301.mainid
+	  ) s201301 on s201301.mainid = s2013.id
+	 where s2013.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	   and ((s2013.sc_sqrq &lt; (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) + 1) and
+	       s2013.sc_sqrq &gt;= to_date(#{yf,jdbcType=VARCHAR} || '-01', 'yyyy-mm-dd')) or
+	       (s2013.zc_sqrq &lt; (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) + 1) and
+	       s2013.zc_sqrq &gt;= to_date(#{yf,jdbcType=VARCHAR} || '-01', 'yyyy-mm-dd')))
+	   and s2013.zt in (4, 10)
+	   and s2013.fjzch = #{fjzch,jdbcType=VARCHAR}
+	
+	union all
+	
+	 select s2012.bldh, s2012.qxms, to_char(s2012.sqrq, 'yyyy-mm-dd')||'#__#'||''||'#__#'||'1_10'||'#_#'||to_char(s2012.xfqx, 'yyyy-mm-dd')
+	  from b_s2_012 s2012
+	 where s2012.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	   and s2012.sqrq &lt; (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) + 1) 
+	   and s2012.sqrq &gt;= to_date(#{yf,jdbcType=VARCHAR} || '-01', 'yyyy-mm-dd')
+	   and s2012.zt in (4, 10)
+	   and s2012.fjzch = #{fjzch,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询非例行维修工作费用 -->
+	<select id="queryNonRoutinePayment" resultType="map" parameterType="com.eray.thjw.produce.po.MaintenanceReportConfig" >
+	  select s200604.id, to_char(s2006.fxrq, 'yyyy-mm-dd') fxrq, s200604.gdbh, s200604.gznr, s200604.sjgs
+	  from b_s2_00604 s200604
+	  join b_s2_006 s2006 on s200604.mainid = s2006.id
+	                     and s2006.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	                     and s200604.zt = 1
+	                     and s2006.fxrq &lt; (last_day(to_date(#{yf,jdbcType=VARCHAR}, 'yyyy-mm')) +1)
+	                     and s2006.fxrq &gt;= to_date(#{yf,jdbcType=VARCHAR}||'-01', 'yyyy-mm-dd')
+	                     and coalesce(s200604.sjgs, 0) &gt; 0
+	                     and s2006.zt in (2, 12)
+	                     and s2006.fjzch = #{fjzch,jdbcType=VARCHAR}
+	  left join b_s2_008 s2008 on s200604.gdid = s2008.id
+	  left join b_g2_013 g2013 on s2008.gkid = g2013.id and g2013.worktype = 1
+	where g2013.id is null
+	</select>
+</mapper>

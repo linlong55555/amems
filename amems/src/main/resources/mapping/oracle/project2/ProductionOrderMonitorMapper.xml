@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 生产指令监控项 -->
+<mapper namespace="com.eray.thjw.project2.dao.ProductionOrderMonitorMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.ProductionOrderMonitor">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="JKLBH" jdbcType="VARCHAR" property="jklbh" />
+    <result column="JKFLBH" jdbcType="VARCHAR" property="jkflbh" />
+    <result column="SCZ" jdbcType="VARCHAR" property="scz" />
+    <result column="DW_SCZ" jdbcType="DECIMAL" property="dwScz" />
+    <result column="ZQZ" jdbcType="VARCHAR" property="zqz" />
+    <result column="DW_ZQZ" jdbcType="DECIMAL" property="dwZqz" />
+    <result column="YDZ_Q" jdbcType="VARCHAR" property="ydzQ" />
+    <result column="YDZ_QDW" jdbcType="DECIMAL" property="ydzQdw" />
+    <result column="YDZ_H" jdbcType="VARCHAR" property="ydzH" />
+    <result column="YDZ_HDW" jdbcType="DECIMAL" property="ydzHdw" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, MAINID, JKLBH, JKFLBH, SCZ, DW_SCZ, ZQZ, DW_ZQZ, YDZ_Q, YDZ_QDW, YDZ_H, YDZ_HDW, 
+    ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_01401
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_G2_01401
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.ProductionOrderMonitor">
+    insert into B_G2_01401 (ID, MAINID, JKLBH, 
+      JKFLBH, SCZ, DW_SCZ, 
+      ZQZ, DW_ZQZ, YDZ_Q, YDZ_QDW, 
+      YDZ_H, YDZ_HDW, ZT, WHBMID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{jklbh,jdbcType=VARCHAR}, 
+      #{jkflbh,jdbcType=VARCHAR}, #{scz,jdbcType=VARCHAR}, #{dwScz,jdbcType=DECIMAL}, 
+      #{zqz,jdbcType=VARCHAR}, #{dwZqz,jdbcType=DECIMAL}, #{ydzQ,jdbcType=VARCHAR}, #{ydzQdw,jdbcType=DECIMAL}, 
+      #{ydzH,jdbcType=VARCHAR}, #{ydzHdw,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.ProductionOrderMonitor">
+    insert into B_G2_01401
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="jklbh != null">
+        JKLBH,
+      </if>
+      <if test="jkflbh != null">
+        JKFLBH,
+      </if>
+      <if test="scz != null">
+        SCZ,
+      </if>
+      <if test="dwScz != null">
+        DW_SCZ,
+      </if>
+      <if test="zqz != null">
+        ZQZ,
+      </if>
+      <if test="dwZqz != null">
+        DW_ZQZ,
+      </if>
+      <if test="ydzQ != null">
+        YDZ_Q,
+      </if>
+      <if test="ydzQdw != null">
+        YDZ_QDW,
+      </if>
+      <if test="ydzH != null">
+        YDZ_H,
+      </if>
+      <if test="ydzHdw != null">
+        YDZ_HDW,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whbmid != null">
+        WHBMID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null">
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null">
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="scz != null">
+        #{scz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwScz != null">
+        #{dwScz,jdbcType=DECIMAL},
+      </if>
+      <if test="zqz != null">
+        #{zqz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwZqz != null">
+        #{dwZqz,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzQ != null">
+        #{ydzQ,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzQdw != null">
+        #{ydzQdw,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzH != null">
+        #{ydzH,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzHdw != null">
+        #{ydzHdw,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null">
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.ProductionOrderMonitor">
+    update B_G2_01401
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null">
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null">
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="scz != null">
+        SCZ = #{scz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwScz != null">
+        DW_SCZ = #{dwScz,jdbcType=DECIMAL},
+      </if>
+      <if test="zqz != null">
+        ZQZ = #{zqz,jdbcType=VARCHAR},
+      </if>
+      <if test="dwZqz != null">
+        DW_ZQZ = #{dwZqz,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzQ != null">
+        YDZ_Q = #{ydzQ,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzQdw != null">
+        YDZ_QDW = #{ydzQdw,jdbcType=DECIMAL},
+      </if>
+      <if test="ydzH != null">
+        YDZ_H = #{ydzH,jdbcType=VARCHAR},
+      </if>
+      <if test="ydzHdw != null">
+        YDZ_HDW = #{ydzHdw,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.ProductionOrderMonitor">
+    update B_G2_01401
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      JKLBH = #{jklbh,jdbcType=VARCHAR},
+      JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      SCZ = #{scz,jdbcType=VARCHAR},
+      DW_SCZ = #{dwScz,jdbcType=DECIMAL},
+      ZQZ = #{zqz,jdbcType=VARCHAR},
+      DW_ZQZ = #{dwZqz,jdbcType=DECIMAL},
+      YDZ_Q = #{ydzQ,jdbcType=VARCHAR},
+      YDZ_QDW = #{ydzQdw,jdbcType=DECIMAL},
+      YDZ_H = #{ydzH,jdbcType=VARCHAR},
+      YDZ_HDW = #{ydzHdw,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据多个生产指令id查询监控项目，以mainid,JKLBH进行排序  -->
+  <select id="selectMonitorByMainIds" parameterType="java.util.List" resultType="com.eray.thjw.project2.po.ProductionOrderMonitor">
+	SELECT G201401.ID,
+	       G201401.MAINID,
+	       G201401.JKLBH,
+	       G201401.JKFLBH,
+	       G201401.SCZ,
+	       G201401.DW_SCZ,
+	       G201401.ZQZ,
+	       G201401.DW_ZQZ,
+	       G201401.YDZ_Q,
+	       G201401.YDZ_QDW,
+	       G201401.YDZ_H,
+	       G201401.YDZ_HDW
+	  FROM B_G2_01401 G201401
+	 WHERE G201401.ZT = 1
+	   AND G201401.MAINID IN 
+	   <foreach collection="list" item="item" open="(" close=")" separator=",">
+	   	#{item, jdbcType=VARCHAR}
+	   </foreach>
+	   ORDER BY G201401.MAINID, G201401.JKLBH
+  </select>
+  
+  <!-- 根据生产指令id查询监控项目，以JKLBH进行排序  -->
+  <select id="selectMonitorByMainId" parameterType="java.util.List" resultType="com.eray.thjw.project2.po.ProductionOrderMonitor">
+	SELECT G201401.ID,
+	       G201401.MAINID,
+	       G201401.JKLBH,
+	       G201401.JKFLBH,
+	       G201401.SCZ,
+	       G201401.DW_SCZ,
+	       G201401.ZQZ,
+	       G201401.DW_ZQZ,
+	       G201401.YDZ_Q,
+	       G201401.YDZ_QDW,
+	       G201401.YDZ_H,
+	       G201401.YDZ_HDW
+	  FROM B_G2_01401 G201401
+	 WHERE G201401.ZT = 1
+	   AND G201401.MAINID = #{mainid, jdbcType=VARCHAR}
+	   ORDER BY G201401.JKLBH
+  </select>
+  
+
+  
+  <!-- 根据mainid删除 -->
+  <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from B_G2_01401
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

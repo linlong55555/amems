@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.AircraftScheduleRecMapper" >
+   
+  <select id="queryList4BS010" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+       		 SELECT B.*       
+		        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME
+		        , B.DXID||'/'||B.PBRQ REC_HD
+		        FROM 
+				(SELECT B1.ID, B1.DXID, B2.DPRTCODE, to_char(B2.PBRQ, 'yyyy-mm-dd') PBRQ, B1.REC_CZLS, B1.REC_IP,
+				B1.REC_CZRID, B1.REC_CZSM, B1.REC_CZSJ,
+				ROW_NUMBER() OVER (PARTITION BY B1.REC_CZLS ORDER BY B1.REC_CZSJ DESC) RN
+				FROM B_S_01001_REC B1
+				INNER JOIN B_S_010_REC B2 ON B1.MAINID = B2.ID AND B1.REC_CZLS = B2.REC_CZLS
+				WHERE B1.DXLX = 10) B 
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		        WHERE B.RN = 1
+	       		 <if test='paramsMap.REC_CZLS != null and paramsMap.REC_CZLS != ""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID != null and paramsMap.ID != ""'>
+		        	and B.DXID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	       			and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and (
+		                UPPER(B.DXID) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+		           )
+		         </if>
+		         <!-- 日志 机型，飞机注册号授权过滤。-->
+		        <choose>
+		        	<when test='paramsMap.LOGINED_USERTYPE != null and paramsMap.LOGINED_USERTYPE == "admin"'>
+		        		AND exists 
+			    		( SELECT 1 from D_007 D where 
+			    		B.DXID = D.FJZCH
+			    		AND B.DPRTCODE = D.DPRTCODE
+			    		AND D.zt = 1
+			    		)
+		        	</when>
+		        	<otherwise>
+		        		AND exists 
+			    		( SELECT 1 from V_ROLE_JX D where 
+			    		B.DXID = D.FJZCH
+			    		AND B.DPRTCODE = D.DPRTCODE
+			    		AND D.USER_ID = #{paramsMap.LOGINED_USERID,jdbcType=VARCHAR}
+			    		)
+		        	</otherwise>
+		        </choose>
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff4BS010" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO
+                ,B.*       
+		        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME
+		        , B.DXID||'/'||B.PBRQ REC_HD,
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM 
+			(
+		select * from (SELECT B1.ID, B1.DXID, B2.DPRTCODE, to_char(B2.PBRQ, 'yyyy-mm-dd') PBRQ, 
+		    	B1.REC_CZLS, B1.REC_CZSJ, B1.REC_IP,b1.REC_CZRID,b1.REC_CZSM,
+			ROW_NUMBER() OVER (PARTITION BY B1.REC_CZLS ORDER BY B1.REC_CZSJ DESC) RN
+			FROM B_S_01001_REC B1
+			INNER JOIN B_S_010_REC B2 ON B1.MAINID = B2.ID AND B1.REC_CZLS = B2.REC_CZLS
+			WHERE B1.DXLX = 10) t
+			where t.rn = 1
+				) B 
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+         WHERE B.DXID = #{paramsMap.DXID,jdbcType=VARCHAR}
+	       AND B.PBRQ = #{paramsMap.PBRQ,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from b_s_01001_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and id = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+       
+  </select>
+  
+  <select id="queryDiff4BS01001" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT B1.ID, B1.DXID,to_char(b2.pbrq, 'yyyy-mm-dd') pbrq, B2.SBSJ, B2.XBSJ, B1.REC_IP, B1.REC_CZSJ,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	TO_CHAR(B2.SBSJ, 'YYYY-MM-DD HH24')||':00' SBSJSTR,
+	TO_CHAR(B2.XBSJ, 'YYYY-MM-DD HH24')||':59' XBSJSTR,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B1.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B1.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B1.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 
+	 (CASE
+                 WHEN B1.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B1.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B1.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B1.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B1.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B1.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B1.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B1.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B1.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B1.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B1.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B1.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B1.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B1.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B1.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B1.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B1.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B1.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+	  FROM B_S_01001_REC B1
+	  INNER JOIN B_S_010_REC B2 ON B1.MAINID = B2.ID AND B1.REC_CZLS = B2.REC_CZLS
+	  LEFT JOIN T_USER CZR ON CZR.ID = B1.REC_CZRID
+	 WHERE B1.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} AND B1.REC_XGLX IN (1,2)
+	UNION ALL
+	
+	SELECT B1.ID, B1.DXID, to_char(b2.pbrq, 'yyyy-mm-dd') pbrq, B2.SBSJ, B2.XBSJ, B1.REC_IP, B1.REC_CZSJ ,
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	TO_CHAR(B2.SBSJ, 'YYYY-MM-DD HH24')||':00' SBSJSTR,
+	TO_CHAR(B2.XBSJ, 'YYYY-MM-DD HH24')||':59' XBSJSTR,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B1.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B1.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B1.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+	 (CASE
+                 WHEN B1.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B1.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B1.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B1.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B1.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B1.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B1.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B1.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B1.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B1.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B1.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B1.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B1.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B1.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B1.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B1.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B1.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B1.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+	   FROM B_S_01001_REC B1
+	   INNER JOIN B_S_010_REC B2 ON B1.MAINID = B2.ID AND B1.REC_CZLS = B2.REC_CZLS
+	   LEFT JOIN T_USER CZR ON CZR.ID = B1.REC_CZRID
+		  WHERE B1.REC_CZLS IN (SELECT REC_CZLS
+	                         FROM (SELECT ROW_NUMBER() OVER(ORDER BY m.REC_CZSJ DESC) RNO,
+	                                      m.REC_CZLS
+	                                 FROM (select * from(SELECT t1.ID, t1.DXID, t2.DPRTCODE, t2.PBRQ, 
+	                                    t1.REC_CZLS, t1.REC_CZSJ, t1.REC_IP,t1.REC_CZRID,t1.REC_CZSM,
+	                                ROW_NUMBER() OVER (PARTITION BY t1.REC_CZLS ORDER BY t1.REC_CZSJ DESC) RN
+	                                FROM B_S_01001_REC t1
+	                                INNER JOIN B_S_010_REC t2 ON t1.MAINID = t2.ID AND t1.REC_CZLS = t2.REC_CZLS
+	                                WHERE t1.DXLX = 10)n where n.rn = 1) m
+	                                WHERE m.DXID = #{paramsMap.DXID,jdbcType=VARCHAR}
+	                                  AND m.PBRQ = to_date(#{paramsMap.PBRQ,jdbcType=VARCHAR}, 'yyyy-mm-dd')
+	                                  AND (SELECT T.REC_CZSJ
+	                                         FROM B_S_01001_REC T
+	                                        WHERE T.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	                                          AND T.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}) > m.REC_CZSJ)
+	                        WHERE 1 = RNO)
+	   AND B1.REC_XGLX IN (1,2)
+  </select>
+  
+</mapper>

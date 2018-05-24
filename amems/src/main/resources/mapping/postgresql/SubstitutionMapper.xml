@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.SubstitutionMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.Substitution" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="MS" property="ms" jdbcType="VARCHAR" />
+    <result column="TDJH" property="tdjh" jdbcType="VARCHAR" />
+    <result column="TDJMS" property="tdjms" jdbcType="VARCHAR" />
+    <result column="JXBS" property="jxbs" jdbcType="VARCHAR" />
+    <result column="GKBS" property="gkbs" jdbcType="VARCHAR" />
+    <result column="KNXBS" property="knxbs" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+    <association property="whr_user" javaType="com.eray.thjw.po.User">
+      <id column="whrid" property="id"/>
+      <result column="whr_realname" property="realname"/>
+      <result column="whr_username" property="username"/>
+ 	</association>
+      <association property="bm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="whbmid" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+     
+     <collection property="applicabilityList" ofType="com.eray.thjw.po.SubstitutionApplicability" >  
+         <id column="DID" property="id" />
+	     <result column="DMAINID" property="mainid" />
+	     <result column="DSYXLX" property="syxlx" />
+	     <result column="DSYDX" property="sydx" />
+	     <result column="DZT" property="zt" />
+	     <result column="DWHBMID" property="whbmid" />
+	     <result column="DWHRID" property="whrid" />
+	     <result column="DWHSJ" property="whsj" /> 
+     </collection> 
+     
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, BJH, MS, TDJH, TDJMS, JXBS, GKBS, KNXBS, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_017
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+		    D017.ID, D017.DPRTCODE, D017.BJH, D017.MS, D017.TDJH, D017.TDJMS, D017.JXBS,
+		    D017.GKBS, D017.KNXBS, D017.ZT, D017.WHBMID, D017.WHRID, D017.WHSJ,
+		    D01701.ID AS DID,D01701.MAINID AS DMAINID,D01701.SYXLX AS DSYXLX,D01701.SYDX AS DSYDX,D01701.ZT AS DZT
+		    from D_017 D017
+		    LEFT JOIN D_01701 D01701
+		    ON D017.ID = D01701.MAINID AND D01701.ZT = 1
+	    where D017.ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectSubByBjhAndDprt" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+		    D017.ID, D017.DPRTCODE, D017.BJH, D017.MS, D017.TDJH, D017.TDJMS, D017.JXBS,
+		    D017.GKBS, D017.KNXBS, D017.ZT, D017.WHBMID, D017.WHRID, D017.WHSJ,
+		    D01701.ID AS DID,D01701.MAINID AS DMAINID,D01701.SYXLX AS DSYXLX,D01701.SYDX AS DSYDX,D01701.ZT AS DZT
+		    from D_017 D017
+		    LEFT JOIN D_01701 D01701
+		    ON D017.ID = D01701.MAINID AND D01701.ZT = 1
+	    where D017.ZT =1 AND D017.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	    	 AND (
+	    	 	D017.BJH = #{bjh,jdbcType=VARCHAR} OR (D017.TDJH = #{bjh,jdbcType=VARCHAR} AND D017.KNXBS = 2 )
+	    	 )
+	</select>
+  
+    <!-- 根据部件号集合、机构代码查询等效替代部件 -->
+    <select id="queryByBjhList" resultMap="BaseResultMap" parameterType="Map">
+	    select 
+	    	<include refid="Base_Column_List" />
+	    from D_017
+	    where ZT =1 AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	    	 AND 
+	    	 (
+		    	 BJH in 
+				 <foreach collection="jhList" item="bjh" index="index" open="(" close=")" separator=",">
+					#{bjh,jdbcType=VARCHAR}
+				 </foreach>
+				 OR
+				 (
+				 	TDJH in
+				 	<foreach collection="jhList" item="bjh" index="index" open="(" close=")" separator=",">
+					#{bjh,jdbcType=VARCHAR}
+				 	</foreach>
+				 	AND KNXBS = 2
+				 )
+	    	 )
+  	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_017
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.Substitution" >
+    insert into D_017 (ID, DPRTCODE, BJH, 
+      MS, TDJH, TDJMS, JXBS, 
+      GKBS, KNXBS, ZT, WHBMID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, 
+      #{ms,jdbcType=VARCHAR}, #{tdjh,jdbcType=VARCHAR}, #{tdjms,jdbcType=VARCHAR}, #{jxbs,jdbcType=VARCHAR}, 
+      #{gkbs,jdbcType=VARCHAR}, #{knxbs,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.Substitution" >
+    insert into D_017
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="ms != null" >
+        MS,
+      </if>
+      <if test="tdjh != null" >
+        TDJH,
+      </if>
+      <if test="tdjms != null" >
+        TDJMS,
+      </if>
+      <if test="jxbs != null" >
+        JXBS,
+      </if>
+      <if test="gkbs != null" >
+        GKBS,
+      </if>
+      <if test="knxbs != null" >
+        KNXBS,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="ms != null" >
+        #{ms,jdbcType=VARCHAR},
+      </if>
+      <if test="tdjh != null" >
+        #{tdjh,jdbcType=VARCHAR},
+      </if>
+      <if test="tdjms != null" >
+        #{tdjms,jdbcType=VARCHAR},
+      </if>
+      <if test="jxbs != null" >
+        #{jxbs,jdbcType=VARCHAR},
+      </if>
+      <if test="gkbs != null" >
+        #{gkbs,jdbcType=VARCHAR},
+      </if>
+      <if test="knxbs != null" >
+        #{knxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+       current_timestamp,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Substitution" >
+    update D_017
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="ms != null" >
+        MS = #{ms,jdbcType=VARCHAR},
+      </if>
+      <if test="tdjh != null" >
+        TDJH = #{tdjh,jdbcType=VARCHAR},
+      </if>
+      <if test="tdjms != null" >
+        TDJMS = #{tdjms,jdbcType=VARCHAR},
+      </if>
+      <if test="jxbs != null" >
+        JXBS = #{jxbs,jdbcType=VARCHAR},
+      </if>
+      <if test="gkbs != null" >
+        GKBS = #{gkbs,jdbcType=VARCHAR},
+      </if>
+      <if test="knxbs != null" >
+        KNXBS = #{knxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.Substitution" >
+    update D_017
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      MS = #{ms,jdbcType=VARCHAR},
+      TDJH = #{tdjh,jdbcType=VARCHAR},
+      TDJMS = #{tdjms,jdbcType=VARCHAR},
+      JXBS = #{jxbs,jdbcType=VARCHAR},
+      GKBS = #{gkbs,jdbcType=VARCHAR},
+      KNXBS = #{knxbs,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAll" parameterType="com.eray.thjw.po.Substitution" resultMap="BaseResultMap">
+	select * from (
+				select 
+					d_017.id,
+					d_017.bjh,
+					d_017.ms,
+					d_017.tdjh,
+					d_017.tdjms,
+					d_017.jxbs,
+					d_017.gkbs,
+					d_017.knxbs,
+					d_017.zt,
+					d_017.whsj,
+					d_017.whbmid,
+					d_017.whrid,
+					d_017.dprtcode,
+					whr.realname whr_realname,whr.username whr_username,
+					jg.dprtname jg_dprtname,
+					bm.dprtname bm_dprtname
+						from d_017 left join t_user whr on (d_017.whrid=whr.id)
+									 left join t_department jg on(d_017.dprtCode=jg.id)
+									 left join t_department bm on(d_017.whbmid=bm.id)
+							
+										<include refid="SubstitutionParam"></include>
+										)  t
+						  	<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+								    	<when test='pagination.sort == "auto"'>                       
+								    		order by whsj desc
+								    		
+								    	</when>
+								    	<otherwise>
+										    order by ${pagination.sort} ${pagination.order}
+								    	</otherwise>
+							 </choose>
+  	</select>
+  	
+  	  <!-- 查询参数 -->
+	<sql id="SubstitutionParam">
+	   where 
+	   1=1
+	   	and d_017.zt!=0
+	   <if test="keyword != null and keyword != ''">
+		    and (   d_017.bjh like '%'||#{keyword}||'%'
+		    	or d_017.ms like '%'||#{keyword}||'%'
+		    	or d_017.tdjh like '%'||#{keyword}||'%'
+		    	or d_017.tdjms like '%'||#{keyword}||'%'
+		    	or d_017.tdjms like '%'||#{keyword}||'%'
+		    	or whr.USERNAME like '%'||#{keyword}||'%'
+		    	or whr.REALNAME like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+
+	     <if test="dprtcode != null and dprtcode != ''">
+            and  d_017.dprtcode = #{dprtcode}
+         </if>
+	     <if test="knxbs != null and knxbs != ''">
+            and  d_017.knxbs = #{knxbs}
+         </if>
+          <!-- id-->
+	     <if test="id != null and id != ''">
+            and  d_017.id = #{id}
+         </if>
+         
+	</sql>
+	
+	 <select id="queryAllByDprtcode" parameterType="com.eray.thjw.po.Substitution" resultMap="BaseResultMap">
+	 	select 
+			d_017.id,
+			d_017.bjh,
+			d_017.ms,
+			d_017.tdjh,
+			d_017.tdjms,
+			d_017.jxbs,
+			d_017.gkbs,
+			d_017.knxbs,
+			d_017.zt,
+			d_017.whsj,
+			d_017.whbmid,
+			d_017.whrid,
+			d_017.dprtcode
+				from d_017 where d_017.zt!=0 and d_017.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+				 <if test="id != null and id != ''">
+		          	  and  d_017.id != #{id}
+		         </if>
+	 </select>
+	
+</mapper>

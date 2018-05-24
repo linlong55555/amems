@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.RadiolicenseRecMapper" >
+   
+  <!-- 故障保留单日志列表 开始 -->
+   
+  
+  <select id="queryList4D007" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT 
+	       		 B.FJZCH AS "FJZCH",
+       B.DPRTCODE AS "DPRTCODE",
+       B.FJJX AS "FJJX",
+       B.XLH AS "XLH",
+       B.BZM AS "BZM",
+       B.CCRQ AS "CCRQ",
+       B.JD AS "JD",
+       B.JSGZJL AS "JSGZJL",
+       B.BZ AS "BZ",
+       B.BMID AS "BMID",
+       B.CJRID AS "CJRID",
+       B.CJSJ AS "CJSJ",
+       B.ZT AS "ZT",
+       B.GJDJZH AS "GJDJZH",
+       B.SHZH AS "SHZH",
+       B.WXDTXKZH AS "WXDTXKZH",
+       B.DTZZJKRQ AS "DTZZJKRQ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID"       
+            ,WHR.REALNAME AS "WHR_REALNAME"
+            ,WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+            b.CJSJ AS "WHSJ"
+            ,  '飞机注册号:'||B.fjzch||' '||(
+            F_GETREC_HD(B.REC_CZSM)
+            ) AS "REC_HD"
+            FROM D_007_REC B 
+            LEFT JOIN T_USER WHR ON WHR.ID = B.cjrid
+            LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.cjrid
+            WHERE 1=1
+	       		 <if test='czls!=null and czls!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.FJZCH!=null and paramsMap.FJZCH!=""'>
+		        	and B.fjzch = #{paramsMap.FJZCH,jdbcType=VARCHAR}
+		         </if>
+		         order by B.cjsj DESC
+	   
+  </select>
+  
+  <select id="queryDiff4D007" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+               
+               B.FJZCH AS "FJZCH",
+       B.DPRTCODE AS "DPRTCODE",
+       B.FJJX AS "FJJX",
+       B.XLH AS "XLH",
+       B.BZM AS "BZM",
+       B.CCRQ AS "CCRQ",
+       B.JD AS "JD",
+       B.JSGZJL AS "JSGZJL",
+       B.BZ AS "BZ",
+       B.BMID AS "BMID",
+       B.CJRID AS "CJRID",
+       B.CJSJ AS "CJSJ",
+       B.ZT AS "ZT",
+       B.GJDJZH AS "GJDJZH",
+       B.SHZH AS "SHZH",
+       B.WXDTXKZH AS "WXDTXKZH",
+       B.DTZZJKRQ AS "DTZZJKRQ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+               WHR.REALNAME AS "WHR_REALNAME", 
+              DPRTNAME AS "WHDW_DRPTNAME",
+              b.cjsj AS "WHSJ",
+               '飞机注册号:'||B.fjzch || ' ' || (F_GETREC_HD(B.REC_CZSM)) AS "REC_HD",
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) AS "DATA_VERSION"
+               
+          FROM D_007_REC B
+          LEFT JOIN T_USER WHR
+            ON WHR.ID = B.cjrid
+          LEFT JOIN T_DEPARTMENT WHDW
+            ON WHDW.ID = B.bmid
+         WHERE B.fjzch = #{paramsMap.FJZCH,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from D_007_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and FJZCH = #{paramsMap.FJZCH,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+       
+  </select>
+  
+</mapper>

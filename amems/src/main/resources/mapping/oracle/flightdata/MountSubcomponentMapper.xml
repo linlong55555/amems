@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.MountSubcomponentMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.flightdata.po.MountSubcomponent" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="ZBJ_ZJQDID" property="zbjZjqdid" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="TBBS" property="tbbs" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, ZBJ_ZJQDID, WHDWID, WHRID, WHSJ, ZT, DPRTCODE, TBBS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_00602010104
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_00602010104
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.flightdata.po.MountSubcomponent" >
+    insert into B_S_00602010104 (ID, MAINID, ZBJ_ZJQDID, 
+      WHDWID, WHRID, WHSJ, 
+      ZT, DPRTCODE, TBBS)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zbjZjqdid,jdbcType=VARCHAR}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{zt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR}, #{tbbs,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.flightdata.po.MountSubcomponent" >
+    insert into B_S_00602010104
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="zbjZjqdid != null" >
+        ZBJ_ZJQDID,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="tbbs != null" >
+        TBBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zbjZjqdid != null" >
+        #{zbjZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="tbbs != null" >
+        #{tbbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.flightdata.po.MountSubcomponent" >
+    update B_S_00602010104
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zbjZjqdid != null" >
+        ZBJ_ZJQDID = #{zbjZjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="tbbs != null" >
+        TBBS = #{tbbs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.flightdata.po.MountSubcomponent" >
+    update B_S_00602010104
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZBJ_ZJQDID = #{zbjZjqdid,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      TBBS = #{tbbs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+  <sql id="Param">
+	   where 
+	   1=1
+	      <!-- mainid-->
+	     <if test="mainid != null and mainid != ''">
+            and  B.MAINID = #{mainid,jdbcType=VARCHAR}
+         </if>
+	</sql>
+  
+   <!-- 根据条件删除-->
+   <update id="deleteByParam" parameterType="com.eray.thjw.flightdata.po.MountSubcomponent" >
+    update B_S_00602010104 B set B.ZT = 0 , B.TBBS = 1
+    <include refid="Param" /> 
+  </update>
+  
+  
+  <!-- 根据父节点id查询 -->
+    <select id="findByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    	B1.ID, B1.MAINID, B1.ZBJ_ZJQDID AS ZBJZJQDID, B2.JH, B2.XLH,
+    	(CASE WHEN D1.ZWMS IS NULL THEN B2.ZWMC ELSE D1.ZWMS END) ZWMC, 
+    	(CASE WHEN D1.YWMS IS NULL THEN B2.YWMC ELSE D1.YWMS END) YWMC, 
+    	D2.ZJH || ' ' || D2.ZWMS AS ZJH_SHOW
+    FROM B_S_00602010104 B1
+    	LEFT JOIN B_S_003 B2 ON B1.ZBJ_ZJQDID =  B2.ID
+    	LEFT JOIN D_008 D1 ON B2.JH = D1.BJH AND B2.DPRTCODE = D1.DPRTCODE AND D1.ZT = 1
+    	LEFT JOIN D_005 D2 ON B2.ZJH = D2.ZJH AND B2.DPRTCODE = D2.DPRTCODE
+    WHERE B1.MAINID = #{mainid,jdbcType=VARCHAR}
+    	AND B1.ZT = 1
+  </select>
+</mapper>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.RoutinginspectionrecordMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.Routinginspectionrecord" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="XJBH" property="xjbh" jdbcType="VARCHAR" />
+    <result column="XSRID" property="xsrid" jdbcType="VARCHAR" />
+    <result column="XSRMC" property="xsrmc" jdbcType="VARCHAR" />
+    <result column="XSRQ" property="xsrq" jdbcType="TIMESTAMP" />
+    <result column="KSSJ" property="kssj" jdbcType="VARCHAR" />
+    <result column="JSSJ" property="jssj" jdbcType="VARCHAR" />
+    <result column="IS_YHXS" property="isYhxs" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+     <association property="whr_user" javaType="com.eray.thjw.po.User">
+         <id column="whrid" property="id"/>
+         <result column="whr_realname" property="realname"/>
+         <result column="whr_username" property="username"/>
+     </association>
+
+     <association property="whbm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="whbmid" property="id"/>
+         <result column="whbm_dprtname" property="dprtname"/>
+     </association>
+     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+    
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    B_J_002.ID, B_J_002.XJBH, B_J_002.XSRID, B_J_002.XSRMC, B_J_002.XSRQ, B_J_002.KSSJ, B_J_002.JSSJ, B_J_002.IS_YHXS, B_J_002.ZT, B_J_002.DPRTCODE, B_J_002.WHBMID, B_J_002.WHRID, B_J_002.WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_J_002
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_J_002
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.Routinginspectionrecord" >
+    insert into B_J_002 (ID, XJBH, XSRID, 
+      XSRMC, XSRQ, KSSJ, 
+      JSSJ, IS_YHXS, ZT, DPRTCODE, 
+      WHBMID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{xjbh,jdbcType=VARCHAR}, #{xsrid,jdbcType=VARCHAR}, 
+      #{xsrmc,jdbcType=VARCHAR}, #{xsrq,jdbcType=TIMESTAMP}, #{kssj,jdbcType=VARCHAR}, 
+      #{jssj,jdbcType=VARCHAR}, #{isYhxs,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.Routinginspectionrecord" >
+    insert into B_J_002
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="xjbh != null" >
+        XJBH,
+      </if>
+      <if test="xsrid != null" >
+        XSRID,
+      </if>
+      <if test="xsrmc != null" >
+        XSRMC,
+      </if>
+      <if test="xsrq != null" >
+        XSRQ,
+      </if>
+      <if test="kssj != null" >
+        KSSJ,
+      </if>
+      <if test="jssj != null" >
+        JSSJ,
+      </if>
+      <if test="isYhxs != null" >
+        IS_YHXS,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="xjbh != null" >
+        #{xjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="xsrid != null" >
+        #{xsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xsrmc != null" >
+        #{xsrmc,jdbcType=VARCHAR},
+      </if>
+      <if test="xsrq != null" >
+        #{xsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="kssj != null" >
+        #{kssj,jdbcType=VARCHAR},
+      </if>
+      <if test="jssj != null" >
+        #{jssj,jdbcType=VARCHAR},
+      </if>
+      <if test="isYhxs != null" >
+        #{isYhxs,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Routinginspectionrecord" >
+    update B_J_002
+    <set >
+      <if test="xjbh != null" >
+        XJBH = #{xjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="xsrid != null" >
+        XSRID = #{xsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xsrmc != null" >
+        XSRMC = #{xsrmc,jdbcType=VARCHAR},
+      </if>
+      <if test="xsrq != null" >
+        XSRQ = #{xsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="kssj != null" >
+        KSSJ = #{kssj,jdbcType=VARCHAR},
+      </if>
+      <if test="jssj != null" >
+        JSSJ = #{jssj,jdbcType=VARCHAR},
+      </if>
+      <if test="isYhxs != null" >
+        IS_YHXS = #{isYhxs,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.Routinginspectionrecord" >
+    update B_J_002
+    set XJBH = #{xjbh,jdbcType=VARCHAR},
+      XSRID = #{xsrid,jdbcType=VARCHAR},
+      XSRMC = #{xsrmc,jdbcType=VARCHAR},
+      XSRQ = #{xsrq,jdbcType=TIMESTAMP},
+      KSSJ = #{kssj,jdbcType=VARCHAR},
+      JSSJ = #{jssj,jdbcType=VARCHAR},
+      IS_YHXS = #{isYhxs,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAll" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.Routinginspectionrecord">
+	   select  <include refid="Base_Column_List"></include>,whr.realname whr_realname,whr.username whr_username,
+	   			whbm.dprtname whbm_dprtname,jg.dprtname jg_dprtname
+	   			from B_J_002 
+	   			left join t_user whr on (B_J_002.whrid=whr.id)
+	   			left join t_department whbm on (B_J_002.whbmid=whbm.id)
+	   			left join t_department jg on(B_J_002.dprtcode=jg.id)
+
+		<include refid="FlightRecordParam"></include>
+
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by whsj 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+	
+  <!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+	where B_J_002.zt=1
+         <if test="isYhxs != null ">
+             and B_J_002.is_yhxs =  #{isYhxs}
+         </if>
+         <if test="id != null and id != '' ">
+             and B_J_002.id =  #{id}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (B_J_002.xjbh like '%'||#{keyword}||'%'
+		    	or B_J_002.xsrmc like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+		  <if test="dprtcode != null and dprtcode != ''">
+		    and B_J_002.DPRTCODE = #{dprtcode}
+		  </if>
+	</sql>
+  
+  
+</mapper>

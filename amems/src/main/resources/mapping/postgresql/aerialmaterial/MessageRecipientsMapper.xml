@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MessageRecipientsMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.MessageRecipients">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="JSBMID" jdbcType="VARCHAR" property="jsbmid" />
+    <result column="JSRID" jdbcType="VARCHAR" property="jsrid" />
+    <result column="JSSJ" jdbcType="TIMESTAMP" property="jssj" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, MAINID, JSBMID, JSRID, JSSJ, ZT
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_00501
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_00501
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <!-- 根据mainid删除接收人信息 -->
+  <delete id="deleteByMainId" parameterType="java.lang.String">
+    delete from B_H_00501
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.MessageRecipients">
+    insert into B_H_00501 (ID, MAINID, JSBMID, 
+      JSRID, JSSJ, ZT)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{jsbmid,jdbcType=VARCHAR}, 
+      #{jsrid,jdbcType=VARCHAR}, #{jssj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.MessageRecipients">
+    insert into B_H_00501
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="jsbmid != null">
+        JSBMID,
+      </if>
+      <if test="jsrid != null">
+        JSRID,
+      </if>
+      <if test="jsrid != null">
+        JSSJ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbmid != null">
+        #{jsbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null">
+        #{jsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null">
+        current_timestamp,
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateViewStatusByDjIdUId" parameterType="java.lang.String">
+    update B_H_00501
+    set ZT = 1
+    where MAINID in (select ID from B_H_005 where DJID = #{djid,jdbcType=VARCHAR})
+      <if test="jsrid != null">
+    	and JSRID = #{jsrid,jdbcType=VARCHAR}
+      </if>
+  </update>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.MessageRecipients">
+    update B_H_00501
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbmid != null">
+        JSBMID = #{jsbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null">
+        JSRID = #{jsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null">
+        JSSJ = current_timestamp,
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.MessageRecipients">
+    update B_H_00501
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      JSBMID = #{jsbmid,jdbcType=VARCHAR},
+      JSRID = #{jsrid,jdbcType=VARCHAR},
+      JSSJ = #{jssj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

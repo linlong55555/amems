@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.InstockDetailStockMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.InstockDetailStock">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="KCLLID" jdbcType="VARCHAR" property="kcllid" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <resultMap id="ResultMap" type="com.eray.thjw.aerialmaterial.po.InstockDetailStock" extends="BaseResultMap">
+    <association property="materialHistory" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">  
+        <id column="MH_ID" jdbcType="VARCHAR" property="id" />
+	    <result column="MH_KCID" jdbcType="VARCHAR" property="kcid" />
+	    <result column="MH_CKLB" jdbcType="DECIMAL" property="cklb" />
+	    <result column="MH_CKID" jdbcType="VARCHAR" property="ckid" />
+	    <result column="MH_CKH" jdbcType="VARCHAR" property="ckh" />
+	    <result column="MH_CKMC" jdbcType="VARCHAR" property="ckmc" />
+	    <result column="MH_BJID" jdbcType="VARCHAR" property="bjid" />
+	    <result column="MH_BJH" jdbcType="VARCHAR" property="bjh" />
+	    <result column="MH_ZWMS" jdbcType="VARCHAR" property="zwms" />
+	    <result column="MH_YWMS" jdbcType="VARCHAR" property="ywms" />
+	    <result column="MH_KWID" jdbcType="VARCHAR" property="kwid" />
+	    <result column="MH_KWH" jdbcType="VARCHAR" property="kwh" />
+	    <result column="MH_PCH" jdbcType="VARCHAR" property="pch" />
+	    <result column="MH_SN" jdbcType="VARCHAR" property="sn" />
+	    <result column="MH_JLDW" jdbcType="VARCHAR" property="jldw" />
+	    <result column="MH_KCSL" jdbcType="DECIMAL" property="kcsl" />
+	    <result column="MH_SPQX" jdbcType="TIMESTAMP" property="spqx" />
+	    <result column="MH_KCCB" jdbcType="DECIMAL" property="kccb" />
+	</association>
+	<association property="instockDetail" javaType="com.eray.thjw.aerialmaterial.po.InstockDetail"> 
+		<id column="M_ID" jdbcType="VARCHAR" property="id" />
+	    <result column="M_MAINID" jdbcType="VARCHAR" property="mainid" />
+	    <result column="M_BJID" jdbcType="VARCHAR" property="bjid" />
+	    <result column="M_BJH" jdbcType="VARCHAR" property="bjh" />
+	    <result column="M_SL" jdbcType="DECIMAL" property="sl" />
+	    <result column="M_HTID" jdbcType="VARCHAR" property="htid" />
+	    <result column="M_HTMXID" jdbcType="VARCHAR" property="htmxid" /> 
+	    <result column="M_WPQDID" jdbcType="VARCHAR" property="wpqdid" />
+	    <result column="M_JDSQDID" jdbcType="VARCHAR" property="jdsqdid" />
+	    <result column="M_JDSQMXID" jdbcType="VARCHAR" property="jdsqmxid" />
+	</association>
+  </resultMap>
+  
+  <resultMap id="InstockJoinMap" type="com.eray.thjw.aerialmaterial.po.InstockDetailStock" extends="BaseResultMap">
+    <association property="materialHistory" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">  
+        <id column="MH_ID" jdbcType="VARCHAR" property="id" />
+	    <result column="MH_KCID" jdbcType="VARCHAR" property="kcid" />
+	    <result column="MH_CKLB" jdbcType="DECIMAL" property="cklb" />
+	    <result column="MH_CKID" jdbcType="VARCHAR" property="ckid" />
+	    <result column="MH_CKH" jdbcType="VARCHAR" property="ckh" />
+	    <result column="MH_CKMC" jdbcType="VARCHAR" property="ckmc" />
+	    <result column="MH_BJID" jdbcType="VARCHAR" property="bjid" />
+	    <result column="MH_BJH" jdbcType="VARCHAR" property="bjh" />
+	    <result column="MH_KWID" jdbcType="VARCHAR" property="kwid" />
+	    <result column="MH_KWH" jdbcType="VARCHAR" property="kwh" />
+	    <result column="MH_PCH" jdbcType="VARCHAR" property="pch" />
+	    <result column="MH_SN" jdbcType="VARCHAR" property="sn" />
+	    <result column="MH_JLDW" jdbcType="VARCHAR" property="jldw" />
+	    <result column="MH_KCSL" jdbcType="DECIMAL" property="kcsl" />
+	    <result column="MH_SPQX" jdbcType="TIMESTAMP" property="spqx" />
+	    <result column="MH_KCCB" jdbcType="DECIMAL" property="kccb" />
+	    <result column="MH_ZWMS" jdbcType="TIMESTAMP" property="zwms" />
+	    <result column="MH_YWMS" jdbcType="DECIMAL" property="ywms" />
+	    <result column="MH_GLJBNAME" jdbcType="VARCHAR" property="gljbName" />
+	    
+	</association>
+	<association property="instockDetail" javaType="com.eray.thjw.aerialmaterial.po.InstockDetail"> 
+		<id column="M_ID" jdbcType="VARCHAR" property="id" />
+	    <result column="M_MAINID" jdbcType="VARCHAR" property="mainid" />
+	    <result column="M_BJID" jdbcType="VARCHAR" property="bjid" />
+	    <result column="M_BJH" jdbcType="VARCHAR" property="bjh" />
+	    <result column="M_SL" jdbcType="DECIMAL" property="sl" />
+	    <result column="M_HTID" jdbcType="VARCHAR" property="htid" />
+	    <result column="M_HTMXID" jdbcType="VARCHAR" property="htmxid" /> 
+	    <result column="M_WPQDID" jdbcType="VARCHAR" property="wpqdid" />
+	    <result column="M_JDSQDID" jdbcType="VARCHAR" property="jdsqdid" />
+	    <result column="M_JDSQMXID" jdbcType="VARCHAR" property="jdsqmxid" />
+	    
+	    <!-- <association property="instock" javaType="com.eray.thjw.aerialmaterial.po.Instock">
+	  		<id column="RK_ID" property="id" jdbcType="VARCHAR"/>  
+	        <result column="RK_SQSJ2" property="sqsj2" jdbcType="VARCHAR" />  
+	        <result column="RK_RKDH" property="rkdh" jdbcType="VARCHAR" />  
+	        <result column="SQR_ID" property="sqrUser.id" jdbcType="VARCHAR" />  
+	        <result column="SQR_USERNAME" property="sqrUser.username" jdbcType="VARCHAR" />  
+	        <result column="SQR_REALNAME" property="sqrUser.realname" jdbcType="VARCHAR" />  
+	        <result column="RKR_ID" property="rkrUser.id" jdbcType="VARCHAR" />  
+	        <result column="RKR_USERNAME" property="rkrUser.username" jdbcType="VARCHAR" />  
+	        <result column="RKR_REALNAME" property="rkrUser.realname" jdbcType="VARCHAR" />  
+	        <result column="RK_DPRTNAME" property="department.dprtname" jdbcType="VARCHAR" />  
+	        <result column="RK_RKBMID" property="rkbmid" jdbcType="VARCHAR" />  
+	        <result column="RK_RKDH" property="rkdh" jdbcType="VARCHAR" />  
+	        <result column="RK_ZT" property="zt" jdbcType="DECIMAL" />  
+	        <result column="RK_BZ" property="bz" jdbcType="VARCHAR" />  
+	        <result column="RK_RKSJ" property="rksj" jdbcType="TIMESTAMP" /> 
+	    </association> -->
+ 
+	    
+	    <association property="instock" javaType="com.eray.thjw.aerialmaterial.po.Instock">
+	  		<id column="RK_ID" property="id" jdbcType="VARCHAR"/>  
+	        <result column="RK_SQSJ2" property="sqsj2" jdbcType="VARCHAR" />  
+	        <result column="RK_RKDH" property="rkdh" jdbcType="VARCHAR" /> 
+	        <result column="RK_ZT" property="zt" jdbcType="DECIMAL" />  
+	        <result column="RK_BZ" property="bz" jdbcType="VARCHAR" />  
+	        <result column="RK_RKSJ" property="rksj" jdbcType="TIMESTAMP" /> 
+	        <result column="RK_RKBMID" property="rkbmid" jdbcType="VARCHAR" /> 
+	        
+	        <result column="SQR_ID" property="sqrUser.id" jdbcType="VARCHAR" />  
+	        <result column="SQR_USERNAME" property="sqrUser.username" jdbcType="VARCHAR" />  
+	        <result column="SQR_REALNAME" property="sqrUser.realname" jdbcType="VARCHAR" />  
+	        
+	        <result column="RKR_ID" property="rkrUser.id" jdbcType="VARCHAR" />  
+	        <result column="RKR_USERNAME" property="rkrUser.username" jdbcType="VARCHAR" />  
+	        <result column="RKR_REALNAME" property="rkrUser.realname" jdbcType="VARCHAR" />  
+	        <result column="RK_DPRTNAME" property="department.dprtname" jdbcType="VARCHAR" />  
+	        
+	    </association> 
+	    
+	</association>
+	
+	
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, KCLLID, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+  <sql id="Column_List">
+    T.ID, T.MAINID, T.KCLLID, T.ZT, T.WHDWID, T.WHRID, T.WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_0080101
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByMainId" parameterType="java.lang.String" resultMap="ResultMap">
+    select 
+    <include refid="Column_List" />,
+    T1.ID as MH_ID,
+    T1.KCID as MH_KCID,
+    T1.CKLB as MH_CKLB,
+    T1.CKID as MH_CKID,
+    T1.CKH as MH_CKH,
+    T1.CKMC as MH_CKMC,
+    T1.BJID as MH_BJID,
+    T1.BJH as MH_BJH,
+    T1.KWID as MH_KWID,
+    T1.KWH as MH_KWH,
+    T1.PCH as MH_PCH,
+    T1.SN as MH_SN,
+    (CASE WHEN t3.jldw IS NULL THEN T1.JLDW ELSE t3.jldw END)  as MH_JLDW,
+    T1.KCSL as MH_KCSL,
+    T1.SPQX as MH_SPQX,
+    T1.KCCB as MH_KCCB
+    from B_H_0080101 T
+    left join B_H_017 T1 on T1.ID = T.KCLLID
+    left join D_008 T3 ON t1.bjid = T3.ID
+    where T.ZT = 1 and T.MAINID = #{mainId,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据入库单ID查询入库存在明细 -->
+  <select id="selectByInstockId" parameterType="java.lang.String" resultMap="ResultMap">
+    select 
+    <include refid="Column_List" />,
+    T1.ID as MH_ID,
+    T1.KCID as MH_KCID,
+    T1.CKLB as MH_CKLB,
+    T1.CKID as MH_CKID,
+    T1.CKH as MH_CKH,
+    T1.CKMC as MH_CKMC,
+    T1.BJID as MH_BJID,
+    T1.BJH as MH_BJH,
+    (CASE WHEN t3.zwms IS NULL THEN T1.ZWMS ELSE t3.zwms END)     as MH_ZWMS,
+    (CASE WHEN t3.ywms IS NULL THEN T1.YWMS ELSE t3.ywms END)     as MH_YWMS,
+    T1.KWID as MH_KWID,
+    T1.KWH as MH_KWH,
+    T1.PCH as MH_PCH,
+    T1.SN as MH_SN,
+    (CASE WHEN t3.jldw IS NULL THEN T1.JLDW ELSE t3.jldw END)     as MH_JLDW,
+    T1.KCSL as MH_KCSL,
+    T1.SPQX as MH_SPQX,
+    T1.KCCB as MH_KCCB
+    ,T2.ID as M_ID
+    ,T2.MAINID as M_MAINID
+    ,T2.BJID as M_BJID
+    ,T2.BJH as M_BJH
+    ,T2.SL as M_SL
+    ,T2.HTID as M_HTID
+    ,T2.HTMXID as M_HTMXID
+    ,T2.WPQDID as M_WPQDID
+    ,T2.JDSQDID as M_JDSQDID
+    ,T2.JDSQMXID as M_JDSQMXID  
+    from B_H_0080101 T
+    left join B_H_017 T1 on T1.ID = T.KCLLID
+    left join B_H_00801 T2 on T2.ID = T.MAINID
+    left join D_008 T3 on T1.BJID = T3.ID
+    where T.ZT = 1 and T2.ZT=1 and T2.MAINID = #{instockId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_0080101
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+ 
+  <!-- 根据多个ID删除数据 -->
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from B_H_0080101 T
+    where ID in
+    <foreach item="idItem" collection="list" open="(" separator="," close=")">
+		#{idItem}
+	</foreach>
+  </delete>
+  <!-- 根据多个ID删除关联的库存履历数据 -->
+  <delete id="deleteKcHisByIds" parameterType="java.util.List">
+    delete from B_H_017 T
+    where T.ID in (select T1.KCLLID from B_H_0080101 T1 where T1.ID in
+    <foreach item="idItem" collection="list" open="(" separator="," close=")">
+		#{idItem}
+	</foreach>
+	)
+  </delete>
+  
+  
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.InstockDetailStock">
+    insert into B_H_0080101 (ID, MAINID, KCLLID, 
+      ZT, WHDWID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      current_timestamp)
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.InstockDetailStock">
+    insert into B_H_0080101
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="kcllid != null">
+        KCLLID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whrid != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        current_timestamp,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.InstockDetailStock">
+    update B_H_0080101
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = current_timestamp,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.InstockDetailStock">
+    update B_H_0080101
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCLLID = #{kcllid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = current_timestamp
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+<!--   将入库信息插入到库存 -->
+  <insert id="insertToStock">
+    insert into B_H_001 (ID, DPRTCODE, 
+      CKLB, CKID, CKH, CKMC, 
+      KWID, KWH, BJID, BJH, 
+      PCH, SN, ZWMS, YWMS, 
+      JLDW, KCSL, DJSL, CGHTID, 
+      HTBH_CG, SXHTID, HTBH_SX, 
+      TDDID, TDDH, RKSJ, 
+      RKBMID, RKRID, SHZH, 
+      SHZWZ, ZT, BZ, JYDID, 
+      HJSM, SPQX, SCRQ, 
+      XH, GG, ZZCS, TSN, 
+      TSO, HCLY, CFYQ, BJGZJL, LLKLX, LLKBH, KZLX, IS_DJ, KCCB)
+      
+    (select KCID, DPRTCODE, 
+      CKLB, CKID, CKH, CKMC, 
+      KWID, KWH, BJID, BJH, 
+      PCH, SN, ZWMS, YWMS, 
+      JLDW, KCSL, DJSL, CGHTID, 
+      HTBH_CG, SXHTID, HTBH_SX, 
+      TDDID, TDDH, RKSJ, 
+      RKBMID, RKRID, SHZH, 
+      SHZWZ, ZT, BZ, JYDID, 
+      HJSM, SPQX, SCRQ, 
+      XH, GG, ZZCS, TSN, 
+      TSO, HCLY, CFYQ, BJGZJL, LLKLX, LLKBH, KZLX, IS_DJ, KCCB 
+      from B_H_017 
+      where ID in (select KCLLID from B_H_0080101 where MAINID = #{id, jdbcType=VARCHAR})
+     ) 
+  </insert>
+  <!--   将入库信息插入到检验表 -->
+  <insert id="insertToQualityCheck">
+		
+    insert into B_H_006 (ID, DPRTCODE, 
+      HTID, HTH, TDDID, TDDH, 
+      KCID, CKLB, CKID, CKH, CKMC, KWID, KWH, BJID, BJH, PCH, SN,
+      ZWMS, YWMS, JLDW, KCSL, HCLY, CFYQ, XKZH, SHZH, SHZWZ, TSN,
+      TSO, SCRQ, XH, GG, ZZCS, ZT, RKDID, RKDH
+      )
+      
+    (select uuid_generate_v4(), T1.DPRTCODE,
+      (CASE WHEN T1.CGHTID IS NULL THEN T1.SXHTID ELSE T1.CGHTID END), (CASE WHEN T1.htbh_Cg IS NULL THEN T1.HTBH_SX ELSE T1.HTBH_CG END), T1.TDDID, T1.TDDH,
+      T1.KCID, T1.CKLB, T1.CKID, T1.CKH, T1.CKMC, T1.KWID, T1.KWH, T1.BJID, T1.BJH, T1.PCH, T1.SN,
+      T1.ZWMS, T1.YWMS, T1.JLDW, T1.KCSL, T1.HCLY, T1.CFYQ, T1.XKZH, T1.SHZH, T1.SHZWZ, T1.TSN,
+      T1.TSO, T1.SCRQ, T1.XH, T1.GG, T1.ZZCS, 1, T4.ID, T4.RKDH
+      from B_H_017 T1
+      left join B_H_0080101 T2 on T1.ID = T2.KCLLID
+      left join B_H_00801 T3 on T2.MAINID = T3.ID
+      left join B_H_008 T4 on T3.MAINID = T4.ID
+      where T3.ID = #{id, jdbcType=VARCHAR}
+     ) 
+     
+  </insert>
+  
+  <!--   查询入库单明细列表 --> 
+  <select id="queryPageList" parameterType="com.eray.thjw.aerialmaterial.po.InstockDetailStock" resultMap="InstockJoinMap">
+	    SELECT 
+	    	B1.ID,
+	    	B2.ID AS RK_ID,
+			B2.RKDH AS RK_RKDH,
+			B2.RKRQ AS RK_RKSJ,
+			T1.DPRTNAME AS RK_DPRTNAME,
+			B3.ID AS MH_ID,
+			D1.BJH AS MH_BJH,
+			(CASE WHEN D1.ZWMS IS NULL THEN B3.ZWMS ELSE D1.ZWMS END) AS MH_ZWMS,
+			(CASE WHEN D1.YWMS IS NULL THEN B3.YWMS ELSE D1.YWMS END) AS MH_YWMS,
+			B3.SN AS MH_SN,
+			B3.PCH AS MH_PCH, 
+			(CASE WHEN D1.JLDW IS NULL THEN B3.JLDW ELSE D1.JLDW END) AS MH_JLDW,
+			B3.KCSL AS MH_KCSL,
+			CASE WHEN D1.GLJB =1 THEN '无'
+			  			 WHEN D1.GLJB =2 THEN '批次号管理'
+			  			 WHEN D1.GLJB =3 THEN '序列号管理'
+			  			 END MH_GLJBNAME
+			FROM B_H_00801_NEW B1
+			INNER JOIN B_H_008_NEW B2 ON B1.MAINID = B2.ID
+			LEFT JOIN T_DEPARTMENT T1 ON B2.DPRTCODE = T1.ID
+			LEFT JOIN B_H_017 B3 ON B1.KCLLID = B3.ID
+			LEFT JOIN D_008 D1 ON B3.BJID = D1.ID
+			WHERE B1.ZT = 1 AND B2.ZT = 2
+	    <include refid="queryPageCondition"></include>
+  		   	<choose>
+		    	<when test='pagination.sort == "auto"'>
+		    		 order by B1.WHSJ desc
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 	</choose>  
+  </select>
+  <!--   查询入库单明细列表 -条件 --> 
+  <sql id="queryPageCondition">
+  		 <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != '' ">
+			and (
+				B2.RKDH like '%'||#{paramsMap.keyword}||'%'
+				or B3.ZWMS like '%'||#{paramsMap.keyword}||'%'
+				or B3.YWMS like '%'||#{paramsMap.keyword}||'%'
+				or B3.SN like '%'||#{paramsMap.keyword}||'%'
+				or B3.BJH like '%'||#{paramsMap.keyword}||'%'
+		    )             
+		</if>
+		<if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+		    and B2.DPRTCODE = #{paramsMap.dprtcode, jdbcType=VARCHAR}
+		</if>
+		
+		 <if test="paramsMap != null and paramsMap.dateBegin != null and paramsMap.dateBegin != '' ">
+		    and B2.RKRQ &gt;=to_date(#{paramsMap.dateBegin, jdbcType=VARCHAR},'YYYY-MM-DD')  
+		</if>
+		<if test="paramsMap != null and paramsMap.dateEnd != null and paramsMap.dateEnd != ''">
+		    and B2.RKRQ &lt;=to_date(#{paramsMap.dateEnd, jdbcType=VARCHAR},'YYYY-MM-DD') 
+		</if>
+		 
+  </sql>
+  
+  
+</mapper>

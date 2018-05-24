@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.AirworthinessMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.Airworthiness" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="JSWJBH" property="jswjbh" jdbcType="VARCHAR" />
+    <result column="BB" property="bb" jdbcType="VARCHAR" />
+    <result column="JSWJZT" property="jswjzt" jdbcType="VARCHAR" />
+    <result column="JSWJLY" property="jswjly" jdbcType="VARCHAR" />
+    <result column="JSWJLX" property="jswjlx" jdbcType="VARCHAR" />
+    <result column="ATA" property="ata" jdbcType="VARCHAR" />
+    <result column="XZAH" property="xzah" jdbcType="VARCHAR" />
+    <result column="GLJSWJID" property="gljswjid" jdbcType="VARCHAR" />
+    <result column="BFRQ" property="bfrq" jdbcType="TIMESTAMP" />
+    <result column="SXRQ" property="sxrq" jdbcType="TIMESTAMP" />
+    <result column="DQRQ" property="dqrq" jdbcType="TIMESTAMP" />
+    <result column="PGQX" property="pgqx" jdbcType="TIMESTAMP" />
+    <result column="XPGBS" property="xpgbs" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="JKZT" property="jkzt" jdbcType="DECIMAL" />
+    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBRQ" property="gbrq" jdbcType="TIMESTAMP" />
+    <result column="GBYY" property="gbyy" jdbcType="VARCHAR" />
+   	<result column="syts" property="paramsMap.syts" jdbcType="VARCHAR" />
+    <result column="gljswjbh" property="paramsMap.gljswjbh" jdbcType="VARCHAR" />
+    <result column="gljswjzt" property="paramsMap.gljswjzt" jdbcType="VARCHAR" />
+    <result column="gljswjbb" property="paramsMap.gljswjbb" jdbcType="VARCHAR" />
+   
+     <result column="GL_JSWJLX" property="paramsMap.gl_jswjlx" jdbcType="VARCHAR" />  <!-- 关联文件类型 -->
+     <result column="GL_XZAH" property="paramsMap.gl_xzah" jdbcType="VARCHAR" />  <!-- 关联修正案号 -->
+     <result column="GL_JSWJBH" property="paramsMap.gl_jswjbh" jdbcType="VARCHAR" />  <!-- 关联文件编号 -->
+     <result column="GL_JSWJZT" property="paramsMap.gl_jswjzt" jdbcType="VARCHAR" />  <!-- 关联文件主题 -->
+     <result column="GL_SXRQ" property="paramsMap.gl_sxrq" jdbcType="VARCHAR" />  <!-- 关联文件生效日期 -->
+     <result column="GL_JSWJID" property="paramsMap.gl_jswjid" jdbcType="VARCHAR" /> <!-- 关联技术文件ID -->
+    
+     <result column="scfjid" property="paramsMap.scfjid" jdbcType="VARCHAR" />
+    <result column="glscfjwbwjm" property="paramsMap.glscfjwbwjm" jdbcType="VARCHAR" />
+    <result column="glscfjhzm" property="paramsMap.glscfjhzm" jdbcType="VARCHAR" />
+    <result column="glscfjid" property="paramsMap.glscfjid" jdbcType="VARCHAR" />
+    <result column="gljswjlx" property="paramsMap.gljswjlx" jdbcType="VARCHAR" />
+    <result column="glxzah" property="paramsMap.glxzah" jdbcType="VARCHAR" />
+    <result column="glsxrq" property="paramsMap.glsxrq" jdbcType="VARCHAR" />
+    <result column="pgdid" property="paramsMap.pgdid" jdbcType="VARCHAR" />
+    <result column="pgdh" property="paramsMap.pgdh" jdbcType="VARCHAR" />
+    <result column="jx" property="paramsMap.jx" jdbcType="VARCHAR" />
+    <result column="bdwsyx" property="paramsMap.bdwsyx" jdbcType="VARCHAR" />
+    <result column="zllx" property="paramsMap.zllx" jdbcType="VARCHAR" />
+    <result column="fjbj" property="paramsMap.fjbj" jdbcType="VARCHAR" />
+    <result column="ZLID" property="paramsMap.zlid" jdbcType="VARCHAR" />
+    <result column="ZLBH" property="paramsMap.zlbh" jdbcType="VARCHAR" />
+    <result column="YWDJZT" property="paramsMap.ywdjzt" jdbcType="VARCHAR" />
+    <result column="XFRQ" property="paramsMap.xfrq" jdbcType="VARCHAR" />
+    <result column="SCZX" property="paramsMap.sczx" jdbcType="VARCHAR" />
+    <result column="XCZX" property="paramsMap.xczx" jdbcType="VARCHAR" />
+    <result column="ZXJL" property="paramsMap.zxjl" jdbcType="VARCHAR" />
+    <result column="SYX_JKZT" property="paramsMap.syxjkzt" jdbcType="VARCHAR" />
+    <result column="SYX_JKBZ" property="paramsMap.syxjkbz" jdbcType="VARCHAR" />
+    <result column="JSWJ_JKZT" property="paramsMap.jswjjkzt" jdbcType="VARCHAR" />
+    <result column="pgdcount" property="paramsMap.pgdcount" jdbcType="VARCHAR" />
+    <result column="SYXID" property="paramsMap.syxid" jdbcType="VARCHAR" />
+    
+  </resultMap>
+   <resultMap id="AirworthinessToJxMap" extends="BaseResultMap" type="com.eray.thjw.project2.po.Airworthiness">
+	  	<association property="ZJ" javaType="com.eray.thjw.po.FixChapter">  
+	        <result column="ata" property="zjh"/>  
+	        <result column="zj_zwms" property="zwms"/>  
+	        <result column="zj_ywms" property="ywms"/>  
+	    </association>   
+   	   	<association property="scfj" javaType="com.eray.thjw.flightdata.po.Attachment">  
+	        <result column="sid" property="id"/>  
+	        <result column="scfj_wbwjm" property="wbwjm"/>  
+	        <result column="scfj_hzm" property="hzm"/>  
+	    </association>
+   
+   
+	    <collection property="technicalfileOrderList" ofType="com.eray.thjw.project2.po.TechnicalfileOrder">
+	       <result column="bgId" property="id" jdbcType="VARCHAR" />
+	       <result column="fjjx" property="fjjx" jdbcType="VARCHAR" />
+	       <result column="pgrid" property="pgrid" jdbcType="VARCHAR" />
+	       <association property="pgr_user" javaType="com.eray.thjw.po.User">  
+		        <id column="pgrid" property="id"/>  
+		        <result column="pgr_username" property="username"/>  
+		        <result column="pgr_realname" property="realname"/>  
+		    </association>  
+	   	</collection> 
+  </resultMap>
+  
+  
+    <!--  注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.project2.po.Airworthiness" id="AirworthinessToAllMap" extends="BaseResultMap">  
+	  	<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZDRID" property="id"/>  
+	        <result column="zdr_username" property="username"/>  
+	        <result column="zdr_realname" property="realname"/>  
+	    </association>  
+	  	<association property="gbr" javaType="com.eray.thjw.po.User">  
+	        <id column="GBRID" property="id"/>  
+	        <result column="gbr_username" property="username"/>  
+	        <result column="gbr_realname" property="realname"/>  
+	    </association>  
+	  	<association property="ZJ" javaType="com.eray.thjw.po.FixChapter">  
+	        <result column="ata" property="zjh"/>  
+	        <result column="zj_zwms" property="zwms"/>  
+	        <result column="zj_ywms" property="ywms"/>  
+	    </association>  
+	  	<association property="scfj" javaType="com.eray.thjw.flightdata.po.Attachment">  
+	        <result column="sid" property="id"/>  
+	        <result column="scfj_wbwjm" property="wbwjm"/>
+	        <result column="scfj_hzm" property="hzm"/>   
+	    </association>
+	  <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>  
+     
+	</resultMap> 
+	
+  <sql id="Base_Column_List" >
+    B_G2_000.ID,  B_G2_000.DPRTCODE,  B_G2_000.JSWJBH,  B_G2_000.BB,  B_G2_000.JSWJZT,  B_G2_000.JSWJLY,  B_G2_000.JSWJLX,  B_G2_000.ATA, 
+    B_G2_000.XZAH,  B_G2_000.GLJSWJID,  B_G2_000.BFRQ,  B_G2_000.SXRQ, 
+    B_G2_000.DQRQ,  B_G2_000.PGQX,  B_G2_000.XPGBS,  B_G2_000.BZ,  B_G2_000.ZT,  B_G2_000.JKZT,  B_G2_000.ZDBMID,  B_G2_000.ZDRID, 
+    B_G2_000.ZDSJ,  B_G2_000.GBRID,  B_G2_000.GBRQ,  B_G2_000.GBYY,ceil(B_G2_000.pgqx  - sysdate) syts
+  </sql>
+  
+  <!-- 根据组织机构和机型和编号查询数量 -->
+  <select id="findByjswjbh" parameterType="com.eray.thjw.project2.po.Airworthiness" resultType="int">
+  	select count(1) from B_G2_000 where 
+  	dprtcode=#{dprtcode,jdbcType=VARCHAR} and 
+  	jswjbh=#{jswjbh,jdbcType=VARCHAR} and bb=#{bb,jdbcType=VARCHAR} and
+  	zt in (0,1)
+	 <if test="id != null and id != ''">
+            and  B_G2_000.id != #{id}
+         </if>
+  </select>
+  
+   <select id="queryAll" resultMap="AirworthinessToAllMap" parameterType="com.eray.thjw.project2.po.Airworthiness" >
+    select 
+    <include refid="Base_Column_List" />,zdr.realname zdr_realname, zdr.username zdr_username,gbr.realname gbr_realname, gbr.username gbr_username,
+    zj.zwms zj_zwms,zj.ywms zj_ywms,scfj.wbwjm scfj_wbwjm,scfj.hzm scfj_hzm ,scfj.id sid,jg.dprtname jg_dprtname,gljswj.jswjbh gljswjbh,gljswj.jswjzt gljswjzt,
+    gljswj.bb gljswjbb,(select count(1) from B_G2_001 where B_G2_001.JSWJID = B_G2_000.id and B_G2_001.zt in(-1,1,2,3,5,6)) pgdcount
+    from B_G2_000
+    	 left join D_005 zj on (B_G2_000.ata=zj.ZJH AND B_G2_000.DPRTCODE = ZJ.DPRTCODE)
+    	 left join t_user zdr on (B_G2_000.zdrid = zdr.id)
+    	 left join t_user gbr on (B_G2_000.gbrid = gbr.id)
+    	 left join D_011 scfj on (scfj.mainid= B_G2_000.id and scfj.yxzt = 1)
+    	 left join t_department jg on(B_G2_000.dprtcode=jg.id)
+    	 left join B_G2_000 gljswj on(gljswj.id=B_G2_000.gljswjid)
+    	 
+     <include refid="AirworthinessParam"></include> 
+    	<choose>                                                                                 
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by syts asc, B_G2_000.ID
+		    		
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 </choose> 
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_000
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectById" resultMap="AirworthinessToJxMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />,B_G2_00001.fjjx,B_G2_00001.id bgId,B_G2_00001.pgrid,B_G2_00001.pgrid,t_user.realname pgr_realname, t_user.username pgr_username,
+    zj.zwms zj_zwms,zj.ywms zj_ywms,scfj.wbwjm scfj_wbwjm,scfj.hzm scfj_hzm,scfj.id sid,gljswj.jswjbh gljswjbh,gljswj.jswjzt gljswjzt
+    from B_G2_000 left join D_005 zj on (B_G2_000.ata=zj.ZJH AND B_G2_000.DPRTCODE = ZJ.DPRTCODE)
+    			  left join D_011 scfj on (scfj.mainid= B_G2_000.id)
+    			  left join B_G2_000 gljswj on(gljswj.id=B_G2_000.gljswjid)
+    			  left join B_G2_00001 on B_G2_000.id=B_G2_00001.mainid
+    			  left join t_user on B_G2_00001.pgrid=t_user.id 
+    where B_G2_000.ID = #{id,jdbcType=VARCHAR} order by B_G2_00001.fjjx asc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_000
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.Airworthiness" >
+    insert into B_G2_000 (ID, DPRTCODE, JSWJBH, 
+      BB, JSWJZT, JSWJLY, 
+      JSWJLX, ATA, XZAH, 
+      GLJSWJID, BFRQ, SXRQ, 
+      DQRQ, PGQX, XPGBS, 
+      BZ, ZT, JKZT, ZDBMID, 
+      ZDRID, ZDSJ, GBRID, 
+      GBRQ, GBYY)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jswjbh,jdbcType=VARCHAR}, 
+      #{bb,jdbcType=VARCHAR}, #{jswjzt,jdbcType=VARCHAR}, #{jswjly,jdbcType=VARCHAR}, 
+      #{jswjlx,jdbcType=VARCHAR}, #{ata,jdbcType=VARCHAR}, #{xzah,jdbcType=VARCHAR}, 
+      #{gljswjid,jdbcType=VARCHAR}, #{bfrq,jdbcType=TIMESTAMP}, #{sxrq,jdbcType=TIMESTAMP}, 
+      #{dqrq,jdbcType=TIMESTAMP}, #{pgqx,jdbcType=TIMESTAMP}, #{xpgbs,jdbcType=DECIMAL}, 
+      #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{jkzt,jdbcType=DECIMAL}, #{zdbmid,jdbcType=VARCHAR}, 
+      #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, #{gbrid,jdbcType=VARCHAR}, 
+      #{gbrq,jdbcType=TIMESTAMP}, #{gbyy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.Airworthiness" >
+    insert into B_G2_000
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="jswjbh != null" >
+        JSWJBH,
+      </if>
+      <if test="bb != null" >
+        BB,
+      </if>
+      <if test="jswjzt != null" >
+        JSWJZT,
+      </if>
+      <if test="jswjly != null" >
+        JSWJLY,
+      </if>
+      <if test="jswjlx != null" >
+        JSWJLX,
+      </if>
+      <if test="ata != null" >
+        ATA,
+      </if>
+      <if test="xzah != null" >
+        XZAH,
+      </if>
+      <if test="gljswjid != null" >
+        GLJSWJID,
+      </if>
+      <if test="bfrq != null" >
+        BFRQ,
+      </if>
+      <if test="sxrq != null" >
+        SXRQ,
+      </if>
+      <if test="dqrq != null" >
+        DQRQ,
+      </if>
+      <if test="pgqx != null" >
+        PGQX,
+      </if>
+      <if test="xpgbs != null" >
+        XPGBS,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="jkzt != null" >
+        JKZT,
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ,
+      </if>
+      <if test="gbrid != null" >
+        GBRID,
+      </if>
+      <if test="gbrq != null" >
+        GBRQ,
+      </if>
+      <if test="gbyy != null" >
+        GBYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjbh != null" >
+        #{jswjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjzt != null" >
+        #{jswjzt,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjly != null" >
+        #{jswjly,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjlx != null" >
+        #{jswjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="ata != null" >
+        #{ata,jdbcType=VARCHAR},
+      </if>
+      <if test="xzah != null" >
+        #{xzah,jdbcType=VARCHAR},
+      </if>
+      <if test="gljswjid != null" >
+        #{gljswjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sxrq != null" >
+        #{sxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dqrq != null" >
+        #{dqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pgqx != null" >
+        #{pgqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xpgbs != null" >
+        #{xpgbs,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jkzt != null" >
+        #{jkzt,jdbcType=DECIMAL},
+      </if>
+      <if test="zdbmid != null" >
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+       sysdate,
+      </if>
+      <if test="gbrid != null" >
+        #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        #{gbyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.Airworthiness" >
+    update B_G2_000
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjbh != null" >
+        JSWJBH = #{jswjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjzt != null" >
+        JSWJZT = #{jswjzt,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjly != null" >
+        JSWJLY = #{jswjly,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjlx != null" >
+        JSWJLX = #{jswjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="ata != null" >
+        ATA = #{ata,jdbcType=VARCHAR},
+      </if>
+      <if test="xzah != null" >
+        XZAH = #{xzah,jdbcType=VARCHAR},
+      </if>
+      <if test="gljswjid != null" >
+        GLJSWJID = #{gljswjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        BFRQ = #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sxrq != null" >
+        SXRQ = #{sxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dqrq != null" >
+        DQRQ = #{dqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pgqx != null" >
+        PGQX = #{pgqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xpgbs != null" >
+        XPGBS = #{xpgbs,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jkzt != null" >
+        JKZT = #{jkzt,jdbcType=DECIMAL},
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDSJ = sysdate,
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.Airworthiness" >
+    update B_G2_000
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      JSWJBH = #{jswjbh,jdbcType=VARCHAR},
+      BB = #{bb,jdbcType=VARCHAR},
+      JSWJZT = #{jswjzt,jdbcType=VARCHAR},
+      JSWJLY = #{jswjly,jdbcType=VARCHAR},
+      JSWJLX = #{jswjlx,jdbcType=VARCHAR},
+      ATA = #{ata,jdbcType=VARCHAR},
+      XZAH = #{xzah,jdbcType=VARCHAR},
+      GLJSWJID = #{gljswjid,jdbcType=VARCHAR},
+      BFRQ = #{bfrq,jdbcType=TIMESTAMP},
+      SXRQ = #{sxrq,jdbcType=TIMESTAMP},
+      DQRQ = #{dqrq,jdbcType=TIMESTAMP},
+      PGQX = #{pgqx,jdbcType=TIMESTAMP},
+      XPGBS = #{xpgbs,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      JKZT = #{jkzt,jdbcType=DECIMAL},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      GBRID = #{gbrid,jdbcType=VARCHAR},
+      GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      GBYY = #{gbyy,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询适航性资料参数 -->
+	<sql id="AirworthinessParam">
+	   where 
+	   1 = 1
+	   	 <if test="keyword != null and keyword != ''">
+		    and (  UPPER(B_G2_000.jswjbh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(scfj.wbwjm) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B_G2_000.jswjzt) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B_G2_000.bz) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(scfj.wbwjm) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(zj.zjh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(zj.zwms) like UPPER('%'||#{keyword}||'%')
+		    	)              <!-- 左右匹配 查询关键字 -->
+		</if>
+	     <if test="dprtcode != null and dprtcode != ''">
+            and  B_G2_000.dprtcode = #{dprtcode}
+         </if>
+	     <if test="jswjlx != null and jswjlx != ''">
+            and  B_G2_000.jswjlx = #{jswjlx}
+         </if>
+	     <if test="jswjly != null and jswjly != ''">
+            and  B_G2_000.jswjly = #{jswjly}
+         </if>
+	    <if test="paramsMap != null and paramsMap.xpgbsList != null and paramsMap.xpgbsList != ''">
+		    and B_G2_000.xpgbs in
+     			 <foreach item="item" index="index" collection="paramsMap.xpgbsList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if> 
+	    <if test="paramsMap != null and paramsMap.wjlxList != null and paramsMap.wjlxList != ''">
+		    and B_G2_000.jswjlx in
+     			 <foreach item="item" index="index" collection="paramsMap.wjlxList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if> 
+		<if test="paramsMap != null and paramsMap.sxrqBegin != null and paramsMap.sxrqBegin != ''">
+		    and B_G2_000.sxrq &gt;= to_date(#{paramsMap.sxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sxrqEnd != null and paramsMap.sxrqEnd != ''">
+		    and B_G2_000.sxrq &lt;= to_date(#{paramsMap.sxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.pgqxBegin != null and paramsMap.pgqxBegin != ''">
+		    and B_G2_000.pgqx &gt;= to_date(#{paramsMap.pgqxBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.pgqxEnd != null and paramsMap.pgqxEnd != ''">
+		    and B_G2_000.pgqx &lt;= to_date(#{paramsMap.pgqxEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+          <!--B_G2_000id-->
+	     <if test="zt != null">
+            and  B_G2_000.zt = #{zt}
+         </if>
+	     <if test="id != null and id != ''">
+            and  B_G2_000.id = #{id}
+         </if>
+          <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+           and  B_G2_000.id != #{paramsMap.id }
+          </if>
+	</sql>
+	<select id="selectAll" parameterType="com.eray.thjw.po.BaseEntity" resultType="map">
+		select g2000.id jswjid, --技术文件id
+       g2000.dprtcode, --组织机构
+       g2000.jswjlx, --技术文件类型
+       g2000.jswjly, --技术文件来源
+       g2000.jswjbh, --技术文件编号
+       g2000.bb jswjbb, --技术文件版本
+       g2000.xzah, --修正案号
+       g2000.sxrq, --生效日期
+       g2000.jswjzt, --技术文件主题
+       g2000.ata zjh, --章节号
+       g2000.jkzt jswjjkzt, --监控状态：0初始、9关闭
+       g2000_gl.id gljswjid, --关联技术文件id
+       g2000_gl.jswjbh gljswjbh, --关联技术文件编号
+       g2000_gl.bb gljswjbb, --关联技术文件版本
+       d005.zwms zjhzwms, --章节号中文描述
+       d005.ywms zjhywms, --章节号英文描述
+       g2001.yjbfzl, --预计颁发指令
+       g2001.jx,--机型
+       g200100.sylb, --适用类别（同分类）：1机身、2发动机、3APU、99其他部件
+       g200100.fsyyy, --不适用原因
+       g200101.zlxl, --指令类型：1技术通告、2技术指令、3修订维修方案、4非例行工单、6工程指令EO、7修订MEL、8修订工卡、9技术评估单、99其他
+       g200101.sm, --指令类型-其他说明
+       g003.zlid, --指令单id
+       g003.zlbh, --指令单编号
+       g003.zlbb, --指令单版本
+       g003.ywdjzt, --指令单状态
+       COALESCE(g201000.gzgs, g2002.ms) gzgs, --工作概述
+       g201000.zztj, --EO终止条件
+       g201000.is_zzphbh, --重量与平衡：载重平衡变化
+       g201000.mtc, --重量与平衡：MtChange
+       g201000.wtc, --重量与平衡：WtChange
+       g201000.arm, --重量与平衡：ARM
+       g201000.bhnr, --重量与平衡：变化内容
+       s2901.fjzch, --飞机注册号
+       s2901.fjxlh, --飞机序列号
+       s2901.zjqdid, --装机清单id
+       s2901.bjh, --部件号
+       s2901.xlh bjxlh, --部件序列号
+       s2903.scsj, --上次实际数据
+       s2904.jhsjsj, --下次计划数据
+       scfj.wbwjm scfjwbwjm, --技术文件附件外部文件名
+	   scfj.hzm scfjhzm , --技术文件附件后缀名
+       scfj.id scfjid, --技术文件附件id
+	   glscfj.wbwjm glscfjwbwjm, --关联技术文件附件外部文件名
+	   glscfj.hzm glscfjhzm , --关联技术文件附件后缀名
+       glscfj.id glscfjid, --关联技术文件附件id
+       GBR.username ||''|| GBR.realname  displayname,
+       g2000.gbrq,
+	   g2000.gbyy,
+	   jg.dprtname
+  from b_g2_000 g2000
+  join b_g2_001 g2001
+    on g2000.id = g2001.jswjid
+   and g2000.dprtcode = #{paramsMap.dprtcode, jdbcType=VARCHAR}
+   and g2000.zt = 1
+  left join b_g2_000 g2000_gl
+    on g2000_gl.id = g2000.gljswjid
+  left join D_011 scfj on scfj.mainid= g2000.id and scfj.yxzt = 1
+ left join D_011 glscfj on glscfj.mainid= g2000_gl.id and glscfj.yxzt = 1
+ left join T_USER gbr on gbr.id= g2000.gbrid
+  left join b_g2_00101 g200101
+    on g200101.mainid = g2001.id
+   and g200101.zt = 1
+  left join d_005 d005
+    on d005.dprtcode = g2000.dprtcode
+   and d005.zjh = g2000.ata
+  left join b_g2_00100 g200100
+    on g200100.mainid = g2001.id
+  left join b_g_003 g003
+    on g003.pgdid = g2001.id
+    and g003.zlxl = g200101.zlxl
+  left join b_g2_01000 g201000
+    on g201000.mainid = g003.zlid
+  left join b_g2_002 g2002
+    on g2002.id = g003.zlid
+  left join b_s2_901 s2901
+    on s2901.lyid = g003.zlid
+   and s2901.b_jksjid is null
+   and s2901.lylx = 2
+  left join (select t2.jksjid, max(t2.scsj) scsj
+               from (select t1.jksjid,
+                            wm_concat(t1.jklbh || '#_#' || t1.scsjz) over(PARTITION BY t1.jksjid order by t1.jklbh) scsj
+                       from b_s2_903 t1
+                      where t1.zt = 1) t2
+              group by t2.jksjid) s2903
+    on s2903.jksjid = s2901.id
+  left join (select t.jksjid, max(t.jhsjsj) jhsjsj
+               from (select s2904.jksjid,
+                            wm_concat(s2904.jklbh || '#_#' || s2904.jhz ||
+                                      '#_#' || s2904.scz || '#_#' ||
+                                      s2904.dw_scz || '#_#' || s2904.zqz ||
+                                      '#_#' || s2904.dw_zqz) over(PARTITION BY s2904.jksjid order by s2904.jklbh) jhsjsj
+                       from b_s2_904 s2904
+                      where s2904.zt = 1
+                        and s2904.jhz is not null) t
+              group by t.jksjid) s2904
+    on s2904.jksjid = s2901.id
+   left join t_department  jg 
+    on jg.id=g2000.dprtcode   
+<include refid="AirworthinessMonitoringParam"></include> 
+    	<choose>                                                                                 
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by g2000.sxrq desc, g2000.jswjbh,g2000.id		    		
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 </choose> 
+ 
+		
+	</select>
+	<sql id="AirworthinessMonitoringParam">
+	   where 
+	   1 = 1
+	   	 <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (   
+		    		UPPER(g2000.jswjbh) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or 	UPPER(g2000.xzah) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or 	UPPER(g003.zlbh) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	)
+		</if>
+	     <if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+            and  g2000.dprtcode = #{paramsMap.dprtcode}
+         </if>		   
+	    <if test="paramsMap != null and paramsMap.wjlxList != null and paramsMap.wjlxList != ''">
+		    and g2000.jswjlx in
+     			 <foreach item="item" index="index" collection="paramsMap.wjlxList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if> 
+		<if test="paramsMap != null and paramsMap.sxrqBegin != null and paramsMap.sxrqBegin != ''">
+		    and g2000.sxrq &gt;= to_date(#{paramsMap.sxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sxrqEnd != null and paramsMap.sxrqEnd != ''">
+		    and g2000.sxrq &lt;= to_date(#{paramsMap.sxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.fjzch != null and paramsMap.fjzch != ''">
+            and  s2901.fjzch = #{paramsMap.fjzch}
+         </if>	
+	     <if test="paramsMap != null and paramsMap.zt != null and paramsMap.zt != ''">
+            and  g2000.jkzt = #{paramsMap.zt}
+         </if>
+          <if test="paramsMap != null and paramsMap.zjh != null and paramsMap.zjh != ''">
+           and  g2000.ata = #{paramsMap.zjh }
+          </if>
+	</sql>
+	<update id="update4Close" parameterType="com.eray.thjw.project2.po.Airworthiness">
+		update B_G2_000 set jkzt=9 , 
+		GBRID = #{gbrid,jdbcType=VARCHAR},
+      	GBRQ = sysdate,
+      	GBYY = #{gbyy,jdbcType=VARCHAR}
+   	 where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="queryAllAd" resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.Airworthiness" >
+ 
+ 	SELECT * FROM (
+  SELECT 
+  		 COALESCE(G003.BH, G2001.BH) AS  FJZCH,
+  		G2000.JSWJLX, --文件类型
+       G2000.XZAH, --修正案号
+       G2000.JSWJBH, --文件编号
+       G2000.JSWJZT, --文件主题
+       TRUNC(G2000.SXRQ) SXRQ, --文件生效日期
+       TRUNC(G2000.DQRQ) DQRQ, --文件到期日期
+       G2000.ID, --技术文件ID
+       G2000_GL.JSWJLX GL_JSWJLX, --关联文件类型
+       G2000_GL.XZAH GL_XZAH, --关联修正案号
+       G2000_GL.JSWJBH GL_JSWJBH, --关联文件编号
+       G2000_GL.JSWJZT GL_JSWJZT, --关联文件主题
+       G2000_GL.SXRQ GL_SXRQ, --关联文件生效日期
+       G2000_GL.ID GL_JSWJID, --关联技术文件ID
+       G2001.PGDID, --评估单ID
+       COALESCE(G2001.PGDH, '待评估') PGDH, --评估单编号
+       G2001.JX, --机型
+       G2001.BDWSYX, --本单位适用范围
+       G2001.ZLLX, --指令类型
+       (COALESCE(G003.BH, G2001.BH) || ' ' || COALESCE(G003.XLH, G2001.XLH)) FJBJ, --飞机部件
+       G003.ZLID, --指令ID
+       G003.ZLBH, --指令编号
+       G003.YWDJZT, --指令状态
+       G003.XFRQ, --指令下发日期
+       G003.SCZX, --上次执行
+       G003.XCZX, --下次期限
+       G003.ZXJL, --执行记录
+       CASE
+         WHEN COALESCE(G2001.BH, '-') = COALESCE(G003.BH, '-') OR COALESCE(G003.BH, '-') = '-' THEN
+          G2001.JKZT
+         ELSE
+          NULL
+       END SYX_JKZT, --适用性-监控状态
+       CASE
+         WHEN COALESCE(G2001.BH, '-') = COALESCE(G003.BH, '-') OR COALESCE(G003.BH, '-') = '-' THEN
+          G2001.JKBZ
+         ELSE
+          ''
+       END SYX_JKBZ, --适用性-监控备注
+       G2000.JKZT JSWJ_JKZT, --技术文件-监控状态
+       CASE
+         WHEN COALESCE(G2001.BH, '-') = COALESCE(G003.BH, '-') OR COALESCE(G003.BH, '-') = '-' THEN
+          G2001.SYXID
+         ELSE
+          NULL
+       END SYXID, --适用性ID
+       
+       d011.wbwjm glscfjwbwjm, --关联技术文件附件外部文件名
+       d011.hzm glscfjhzm , --关联技术文件附件后缀名
+       d011.id glscfjid, --关联技术文件附件id
+       scfj.id scfjid --技术文件附件id
+  FROM B_G2_000 G2000
+  LEFT JOIN B_G2_000 G2000_GL
+    ON G2000_GL.ID = G2000.GLJSWJID
+  LEFT JOIN (SELECT G2001.ID PGDID,
+                    G2001.JSWJID,
+                    G2001.ZT,
+                    CASE
+                      WHEN G2001.ZT IN (4, 10) THEN
+                       G2001.PGDH
+                      WHEN G2001.ZT = -1 THEN
+                       '未评估'
+                      WHEN G2001.ZT = 9 THEN
+                       '评估终止'
+                      ELSE
+                       '评估中'
+                    END PGDH,
+                    G2001.JX,
+                    CASE
+                      WHEN G2001.ZT IN (4, 10) THEN
+                       CASE
+                         WHEN COALESCE(G200100.SYX, 0) = 1 THEN
+                          (CASE
+                            WHEN G200100.SYLB = 1 THEN
+                             '飞机 '
+                            WHEN G200100.SYLB = 2 THEN
+                             '发动机 '
+                            WHEN G200100.SYLB = 3 THEN
+                             'APU '
+                            ELSE
+                             '部件 '
+                          END) || G200102_HB.BDWSYX
+                         ELSE
+                          '不适用 ' || G200100.FSYYY
+                       END
+                      ELSE
+                       ''
+                    END BDWSYX,
+                    G200102.BH,
+                    G200102.XLH,
+                    G200101.ZLLX,
+                    G200102.JKZT,
+                    G200102.JKBZ,
+                    G200102.SYXID,
+                    G200102.KJBS
+               FROM B_G2_001 G2001
+               LEFT JOIN B_G2_00100 G200100
+                 ON G2001.ID = G200100.MAINID
+               LEFT JOIN (SELECT '-' FLAG,
+                                G200102.JKZT,
+                                G200102.JKBZ,
+                                G200102.BH,
+                                G200102.XLH,
+                                G200102.MAINID,
+                                G200102.ID SYXID,
+                                G200102.KJBS
+                           FROM B_G2_00102 G200102
+                          WHERE G200102.ZT = 1
+                         UNION ALL
+                         SELECT '00000' FLAG,
+                                COALESCE(G200102.JKZT, 0) JKZT,
+                                COALESCE(G200102.JKBZ, '') JKBZ,
+                                D007.FJZCH BH,
+                                D007.XLH,
+                                G2001.ID MAINID,
+                                G200102.ID SYXID,
+                                1 KJBS
+                           FROM D_007 D007
+                           JOIN B_G2_001 G2001
+                             ON G2001.DPRTCODE = D007.DPRTCODE
+                            AND D007.ZT = 1
+                            AND G2001.JX = D007.FJJX
+                           LEFT JOIN B_G2_00102 G200102
+                             ON G200102.MAINID = G2001.ID
+                            AND G200102.BH = D007.FJZCH
+                            AND G200102.XLH = D007.XLH) G200102
+                 ON G2001.ID = G200102.MAINID
+                AND G200102.FLAG = COALESCE(G200100.FJZCH, '-')
+               LEFT JOIN (SELECT G200102.MAINID,
+                                WM_CONCAT(G200102.BH || ' ' || G200102.XLH) BDWSYX
+                           FROM B_G2_00102 G200102
+                          WHERE G200102.ZT = 1
+                            AND G200102.KJBS = 1
+                          GROUP BY G200102.MAINID) G200102_HB
+                 ON G2001.ID = G200102_HB.MAINID
+                AND G2001.ZT IN (4, 10)
+               LEFT JOIN (SELECT G200101.MAINID, WM_CONCAT(G200101.ZLXL) ZLLX
+                           FROM B_G2_00101 G200101
+                          WHERE G200101.ZT = 1
+                          GROUP BY G200101.MAINID) G200101
+                 ON G2001.ID = G200101.MAINID
+                AND G2001.ZT IN (4, 10)
+              WHERE COALESCE(G2001.B_BBID, '-') = '-'
+                AND G2001.LYLX = 1) G2001
+    ON G2001.JSWJID = G2000.ID
+  LEFT JOIN (SELECT G003.PGDID,
+                    G003.ZLID,
+                    G003.ZLBH || CASE
+                      WHEN G003.ZLBB IS NOT NULL THEN
+                       ' R' || G003.ZLBB
+                      ELSE
+                       ''
+                    END ZLBH,
+                    G003.YWDJZT,
+                    G2010.XFRQ,
+                    G2010.SCZX,
+                    G2010.XCZX,
+                    G2010.ZXJL,
+                    G2010.BH,
+                    G2010.XLH,
+                    G2010.EOXC
+               FROM B_G_003 G003
+               JOIN (SELECT TO_CHAR(G2010.PFSJ, 'yyyy-mm-dd') XFRQ,
+                           S2903.SCSJ SCZX,
+                           S2904.JHSJSJ XCZX,
+                           S2008.GDBH ZXJL,
+                           G2010.ID EOID,
+                           G201001.BH,
+                           G201001.XLH,
+                           COALESCE(S2901.EOXC, 1) EOXC
+                      FROM B_G2_010 G2010
+                      LEFT JOIN B_G2_01001 G201001
+                        ON G201001.ZT = 1
+                       AND G201001.MAINID = G2010.ID
+                   <!--  /* 901监控对象 */ -->
+                      LEFT JOIN B_S2_901 S2901
+                        ON S2901.LYID = G2010.ID
+                       AND COALESCE(G201001.BH, '-') =
+                           COALESCE(S2901.BJH, S2901.FJZCH)
+                       AND COALESCE(G201001.XLH, '-') =
+                           COALESCE(S2901.XLH, S2901.FJXLH)
+                       AND S2901.B_JKSJID IS NULL
+                       AND S2901.LYLX = 2
+                   <!--  /* 监控数据-上次执行数据 */ -->
+                      LEFT JOIN (SELECT T2.JKSJID, MAX(T2.SCSJ) SCSJ
+                                  FROM (SELECT T1.JKSJID,
+                                               WM_CONCAT(T1.JKLBH || '#_#' ||
+                                                         T1.SCSJZ) OVER(PARTITION BY T1.JKSJID ORDER BY T1.JKLBH) SCSJ
+                                          FROM B_S2_903 T1
+                                         WHERE T1.ZT = 1) T2
+                                 GROUP BY T2.JKSJID) S2903
+                        ON S2903.JKSJID = S2901.ID
+                   <!--  /* 监控数据-计划904 */ -->
+                      LEFT JOIN (SELECT T.JKSJID, MAX(T.JHSJSJ) JHSJSJ
+                                  FROM (SELECT S2904.JKSJID,
+                                               WM_CONCAT(S2904.JKLBH || '#_#' ||
+                                                         S2904.JHZ || '#_#') OVER(PARTITION BY S2904.JKSJID ORDER BY S2904.JKLBH) JHSJSJ
+                                          FROM B_S2_904 S2904
+                                         WHERE S2904.ZT = 1
+                                           AND S2904.JHZ IS NOT NULL) T
+                                 GROUP BY T.JKSJID) S2904
+                        ON S2904.JKSJID = S2901.ID
+                   <!--  /* 执行记录 */ -->
+                      LEFT JOIN (SELECT S2901.LYID EOID,
+                                       S2901.FJZCH,
+                                       S2901.FJXLH,
+                                       S2901.BJH,
+                                       S2901.XLH,
+                                       WM_CONCAT(S2008.ID || '#_#' ||
+                                                 S2008.GDBH) GDBH,
+                                                 S2901.EOXC
+                                  FROM B_S2_901 S2901
+                                  JOIN B_S2_008 S2008
+                                    ON S2901.LYLX = 2
+                                   AND S2008.JKSJID = S2901.ID
+                                 GROUP BY S2901.LYID,
+                                          S2901.FJZCH,
+                                          S2901.FJXLH,
+                                          S2901.BJH,
+                                          S2901.XLH,
+                                          S2901.EOXC) S2008
+                        ON S2008.EOID = G2010.ID
+                       AND COALESCE(G201001.BH, '-') =
+                           COALESCE(S2008.BJH, S2008.FJZCH)
+                       AND COALESCE(G201001.XLH, '-') =
+                           COALESCE(S2008.XLH, S2008.FJXLH)
+                       AND S2901.EOXC = S2008.EOXC
+                     WHERE COALESCE(G2010.B_BBID, '-') = '-') G2010
+                 ON G003.ZLID = G2010.EOID) G003
+    ON G003.PGDID = G2001.PGDID
+    AND G2001.BH = G003.BH
+    AND G2001.XLH = G003.XLH
+    
+      <!-- AND (CASE
+         WHEN COALESCE(G2001.BH, '-') = '-' OR
+              ((COALESCE(G2001.KJBS, 0) = 0 AND
+               COALESCE(G2001.BH, '-') &lt;&gt; G003.BH) AND
+               (G2001.BH IS NULL OR G003.BH IS NULL)) THEN
+          '-'
+         ELSE
+          G003.BH
+       END) = CASE
+         WHEN (COALESCE(G2001.KJBS, 0) = 0 AND
+              COALESCE(G2001.BH, '-') &lt;&gt; G003.BH) AND
+              (G2001.BH IS NULL OR G003.BH IS NULL) THEN
+          '-'
+         ELSE
+          COALESCE(G2001.BH, '-')
+       END
+   AND (CASE
+         WHEN COALESCE(G2001.XLH, '-') = '-' OR
+              ((COALESCE(G2001.KJBS, 0) = 0 AND
+               COALESCE(G2001.XLH, '-') &lt;&gt; G003.XLH) AND
+               (G2001.XLH IS NULL OR G003.XLH IS NULL)) THEN
+          '-'
+         ELSE
+          G003.XLH
+       END) = CASE
+         WHEN (COALESCE(G2001.KJBS, 0) = 0 AND
+              COALESCE(G2001.XLH, '-') &lt;&gt; G003.XLH) AND
+              (G2001.XLH IS NULL OR G003.XLH IS NULL) THEN
+          '-'
+         ELSE
+          COALESCE(G2001.XLH, '-')
+       END -->
+    
+    
+    
+ 
+       left join d_011 d011 on G2000.gljswjid = d011.mainid 
+       left join d_011 scfj on G2000.id = scfj.mainid 
+ WHERE G2000.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+   AND G2000.XPGBS = 1
+   AND G2000.ZT = 1
+   
+ 
+ 
+      <include refid="AirworthinessAdMonitoringParam"></include>  
+   	<choose>                                                                                 
+		    	<when test='pagination.sort == "auto"'>                       
+		    		 ORDER BY G2000.JSWJBH,
+					          G2001.PGDH,
+					          COALESCE(G2001.BH, G003.BH),
+					          COALESCE(G2001.XLH, G003.XLH),
+					          G003.ZLBH,
+					          COALESCE(G003.EOXC, 1),
+					          G2000.ID
+		    		
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 </choose> 
+	 
+	 ) AA WHERE 1=1 
+	 <if test="paramsMap != null and paramsMap.fjzch != null and paramsMap.fjzch != ''">
+      AND FJZCH = #{paramsMap.fjzch}
+     </if>
+	 
+  </select>
+  <sql id="AirworthinessAdMonitoringParam">
+	   	 <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (    
+		    		UPPER(G2000.JSWJBH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or  UPPER(G2000.XZAH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or  UPPER(G003.ZLBH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	)
+		</if>
+	    <if test="paramsMap != null and paramsMap.wjlxList != null and paramsMap.wjlxList != ''">
+		    and G2000.jswjlx in
+     			 <foreach item="item" index="index" collection="paramsMap.wjlxList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if> 
+		<if test="paramsMap != null and paramsMap.sxrqBegin != null and paramsMap.sxrqBegin != ''">
+		    and G2000.sxrq &gt;= to_date(#{paramsMap.sxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sxrqEnd != null and paramsMap.sxrqEnd != ''">
+		    and G2000.sxrq &lt;= to_date(#{paramsMap.sxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+	     <if test="paramsMap != null and paramsMap.zt != null and paramsMap.zt != ''">
+            and  g2000.jkzt = #{paramsMap.zt}
+         </if>
+	</sql>
+  
+   <!-- 根据组织机构和机型和编号查询数量 -->
+  <select id="selectByBg200102Count" parameterType="com.eray.thjw.project2.po.Airworthiness" resultType="int">
+  	select count(1) from B_G2_000 
+  	left join b_g2_001 on b_g2_001.jswjid = B_G2_000.id and COALESCE(b_g2_001.B_BBID, '-') = '-'
+  	left join b_g2_00102 on b_g2_001.id = b_g2_00102.mainid
+            where b_g2_00102.JKZT != 9  and B_G2_000.id = #{id}
+  </select>
+  <select id="selectByJkeq0" parameterType="com.eray.thjw.project2.po.Airworthiness" resultType="int">
+  	select count(1) from B_G2_000 
+            where B_G2_000.JKZT =9  and B_G2_000.id = #{id}
+  </select>
+  
+  
+	
+</mapper>

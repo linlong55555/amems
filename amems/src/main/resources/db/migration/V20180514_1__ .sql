@@ -1,0 +1,3 @@
+insert into t_button (id, buttonCode, buttonName, menuId, remark) values ('055010010020','material:stock:material:inside:02','导入','055010010','航材-库内查询');
+insert into t_button (id, buttonCode, buttonName, menuId, remark) values ('055015010020','material:stock:tool:inside:02','导入','055015010','工具-库内查询');
+insert into t_button (id, buttonCode, buttonName, menuId, remark) values ('055015015020','material:stock:tool:insideut:02','导入','055015015','工具-库存查询（可修改库存状态）');

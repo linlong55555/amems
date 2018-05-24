@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.PostApplicationRYZZPGMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.PostApplicationRYZZPG" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="GWYQID" property="gwyqid" jdbcType="VARCHAR" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="PGJG" property="pgjg" jdbcType="DECIMAL" />
+    <result column="PGYJ" property="pgyj" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, WHBMID, WHRID, WHSJ, ZT, GWYQID, KCID, PGJG, PGYJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00502
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据mainid查询岗位授权-人员资质评估 -->
+  	<select id="queryByMainId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    	select 
+    	<include refid="Base_Column_List" />
+    	from B_Z_00502
+    	where ZT = 1 and MAINID = #{mainid,jdbcType=VARCHAR}
+  	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_Z_00502
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimaryMainid" parameterType="java.lang.String" >
+    delete from B_Z_00502
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.PostApplicationRYZZPG" >
+    insert into B_Z_00502 (ID, MAINID, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      KCID, PGJG, PGYJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{kcid,jdbcType=VARCHAR}, #{pgjg,jdbcType=DECIMAL}, #{pgyj,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.PostApplicationRYZZPG" >
+    insert into B_Z_00502
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="gwyqid != null" >
+        GWYQID,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="pgjg != null" >
+        PGJG,
+      </if>
+      <if test="pgyj != null" >
+        PGYJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="gwyqid != null" >
+        #{gwyqid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgjg != null" >
+        #{pgjg,jdbcType=DECIMAL},
+      </if>
+      <if test="pgyj != null" >
+        #{pgyj,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.PostApplicationRYZZPG" >
+    update B_Z_00502
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="gwyqid != null" >
+        GWYQID = #{gwyqid,jdbcType=DECIMAL},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgjg != null" >
+        PGJG = #{pgjg,jdbcType=DECIMAL},
+      </if>
+      <if test="pgyj != null" >
+        PGYJ = #{pgyj,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.PostApplicationRYZZPG" >
+    update B_Z_00502
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      PGJG = #{pgjg,jdbcType=DECIMAL},
+      PGYJ = #{pgyj,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

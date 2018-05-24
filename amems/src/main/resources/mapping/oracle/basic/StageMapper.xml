@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.basic.dao.StageMapper">
+   <resultMap id="baseResult" type="com.eray.thjw.basic.po.Stage">
+      <id column="ID" jdbcType="VARCHAR"  property="id"/>
+      <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode"/>
+      <result column="WHBMID" jdbcType="VARCHAR" property="whbmid"/>
+      <result column="WHRID" jdbcType="VARCHAR" property="whrid"/>
+      <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj"/>
+      <result column="ZT" jdbcType="INTEGER" property="zt"/>
+      <result column="JDBH" jdbcType="VARCHAR" property="jdbh"/>
+      <result column="JDMC" jdbcType="VARCHAR" property="jdmc"/>
+      <result column="JDMS" jdbcType="VARCHAR" property="jdms"/>
+      <result column="XC" jdbcType="INTEGER" property="xc"/>
+   </resultMap>
+   
+   <sql id="Base_Column_List">
+       t.ID, t.DPRTCODE, t.WHBMID, t.WHRID, t.ZT, t.JDBH, t.JDMC,
+       t.JDMS, t.XC, t.WHSJ, to_char(WHSJ,'yyyy-mm-dd hh24:mi:ss') AS whsjstr
+   </sql>
+   
+   <sql id="Base_Query">
+      where t.ZT = 1
+      <if test="jdbh != null and jdbh !=''">
+          and  lower(t.JDBH) like lower("%",#{jdbh},"%")
+      </if>
+      <if test="jdmc != null and jdmc !=''">
+          and  lower(t.JDMC) like lower("%",#{jdmc},"%")
+      </if>
+      <if test="jdms != null and jdms !=''">
+          and  lower(t.JDMS) like lower("%",#{jdms},"%")
+      </if>
+      <if test="dprtcode != null and dprtcode != ''">
+            and  t.DPRTCODE = #{dprtcode}
+      </if>
+   </sql>
+   
+   <select id="getStageList" parameterType="com.eray.thjw.basic.po.Stage" resultMap="baseResult">
+       SELECT <include refid="Base_Column_List"></include>, 
+               t2.DPRTNAME AS dprtname, 
+               t3.username||' '||t3.realname AS whr
+       FROM D_024 t
+       LEFT JOIN t_department t2 on t.dprtcode = t2.id 
+       LEFT JOIN t_user t3 on t.whrid = t3.id
+       <include refid="Base_Query"></include>
+       <if test="keyword != null and keyword !=''">
+           and ((lower(t.JDBH) like lower('%'||#{keyword}||'%' )) 
+           or (lower(t.JDMC) like lower('%'||#{keyword}||'%' ) )
+           or (lower(t.JDMS) like lower('%'||#{keyword}||'%' )))
+       </if>
+       <choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by t.WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	   </choose>
+   </select>
+   
+   <insert id="addStage" parameterType="com.eray.thjw.basic.po.Stage">
+     INSERT INTO D_024(ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, JDBH, JDMC, JDMS, XC)
+     VALUES(#{id,jdbcType=VARCHAR}, #{dprtcode, jdbcType=VARCHAR}, #{whbmid, jdbcType=VARCHAR}, 
+            #{whrid, jdbcType=VARCHAR}, #{whsj, jdbcType=TIMESTAMP}, #{zt, jdbcType=INTEGER},
+            #{jdbh, jdbcType=VARCHAR}, #{jdmc, jdbcType=VARCHAR} , #{jdms, jdbcType=VARCHAR}, #{xc, jdbcType=INTEGER})
+   </insert>
+   
+   <update id="deleteStage" parameterType="com.eray.thjw.basic.po.Stage">
+      UPDATE D_024
+      SET ZT = #{zt,jdbcType=INTEGER}
+      WHERE ID = #{id,jdbcType=VARCHAR}
+   </update>
+   
+   <update id="updateStage" parameterType="com.eray.thjw.basic.po.Stage">
+     UPDATE D_024
+     <set>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="jdmc != null">
+        JDMC = #{jdmc,jdbcType=VARCHAR},
+      </if>
+      <if test="jdms != null">
+        JDMS = #{jdms,jdbcType=VARCHAR},
+      </if>   
+      <if test="xc != null">
+        XC = #{xc,jdbcType=INTEGER},
+      </if>   
+      <if test="jdbh != null">
+        JDBH = #{jdbh,jdbcType=VARCHAR},
+      </if>   
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+   </update>
+   
+   <select id="checkStage" parameterType="com.eray.thjw.basic.po.Stage" resultMap="baseResult">
+      SELECT <include refid="Base_Column_List"></include>
+      FROM D_024 t
+      where t.ZT = 1
+      <if test=" dprtcode != null and dprtcode != ''">
+          and  t.DPRTCODE = #{dprtcode}
+      </if>
+      <if test="jdbh != null and jdbh !=''">
+          and  t.JDBH = #{jdbh}
+      </if>
+      <if test="xc != null and xc !=''">
+          and  t.XC = #{xc}
+      </if>
+   </select>
+   
+   <select id="getStageById" parameterType="com.eray.thjw.basic.po.Stage" resultMap="baseResult">
+       SELECT <include refid="Base_Column_List"></include>
+       FROM D_024 t
+       WHERE t.ZT = 1
+      <if test="dprtcode != null and dprtcode != ''">
+            AND  t.DPRTCODE = #{dprtcode}
+      </if>
+      <if test="id != null and id !=''">
+           AND  t.ID = #{id}
+      </if>
+   </select>
+   
+   <select id="getStageListByDrpt" parameterType="java.lang.String" resultMap="baseResult">
+       SELECT <include refid="Base_Column_List"></include>
+       FROM D_024 t
+       WHERE ZT = 1 AND t.DPRTCODE = #{dprtcode}
+   </select>
+   
+   <!--  根据机构代码+状态=1获取阶段集合：导入专用 -->
+   <select id="getAllStages" parameterType="com.eray.thjw.basic.po.Stage" resultMap="baseResult">
+       SELECT <include refid="Base_Column_List"></include>
+       FROM D_024 t
+       WHERE ZT = #{zt,jdbcType=INTEGER} AND t.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+   </select>
+   
+</mapper>

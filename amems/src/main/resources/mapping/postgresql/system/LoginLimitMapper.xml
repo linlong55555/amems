@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.log.dao.LoginLimitMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.log.po.LoginLimit">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="dprtcode" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="type" jdbcType="DECIMAL" property="type" />
+    <result column="value1" jdbcType="VARCHAR" property="value1" />
+    <result column="value2" jdbcType="VARCHAR" property="value2" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, dprtcode, type, value1 ,value2
+  </sql>
+  
+  <!-- 分页查询 start --> 
+  <select id="queryAllPageList" parameterType="com.eray.thjw.log.po.LoginLimit" resultMap="BaseResultMap">
+	    select <include refid="Base_Column_List"></include>
+	    from T_IPMAC_LIMIT
+	    where 1=1 <include refid="condition"></include>
+	    <choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by value1
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 	</choose>
+  </select>
+  
+  <sql id="condition">
+  	<if test="keyword != null and keyword != '' ">
+       	and (value1 like '%'||#{keyword}||'%'
+          or value2 like '%'||#{keyword}||'%')
+   	</if>
+   	<if test="type != null and type != '' ">
+       	and type = #{type}
+   	</if>
+  </sql>
+  <!-- 分页查询账号 end -->
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_IPMAC_LIMIT
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.log.po.LoginLimit">
+    insert into T_IPMAC_LIMIT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="value1 != null">
+        VALUE1,
+      </if>
+      <if test="value2 != null">
+        VALUE2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=DECIMAL},
+      </if>
+      <if test="value1 != null">
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        #{value2,jdbcType=VARCHAR},
+      </if>
+    
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.log.po.LoginLimit">
+    update T_IPMAC_LIMIT
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=DECIMAL},
+      </if>
+      <if test="value1 != null">
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null">
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+</mapper>

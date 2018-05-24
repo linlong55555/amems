@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.CustomShortcutMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.CustomShortcut">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="YHID" jdbcType="VARCHAR" property="yhid" />
+    <result column="ZWMS" jdbcType="VARCHAR" property="zwms" />
+    <result column="YWMS" jdbcType="VARCHAR" property="ywms" />
+    <result column="CDID" jdbcType="VARCHAR" property="cdid" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMap" type="com.eray.thjw.system.po.CustomShortcut">
+    	<association property="menu" javaType="com.eray.thjw.po.Menu">
+   		     <result column="PATH" property="path" jdbcType="VARCHAR" />
+   		     <result column="MENUNAME" property="menuName" jdbcType="VARCHAR" />
+    	</association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, YHID, ZWMS, YWMS, CDID, ZT, WHSJ
+  </sql>
+  <sql id="Column_List">
+    T.ID, T.YHID, T.ZWMS, T.YWMS, T.CDID, T.ZT, T.WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_CUSTOM_QUICK
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByUserMenuId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_CUSTOM_QUICK
+    where YHID = #{0,jdbcType=VARCHAR} and CDID = #{1,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByMainId" resultMap="ResultMap">
+    select 
+   T.ID, T.YHID, T1.MENUNAME as ZWMS, T1.MENUFNAME as YWMS, T.CDID, T.ZT, T.WHSJ, T1.PATH
+    from T_CUSTOM_QUICK T
+    left join T_MENU T1 on T.CDID = T1.ID
+    where ZT = 1 and YHID = #{mainId,jdbcType=VARCHAR}
+    	<if test="userType == '2'">
+	    	and exists (select 1 from t_user2role ur 
+	          join t_role2menu rm on ur.role_id = rm.role_id 
+	          where ur.user_id = #{mainId,jdbcType=VARCHAR} and rm.menu_id = T.Cdid)
+      	</if>
+  </select>
+  
+  <select id="selectByUserId" parameterType="java.lang.String" resultMap="ResultMap">
+    select 
+   T.ID, T.YHID, 
+   (CASE WHEN T.ZWMS IS NULL THEN T1.MENUNAME ELSE T.ZWMS END) as ZWMS, 
+   (CASE WHEN T.YWMS IS NULL THEN T1.MENUFNAME ELSE T.YWMS END) AS YWMS, 
+   T1.MENUNAME, T1.MENUFNAME, T.CDID, T.ZT, T.WHSJ, T1.PATH
+    from T_CUSTOM_QUICK T
+    left join T_MENU T1 on T.CDID = T1.ID
+    where ZT = 1 and YHID = #{userId,jdbcType=VARCHAR}
+    	<if test="userType == '2'">
+		    and exists (select 1 from t_user2role ur 
+		          join t_role2menu rm on ur.role_id = rm.role_id 
+		          where ur.user_id = #{userId,jdbcType=VARCHAR} and rm.menu_id = T.Cdid)
+      	</if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_CUSTOM_QUICK
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByUserMenuId">
+    delete from T_CUSTOM_QUICK
+    where YHID = #{0,jdbcType=VARCHAR} and CDID = #{1,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByMainId" parameterType="java.lang.String">
+    delete from T_CUSTOM_QUICK
+    where YHID = #{mainId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.CustomShortcut">
+    insert into T_CUSTOM_QUICK (ID, YHID, ZWMS, 
+      YWMS, CDID, ZT, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{yhid,jdbcType=VARCHAR}, #{zwms,jdbcType=VARCHAR}, 
+      #{ywms,jdbcType=VARCHAR}, #{cdid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.CustomShortcut">
+    insert into T_CUSTOM_QUICK
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="yhid != null">
+        YHID,
+      </if>
+      <if test="zwms != null">
+        ZWMS,
+      </if>
+      <if test="ywms != null">
+        YWMS,
+      </if>
+      <if test="cdid != null">
+        CDID,ZT,WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="yhid != null">
+        #{yhid,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="cdid != null">
+        #{cdid,jdbcType=VARCHAR},1,sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.CustomShortcut">
+    update T_CUSTOM_QUICK
+    <set>
+      <if test="yhid != null">
+        YHID = #{yhid,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        YWMS = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="cdid != null">
+        CDID = #{cdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="yhid != null">
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.CustomShortcut">
+    update T_CUSTOM_QUICK
+    set YHID = #{yhid,jdbcType=VARCHAR},
+      ZWMS = #{zwms,jdbcType=VARCHAR},
+      YWMS = #{ywms,jdbcType=VARCHAR},
+      CDID = #{cdid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByUserMenuId" parameterType="com.eray.thjw.system.po.CustomShortcut">
+    update T_CUSTOM_QUICK
+    set ZWMS = #{zwms,jdbcType=VARCHAR},
+      YWMS = #{ywms,jdbcType=VARCHAR},
+      ZT = 1,
+      WHSJ = sysdate
+    where YHID = #{yhid,jdbcType=VARCHAR} and CDID = #{cdid,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.InstructionContentMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.InstructionContent" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="GZNR" property="gznr" jdbcType="VARCHAR" />
+    <result column="CZDWID" property="czdwid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, GZNR, CZDWID, CZRID, CZSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_00401
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_00401
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.InstructionContent" >
+    insert into B_G_00401 (ID, MAINID, GZNR, 
+      CZDWID, CZRID, CZSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{gznr,jdbcType=VARCHAR}, 
+      #{czdwid,jdbcType=VARCHAR}, #{czrid,jdbcType=VARCHAR}, current_timestamp
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.InstructionContent" >
+    insert into B_G_00401
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="gznr != null" >
+        GZNR,
+      </if>
+      <if test="czdwid != null" >
+        CZDWID,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+      <if test="czsj != null" >
+        CZSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="gznr != null" >
+        #{gznr,jdbcType=VARCHAR},
+      </if>
+      <if test="czdwid != null" >
+        #{czdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null" >
+       current_timestamp,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.InstructionContent" >
+    update B_G_00401
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="gznr != null" >
+        GZNR = #{gznr,jdbcType=VARCHAR},
+      </if>
+      <if test="czdwid != null" >
+        CZDWID = #{czdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+      <if test="czsj != null" >
+        CZSJ = current_timestamp,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.InstructionContent" >
+    update B_G_00401
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      GZNR = #{gznr,jdbcType=VARCHAR},
+      CZDWID = #{czdwid,jdbcType=VARCHAR},
+      CZRID = #{czrid,jdbcType=VARCHAR},
+      CZSJ = current_timestamp
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKeyMainId" parameterType="com.eray.thjw.po.InstructionContent" resultMap="BaseResultMap">
+  	select B_G_00401.id,B_G_00401.mainid,B_G_00401.gznr,B_G_00401.czdwid,B_G_00401.czrid,B_G_00401.czsj from B_G_00401
+  		where B_G_00401.mainid=#{mainid}
+  </select>
+  
+  
+</mapper>

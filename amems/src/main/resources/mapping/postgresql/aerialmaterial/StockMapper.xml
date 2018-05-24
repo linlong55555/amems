@@ -1,0 +1,3205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.StockMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Stock" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="CKLB" property="cklb" jdbcType="INTEGER" />
+    <result column="CKID" property="ckid" jdbcType="VARCHAR" />
+    <result column="CKH" property="ckh" jdbcType="VARCHAR" />
+    <result column="CKMC" property="ckmc" jdbcType="VARCHAR" />
+    <result column="KWID" property="kwid" jdbcType="VARCHAR" />
+    <result column="KWH" property="kwh" jdbcType="VARCHAR" />
+    <result column="BJID" property="bjid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="PCH" property="pch" jdbcType="VARCHAR" />
+    <result column="SN" property="sn" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+    <result column="JLDW" property="jldw" jdbcType="VARCHAR" />
+    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+    <result column="DJSL" property="djsl" jdbcType="DECIMAL" />
+    <result column="CGHTID" property="cghtid" jdbcType="VARCHAR" />
+    <result column="HTBH_CG" property="htbhCg" jdbcType="VARCHAR" />
+    <result column="SXHTID" property="sxhtid" jdbcType="VARCHAR" />
+    <result column="HTBH_SX" property="htbhSx" jdbcType="VARCHAR" />
+    <result column="TDDID" property="tddid" jdbcType="VARCHAR" />
+    <result column="TDDH" property="tddh" jdbcType="VARCHAR" />
+    <result column="RKSJ" property="rksj" jdbcType="TIMESTAMP" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="RKBMID" property="rkbmid" jdbcType="VARCHAR" />
+    <result column="RKRID" property="rkrid" jdbcType="VARCHAR" />
+    <result column="XKZH" property="xkzh" jdbcType="VARCHAR" />
+    <result column="SHZH" property="shzh" jdbcType="VARCHAR" />
+    <result column="SHZWZ" property="shzwz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="JYDID" property="jydid" jdbcType="VARCHAR" />
+    <result column="HJSM" property="hjsm" jdbcType="TIMESTAMP" />
+    <result column="SPQX" property="spqx" jdbcType="TIMESTAMP" />
+    <result column="SCRQ" property="scrq" jdbcType="TIMESTAMP" />
+    <result column="XH" property="xh" jdbcType="VARCHAR" />
+    <result column="GG" property="gg" jdbcType="VARCHAR" />
+    <result column="ZZCS" property="zzcs" jdbcType="VARCHAR" />
+    <result column="TSN" property="tsn" jdbcType="VARCHAR" />
+    <result column="TSO" property="tso" jdbcType="VARCHAR" />
+    <result column="HCLY" property="hcly" jdbcType="INTEGER" />
+    <result column="CFYQ" property="cfyq" jdbcType="VARCHAR" />
+    <result column="bjgzjl" property="bjgzjl" jdbcType="VARCHAR" />
+    <result column="llklx" property="llklx" jdbcType="VARCHAR" />
+    <result column="llkbh" property="llkbh" jdbcType="VARCHAR" />
+    <result column="kzlx" property="kzlx" jdbcType="VARCHAR" />
+    <result column="is_dj" property="isDj" jdbcType="VARCHAR" />
+    <result column="kccb" property="kccb" jdbcType="VARCHAR" />
+    
+    <result column="cjjh" property="cjjh" jdbcType="VARCHAR" />
+    <result column="hclx" property="hclx" jdbcType="VARCHAR" />
+    <result column="gljb" property="gljb" jdbcType="VARCHAR" />
+    <result column="syts" property="syts" jdbcType="VARCHAR" />
+    <result column="cangkuzt" property="cangkuzt" jdbcType="VARCHAR" />
+    <result column="kcly" property="kcly" jdbcType="VARCHAR" />
+    <result column="dxtdsl" property="paramsMap.dxtdsl" jdbcType="DECIMAL" />
+    <result column="tdjczs" property="paramsMap.tdjczs" jdbcType="DECIMAL" />
+     <association property="rkr_user" javaType="com.eray.thjw.po.User">
+         <id column="rkrid" property="id"/>
+         <result column="rkr_realname" property="realname"/>
+         <result column="rkr_username" property="username"/>
+     </association>
+     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+    
+  </resultMap>
+  
+  <!-- 配置库存映射关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.aerialmaterial.po.Stock" id="StockJoinMap" extends="BaseResultMap">  
+	  	<association property="hCMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+	        <id column="HID" property="id"/>  
+	        <result column="HBJH" property="bjh"/>  
+	        <result column="HZWMS" property="zwms"/> 
+	        <result column="HYWMS" property="ywms"/> 
+	        <result column="HJLDW" property="jldw"/> 
+	        <result column="HCJJH" property="cjjh"/>  
+	        <result column="HHCLX" property="hclx"/>  
+	        <result column="HHCJZ" property="hcjz"/> 
+	        <result column="HHCLX_EJ" property="hclxEj"/>
+	        <result column="FZJH" property="fixChapter.zjh"/>
+	        <result column="FZWMS" property="fixChapter.zwms"/>  
+	        <result column="FYWMS" property="fixChapter.ywms"/>  
+	    </association>  
+	</resultMap> 
+	
+	<resultMap type="com.eray.thjw.aerialmaterial.po.Stock" id="StockToolMap" extends="BaseResultMap">  
+	        <result column="BORROWSTATUS_TEXT" property="borrowStatusText"/>
+	        <result column="BORROWSTATUS" property="borrowStatus"/>    
+	        <result column="POSITIONS" property="position"/>
+	        <result column="BRROW_ID" property="brrowId"/>
+	        <result column="DPRTNAME" property="dprtname"/>    
+	        <result column="SYZT" property="syzt"/>    
+	        
+	        
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    t1.ID, t1.DPRTCODE, t1.CKLB, t1.CKID, t1.CKH, t1.CKMC, t1.KWID, t1.KWH, t1.BJID, t1.BJH, t1.PCH, t1.SN, t1.ZWMS, t1.YWMS, t1.JLDW, 
+    t1.KCSL, t1.DJSL, t1.CGHTID, t1.HTBH_CG, t1.SXHTID, t1.HTBH_SX, t1.TDDID, t1.TDDH, t1.RKSJ, t1.RKBMID, t1.RKRID, t1.SHZH, 
+    t1.SHZWZ, t1.ZT,t1.BZ, t1.JYDID, t1.HJSM, t1.SPQX, t1.SCRQ, t1.XH, t1.GG, t1.ZZCS, t1.TSN, t1.TSO, t1.HCLY, t1.CFYQ,t2.cjjh,t2.hclx,t2.gljb,CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+  </sql>
+  
+    <sql id="Base_Column_Listin" >
+    t1.ID, t1.DPRTCODE, t1.CKLB, t1.CKID, t1.CKH, t1.CKMC, t1.KWID, t1.KWH, t1.BJID, t1.BJH, t1.PCH, t1.SN, t1.ZWMS, t1.YWMS, t1.JLDW, 
+    t1.KCSL, t1.CGHTID, t1.HTBH_CG, t1.SXHTID, t1.HTBH_SX, t1.TDDID, t1.TDDH, t1.RKSJ, t1.RKBMID, t1.RKRID, t1.SHZH, 
+    t1.SHZWZ, t1.ZT,t1.BZ, t1.JYDID, t1.HJSM, t1.SPQX, t1.SCRQ, t1.XH, t1.GG, t1.ZZCS, t1.TSN, t1.TSO, t1.HCLY, t1.CFYQ,t2.cjjh,t2.hclx,t2.gljb,CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+  </sql>
+  
+  <!-- 搜索参数 -->
+	<sql id="Material_Repair_Param">
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B001.ID = #{id}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		    and (UPPER(B001.BJH) like CONCAT(UPPER(#{keyword}),'%')
+		    	or UPPER(D008.CJJH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B001.ZWMS) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B001.YWMS) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B001.SN) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="dprtcode != null">
+		    and B001.DPRTCODE = #{dprtcode}
+		</if>
+	</sql>
+	
+	
+	<!-- 搜索参数 -->
+	<sql id="Stock_Tool_Param">
+		 <if test="keyword != null and keyword != ''">
+		      and (B001.BJH like '%'||#{keyword}||'%'
+		    	or B001.ID = #{keyword}
+		    	or D008.ZWMS like '%'||#{keyword}||'%'
+		    	or D008.YWMS like '%'||#{keyword}||'%'
+		    	or B001.SN like '%'||#{keyword}||'%'
+		     )             
+		 </if>
+		 
+		<if test="paramsMap != null and paramsMap.status != null and paramsMap.status != ''">
+        	and (CASE WHEN BW002.ZT IS NULL THEN 3 ELSE BW002.ZT END) =  cast(#{paramsMap.status,jdbcType=VARCHAR} as integer)
+        	 
+     	</if> 
+     	
+     	<if test="paramsMap != null and paramsMap.inStatus != null ">
+        	and BW002.ZT in  
+        	<foreach item="item" index="index" collection="paramsMap.inStatus" open="("  
+      		 separator="," close=")">  
+       			#{item}  
+  			 </foreach>
+     	</if> 
+     	
+     	
+     	<if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+        	and B001.DPRTCODE =  #{paramsMap.dprtcode, jdbcType=VARCHAR}
+     	</if> 
+     	
+     	<if test="paramsMap != null and paramsMap.kcid != null and paramsMap.kcid != ''">
+        	and B001.ID =  #{paramsMap.kcid, jdbcType=VARCHAR}
+     	</if> 
+     	
+     	
+	</sql>
+	
+  <!-- 根据条件分页查询送修航材列表(弹窗需要的数据) -->
+	<select id="queryRepairStockList" parameterType="com.eray.thjw.aerialmaterial.po.Stock" resultMap="StockJoinMap">
+	
+		select B001.ID,
+		       B001.DPRTCODE,
+		       B001.CKLB,
+		       B001.CKID,
+		       B001.CKH,
+		       B001.CKMC,
+		       B001.KWID,
+		       B001.KWH,
+		       B001.BJID,
+		       B001.BJH,
+		       B001.PCH,
+		       B001.SN,
+		       D008.ZWMS,
+		       D008.YWMS,
+		       D008.JLDW,
+		       B001.KCSL,
+		       B001.DJSL,
+		       B001.CGHTID,
+		       B001.HTBH_CG,
+		       B001.SXHTID,
+		       B001.HTBH_SX,
+		       B001.TDDID,
+		       B001.TDDH,
+		       B001.RKSJ,
+		       B001.RKBMID,
+		       B001.RKRID,
+		       B001.SHZH,
+		       B001.SHZWZ,
+		       B001.ZT,
+		       B001.BZ,
+		       B001.JYDID,
+		       B001.HJSM,
+		       B001.SPQX,
+		       B001.SCRQ,
+		       (CASE WHEN D008.XINGH IS NULL THEN B001.XH ELSE D008.XINGH END) XH,
+		       (CASE WHEN D008.GG IS NULL THEN B001.GG ELSE D008.GG END) GG,
+		       B001.ZZCS,
+		       B001.TSN,
+		       B001.TSO,
+		       B001.HCLY,
+		       B001.CFYQ,
+		       D008.ID       AS HID,
+		       D008.BJH      AS HBJH,
+		       D008.ZWMS     AS HZWMS,
+		       D008.YWMS     AS HYWMS,
+		       D008.JLDW     AS HJLDW,
+		       D008.CJJH     AS HCJJH,
+		       D008.HCLX     AS HHCLX,
+		       D008.HCLX_EJ  AS HHCLX_EJ,
+		       D005.ZJH      AS FZJH,
+		       D005.ZWMS     AS FZWMS,
+		       D005.YWMS     AS FYWMS
+		  from B_H_001 B001
+		  left join D_008 D008
+		    on B001.BJID = D008.ID
+		  left join D_005 D005
+		    on D008.ZJH = D005.ZJH
+		   and D008.DPRTCODE = D005.DPRTCODE
+
+   		
+           where B001.CKLB = 3 AND B001.SN IS NOT NULL AND B001.ZT = 2
+           	<include refid="Material_Repair_Param"></include>
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by B001.ID ${pagination.order}
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+     		
+		
+	</select>
+	
+	<select id="selectById" parameterType="String" resultMap="StockJoinMap">
+		select B001.ID,
+		       B001.DPRTCODE,
+		       B001.CKLB,
+		       B001.CKID,
+		       B001.CKH,
+		       B001.CKMC,
+		       B001.KWID,
+		       B001.KWH,
+		       B001.BJID,
+		       B001.BJH,
+		       B001.PCH,
+		       B001.SN,
+		       (CASE WHEN D008.ZWMS IS NULL THEN B001.ZWMS ELSE D008.ZWMS END) ZWMS,
+		       (CASE WHEN D008.YWMS IS NULL THEN B001.YWMS ELSE D008.YWMS END) YWMS,
+		       (CASE WHEN D008.JLDW IS NULL THEN B001.JLDW ELSE D008.JLDW END) JLDW,
+		       B001.KCSL,
+		       B001.DJSL,
+		       B001.CGHTID,
+		       B001.HTBH_CG,
+		       B001.SXHTID,
+		       B001.HTBH_SX,
+		       B001.TDDID,
+		       B001.TDDH,
+		       B001.RKSJ,
+		       B001.RKBMID,
+		       B001.RKRID,
+		       B001.SHZH,
+		       B001.SHZWZ,
+		       B001.ZT,
+		       B001.BZ,
+		       B001.JYDID,
+		       B001.HJSM,
+		       B001.SPQX,
+		       B001.SCRQ,
+		       B001.KCCB,
+		       (CASE WHEN D008.XINGH IS NULL THEN B001.XH ELSE D008.XINGH END) XH,
+		       (CASE WHEN D008.GG IS NULL THEN B001.GG ELSE D008.GG END) GG,
+		       B001.ZZCS,
+		       B001.TSN,
+		       B001.TSO,
+		       B001.HCLY,
+		       B001.CFYQ,
+		       D008.ID       AS HID,
+		       D008.BJH      AS HBJH,
+		       D008.ZWMS     AS HZWMS,
+		       D008.YWMS     AS HYWMS,
+		       D008.JLDW     AS HJLDW,
+		       D008.CJJH     AS HCJJH,
+		       D008.HCLX     AS HHCLX,
+		       D008.HCLX_EJ  AS HHCLX_EJ
+		  from B_H_001 B001
+		  left join D_008 D008
+		    on B001.BJID = D008.ID
+
+           where B001.ID = #{id}
+		
+	</select>
+	
+    <!-- 根据条件分页查询设备，工具航材列表 -->
+	<select id="queryList4Tool" parameterType="com.eray.thjw.aerialmaterial.po.Stock" resultMap="StockToolMap">
+	
+		  SELECT B001.ID,
+		       B001.DPRTCODE,
+		       B001.CKLB,
+		       B001.CKID,
+		       B001.CKH,
+		       B001.CKMC,
+		       B001.KWID,
+		       B001.KWH,
+		       B001.BJID,
+		       B001.BJH,
+		       B001.PCH,
+		       B001.SN,
+		       (CASE WHEN D008.ZWMS IS NULL THEN B001.ZWMS ELSE D008.ZWMS END) ZWMS,
+		       (CASE WHEN D008.YWMS IS NULL THEN B001.YWMS ELSE D008.YWMS END) YWMS,
+		       (CASE WHEN D008.JLDW IS NULL THEN B001.JLDW ELSE D008.JLDW END) JLDW,
+		       B001.KCSL,
+		       B001.DJSL,
+		       B001.CGHTID,
+		       B001.HTBH_CG,
+		       B001.SXHTID,
+		       B001.HTBH_SX,
+		       B001.TDDID,
+		       B001.TDDH,
+		       B001.RKSJ,
+		       B001.RKBMID,
+		       B001.RKRID,
+		       B001.XKZH,
+		       B001.SHZH,
+		       B001.SHZWZ,
+		       B001.ZT,
+		       B001.BZ,
+		       B001.JYDID,
+		       B001.HJSM,
+		       B001.SPQX,
+		       B001.SCRQ,
+		       (CASE WHEN D008.XINGH IS NULL THEN B001.XH ELSE D008.XINGH END) XH,
+		       (CASE WHEN D008.GG IS NULL THEN B001.GG ELSE D008.GG END) GG,
+		       B001.ZZCS,
+		       B001.TSN,
+		       B001.TSO,
+		       B001.HCLY,
+		       B001.CFYQ,
+		       B001.BJGZJL,
+		       B001.LLKLX,
+		       B001.LLKBH,
+		       B001.KZLX,
+		       B001.IS_DJ,
+		       B001.KCCB,
+		       D008.HCLX,
+		       BW002.ZT SYZT,
+		       CASE
+		         WHEN BW002.ZT = 1 THEN
+		          '申请'
+		         WHEN BW002.ZT = 2 THEN
+		          '借用'
+		         WHEN BW002.ZT = 3 THEN
+		          '空闲'
+		         WHEN BW002.ZT = 9 THEN
+		          '指定结束'
+		         WHEN BW002.ZT = 10 THEN
+		          '完成'
+		         ELSE
+		          '空闲'
+		       END BORROWSTATUS_TEXT,
+		       (CASE WHEN BW002.ZT IS NULL THEN 3 ELSE BW002.ZT END) BORROWSTATUS,
+		       CASE
+		         WHEN BW002.ZT = 1 OR BW002.ZT = 2 THEN
+		          (select t_user.username || ' ' || t_user.realname
+		             from t_user
+		            where t_user.id = BW002.JY_ZRRID)
+		         ELSE
+		          B001.CKMC || ' ' || B001.KWH
+		       END POSITIONS,
+		       BW002.ID BRROW_ID,
+		       DEPT.DPRTNAME
+		  FROM B_H_001 B001
+		  LEFT JOIN D_008 D008
+		    ON B001.BJID = D008.ID
+		  LEFT JOIN B_W_002 BW002
+		    ON B001.ID = BW002.KCID
+		   AND BW002.ZT IN (1, 2)
+		  LEFT JOIN T_DEPARTMENT DEPT
+		    ON B001.DPRTCODE = DEPT.ID
+		
+		 WHERE D008.HCLX IN (2, 3) and B001.CKLB IN (0,4,5,6,7,8)
+
+				 
+			  <include refid="Stock_Tool_Param"></include>
+			 
+            <!-- order by ID asc 进行排序判断，如果默认就是默认字段排序-->
+		  	   <choose> 
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B001.ID ${pagination.order}
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>   
+    
+	</select>
+   
+ 	<select id="queryAllPageList" resultMap="BaseResultMap">
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       T2.ZWMS,
+	       T2.YWMS,
+	       T2.JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       (userName || ' ' || realName) RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       t1.whsj,
+	       t1.whrid,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+	       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss,
+	       t6.tdjczs,
+       	   t6.kcsl dxtdsl
+		  from b_h_001 t1
+		  left join d_008 t2
+		    on t1.bjid = t2.id
+		  LEFT JOIN t_user t5
+    	  ON t5. ID = t1.RKRID
+  		  left join (select d017.dprtcode,
+                    d017.bjh,
+                    count(d017.bs) tdjczs,
+                    sum(h001.kcsl) kcsl,
+                    sum(h001.kykcsl) kykcsl
+               from (select d_017.dprtcode, d_017.bjh, d_017.tdjh, 1 bs
+                       from d_017
+                      where d_017.zt = 1
+                     union
+                     select d_017.dprtcode,
+                            d_017.tdjh     bjh,
+                            d_017.bjh      tdjh,
+                            1              bs
+                       from d_017
+                      where d_017.knxbs = 2
+                        and d_017.zt = 1) d017
+               left join (select b_h_001.dprtcode,
+                                b_h_001.bjh,
+                                sum(b_h_001.kcsl) kcsl,
+                                sum(b_h_001.kcsl - (CASE WHEN b_h_001.djsl IS NULL THEN 0 ELSE b_h_001.djsl END)) kykcsl
+                           from b_h_001
+                          where b_h_001.zt = 2
+                          group by b_h_001.dprtcode, b_h_001.bjh) h001
+                 on d017.dprtcode = h001.dprtcode
+                and d017.tdjh = h001.bjh
+              group by d017.dprtcode, d017.bjh) t6
+    on t1.dprtcode = t6.dprtcode
+   and t1.bjh = t6.bjh
+		 where 1=1
+
+		<include refid="FlightRecordParam3"></include>
+
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by syts 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+	
+	<select id="queryAllPageListWin" resultMap="BaseResultMap">
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       T2.ZWMS,
+	       T2.YWMS,
+	       T2.JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       (userName || ' ' || realName) RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       t1.whsj,
+	       t1.whrid,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+	       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss,
+	       t6.tdjczs,
+       	   t6.kcsl dxtdsl
+		  from b_h_001 t1
+		  left join d_008 t2
+		    on t1.bjid = t2.id
+		            LEFT JOIN t_user t5
+    	ON t5. ID = t1.RKRID
+  		left join (select d017.dprtcode,
+                    d017.bjh,
+                    count(d017.bs) tdjczs,
+                    sum(h001.kcsl) kcsl,
+                    sum(h001.kykcsl) kykcsl
+               from (select d_017.dprtcode, d_017.bjh, d_017.tdjh, 1 bs
+                       from d_017
+                      where d_017.zt = 1
+                     union
+                     select d_017.dprtcode,
+                            d_017.tdjh     bjh,
+                            d_017.bjh      tdjh,
+                            1              bs
+                       from d_017
+                      where d_017.knxbs = 2
+                        and d_017.zt = 1) d017
+               left join (select b_h_001.dprtcode,
+                                b_h_001.bjh,
+                                sum(b_h_001.kcsl) kcsl,
+                                sum(b_h_001.kcsl - (CASE WHEN b_h_001.djsl IS NULL THEN 0 ELSE b_h_001.djsl END)) kykcsl
+                           from b_h_001
+                          where b_h_001.zt = 2
+                          group by b_h_001.dprtcode, b_h_001.bjh) h001
+                 on d017.dprtcode = h001.dprtcode
+                and d017.tdjh = h001.bjh
+              group by d017.dprtcode, d017.bjh) t6
+    	on t1.dprtcode = t6.dprtcode
+   		and t1.bjh = t6.bjh
+		where (t1.KCSL &gt; t1.DJSL or t1.DJSL is null) and t1.CKLB in (0,1,4,5,6,7,8)
+			and t1.zt=2
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx =  #{hclx}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		    	or t1.pch like '%'||#{keyword}||'%'
+		    	or t1.sn like '%'||#{keyword}||'%'
+		    	or t2.id like #{keyword}
+		     )
+		  </if>
+		  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		    and t1.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		  order by syts 
+	</select>
+	
+	<select id="queryAllPageNormalList" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+	       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+	       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       t1.RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+	  from b_h_001 t1
+	  left join d_008 t2
+	    on t1.bjid = t2.id
+	 where t1.cklb in (3,5, 6, 7, 8)
+	   and t1.zt = 2
+
+		<include refid="FlightRecordParam5"></include>
+
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by syts 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+		 	
+	</select>
+		<sql id="FlightRecordParam5">
+	   
+	     <if test="id != null and id != ''">
+             and t1.id =  #{id}
+         </if>
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx =  #{hclx}
+         </if>
+         <if test="zt != null and zt != ''">
+             and t1.zt =  #{zt}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+          <choose>
+	         <when test="ckh != null and ckh != ''">
+	             and t1.ckid =  #{ckh}
+	         </when>
+	         <otherwise>  
+	         	and t1.ckid <include refid="userStoreParam"></include>
+             </otherwise> 
+         </choose>
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t1.BJH like '%'||#{keyword}||'%'
+		    	or t2.id like #{keyword}
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+	
+	<select id="queryAllPageNormalListkc" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+	       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+	       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       t1.RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+	  from b_h_001 t1
+	  left join d_008 t2
+	    on t1.bjid = t2.id
+	 where t1.cklb in (0,4,5, 6, 7, 8)
+	   and t1.zt = 2
+
+		<include refid="FlightRecordParam3"></include>
+
+	  	<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by syts 
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 	</choose>
+		 	
+	</select>
+	
+	<select id="queryKeytuihuo" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       ceil(t1.hjsm - sysdate) syts
+  from b_h_001 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+ where  t1.zt = 2
+
+		<include refid="FlightRecordParam"></include>
+		 	
+	</select>
+	
+	<select id="queryKey" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+  from b_h_001 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+ where t1.cklb in (5, 6, 7, 8)
+   and t1.zt = 2
+
+		<include refid="FlightRecordParam"></include>
+		 	
+	</select>
+	
+	<select id="queryKeys" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       t1.xkzh,
+       t1.zzcs,
+       t1.bjgzjl,
+       t1.llklx,
+       t1.llkbh,
+       t1.kzlx,
+       t1.is_dj,
+       t1.kccb,
+       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+  from b_h_001 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+ where t1.cklb in (5, 6, 7, 8)
+   and t1.zt = 2
+
+		<include refid="FlightRecordParam"></include>
+		 	
+	</select>
+	
+	<select id="queryKeys1" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+  from b_h_001 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+	where 	1=1 <include refid="FlightRecordParam"></include>
+		 	
+	</select>
+	
+	
+ 	<select id="queryAllList" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+       t1.DPRTCODE,
+       t3.CKLB,
+       t1.CKID,
+       t3.CKH,
+       t3.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+  from b_h_001 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+    left join d_009 t3 on t1.ckid=t3.id
+ where t1.cklb in (5, 6, 7, 8) and t1.zt=2
+
+		<include refid="FlightRecordParam2"></include>
+			    		 order by t1.bjh desc
+	</select>
+ 
+  	<!-- 搜索参数 -->
+	<sql id="FlightRecordParam2">
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+	</sql>
+ 	<!-- 修改库存表状态 -->
+ 	<update id="updateLocked" parameterType="String">
+		update b_h_001 set
+		ZT=cast(#{zt,jdbcType=VARCHAR} as integer ) 
+		where id=#{id, jdbcType=VARCHAR}
+	</update>
+ 
+ 	<update id="update" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+		update b_h_001 set
+		kcsl=#{kcsl}
+		where id=#{id}
+	</update>
+ 
+	<delete id="delete" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+		delete from b_h_001
+		where id=#{id}
+	</delete>
+ 
+ 	<select id="queryCount" parameterType="com.eray.thjw.aerialmaterial.po.Stock" resultType="int">
+		select count(*) from b_h_001 t1 left join d_008 t2 on t1.bjid = t2.id  where 1=1
+	 <include refid="FlightRecordParam3"></include>
+ 	 </select>
+ 	 
+ 	<select id="queryCountckls" parameterType="com.eray.thjw.aerialmaterial.po.Stock" resultType="int">
+		select count(*) from b_h_001 t1 left join d_008 t2 on t1.bjid = t2.id  where t1.zt=2
+	 <include refid="FlightRecordParamls"></include>
+ 	 </select>
+ 	 
+ 	 <sql id="FlightRecordParamls">
+	   
+	     <if test="id != null and id != ''">
+             and t1.id =  #{id}
+         </if>
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+        
+	</sql>
+ 	 
+ 	<select id="queryCountnum" parameterType="com.eray.thjw.aerialmaterial.po.Stock" resultType="int">
+		select count(*) from b_h_001 
+	 <include refid="FlightRecord"></include>
+ 	 </select>
+ 	  
+ 	<select id="queryCountnums" parameterType="com.eray.thjw.aerialmaterial.po.Stock" resultMap="StockToolMap">
+		select t1.ID, t1.DPRTCODE, t1.CKLB, t1.CKID, t1.CKH, t1.CKMC, t1.KWID, t1.KWH, t1.BJID, t1.BJH, t1.PCH, t1.SN, t1.ZWMS, t1.YWMS, t1.JLDW, 
+    t1.KCSL, t1.DJSL, t1.CGHTID, t1.HTBH_CG, t1.SXHTID, t1.HTBH_SX, t1.TDDID, t1.TDDH, t1.RKSJ, t1.RKBMID, t1.RKRID, t1.SHZH, 
+    t1.SHZWZ, t1.ZT,t1.BZ, t1.JYDID, t1.HJSM, t1.SPQX, t1.SCRQ, t1.XH, t1.GG, t1.ZZCS, t1.TSN, t1.TSO, t1.HCLY, t1.CFYQ from b_h_001 t1
+	 <include refid="FlightRecords1"></include>
+ 	 </select>
+ 	  <!-- 搜索参数 -->
+	<sql id="FlightRecords1">
+         where 1=1
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+         <if test="sn != null and sn != ''">
+             and t1.sn =  #{sn}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtCode =  #{dprtcode}
+         </if>
+	</sql>
+ 	 
+ 	 
+ <!-- 搜索参数 -->
+	<sql id="FlightRecord">
+         where 1=1
+         <if test="kwh != null and kwh != ''">
+             and kwh =  #{kwh}
+         </if>
+         <if test="pch != null and pch != ''">
+             and pch =  #{pch}
+         </if>
+         <if test="bjh != null and bjh != ''">
+             and bjh =  #{bjh}
+         </if>
+         <if test="sn != null and sn != ''">
+             and sn =  #{sn}
+         </if>
+	</sql>
+ 	 
+ 	 
+ 
+ <!-- 搜索参数 -->
+	<sql id="FlightRecordParam3">
+	   
+	     <if test="id != null and id != ''">
+             and t1.id =  #{id}
+         </if>
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+         </if>
+         <if test="zt != null and zt != ''">
+             and t1.zt =  #{zt}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+          <choose>
+	         <when test="ckh != null and ckh != ''">
+	             and t1.ckid =  #{ckh}
+	         </when>
+	         <otherwise>  
+	         	and t1.ckid <include refid="userStoreParam"></include>
+             </otherwise> 
+         </choose>
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+         
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		    	or t1.pch like '%'||#{keyword}||'%'
+		    	or t1.sn like '%'||#{keyword}||'%'
+		    	or t2.id like #{keyword}
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+ 
+ 
+ 	<!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+	   
+	     <if test="id != null and id != ''">
+             and t1.id =  #{id}
+         </if>
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+ 
+ <sql id="Base_Column_List1" >
+    t1.ID, t1.DPRTCODE, t1.CKLB, t1.CKID, t1.CKH, t1.CKMC, t1.KWID, t1.KWH, t1.BJID, t1.BJH, t1.PCH, t1.SN, t1.ZWMS, t1.YWMS, t1.JLDW, 
+    t1.KCSL, t1.DJSL, t1.CGHTID, t1.HTBH_CG, t1.SXHTID, t1.HTBH_SX, t1.TDDID, t1.TDDH, t1.RKSJ, t1.RKBMID, t1.RKRID, t1.SHZH, 
+    t1.SHZWZ, t1.ZT,t1.BZ, t1.JYDID, t1.HJSM, t1.SPQX, t1.SCRQ, t1.XH, t1.GG, t1.ZZCS, t1.TSN, t1.TSO, t1.HCLY, t1.CFYQ, t1.bjgzjl, t1.llklx, t1.llkbh, t1.kzlx, t1.is_dj, t1.kccb
+  </sql>
+ 
+   <select id="queryList" resultMap="BaseResultMap" parameterType="com.eray.thjw.aerialmaterial.po.Stock" >
+    
+    select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t1.bjgzjl,
+       t1.llklx,
+       t1.llkbh,
+       t1.kzlx,
+       t1.is_dj,
+       t1.kccb
+  from b_h_001 t1
+  left join d_009 t2
+    on t1.ckid = t2.id
+  LEFT JOIN D_008 T3
+    ON T1.BJID = T3.ID
+ where t1.cklb in (5, 6, 7, 8)
+
+    	 <include refid="base_list"></include>
+  </select>
+ 
+  	<!-- 搜索参数 -->
+	<sql id="base_list">
+	   
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="cangkuzt != null and cangkuzt != ''">
+             and t2.zt =  #{cangkuzt}
+         </if>
+	</sql>
+	
+	<sql id="Base_Column_List2" >
+	    t1.ID, t1.DPRTCODE, t1.CKLB, t1.CKID, t1.CKH, t1.CKMC, t1.KWID, t1.KWH, t1.BJID, t1.BJH, t1.PCH, t1.SN, t1.ZWMS, t1.YWMS, t1.JLDW, 
+	    t1.KCSL, t1.DJSL, t1.CGHTID, t1.HTBH_CG, t1.SXHTID, t1.HTBH_SX, t1.TDDID, t1.TDDH, t1.RKSJ, t1.RKBMID, t1.RKRID,t1.XKZH, t1.SHZH, 
+	    t1.SHZWZ, t1.ZT,t1.BZ, t1.JYDID, t1.HJSM, t1.SPQX, t1.SCRQ, t1.XH, t1.GG, t1.ZZCS, t1.TSN, t1.TSO, t1.HCLY, t1.CFYQ
+  	</sql>
+	
+	
+	<select id="queryById" parameterType="java.lang.String" resultMap="BaseResultMap">
+	   select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.XKZH,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.GLJB
+  from B_H_001 t1
+  left join D_008 t2
+    on t1.bjid = t2.id
+
+	   where t1.ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryStockListByPdid" parameterType="java.lang.String" resultMap="BaseResultMap">
+	   select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.XKZH,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.GLJB
+  from B_H_001 t1
+  left join D_008 t2
+    on t1.bjid = t2.id
+    
+ where not exists
+ (select 1
+          from (select b1.id b1_id, b2.id b2_id, b2.kcid b2_kcid
+                  from B_H_01601 b1
+                  left join b_h_017 b2
+                    on b1.kcllid = b2.id
+                 where b1.MAINID = #{pdid}) b3
+         where b3.b2_kcid = t1.id)
+   and t1.CKID = (select CKID from B_H_016 where ID = #{pdid})
+   and ((exists (select 1
+                   from B_H_01602 B01602
+                  where B01602.ZT = 1
+                    and B01602.PDLX = 3
+                    and B01602.MAINID = #{pdid}
+                    and B01602.DXID = t1.BJID) or not exists
+        (select 1
+            from B_H_01602 B01602
+           where B01602.ZT = 1
+             and B01602.PDLX = 3
+             and B01602.MAINID = #{pdid})) and
+       (exists (select 1
+                   from B_H_01602 B01602
+                  where B01602.ZT = 1
+                    and B01602.PDLX = 2
+                    and B01602.MAINID = #{pdid}
+                    and B01602.DXID = t1.KWID) or not exists
+        (select 1
+            from B_H_01602 B01602
+           where B01602.ZT = 1
+             and B01602.PDLX = 2
+             and B01602.MAINID = #{pdid})))
+
+	   <if test="keyword != null and keyword != ''">
+		    and (t1.BJH like '%'||#{keyword}||'%'
+		    	OR t1.YWMS like '%'||#{keyword}||'%'
+		    	OR t1.SN like '%'||#{keyword}||'%'
+		    	OR t1.PCH like '%'||#{keyword}||'%'
+		    	OR t1.SHZH like '%'||#{keyword}||'%'
+		    )
+		</if>
+	</select>
+	
+	<insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+	    insert into B_H_001 (ID, DPRTCODE, CKLB, 
+	      CKID, CKH, CKMC, KWID, 
+	      KWH, BJID, BJH, PCH, 
+	      SN, ZWMS, YWMS, JLDW, 
+	      KCSL, DJSL, CGHTID, 
+	      HTBH_CG, SXHTID, HTBH_SX, 
+	      TDDID, TDDH, RKSJ, 
+	      RKBMID, RKRID, XKZH, 
+	      SHZH, SHZWZ, ZT, BZ, 
+	      JYDID, HJSM, SPQX, 
+	      SCRQ, XH, GG, ZZCS, 
+	      TSN, TSO, HCLY, CFYQ, 
+	      BJGZJL, LLKLX, LLKBH, 
+	      KZLX, IS_DJ, KCCB)
+	    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{cklb,jdbcType=DECIMAL}, 
+	      #{ckid,jdbcType=VARCHAR}, #{ckh,jdbcType=VARCHAR}, #{ckmc,jdbcType=VARCHAR}, #{kwid,jdbcType=VARCHAR}, 
+	      #{kwh,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{pch,jdbcType=VARCHAR}, 
+	      #{sn,jdbcType=VARCHAR}, #{zwms,jdbcType=VARCHAR}, #{ywms,jdbcType=VARCHAR}, #{jldw,jdbcType=VARCHAR}, 
+	      #{kcsl,jdbcType=DECIMAL}, #{djsl,jdbcType=DECIMAL}, #{cghtid,jdbcType=VARCHAR}, 
+	      #{htbhCg,jdbcType=VARCHAR}, #{sxhtid,jdbcType=VARCHAR}, #{htbhSx,jdbcType=VARCHAR}, 
+	      #{tddid,jdbcType=VARCHAR}, #{tddh,jdbcType=VARCHAR}, #{rksj,jdbcType=TIMESTAMP}, 
+	      #{rkbmid,jdbcType=VARCHAR}, #{rkrid,jdbcType=VARCHAR}, #{xkzh,jdbcType=VARCHAR}, 
+	      #{shzh,jdbcType=VARCHAR}, #{shzwz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, 
+	      #{jydid,jdbcType=VARCHAR}, #{hjsm,jdbcType=TIMESTAMP}, #{spqx,jdbcType=TIMESTAMP}, 
+	      #{scrq,jdbcType=TIMESTAMP}, #{xh,jdbcType=VARCHAR}, #{gg,jdbcType=VARCHAR}, #{zzcs,jdbcType=VARCHAR}, 
+	      #{tsn,jdbcType=VARCHAR}, #{tso,jdbcType=VARCHAR}, #{hcly,jdbcType=DECIMAL}, #{cfyq,jdbcType=VARCHAR}, 
+	      #{bjgzjl,jdbcType=VARCHAR}, #{llklx,jdbcType=DECIMAL}, #{llkbh,jdbcType=VARCHAR}, 
+	      #{kzlx,jdbcType=DECIMAL}, #{isDj,jdbcType=DECIMAL}, #{kccb,jdbcType=DECIMAL})
+	  </insert>
+	  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+	    insert into B_H_001
+	    <trim prefix="(" suffix=")" suffixOverrides=",">
+	      <if test="id != null">
+	        ID,
+	      </if>
+	      <if test="dprtcode != null">
+	        DPRTCODE,
+	      </if>
+	      <if test="cklb != null">
+	        CKLB,
+	      </if>
+	      <if test="ckid != null">
+	        CKID,
+	      </if>
+	      <if test="ckh != null">
+	        CKH,
+	      </if>
+	      <if test="ckmc != null">
+	        CKMC,
+	      </if>
+	      <if test="kwid != null">
+	        KWID,
+	      </if>
+	      <if test="kwh != null">
+	        KWH,
+	      </if>
+	      <if test="bjid != null">
+	        BJID,
+	      </if>
+	      <if test="bjh != null">
+	        BJH,
+	      </if>
+	      <if test="pch != null">
+	        PCH,
+	      </if>
+	      <if test="sn != null">
+	        SN,
+	      </if>
+	      <if test="zwms != null">
+	        ZWMS,
+	      </if>
+	      <if test="ywms != null">
+	        YWMS,
+	      </if>
+	      <if test="jldw != null">
+	        JLDW,
+	      </if>
+	      <if test="kcsl != null">
+	        KCSL,
+	      </if>
+	      <if test="djsl != null">
+	        DJSL,
+	      </if>
+	      <if test="cghtid != null">
+	        CGHTID,
+	      </if>
+	      <if test="htbhCg != null">
+	        HTBH_CG,
+	      </if>
+	      <if test="sxhtid != null">
+	        SXHTID,
+	      </if>
+	      <if test="htbhSx != null">
+	        HTBH_SX,
+	      </if>
+	      <if test="tddid != null">
+	        TDDID,
+	      </if>
+	      <if test="tddh != null">
+	        TDDH,
+	      </if>
+	      <if test="rksj != null">
+	        RKSJ,
+	      </if>
+	      <if test="rkbmid != null">
+	        RKBMID,
+	      </if>
+	      <if test="rkrid != null">
+	        RKRID,
+	      </if>
+	      <if test="xkzh != null">
+	        XKZH,
+	      </if>
+	      <if test="shzh != null">
+	        SHZH,
+	      </if>
+	      <if test="shzwz != null">
+	        SHZWZ,
+	      </if>
+	      <if test="zt != null">
+	        ZT,
+	      </if>
+	      <if test="bz != null">
+	        BZ,
+	      </if>
+	      <if test="jydid != null">
+	        JYDID,
+	      </if>
+	      <if test="hjsm != null">
+	        HJSM,
+	      </if>
+	      <if test="spqx != null">
+	        SPQX,
+	      </if>
+	      <if test="scrq != null">
+	        SCRQ,
+	      </if>
+	      <if test="xh != null">
+	        XH,
+	      </if>
+	      <if test="gg != null">
+	        GG,
+	      </if>
+	      <if test="zzcs != null">
+	        ZZCS,
+	      </if>
+	      <if test="tsn != null">
+	        TSN,
+	      </if>
+	      <if test="tso != null">
+	        TSO,
+	      </if>
+	      <if test="hcly != null">
+	        HCLY,
+	      </if>
+	      <if test="cfyq != null">
+	        CFYQ,
+	      </if>
+	      <if test="bjgzjl != null">
+	        BJGZJL,
+	      </if>
+	      <if test="llklx != null">
+	        LLKLX,
+	      </if>
+	      <if test="llkbh != null">
+	        LLKBH,
+	      </if>
+	      <if test="kzlx != null">
+	        KZLX,
+	      </if>
+	      <if test="isDj != null">
+	        IS_DJ,
+	      </if>
+	      <if test="kccb != null">
+	        KCCB,
+	      </if>
+	      <if test="whrid != null">
+	        whrid,
+	      </if>
+	      <if test="whsj != null">
+	        whsj,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	      <if test="id != null">
+	        #{id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="dprtcode != null">
+	        #{dprtcode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="cklb != null">
+	        #{cklb,jdbcType=DECIMAL},
+	      </if>
+	      <if test="ckid != null">
+	        #{ckid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="ckh != null">
+	        #{ckh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="ckmc != null">
+	        #{ckmc,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kwid != null">
+	        #{kwid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kwh != null">
+	        #{kwh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="bjid != null">
+	        #{bjid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="bjh != null">
+	        #{bjh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="pch != null">
+	        #{pch,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sn != null">
+	        #{sn,jdbcType=VARCHAR},
+	      </if>
+	      <if test="zwms != null">
+	        #{zwms,jdbcType=VARCHAR},
+	      </if>
+	      <if test="ywms != null">
+	        #{ywms,jdbcType=VARCHAR},
+	      </if>
+	      <if test="jldw != null">
+	        #{jldw,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kcsl != null">
+	        #{kcsl,jdbcType=DECIMAL},
+	      </if>
+	      <if test="djsl != null">
+	        #{djsl,jdbcType=DECIMAL},
+	      </if>
+	      <if test="cghtid != null">
+	        #{cghtid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="htbhCg != null">
+	        #{htbhCg,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sxhtid != null">
+	        #{sxhtid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="htbhSx != null">
+	        #{htbhSx,jdbcType=VARCHAR},
+	      </if>
+	      <if test="tddid != null">
+	        #{tddid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="tddh != null">
+	        #{tddh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="rksj != null">
+	        #{rksj,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="rkbmid != null">
+	        #{rkbmid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="rkrid != null">
+	        #{rkrid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xkzh != null">
+	        #{xkzh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="shzh != null">
+	        #{shzh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="shzwz != null">
+	        #{shzwz,jdbcType=VARCHAR},
+	      </if>
+	      <if test="zt != null">
+	        #{zt,jdbcType=DECIMAL},
+	      </if>
+	      <if test="bz != null">
+	        #{bz,jdbcType=VARCHAR},
+	      </if>
+	      <if test="jydid != null">
+	        #{jydid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="hjsm != null">
+	        #{hjsm,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="spqx != null">
+	        #{spqx,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="scrq != null">
+	        #{scrq,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="xh != null">
+	        #{xh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="gg != null">
+	        #{gg,jdbcType=VARCHAR},
+	      </if>
+	      <if test="zzcs != null">
+	        #{zzcs,jdbcType=VARCHAR},
+	      </if>
+	      <if test="tsn != null">
+	        #{tsn,jdbcType=VARCHAR},
+	      </if>
+	      <if test="tso != null">
+	        #{tso,jdbcType=VARCHAR},
+	      </if>
+	      <if test="hcly != null">
+	        #{hcly,jdbcType=DECIMAL},
+	      </if>
+	      <if test="cfyq != null">
+	        #{cfyq,jdbcType=VARCHAR},
+	      </if>
+	      <if test="bjgzjl != null">
+	        #{bjgzjl,jdbcType=VARCHAR},
+	      </if>
+	      <if test="llklx != null">
+	        #{llklx,jdbcType=DECIMAL},
+	      </if>
+	      <if test="llkbh != null">
+	        #{llkbh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kzlx != null">
+	        #{kzlx,jdbcType=DECIMAL},
+	      </if>
+	      <if test="isDj != null">
+	        #{isDj,jdbcType=DECIMAL},
+	      </if>
+	      <if test="kccb != null">
+	        #{kccb,jdbcType=DECIMAL},
+	      </if>
+	      <if test="whrid != null">
+	        #{whrid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whsj != null">
+	        #{whsj,jdbcType=TIMESTAMP},
+	      </if>
+	    </trim>
+	  </insert>
+
+ <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+       update B_H_001
+    <set>
+      <if test="cklb != null">
+        cklb = #{cklb,jdbcType=INTEGER},
+      </if>
+      <if test="hcly != null">
+        hcly = #{hcly,jdbcType=INTEGER},
+      </if>
+      <if test="ckid != null">
+        ckid = #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null">
+        ckh = #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null">
+        ckmc = #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null">
+        kwid = #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kwh != null">
+        kwh = #{kwh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        bjid = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        bjh = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null">
+        pch = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        zwms = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        ywms = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="jldw != null">
+        jldw = #{jldw,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        kcsl = #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="djsl != null">
+        djsl = #{djsl,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhCg != null">
+        htbh_cg = #{htbhCg,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhSx != null">
+        htbh_sx = #{htbhSx,jdbcType=VARCHAR},
+      </if>
+      <if test="tddh != null">
+        tddh = #{tddh,jdbcType=VARCHAR},
+      </if>
+      <if test="rksj != null">
+        rksj = #{rksj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xkzh != null">
+        xkzh = #{xkzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzh != null">
+        shzh = #{shzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzwz != null">
+        shzwz = #{shzwz,jdbcType=VARCHAR},
+      </if>
+       <if test="zt != null">
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="bz != null">
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="hjsm != null">
+        hjsm = #{hjsm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spqx != null">
+        spqx = #{spqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scrq != null">
+        scrq = #{scrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xh != null">
+        xh = #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null">
+        gg = #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="zzcs != null">
+        zzcs = #{zzcs,jdbcType=VARCHAR},
+      </if>
+      <if test="tsn != null">
+        tsn = #{tsn,jdbcType=VARCHAR},
+      </if>
+      <if test="cfyq != null">
+        cfyq = #{cfyq,jdbcType=VARCHAR},
+      </if>
+      <if test="tso != null">
+        tso = #{tso,jdbcType=VARCHAR},
+      </if>
+      <if test="kccb != null">
+        kccb = #{kccb,jdbcType=DECIMAL},
+      </if>
+       <if test="jydid != null">
+        JYDID = #{jydid,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null">
+        whrid = #{whrid,jdbcType=VARCHAR},
+      </if>
+       <if test="whsj != null">
+        whsj = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+  <update id="updateByPrimaryKeySelectives" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+       update B_H_001
+    <set>
+      <if test="cklb != null">
+        cklb = #{cklb,jdbcType=INTEGER},
+      </if>
+      <if test="ckid != null">
+        ckid = #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null">
+        ckh = #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null">
+        ckmc = #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null">
+        kwid = #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        bjid = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        zwms = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        ywms = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="jldw != null">
+        jldw = #{jldw,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        kcsl = #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="djsl != null">
+        djsl = #{djsl,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhCg != null">
+        htbh_cg = #{htbhCg,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhSx != null">
+        htbh_sx = #{htbhSx,jdbcType=VARCHAR},
+      </if>
+      <if test="tddh != null">
+        tddh = #{tddh,jdbcType=VARCHAR},
+      </if>
+      <if test="rksj != null">
+        rksj = #{rksj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xkzh != null">
+        xkzh = #{xkzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzh != null">
+        shzh = #{shzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzwz != null">
+        shzwz = #{shzwz,jdbcType=VARCHAR},
+      </if>
+       <if test="bz != null">
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="bz != null">
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="hjsm != null">
+        hjsm = #{hjsm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spqx != null">
+        spqx = #{spqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scrq != null">
+        scrq = #{scrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xh != null">
+        xh = #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="cfyq != null">
+        cfyq = #{cfyq,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null">
+        gg = #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="zzcs != null">
+        zzcs = #{zzcs,jdbcType=VARCHAR},
+      </if>
+      <if test="tsn != null">
+        tsn = #{tsn,jdbcType=VARCHAR},
+      </if>
+      <if test="tso != null">
+        tso = #{tso,jdbcType=VARCHAR},
+      </if>
+      <if test="kccb != null">
+        kccb = #{kccb,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null">
+        whrid = #{whrid,jdbcType=VARCHAR},
+      </if>
+       <if test="whsj != null">
+        whsj = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where bjh = #{bjh,jdbcType=VARCHAR} and kwh = #{kwh,jdbcType=VARCHAR} and pch = #{pch,jdbcType=VARCHAR} and sn = #{sn,jdbcType=VARCHAR}
+  </update> 
+  
+  
+  <!-- 查询已选择的移库航材 -->
+    <select id="queryChoseList" resultMap="BaseResultMap" parameterType="list">
+	   select t1.ID,
+       t1.DPRTCODE,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.DJSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+  from b_h_001 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+
+	   
+	   where  t1.id in  
+  			 <foreach item="item" index="index" collection="list" open="("  
+      		 separator="," close=")">  
+       			#{item}  
+  			 </foreach>
+	</select>
+	
+	<!-- 更新移库后的原始库存 -->
+   <update id="updateStockKc" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+       update B_H_001
+    <set>
+      <if test="kcsl != null">
+        KCSL = #{kcsl,jdbcType=INTEGER},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="cklb != null">
+        CKLB = #{cklb,jdbcType=INTEGER},
+      </if>
+      <if test="ckid != null">
+        CKID = #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null">
+        CKH = #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null">
+        CKMC = #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null">
+        KWID = #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kwh != null">
+        KWH = #{kwh,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+    </set>
+      where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+  
+  <select id="query4RequisitionPage" resultMap="BaseResultMap">
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+	       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+	       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       t1.RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+	  from b_h_001 t1
+	  left join d_008 t2
+	    on t1.bjid = t2.id
+	 where t1.cklb in (0,4, 6, 8)
+	   and t1.zt = 2
+		<include refid="query4RequisitionParam"></include>
+ 		<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by syts 
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 	</choose>
+	</select>
+ 
+ 	<!-- 搜索参数 -->
+	<sql id="query4RequisitionParam">
+         <choose>
+	         <when test="hclx != null and hclx != ''">
+	             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+	         </when>
+	         <otherwise>  
+	         	and t2.hclx in (1, 5)
+             </otherwise> 
+         </choose>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <choose>
+	         <when test="ckid != null and ckid != ''">
+	             and t1.ckid =  #{ckid}
+	         </when>
+	         <otherwise>  
+	         	and t1.ckid <include refid="userStoreParam"></include>
+             </otherwise> 
+         </choose>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		    	or t1.sn like '%'||#{keyword}||'%'
+		    	or t1.pch like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+	
+	<!-- 搜索参数 -->
+	<sql id="query4TansferParam">
+          <if test="hclx != null and hclx != ''">
+             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+        <choose>
+	         <when test="ckh!= null and ckh != ''">
+	             and t1.ckid =  #{ckh}
+	         </when>
+	         <otherwise>  
+	         	and t1.ckid <include refid="userStoreParam"></include>
+             </otherwise> 
+         </choose> 
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		    	or t1.sn like '%'||#{keyword}||'%'
+		    	or t1.pch like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+	
+	<sql id="userStoreParam">
+	   in (select d9.id from 
+       d_009 d9
+       left join d_00901 d901 on d9.id = d901.mainid
+       where d9.zt =1 and d901.zt=1 and d9.id in (select rw.ck_id from V_ROLE_WH rw where rw.user_id = #{paramsMap.userId, jdbcType=VARCHAR}))
+	</sql>
+	
+	 <select id="queryTransferPage" resultMap="BaseResultMap">
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+	       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+	       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       t1.RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+	  from b_h_001 t1
+	  left join d_008 t2
+	    on t1.bjid = t2.id
+	 where t1.zt = 2
+		<include refid="query4TansferParam"></include>
+		<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by syts 
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+ 		</choose>
+	</select>
+ 	 
+ 	<select id="queryAllPageList3" resultMap="BaseResultMap">
+           
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+           t1.whsj,
+	       t1.whrid,
+	       (CASE WHEN T2.ZWMS IS NULL THEN T1.ZWMS ELSE T2.ZWMS END) ZWMS,
+	       (CASE WHEN T2.YWMS IS NULL THEN T1.YWMS ELSE T2.YWMS END) YWMS,
+	       (CASE WHEN T2.JLDW IS NULL THEN T1.JLDW ELSE T2.JLDW END) JLDW,
+	       t1.KCSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       t1.RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts
+	  from b_h_003 t1
+	  left join d_008 t2
+	    on t1.bjid = t2.id
+	 where 1 = 1
+		<include refid="FlightRecordParam4"></include>
+
+  		<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by syts 
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 	</choose>
+	</select>
+	
+ 	<sql id="FlightRecordParam4">
+	   
+	     <if test="id != null and id != ''">
+             and t1.id =  #{id}
+         </if>
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+         <if test="zt != null and zt != ''">
+             and t1.zt =  #{zt}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+	
+	<select id="selectCountBjSn" resultType="int">
+		select count(1)
+		  from (select t1.dprtcode, t1.jh as bjh, t1.xlh as sn
+		          from b_s_001 t1
+		         where t1.bjlx = 1
+		           and t1.zt in (1, 2)
+		        union all
+		        select t2.dprtcode, t2.bjh, t2.sn
+		          from b_h_001 t2
+		        union all
+		        select t3.dprtcode, t3.bjh, t3.sn
+		          from b_h_003 t3
+		        union all
+		        select tt3.dprtcode, tt2.bjh, tt2.sn
+		          from b_h_00901 tt1
+		          left join b_h_017 tt2 on tt1.kcllid = tt2.id
+		          left join b_h_009 tt3 on tt1.mainid = tt3.id) as tt
+		 where dprtcode = #{0}
+		   and bjh = #{1}
+		   and sn = #{2}
+	</select>
+	<update id="updateZTById" parameterType="String">
+		update b_h_001 set zt=2 where id =#{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertStockFromMaterialHistory" parameterType="String">
+	insert into B_H_001 (ID, DPRTCODE, CKLB, 
+	      CKID, CKH, CKMC, KWID, 
+	      KWH, BJID, BJH, PCH, 
+	      SN, ZWMS, YWMS, JLDW, 
+	      KCSL, DJSL, CGHTID, 
+	      HTBH_CG, SXHTID, HTBH_SX, 
+	      TDDID, TDDH, RKSJ, 
+	      RKBMID, RKRID, XKZH, 
+	      SHZH, SHZWZ, ZT, BZ, 
+	      JYDID, HJSM, SPQX, 
+	      SCRQ, XH, GG, ZZCS, 
+	      TSN, TSO, HCLY, CFYQ, 
+	      BJGZJL, LLKLX, LLKBH, 
+	      KZLX, IS_DJ, KCCB,WHRID,WHSJ)
+	    select KCID, DPRTCODE, CKLB, 
+	      CKID, CKH, CKMC, KWID, 
+	      KWH, BJID, BJH, PCH, 
+	      SN, ZWMS, YWMS, JLDW, 
+	      KCSL, DJSL, CGHTID, 
+	      HTBH_CG, SXHTID, HTBH_SX, 
+	      TDDID, TDDH, RKSJ, 
+	      RKBMID, RKRID, XKZH, 
+	      SHZH, SHZWZ, zt, BZ, 
+	      JYDID, HJSM, SPQX, 
+	      SCRQ, XH, GG, ZZCS, 
+	      TSN, TSO, HCLY, CFYQ, 
+	      BJGZJL, LLKLX, LLKBH, 
+	      KZLX, IS_DJ, KCCB,#{0},current_timestamp from b_h_017 where id=#{1}
+	</insert>
+	
+	<select id="queryPage4Edit" resultMap="BaseResultMap">
+	
+	  <!-- 仓库内 -->
+	  <if test='ckh != "50"'>
+		   select 
+		       '1' kcly,
+		       t1.XKZH,
+		       t1.ID,
+		       t1.DPRTCODE,
+		       t1.CKLB,
+		       t1.CKID,
+		       t1.CKH,
+		       t1.CKMC,
+		       t1.KWID,
+		       t1.KWH,
+		       t1.BJID,
+		       t1.BJH,
+		       t1.PCH,
+		       t1.SN,
+		       T2.ZWMS,
+		       T2.YWMS,
+		       T2.JLDW,
+		       t1.KCSL,
+		       <!-- t1.DJSL, -->
+		       t1.CGHTID,
+		       t1.HTBH_CG,
+		       t1.SXHTID,
+		       t1.HTBH_SX,
+		       t1.TDDID,
+		       t1.TDDH,
+		       t1.RKSJ,
+		       t1.RKBMID,
+		       (select userName||' '||realName from t_user where t_user.id=t1.RKRID) RKRID,
+		       t1.SHZH,
+		       t1.SHZWZ,
+		       t1.ZT,
+		       t1.BZ,
+		       t1.JYDID,
+		       t1.HJSM,
+		       t1.SPQX,
+		       t1.SCRQ,
+		       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+		       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+		       t1.ZZCS,
+		       t1.TSN,
+		       t1.TSO,
+		       t1.HCLY,
+		       t1.CFYQ,
+		       t2.cjjh,
+		       t2.hclx,
+		       t2.gljb,
+		       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+		       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss
+			  from b_h_001 t1
+			  left join d_008 t2
+			    on t1.bjid = t2.id
+			 where 1=1
+	
+				<if test="keyword != null and keyword != ''">
+			      and (t1.bjh like '%'||#{keyword}||'%'
+			    	or t1.zwms like '%'||#{keyword}||'%'
+			    	or t1.ywms like '%'||#{keyword}||'%'
+			    	or t2.cjjh like '%'||#{keyword}||'%'
+			    	or t2.id like #{keyword}
+			     )              <!-- 左右匹配 查询关键字 -->
+			  </if>
+			  
+			  
+	         <if test="hclx != null and hclx != ''">
+	             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+	         </if>
+	         <if test="zt != null and zt != ''">
+	             and t1.zt =  #{zt}
+	         </if>
+	         <if test="dprtcode != null and dprtcode != ''">
+	             and t1.dprtcode =  #{dprtcode}
+	         </if>
+	          <choose>
+		         <when test="ckh != null and ckh != ''">
+		             and t1.ckid =  #{ckh}
+		         </when>
+		         <otherwise>  
+		         	and t1.ckid <include refid="userStoreParam"></include>
+	             </otherwise> 
+	         </choose>
+	         <if test="bjh != null and bjh != ''">
+	             and t1.bjh =  #{bjh}
+	         </if>
+	         <if test="id != null and id != ''">
+	             and t1.id =  #{id}
+	         </if>
+         </if>
+         
+         <!-- 全部 -->
+         <if test='ckh == ""'>
+         union all
+         </if>
+         
+         <!-- 外场 -->
+         <if test='ckh == "50" or ckh == null or ckh == ""'>
+	         select 
+	            '2' kcly,
+	            t1.XKZH,
+	           t1.ID,
+		       t1.DPRTCODE,
+		       t1.CKLB,
+		       t1.CKID,
+		       t1.CKH,
+		       '外场' CKMC,
+		       t1.KWID,
+		       t1.KWH,
+		       t1.BJID,
+		       t1.BJH,
+		       t1.PCH,
+		       t1.SN,
+		       T2.ZWMS,
+		       T2.YWMS,
+		       T2.JLDW,
+		       t1.KCSL,
+		       <!-- t1.DJSL, -->
+		       t1.CGHTID,
+		       t1.HTBH_CG,
+		       t1.SXHTID,
+		       t1.HTBH_SX,
+		       t1.TDDID,
+		       t1.TDDH,
+		       t1.RKSJ,
+		       t1.RKBMID,
+		       (select userName||' '||realName from t_user where t_user.id=t1.RKRID) RKRID,
+		       t1.SHZH,
+		       t1.SHZWZ,
+		       t1.ZT,
+		       t1.BZ,
+		       t1.JYDID,
+		       t1.HJSM,
+		       t1.SPQX,
+		       t1.SCRQ,
+		       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+		       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+		       t1.ZZCS,
+		       t1.TSN,
+		       t1.TSO,
+		       t1.HCLY,
+		       t1.CFYQ,
+		       t2.cjjh,
+		       t2.hclx,
+		       t2.gljb,
+		       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+		       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss
+			  from b_h_003 t1
+			  left join d_008 t2
+			    on t1.bjid = t2.id
+			 where 1=1
+	
+				<if test="keyword != null and keyword != ''">
+			      and (t1.bjh like '%'||#{keyword}||'%'
+			    	or t1.zwms like '%'||#{keyword}||'%'
+			    	or t1.ywms like '%'||#{keyword}||'%'
+			    	or t2.cjjh like '%'||#{keyword}||'%'
+			    	or t2.id like #{keyword}
+			     )              <!-- 左右匹配 查询关键字 -->
+			  </if>
+			  
+			  
+	         <if test="hclx != null and hclx != ''">
+	             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+	         </if>
+	         <if test="zt != null and zt != ''">
+	             and t1.zt =  #{zt}
+	         </if>
+	         <if test="dprtcode != null and dprtcode != ''">
+	             and t1.dprtcode =  #{dprtcode}
+	         </if>
+	          <!-- <choose>
+		         <when test="ckh != null and ckh != ''">
+		             and t1.ckid =  #{ckh}
+		         </when>
+		         <otherwise>  
+		         	and t1.ckid <include refid="userStoreParam"></include>
+	             </otherwise> 
+	         </choose> -->
+	         <if test="bjh != null and bjh != ''">
+	             and t1.bjh =  #{bjh}
+	         </if>
+	         <if test="id != null and id != ''">
+	             and t1.id =  #{id}
+	         </if>
+         </if>
+         
+         
+
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		  order by syts 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+		  
+	</select>
+	
+	
+	<!-- 查一个库存（仓库内） -->
+	  <select id="selectOne4Wh" resultMap="BaseResultMap"  >
+	 
+		   select 
+		       t1.kccb,
+		       '1' kcly,
+		       t1.XKZH,
+		       t1.ID,
+		       t1.DPRTCODE,
+		       t1.CKLB,
+		       t1.CKID,
+		       t1.CKH,
+		       t1.CKMC,
+		       t1.KWID,
+		       t1.KWH,
+		       t1.BJID,
+		       t1.BJH,
+		       t1.PCH,
+		       t1.SN,
+		       T2.ZWMS,
+		       T2.YWMS,
+		       T2.JLDW,
+		       t1.KCSL,
+		      
+		       t1.CGHTID,
+		       t1.HTBH_CG,
+		       t1.SXHTID,
+		       t1.HTBH_SX,
+		       t1.TDDID,
+		       t1.TDDH,
+		       t1.RKSJ,
+		       t1.RKBMID,
+		       (select userName||' '||realName from t_user where t_user.id=t1.RKRID) RKRID,
+		       t1.SHZH,
+		       t1.SHZWZ,
+		       t1.ZT,
+		       t1.BZ,
+		       t1.JYDID,
+		       t1.HJSM,
+		       t1.SPQX,
+		       t1.SCRQ,
+		       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+		       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+		       t1.ZZCS,
+		       t1.TSN,
+		       t1.TSO,
+		       t1.HCLY,
+		       t1.CFYQ,
+		       t2.cjjh,
+		       t2.hclx,
+		       t2.gljb,
+		       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+		       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss
+			  from b_h_001 t1
+			  left join d_008 t2
+			    on t1.bjid = t2.id
+			 where 1=1  and t1.id =  #{id}
+	</select>  
+	
+	<!-- 查一个库存（外场） -->
+	   <select id="selectOne4Out" resultMap="BaseResultMap">
+	   
+	         select 
+	           t1.kccb,
+	            '2' kcly,
+	            t1.XKZH,
+	           t1.ID,
+		       t1.DPRTCODE,
+		       t1.CKLB,
+		       t1.CKID,
+		       t1.CKH,
+	           '外场' CKMC,
+		       t1.KWID,
+		       t1.KWH,
+		       t1.BJID,
+		       t1.BJH,
+		       t1.PCH,
+		       t1.SN,
+		       T2.ZWMS,
+		       T2.YWMS,
+		       T2.JLDW,
+		       t1.KCSL,
+		       <!-- t1.DJSL, -->
+		       t1.CGHTID,
+		       t1.HTBH_CG,
+		       t1.SXHTID,
+		       t1.HTBH_SX,
+		       t1.TDDID,
+		       t1.TDDH,
+		       t1.RKSJ,
+		       t1.RKBMID,
+		       (select userName||' '||realName from t_user where t_user.id=t1.RKRID) RKRID,
+		       t1.SHZH,
+		       t1.SHZWZ,
+		       t1.ZT,
+		       t1.BZ,
+		       t1.JYDID,
+		       t1.HJSM,
+		       t1.SPQX,
+		       t1.SCRQ,
+		       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+		       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+		       t1.ZZCS,
+		       t1.TSN,
+		       t1.TSO,
+		       t1.HCLY,
+		       t1.CFYQ,
+		       t2.cjjh,
+		       t2.hclx,
+		       t2.gljb,
+		       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+		       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss
+			  from b_h_003 t1
+			  left join d_008 t2
+			    on t1.bjid = t2.id
+			 where 1=1 and t1.id =  #{id}
+	        
+	</select>
+	 
+	 
+	<update id="update4Wh" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+       update B_H_001
+    <set>
+    
+      <if test="xkzh != null">
+        xkzh = #{xkzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzh != null">
+        shzh = #{shzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzwz != null">
+        shzwz = #{shzwz,jdbcType=VARCHAR},
+      </if>
+      <if test="hjsm != null">
+        hjsm = #{hjsm,jdbcType=TIMESTAMP},
+      </if>
+      
+      <if test="spqx != null">
+        spqx = #{spqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scrq != null">
+        scrq = #{scrq,jdbcType=TIMESTAMP},
+      </if>
+       <if test="zzcs != null">
+        zzcs = #{zzcs,jdbcType=VARCHAR},
+      </if>
+      <if test="tsn != null">
+        tsn = #{tsn,jdbcType=VARCHAR},
+      </if>
+      
+      
+      <if test="tso != null">
+        tso = #{tso,jdbcType=VARCHAR},
+      </if>
+       <if test="hcly != null">
+        hcly = #{hcly,jdbcType=INTEGER},
+      </if>
+      <if test="pch != null">
+        pch = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="kccb != null">
+        kccb = #{kccb,jdbcType=DECIMAL},
+      </if>
+      <if test="cfyq != null">
+        cfyq = #{cfyq,jdbcType=VARCHAR},
+      </if>
+       
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+  
+  
+	<update id="update4Out" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+       update B_H_003
+    <set>
+    
+      <if test="xkzh != null">
+        xkzh = #{xkzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzh != null">
+        shzh = #{shzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzwz != null">
+        shzwz = #{shzwz,jdbcType=VARCHAR},
+      </if>
+      <if test="hjsm != null">
+        hjsm = #{hjsm,jdbcType=TIMESTAMP},
+      </if>
+      
+      <if test="spqx != null">
+        spqx = #{spqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scrq != null">
+        scrq = #{scrq,jdbcType=TIMESTAMP},
+      </if>
+       <if test="zzcs != null">
+        zzcs = #{zzcs,jdbcType=VARCHAR},
+      </if>
+      <if test="tsn != null">
+        tsn = #{tsn,jdbcType=VARCHAR},
+      </if>
+      
+      
+      <if test="tso != null">
+        tso = #{tso,jdbcType=VARCHAR},
+      </if>
+       <if test="hcly != null">
+        hcly = #{hcly,jdbcType=INTEGER},
+      </if>
+      <if test="pch != null">
+        pch = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="kccb != null">
+        kccb = #{kccb,jdbcType=DECIMAL},
+      </if>
+      <if test="cfyq != null">
+        cfyq = #{cfyq,jdbcType=VARCHAR},
+      </if>
+       
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update> 
+	
+	<select id="queryByCklb" resultMap="BaseResultMap">
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       T2.ZWMS,
+	       T2.YWMS,
+	       T2.JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       (select userName||' '||realName from t_user where t_user.id=t1.RKRID) RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+	       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss,
+	       rkr.realname rkr_realname,
+	       rkr.username rkr_username,
+			jg.dprtname jg_dprtname
+		  from b_h_001 t1
+		  left join d_008 t2 on t1.bjid = t2.id
+		  left join t_user rkr on rkr.id=t1.rkrid
+		  left join t_department jg on jg.id=t1.dprtcode
+		where t1.cklb=2 and t1.zt=4
+		<!-- <include refid="FlightRecordParam3"></include>  -->
+		  <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		    	or t2.id like #{keyword}
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+    	<choose>                                                                                 
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by whsj asc
+			    		
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose> 
+	</select>
+	
+	<!-- 根据多个id查询信息 -->
+	<select id="queryByIds" resultMap="BaseResultMap" >
+		select 
+		t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       T2.ZWMS,
+	       T2.YWMS,
+	       T2.JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       t1.RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+	       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss,
+	       rkr.realname rkr_realname,
+	       rkr.username rkr_username,
+			jg.dprtname jg_dprtname
+		  from b_h_001 t1
+		  left join d_008 t2 on t1.bjid = t2.id
+		  left join t_user rkr on rkr.id=t1.rkrid
+		  left join t_department jg on jg.id=t1.dprtcode
+		where t1.id in
+		<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+ 	</select>
+	<!-- 根据多个id查询信息 -->
+	<delete id="deleteids" >
+		delete from b_h_001
+		where b_h_001.id in
+		<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+ 	</delete>
+ 	
+ 		<insert id="insertMater" parameterType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+	    insert into B_H_001 (ID, DPRTCODE, CKLB, 
+	      CKID, CKH, CKMC, KWID, 
+	      KWH, BJID, BJH, PCH, 
+	      SN, ZWMS, YWMS, JLDW, 
+	      KCSL, DJSL, CGHTID, 
+	      HTBH_CG, SXHTID, HTBH_SX, 
+	      TDDID, TDDH, RKSJ, 
+	      RKBMID, RKRID, XKZH, 
+	      SHZH, SHZWZ, ZT, BZ, 
+	      JYDID, HJSM, SPQX, 
+	      SCRQ, XH, GG, ZZCS, 
+	      TSN, TSO, HCLY, CFYQ, 
+	      BJGZJL, LLKLX, LLKBH, 
+	      KZLX, IS_DJ, KCCB,WHRID,WHSJ)
+	    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{cklb,jdbcType=DECIMAL}, 
+	      #{ckid,jdbcType=VARCHAR}, #{ckh,jdbcType=VARCHAR}, #{ckmc,jdbcType=VARCHAR}, #{kwid,jdbcType=VARCHAR}, 
+	      #{kwh,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{pch,jdbcType=VARCHAR}, 
+	      #{sn,jdbcType=VARCHAR}, #{zwms,jdbcType=VARCHAR}, #{ywms,jdbcType=VARCHAR}, #{jldw,jdbcType=VARCHAR}, 
+	      #{kcsl,jdbcType=DECIMAL}, #{djsl,jdbcType=DECIMAL}, #{cghtid,jdbcType=VARCHAR}, 
+	      #{htbhCg,jdbcType=VARCHAR}, #{sxhtid,jdbcType=VARCHAR}, #{htbhSx,jdbcType=VARCHAR}, 
+	      #{tddid,jdbcType=VARCHAR}, #{tddh,jdbcType=VARCHAR}, #{rksj,jdbcType=TIMESTAMP}, 
+	      #{rkbmid,jdbcType=VARCHAR}, #{rkrid,jdbcType=VARCHAR}, #{xkzh,jdbcType=VARCHAR}, 
+	      #{shzh,jdbcType=VARCHAR}, #{shzwz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, 
+	      #{jydid,jdbcType=VARCHAR}, #{hjsm,jdbcType=TIMESTAMP}, #{spqx,jdbcType=TIMESTAMP}, 
+	      #{scrq,jdbcType=TIMESTAMP}, #{xh,jdbcType=VARCHAR}, #{gg,jdbcType=VARCHAR}, #{zzcs,jdbcType=VARCHAR}, 
+	      #{tsn,jdbcType=VARCHAR}, #{tso,jdbcType=VARCHAR}, #{hcly,jdbcType=DECIMAL}, #{cfyq,jdbcType=VARCHAR}, 
+	      #{bjgzjl,jdbcType=VARCHAR}, #{llklx,jdbcType=DECIMAL}, #{llkbh,jdbcType=VARCHAR}, 
+	      #{kzlx,jdbcType=DECIMAL}, #{isDj,jdbcType=DECIMAL}, #{kccb,jdbcType=DECIMAL}, #{whrid,jdbcType=VARCHAR},
+	      current_timestamp)
+	  </insert>
+	
+	<select id="selectBjhAndDprt" resultMap="BaseResultMap" >
+	    select t1.ID,
+		   t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       T2.ZWMS,
+	       T2.YWMS,
+	       T2.JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       (select userName||' '||realName from t_user where t_user.id=t1.RKRID) RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN T1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN T1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb,
+	       CEIL (to_date(to_char(t1.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) syts,
+	       CEIL (to_date(to_char(t1.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) sytss
+		  from b_h_001 t1
+		  left join d_008 t2
+		    on t1.bjid = t2.id
+		 where t1.dprtcode = #{dprtcode}
+		 	and (
+		 		t1.bjh in 
+	            (select D017.TDJH from D_017 D017 where D017.DPRTCODE = t1.DPRTCODE AND D017.BJH = #{bjh} AND D017.ZT = 1)
+	            OR
+	            t1.bjh in 
+	            (select D017.BJH from D_017 D017 where D017.DPRTCODE = t1.DPRTCODE AND D017.TDJH = #{bjh} AND D017.KNXBS = 2 AND D017.ZT = 1)
+		 	)
+		 	and t1.zt = 2
+		 order by KCSL asc
+	</select>
+	
+	<!-- 查询可报废的库存 -->
+	<select id="selectScrapableStock" resultMap="StockJoinMap" parameterType="com.eray.thjw.aerialmaterial.po.Stock">
+		SELECT T1.ID,
+	       T1.DPRTCODE,
+	       T1.CKLB,
+	       T1.CKID,
+	       T1.CKH,
+	       T1.CKMC,
+	       T1.KWID,
+	       T1.KWH,
+	       T1.BJID,
+	       T1.BJH,
+	       T1.PCH,
+	       T1.SN,
+	       T2.ZWMS,
+	       T2.YWMS,
+	       T2.JLDW,
+	       T1.KCSL,
+	       T1.DJSL,
+	       T1.CGHTID,
+	       T1.SHZH,
+	       T1.SHZWZ,
+	       T1.ZT,
+	       T1.BZ,
+	       T1.JYDID,
+	       T1.HJSM,
+	       T1.SPQX,
+	       T1.SCRQ,
+	       T1.ZZCS,
+	       T1.TSN,
+	       T1.TSO,
+	       T1.HCLY,
+	       T1.CFYQ,
+	       t1.kccb,
+	       T2.CJJH,
+	       T2.HCLX,
+	       T2.GLJB,
+	       T2.ID AS HID,
+	       T2.HCJZ AS HHCJZ
+		  FROM B_H_001 T1
+		  LEFT JOIN D_008 T2
+		    ON T1.BJID = T2.ID
+		 WHERE t1.zt != 4
+		 <if test="dprtcode != null">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+		 <if test="keyword != null and keyword != ''">
+		      and (t2.BJH like '%'||#{keyword}||'%'
+		    	or t2.ZWMS like '%'||#{keyword}||'%'
+		    	or t2.YWMS like '%'||#{keyword}||'%'
+		    	or t1.SN like '%'||#{keyword}||'%'
+		    	or t1.PCH like '%'||#{keyword}||'%'
+		    	or t2.CJJH like '%'||#{keyword}||'%'
+		     )             
+		 </if>
+		 <if test="hclx != null">
+             and t2.hclx =  #{hclx}
+         </if>
+         <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		     and t1.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+	     </if>
+		 ORDER BY T1.BJH, T1.SN, T1.PCH
+	</select>
+	<select id="selectCount4exit" parameterType="String" resultType="int">
+	  	select count(1) from b_h_001 where id in
+	  	<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+	  </select>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.RoleToDprtMapper">
+     
+	<resultMap id="roleToDprtMap" type="com.eray.thjw.po.RoleToDprt">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+		<result column="DPRT_ID" property="dprtId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="roleToDprtColumn">
+		ID,ROLE_ID,DPRT_ID
+	</sql>
+	
+	<!-- 搜索参数 -->
+	<sql id="roleToDprtParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="roleId != null and roleId != ''">
+             and ROLE_ID = #{roleId}
+         </if>
+         <if test="dprtId != null and dprtId != ''">
+             and DPRT_ID = #{dprtId}
+         </if>
+	</sql>
+
+	  <select id="selectNum" resultMap="roleToDprtMap">
+			select <include refid="roleToDprtColumn"></include> FROM T_ROLE2DPRT <include refid="roleToDprtParam"></include>
+	 </select>
+
+	 <select id="queryCount" parameterType="com.eray.thjw.po.RoleToDprt" resultType="int">
+		select count(*) FROM T_ROLE2DPRT <include refid="roleToDprtParam"></include>
+ 	 </select>
+ 	 
+ 	<!-- 修改角色信息 -->
+	<select id="modify" parameterType="com.eray.thjw.po.RoleToDprt" >
+		 update T_ROLE2DPRT set
+		 DPRT_ID=#{dprtId}
+		 where ROLE_ID = #{roleId}
+	</select>
+	
+	<!-- 添加组织机构角色关系 -->
+	<insert id="save"  parameterType="com.eray.thjw.po.RoleToDprt" >
+		insert into   
+		T_ROLE2DPRT
+		(<include refid="roleToDprtColumn"></include>)
+		 values
+		 (#{id},#{roleId},#{dprtId})
+	</insert>
+	
+	<!-- 删除关系信息 -->
+	<delete id="delete" parameterType="com.eray.thjw.po.RoleToDprt" >
+		delete from T_ROLE2DPRT
+		<include refid="roleToDprtParam"></include>
+	</delete>
+	
+	
+</mapper>

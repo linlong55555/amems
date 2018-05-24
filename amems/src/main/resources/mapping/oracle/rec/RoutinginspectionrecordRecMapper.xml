@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.RoutinginspectionrecordRecMapper" >
+   
+  <!-- 培训大纲列表 开始 -->
+  <select id="queryList4B_J_002" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT B.*       
+		        ,WHR.USERNAME||' '||WHR.REALNAME REC_CZR_NAME
+		        , B.xjbh||' '||(
+		        CASE 
+		           WHEN B.REC_CZSM = 0 THEN '创建'
+		           WHEN B.REC_CZSM = 1 THEN '提交'
+		           WHEN B.REC_CZSM = 2 THEN '已审核'
+		           WHEN B.REC_CZSM = 3 THEN '已批准'
+		           WHEN B.REC_CZSM = 4 THEN '中止（关闭）'
+		           WHEN B.REC_CZSM = 5 THEN '审核驳回'
+		           WHEN B.REC_CZSM = 6 THEN '批准驳回'
+		           WHEN B.REC_CZSM = 8 THEN '作废'
+		           WHEN B.REC_CZSM = 9 THEN '指定结束'
+		          
+		           WHEN B.REC_CZSM = 10 THEN '完成'
+		           WHEN B.REC_CZSM = 11 THEN '撤销'
+		           WHEN B.REC_CZSM = 12 THEN '修改'
+		           WHEN B.REC_CZSM = 13 THEN '改版'
+		           WHEN B.REC_CZSM = 14 THEN '已生效'
+		           WHEN B.REC_CZSM = 15 THEN '提交生产确认'
+		           WHEN B.REC_CZSM = 16 THEN '借出确认'
+		           WHEN B.REC_CZSM = 17 THEN '归还'
+		           WHEN B.REC_CZSM = 18 THEN '导入'
+		         END 
+		        ) REC_HD
+		        FROM B_J_002_REC B 
+		        LEFT JOIN T_USER WHR ON WHR.ID = B.REC_CZRID
+		        WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+			        and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+			      </if>
+			      <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+			        and (UPPER(B.xjbh) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'))
+			      </if>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff4B_J_002" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+               B.*, RECWHR.USERNAME||' '||RECWHR.REALNAME REC_CZR_NAME, WHDW.DPRTNAME NEW_WHBM,
+               WHR.USERNAME||' '||WHR.REALNAME NEW_WHR,
+               to_char(to_date(B.XSRQ),'yyyy-mm-dd') NEW_XSRQ,
+                (CASE 
+		         WHEN B.ZT = 0 THEN '无效'
+		         WHEN B.ZT = 1 THEN '有效'
+		         END) NEW_ZT ,
+		         
+                (CASE 
+		         WHEN B.is_yhxs = 0 THEN '否'
+		         WHEN B.is_yhxs = 1 THEN '是'
+		         END) NEW_IS_YHXS ,
+		       
+               '巡检编号:'||B.xjbh || ' ' || (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD,
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM B_J_002_REC B 
+          LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+          LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+          LEFT JOIN T_DEPARTMENT WHDW  ON WHDW.ID = B.WHBMID
+          WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR} 
+          AND (select rec_czsj from B_J_002_REC
+                where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR})
+                   >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+       
+  </select>
+  
+
+   
+   <select id="queryDiff4B_J_00201" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT B.*, 'CURRENT' DATA_VERSION ,WHDW.DPRTNAME NEW_WHBM, WHR.USERNAME||' '||WHR.REALNAME NEW_WHR,
+	REC.USERNAME||' '||REC.REALNAME REC_CZR_NAME,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+      
+            (CASE
+		WHEN B.XJXMBH = 0101 THEN(CASE WHEN B.XJXMBS=1 THEN '无剥落物'
+								  WHEN B.XJXMBS=2 THEN '有剥落物' END)
+		WHEN B.XJXMBH = 0102 THEN(CASE WHEN B.XJXMBS=1 THEN '无剥落物'
+								  WHEN B.XJXMBS=2 THEN '有剥落物' END)
+		WHEN B.XJXMBH = 0103 THEN(CASE WHEN B.XJXMBS=1 THEN '标志清晰'
+								  WHEN B.XJXMBS=2 THEN '部分模糊' END)
+		WHEN B.XJXMBH = 0104  THEN(CASE WHEN B.XJXMBS=1 THEN '道面清洁'
+								  WHEN B.XJXMBS=2 THEN '部分模糊' END)
+		WHEN B.XJXMBH = 0105  THEN(CASE WHEN B.XJXMBS=1 THEN '无'
+								  WHEN B.XJXMBS=2 THEN '有' END)
+		WHEN B.XJXMBH = 0201 THEN(CASE WHEN B.XJXMBS=1 THEN '平整'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		WHEN B.XJXMBH = 0301 THEN(CASE WHEN B.XJXMBS=1 THEN '正常'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		WHEN B.XJXMBH = 0302 THEN(CASE WHEN B.XJXMBS=1 THEN '无'
+								  WHEN B.XJXMBS=2 THEN '有' END)
+		WHEN B.XJXMBH = 0401 THEN(CASE WHEN B.XJXMBS=1 THEN '无'
+								  WHEN B.XJXMBS=2 THEN '有' END)
+		WHEN B.XJXMBH = 0501 THEN(CASE WHEN B.XJXMBS=1 THEN '完整'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		WHEN B.XJXMBH = 0601 THEN(CASE WHEN B.XJXMBS=1 THEN '是'
+								  WHEN B.XJXMBS=2 THEN '否' END)
+		WHEN B.XJXMBH = 0701 THEN(CASE WHEN B.XJXMBS=1 THEN '是'
+								  WHEN B.XJXMBS=2 THEN '否' END)
+		WHEN B.XJXMBH = 0801 THEN(CASE WHEN B.XJXMBS=1 THEN '正常'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		END) NEW_XJXMBS,
+       
+       (CASE
+		WHEN B.XJXMBH = 0101 THEN
+		'机坪、跑道和滑行道-道面表面情况'
+		WHEN B.XJXMBH = 0102 THEN
+		'机坪、跑道和滑行道-嵌缝料情况'
+		WHEN B.XJXMBH = 0103 THEN
+		'机坪、跑道和滑行道-标志线、标识情况'
+		WHEN B.XJXMBH = 0104  THEN
+		'机坪、跑道和滑行道-污染物情况'
+		WHEN B.XJXMBH = 0105  THEN
+		'机坪、跑道和滑行道-FOD情况'
+		WHEN B.XJXMBH = 0201 THEN
+		'土质地带-目视平整度'
+		WHEN B.XJXMBH = 0301 THEN
+		'场内障碍物-已有障碍物标识和灯光'
+		WHEN B.XJXMBH = 0302 THEN
+		'场内障碍物-疑似新增超高物'
+		WHEN B.XJXMBH = 0401 THEN
+		'场外障碍物-疑似新增超高物'
+		WHEN B.XJXMBH = 0501 THEN
+		'机场围界-目视完整度'
+		WHEN B.XJXMBH = 0601 THEN
+		'排水渠-是否畅通'
+		WHEN B.XJXMBH = 0701 THEN
+		'风向带-是否正常'
+		WHEN B.XJXMBH = 0801 THEN
+		'灯光-目视有无损坏'
+		END) NEW_XJXMBH,
+	 
+	 (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+	  FROM B_J_00201_REC B   
+	  LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+	  LEFT JOIN T_USER REC ON REC.ID = B.REC_CZRID
+      LEFT JOIN T_DEPARTMENT WHDW  ON WHDW.ID = B.WHBMID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	 AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	
+	UNION ALL
+	
+	SELECT B.*, 'LAST' DATA_VERSION ,WHDW.DPRTNAME NEW_WHBM, WHR.USERNAME||' '||WHR.REALNAME NEW_WHR,
+	REC.USERNAME||' '||REC.REALNAME REC_CZR_NAME,
+	 (CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT ,
+      
+       
+                (CASE
+		WHEN B.XJXMBH = 0101 THEN(CASE WHEN B.XJXMBS=1 THEN '无剥落物'
+								  WHEN B.XJXMBS=2 THEN '有剥落物' END)
+		WHEN B.XJXMBH = 0102 THEN(CASE WHEN B.XJXMBS=1 THEN '无剥落物'
+								  WHEN B.XJXMBS=2 THEN '有剥落物' END)
+		WHEN B.XJXMBH = 0103 THEN(CASE WHEN B.XJXMBS=1 THEN '标志清晰'
+								  WHEN B.XJXMBS=2 THEN '部分模糊' END)
+		WHEN B.XJXMBH = 0104  THEN(CASE WHEN B.XJXMBS=1 THEN '道面清洁'
+								  WHEN B.XJXMBS=2 THEN '部分模糊' END)
+		WHEN B.XJXMBH = 0105  THEN(CASE WHEN B.XJXMBS=1 THEN '无'
+								  WHEN B.XJXMBS=2 THEN '有' END)
+		WHEN B.XJXMBH = 0201 THEN(CASE WHEN B.XJXMBS=1 THEN '平整'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		WHEN B.XJXMBH = 0301 THEN(CASE WHEN B.XJXMBS=1 THEN '正常'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		WHEN B.XJXMBH = 0302 THEN(CASE WHEN B.XJXMBS=1 THEN '无'
+								  WHEN B.XJXMBS=2 THEN '有' END)
+		WHEN B.XJXMBH = 0401 THEN(CASE WHEN B.XJXMBS=1 THEN '无'
+								  WHEN B.XJXMBS=2 THEN '有' END)
+		WHEN B.XJXMBH = 0501 THEN(CASE WHEN B.XJXMBS=1 THEN '完整'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		WHEN B.XJXMBH = 0601 THEN(CASE WHEN B.XJXMBS=1 THEN '是'
+								  WHEN B.XJXMBS=2 THEN '否' END)
+		WHEN B.XJXMBH = 0701 THEN(CASE WHEN B.XJXMBS=1 THEN '是'
+								  WHEN B.XJXMBS=2 THEN '否' END)
+		WHEN B.XJXMBH = 0801 THEN(CASE WHEN B.XJXMBS=1 THEN '正常'
+								  WHEN B.XJXMBS=2 THEN '异常' END)
+		END) NEW_XJXMBS,
+       
+	 (CASE
+		WHEN B.XJXMBH = 0101 THEN
+		'机坪、跑道和滑行道-道面表面情况'
+		WHEN B.XJXMBH = 0102 THEN
+		'机坪、跑道和滑行道-嵌缝料情况'
+		WHEN B.XJXMBH = 0103 THEN
+		'机坪、跑道和滑行道-标志线、标识情况'
+		WHEN B.XJXMBH = 0104  THEN
+		'机坪、跑道和滑行道-污染物情况'
+		WHEN B.XJXMBH = 0105  THEN
+		'机坪、跑道和滑行道-FOD情况'
+		WHEN B.XJXMBH = 0201 THEN
+		'土质地带-目视平整度'
+		WHEN B.XJXMBH = 0301 THEN
+		'场内障碍物-已有障碍物标识和灯光'
+		WHEN B.XJXMBH = 0302 THEN
+		'场内障碍物-疑似新增超高物'
+		WHEN B.XJXMBH = 0401 THEN
+		'场外障碍物-疑似新增超高物'
+		WHEN B.XJXMBH = 0501 THEN
+		'机场围界-目视完整度'
+		WHEN B.XJXMBH = 0601 THEN
+		'排水渠-是否畅通'
+		WHEN B.XJXMBH = 0701 THEN
+		'风向带-是否正常'
+		WHEN B.XJXMBH = 0801 THEN
+		'灯光-目视有无损坏'
+		END) NEW_XJXMBH,
+	
+	  (CASE
+                 WHEN B.REC_CZSM = 0 THEN
+                  '创建'
+                 WHEN B.REC_CZSM = 1 THEN
+                  '提交'
+                 WHEN B.REC_CZSM = 2 THEN
+                  '已审核'
+                 WHEN B.REC_CZSM = 3 THEN
+                  '已批准'
+                 WHEN B.REC_CZSM = 4 THEN
+                  '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN
+                  '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN
+                  '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN
+                  '作废'
+                 WHEN B.REC_CZSM = 9 THEN
+                  '指定结束'
+               
+                 WHEN B.REC_CZSM = 10 THEN
+                  '完成'
+                 WHEN B.REC_CZSM = 11 THEN
+                  '撤销'
+                 WHEN B.REC_CZSM = 12 THEN
+                  '修改'
+                 WHEN B.REC_CZSM = 13 THEN
+                  '改版'
+                 WHEN B.REC_CZSM = 14 THEN
+                  '已生效'
+                 WHEN B.REC_CZSM = 15 THEN
+                  '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN
+                  '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN
+                  '归还'
+                 WHEN B.REC_CZSM = 18 THEN
+                  '导入'
+               END) REC_HD
+	  FROM B_J_00201_REC B
+	  LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+	  LEFT JOIN T_USER REC ON REC.ID = B.REC_CZRID
+      LEFT JOIN T_DEPARTMENT WHDW  ON WHDW.ID = B.WHBMID
+	<!--  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR} 
+	   AND B.REC_CZSJ IN
+	       (SELECT REC_CZSJ
+	          FROM (SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO,D.REC_CZSJ
+	                  FROM B_J_00201_REC D
+	                 WHERE D.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	                   AND (SELECT T.REC_CZSJ
+	                          FROM B_J_002_REC T
+	                         WHERE T.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	                           AND T.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	                            ) > D.REC_CZSJ  
+	                 GROUP BY D.REC_CZSJ,D.XJXMBH) 
+	         WHERE 1 = RNO)    -->
+	         
+	         
+	         
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_J_002_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_J_002_REC C WHERE 
+		              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )          
+	         
+	         
+	         
+	         
+	         
+	               
+  </select>
+  
+  <select id="queryDiff4D_011" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+
+	SELECT K.*,G.REC_IP,G.REC_CZSJ,WHR.USERNAME||' '||WHR.REALNAME  REC_CZR_NAME,
+	
+	(CASE
+    WHEN K.NEW_XJXMBH = 0101 THEN
+    '机坪、跑道和滑行道-道面表面情况'
+    WHEN K.NEW_XJXMBH = 0102 THEN
+    '机坪、跑道和滑行道-嵌缝料情况'
+    WHEN K.NEW_XJXMBH = 0103 THEN
+    '机坪、跑道和滑行道-标志线、标识情况'
+    WHEN K.NEW_XJXMBH = 0104  THEN
+    '机坪、跑道和滑行道-污染物情况'
+    WHEN K.NEW_XJXMBH = 0105  THEN
+    '机坪、跑道和滑行道-FOD情况'
+    WHEN K.NEW_XJXMBH = 0201 THEN
+    '土质地带-目视平整度'
+    WHEN K.NEW_XJXMBH = 0301 THEN
+    '场内障碍物-已有障碍物标识和灯光'
+    WHEN K.NEW_XJXMBH = 0302 THEN
+    '场内障碍物-疑似新增超高物'
+    WHEN K.NEW_XJXMBH = 0401 THEN
+    '场外障碍物-疑似新增超高物'
+    WHEN K.NEW_XJXMBH = 0501 THEN
+    '机场围界-目视完整度'
+    WHEN K.NEW_XJXMBH = 0601 THEN
+    '排水渠-是否畅通'
+    WHEN K.NEW_XJXMBH = 0701 THEN
+    '风向带-是否正常'
+    WHEN K.NEW_XJXMBH = 0801 THEN
+    '灯光-目视有无损坏'
+    END) NEW_NEW_XJXMBH
+	
+	 FROM (
+	SELECT t.NEW_XJXMBH, wm_concat(REC_XGLX_TEXT||':'||WBWJM) NEW_WBWJM, wm_concat(REC_HD)
+	REC_HD, 'CURRENT' DATA_VERSION FROM (
+	SELECT B.*,
+	KCXX.XJXMBH NEW_XJXMBH,
+	(CASE
+	WHEN B.REC_XGLX = 1 THEN
+	'新增'
+	WHEN B.REC_XGLX = 2 THEN
+	'修改'
+	WHEN B.REC_XGLX = 3 THEN
+	'删除'
+	END) REC_XGLX_TEXT,
+	
+
+	F_GETREC_HD(B.REC_CZSM)  REC_HD
+
+	FROM D_011_REC B
+
+	LEFT JOIN B_j_00201 KCXX ON KCXX.ID = B.MAINID
+	WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	)t GROUP BY t.NEW_XJXMBH
+
+	UNION ALL
+
+	SELECT t.NEW_XJXMBH, wm_concat(REC_XGLX_TEXT||':'||WBWJM) NEW_WBWJM, wm_concat(REC_HD)
+	REC_HD,'LAST' DATA_VERSION FROM (
+
+	SELECT B.*,
+	KCXX.XJXMBH NEW_XJXMBH,
+	(CASE
+	WHEN B.REC_XGLX = 1 THEN
+	'新增'
+	WHEN B.REC_XGLX = 2 THEN
+	'修改'
+	WHEN B.REC_XGLX = 3 THEN
+	'删除'
+	END) REC_XGLX_TEXT,
+
+    F_GETREC_HD(B.REC_CZSM)  REC_HD
+	
+	FROM D_011_REC B
+
+	LEFT JOIN B_J_00201 KCXX ON KCXX.ID = B.MAINID
+
+	WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	
+	AND B.REC_CZLS IN
+         (           
+            SELECT REC_CZLS FROM (
+            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+              	FROM B_J_002_REC A WHERE 
+             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+            	AND A.REC_CZSJ &lt;=
+            	(
+	              	SELECT MIN(C.REC_CZSJ) FROM B_J_002_REC C WHERE 
+	              	C.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	             )            
+             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+            ) WHERE 1 = RNO                        
+           )       
+
+	)t GROUP BY t.NEW_XJXMBH
+	) K
+	LEFT JOIN (SELECT G.* FROM B_J_00201_REC G WHERE G.REC_ZBID
+	=#{paramsMap.ID,jdbcType=VARCHAR}
+	AND G.REC_CZLS =
+	#{paramsMap.REC_CZLS,jdbcType=VARCHAR})G ON
+	G.XJXMBH=K.NEW_XJXMBH
+	LEFT JOIN T_USER WHR ON WHR.ID =G.REC_CZRID 
+           
+  </select>
+  
+</mapper>

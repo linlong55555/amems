@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.CourseMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.Course" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="KCBH" property="kcbh" jdbcType="VARCHAR" />
+    <result column="KCMC" property="kcmc" jdbcType="VARCHAR" />
+    <result column="KCLB" property="kclb" jdbcType="VARCHAR" />
+    <result column="KCNR" property="kcnr" jdbcType="VARCHAR" />
+    <result column="KS" property="ks" jdbcType="VARCHAR" />
+    <result column="PXXS" property="pxxs" jdbcType="VARCHAR" />
+    <result column="KSXS" property="ksxs" jdbcType="VARCHAR" />
+    <result column="IS_FX" property="isFx" jdbcType="DECIMAL" />
+    <result column="FXKS" property="fxks" jdbcType="VARCHAR" />
+    <result column="ZQZ" property="zqz" jdbcType="DECIMAL" />
+    <result column="ZQDW" property="zqdw" jdbcType="DECIMAL" />
+    <result column="PXMB" property="pxmb" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="FXPXXS" property="fxpxxs" jdbcType="VARCHAR" />
+    <result column="FXKSXS" property="fxksxs" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <!-- 配置课程与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.training.po.Course" id="CourseToUserMap" extends="BaseResultMap">  
+	  	<association property="zdr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZDRID" property="id"/>  
+	        <result column="ZDRUSERNAME" property="username"/>  
+	        <result column="ZDRREALNAME" property="realname"/>  
+	    </association>  
+	</resultMap> 
+  
+      <!-- 配置课程与岗位关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.training.po.Course" id="BusinessToCourseMap" extends="BaseResultMap">  
+	  	<association property="businessToCourse" javaType="com.eray.thjw.training.po.BusinessToCourse">  
+	        <id column="BID" property="id"/>  
+	        <result column="JYYQ" property="jyyq"/>  
+	        <result column="PXJG" property="pxjg"/>  
+	        <result column="LY" property="ly"/>  
+	        <result column="JCTG" property="jctg"/>  
+	    </association>  
+	</resultMap> 
+	
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, KCBH, KCMC, KCLB, KCNR, KS, PXXS, KSXS, IS_FX, FXKS, ZQZ, ZQDW, PXMB, 
+    BZ, ZT, WHBMID, WHRID, WHSJ,FXPXXS,FXKSXS
+  </sql>
+  
+	<sql id="Course_User_List" >
+   		B.ID, B.DPRTCODE, B.KCBH, B.KCMC, B.KCLB, B.KCNR, B.KS, B.PXXS, B.KSXS, B.IS_FX, B.FXKS, B.ZQZ, B.ZQDW, B.PXMB, 
+    	B.BZ, B.ZT, B.WHBMID, B.WHRID, B.WHSJ,B.FXPXXS,B.FXKSXS,
+   		U.ID as ZDRID,U.USERNAME as ZDRUSERNAME,U.REALNAME as ZDRREALNAME
+	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_003
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据id查询课程及用户信息 -->
+  <select id="selectById" resultMap="CourseToUserMap" parameterType="java.lang.String" >
+    	select 
+		    <include refid="Course_User_List" />
+		from B_P_003 B
+           LEFT JOIN T_USER U
+           ON B.WHRID = U.ID
+		where B.ID = #{id,jdbcType=VARCHAR}
+  	</select>
+  
+  	<!-- 检查课程是否存在 -->
+	<select id="checkExist" parameterType="com.eray.thjw.training.po.Course" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+           from B_P_003
+           where ZT = 1 and DPRTCODE = #{dprtcode} and KCBH = #{kcbh} 
+	</select>
+	
+	<!-- 检查课程是否可以修改作废 -->
+	<select id="checkUptById" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		SELECT 
+  		<include refid="Base_Column_List" />
+  		FROM B_P_003 B
+  		where 
+			(
+			   <!--todo exists(select 1 FROM B_P_002 BP002 WHERE BP002.KCID = B.ID)
+			   or -->
+			   exists(select 1 FROM B_P_005 BP005 WHERE BP005.ZT = 1 AND BP005.KCID = B.ID)
+			)
+			and B.ID = #{id,jdbcType=VARCHAR} 
+  	</select>
+  
+  <!-- 根据查询条件分页查询课程信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.training.po.Course" resultMap="CourseToUserMap">
+	
+		select 
+           	<include refid="Course_User_List" />
+           from B_P_003 B
+           LEFT JOIN T_USER U
+           ON B.WHRID = U.ID
+           where B.ZT = 1
+           	<include refid="Course_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B.WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+		
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_003
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.Course" >
+    insert into B_P_003 (ID, DPRTCODE, KCBH, 
+      KCMC, KCLB, KCNR, KS, 
+      PXXS, KSXS, IS_FX, FXKS, 
+      ZQZ, ZQDW, PXMB, BZ, 
+      ZT, WHBMID, WHRID, 
+      WHSJ,FXPXXS,FXKSXS)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{kcbh,jdbcType=VARCHAR}, 
+      #{kcmc,jdbcType=VARCHAR}, #{kclb,jdbcType=VARCHAR}, #{kcnr,jdbcType=VARCHAR}, #{ks,jdbcType=VARCHAR}, 
+      #{pxxs,jdbcType=VARCHAR}, #{ksxs,jdbcType=VARCHAR}, #{isFx,jdbcType=DECIMAL}, #{fxks,jdbcType=VARCHAR}, 
+      #{zqz,jdbcType=DECIMAL}, #{zqdw,jdbcType=DECIMAL}, #{pxmb,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{fxpxxs,jdbcType=VARCHAR}, #{fxksxs,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.Course" >
+    insert into B_P_003
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="kcbh != null" >
+        KCBH,
+      </if>
+      <if test="kcmc != null" >
+        KCMC,
+      </if>
+      <if test="kclb != null" >
+        KCLB,
+      </if>
+      <if test="kcnr != null" >
+        KCNR,
+      </if>
+      <if test="ks != null" >
+        KS,
+      </if>
+      <if test="pxxs != null" >
+        PXXS,
+      </if>
+      <if test="ksxs != null" >
+        KSXS,
+      </if>
+      <if test="isFx != null" >
+        IS_FX,
+      </if>
+      <if test="fxks != null" >
+        FXKS,
+      </if>
+      <if test="zqz != null" >
+        ZQZ,
+      </if>
+      <if test="zqdw != null" >
+        ZQDW,
+      </if>
+      <if test="pxmb != null" >
+        PXMB,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="fxpxxs != null" >
+        FXPXXS,
+      </if>
+      <if test="fxksxs != null" >
+        FXKSXS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="kcbh != null" >
+        #{kcbh,jdbcType=VARCHAR},
+      </if>
+      <if test="kcmc != null" >
+        #{kcmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kclb != null" >
+        #{kclb,jdbcType=VARCHAR},
+      </if>
+      <if test="kcnr != null" >
+        #{kcnr,jdbcType=VARCHAR},
+      </if>
+      <if test="ks != null" >
+        #{ks,jdbcType=VARCHAR},
+      </if>
+      <if test="pxxs != null" >
+        #{pxxs,jdbcType=VARCHAR},
+      </if>
+      <if test="ksxs != null" >
+        #{ksxs,jdbcType=VARCHAR},
+      </if>
+      <if test="isFx != null" >
+        #{isFx,jdbcType=DECIMAL},
+      </if>
+      <if test="fxks != null" >
+        #{fxks,jdbcType=VARCHAR},
+      </if>
+      <if test="zqz != null" >
+        #{zqz,jdbcType=DECIMAL},
+      </if>
+      <if test="zqdw != null" >
+        #{zqdw,jdbcType=DECIMAL},
+      </if>
+      <if test="pxmb != null" >
+        #{pxmb,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        current_timestamp,
+      </if>
+      <if test="fxpxxs != null" >
+        #{fxpxxs,jdbcType=VARCHAR},
+      </if>
+      <if test="fxksxs != null" >
+        #{fxksxs,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.Course" >
+    update B_P_003
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="kcbh != null" >
+        KCBH = #{kcbh,jdbcType=VARCHAR},
+      </if>
+      <if test="kcmc != null" >
+        KCMC = #{kcmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kclb != null" >
+        KCLB = #{kclb,jdbcType=VARCHAR},
+      </if>
+      <if test="kcnr != null" >
+        KCNR = #{kcnr,jdbcType=VARCHAR},
+      </if>
+      <if test="ks != null" >
+        KS = #{ks,jdbcType=VARCHAR},
+      </if>
+      <if test="pxxs != null" >
+        PXXS = #{pxxs,jdbcType=VARCHAR},
+      </if>
+      <if test="ksxs != null" >
+        KSXS = #{ksxs,jdbcType=VARCHAR},
+      </if>
+      <if test="isFx != null" >
+        IS_FX = #{isFx,jdbcType=DECIMAL},
+      </if>
+      <if test="fxks != null" >
+        FXKS = #{fxks,jdbcType=VARCHAR},
+        ZQZ = #{zqz,jdbcType=DECIMAL},
+        ZQDW = #{zqdw,jdbcType=DECIMAL},
+      </if>
+      <if test="pxmb != null" >
+        PXMB = #{pxmb,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = current_timestamp,
+      </if>
+      <if test="fxpxxs != null" >
+        FXPXXS = #{fxpxxs,jdbcType=VARCHAR},
+      </if>
+      <if test="fxksxs != null" >
+        FXKSXS = #{fxksxs,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.Course" >
+    update B_P_003
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      KCBH = #{kcbh,jdbcType=VARCHAR},
+      KCMC = #{kcmc,jdbcType=VARCHAR},
+      KCLB = #{kclb,jdbcType=VARCHAR},
+      KCNR = #{kcnr,jdbcType=VARCHAR},
+      KS = #{ks,jdbcType=VARCHAR},
+      PXXS = #{pxxs,jdbcType=VARCHAR},
+      KSXS = #{ksxs,jdbcType=VARCHAR},
+      IS_FX = #{isFx,jdbcType=DECIMAL},
+      FXKS = #{fxks,jdbcType=VARCHAR},
+      ZQZ = #{zqz,jdbcType=DECIMAL},
+      ZQDW = #{zqdw,jdbcType=DECIMAL},
+      PXMB = #{pxmb,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      FXPXXS = #{fxpxxs,jdbcType=VARCHAR},
+      FXKSXS = #{fxksxs,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 作废课程 -->
+  	<update id="cancel" parameterType="com.eray.thjw.training.po.Course">
+		update B_P_003
+		set 
+		ZT = #{zt,jdbcType=VARCHAR},
+		WHBMID = #{whbmid,jdbcType=VARCHAR},
+		WHRID = #{whrid,jdbcType=VARCHAR},
+		WHSJ = current_timestamp
+		where ID = #{id,jdbcType=VARCHAR} 
+	</update>
+  
+  	<!-- 搜索参数 -->
+	<sql id="Course_Param">
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	(B.KCBH) like ('%'||#{keyword}||'%')
+		    	or (B.KCMC) like ('%'||#{keyword}||'%')
+		    	or (B.KCLB) like ('%'||#{keyword}||'%')
+		    	or (B.PXXS) like ('%'||#{keyword}||'%')
+		    	or (B.KSXS) like ('%'||#{keyword}||'%')
+		    	or (B.FXPXXS) like ('%'||#{keyword}||'%')
+		    	or (B.FXKSXS) like ('%'||#{keyword}||'%')
+		    	or (B.KCNR) like ('%'||#{keyword}||'%')
+		    	or (B.PXMB) like ('%'||#{keyword}||'%')
+		    	or (B.BZ) like ('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqBegin != null and paramsMap.whrqBegin != ''">
+		    and B.WHSJ &gt;= to_timestamp(#{paramsMap.whrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqEnd != null and paramsMap.whrqEnd != ''">
+		    and B.WHSJ &lt;= to_timestamp(#{paramsMap.whrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.isFxList != null and paramsMap.isFxList != ''">
+		    and B.IS_FX in
+     			 <foreach item="item" index="index" collection="paramsMap.isFxList" open="(" separator="," close=")">  
+          			cast(#{item} as NUMERIC)  
+     			 </foreach>  
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B.ID = #{id}
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		    and B.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		
+	</sql>
+	
+	<select id="queryAllBygwid" resultMap="BusinessToCourseMap" parameterType="java.lang.String" >
+    select 
+     B_P_003.ID, 
+     B_P_003.DPRTCODE, 
+     B_P_003.KCBH, 
+     B_P_003.KCMC, 
+     B_P_003.KCLB, 
+     B_P_003.KCNR, 
+     B_P_003.KS, 
+     B_P_003.PXXS, 
+     B_P_003.KSXS, 
+     B_P_003.IS_FX, 
+     B_P_003.FXKS, 
+     B_P_003.ZQZ, 
+     B_P_003.ZQDW, 
+     B_P_003.PXMB, 
+     B_P_003.BZ, 
+     B_P_003.ZT, 
+     B_P_003.WHBMID, 
+     B_P_003.WHRID, 
+     B_P_003.WHSJ,
+     B_P_003.FXPXXS,
+     B_P_003.FXKSXS,
+     b_p_005.id as bid,
+     b_p_005.jyyq,
+     b_p_005.pxjg,
+     b_p_005.ly,
+     b_p_005.jctg
+    from B_P_003 left join b_p_005 on b_p_003.id=b_p_005.kcid
+    where b_p_005.gwid = #{gwid,jdbcType=VARCHAR} order by b_p_005.whsj desc
+  </select>
+</mapper>

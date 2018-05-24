@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.PlaneFaultMonitoringInfoOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlaneFaultMonitoringInfoOrder" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />   
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />   
+    <result column="GDID" property="gdid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />  
+    <result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" /> 
+  </resultMap>
+  
+  	<insert id="insertInfoOrder" parameterType="com.eray.thjw.productionplan.po.PlaneFaultMonitoringInfoOrder">
+  		insert into b_s_0190101 (id,mainid,dprtcode,gdid,zt,zddwid,zdrid,zdsj)
+  		values (#{id,jdbcType=VARCHAR},#{mainid,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},#{gdid,jdbcType=VARCHAR},
+  		#{zt,jdbcType=INTEGER},#{zddwid,jdbcType=VARCHAR},#{zdrid,jdbcType=VARCHAR},current_timestamp
+  		)
+  	</insert>
+  	<select id="getorderIdByMainid" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select id,mainid,gdid from b_s_0190101 where mainid=#{mainid,jdbcType=VARCHAR} and zt=1
+  	</select>
+  	<delete id="deleteByMainid" parameterType="java.lang.String">
+  		update  b_s_0190101 set zt=0 where mainid=#{mainid,jdbcType=VARCHAR} 
+  	</delete>
+</mapper>

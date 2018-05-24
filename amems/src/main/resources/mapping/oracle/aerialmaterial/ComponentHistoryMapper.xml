@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ComponentHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ComponentHistory">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="JH" jdbcType="VARCHAR" property="jh" />
+    <result column="XLH" jdbcType="VARCHAR" property="xlh" />
+    <result column="CHUCRQ" jdbcType="TIMESTAMP" property="chucrq" />
+    <result column="TSN" jdbcType="VARCHAR" property="tsn" />
+    <result column="TSO" jdbcType="VARCHAR" property="tso" />
+    <result column="CSN" jdbcType="DECIMAL" property="csn" />
+    <result column="CSO" jdbcType="DECIMAL" property="cso" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+    <result column="ZJQDID" jdbcType="VARCHAR" property="zjqdid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, JH, XLH, CHUCRQ, TSN, TSO, CSN, CSO, WHSJ, FJZCH, ZJQDID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_025
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByZjqdid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_025
+    where ZJQDID = #{zjqdid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H2_025
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectByPrimaryComponentHistory" resultMap="BaseResultMap" parameterType="com.eray.thjw.aerialmaterial.po.ComponentHistory">
+	select * from 
+	(select t.whsj, t.jh,t.id,t.dprtCode,t.xlh,t.chucrq,t.tsn,t.tso,t.csn,t.cso 
+	from b_h2_025 t 
+	where t.jh=#{jh,jdbcType=VARCHAR} and t.xlh=#{xlh,jdbcType=VARCHAR} and t.dprtcode=#{dprtcode,jdbcType=VARCHAR} order by t.whsj desc) 
+	where rownum=1 
+    
+  </select>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ComponentHistory">
+    insert into B_H2_025 (ID, DPRTCODE, JH, 
+      XLH, CHUCRQ, TSN, 
+      TSO, CSN, CSO, WHSJ, 
+      FJZCH, ZJQDID)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jh,jdbcType=VARCHAR}, 
+      #{xlh,jdbcType=VARCHAR}, #{chucrq,jdbcType=TIMESTAMP}, #{tsn,jdbcType=VARCHAR}, 
+      #{tso,jdbcType=VARCHAR}, #{csn,jdbcType=DECIMAL}, #{cso,jdbcType=DECIMAL}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{fjzch,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ComponentHistory">
+    insert into B_H2_025
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="jh != null">
+        JH,
+      </if>
+      <if test="xlh != null">
+        XLH,
+      </if>
+      <if test="chucrq != null">
+        CHUCRQ,
+      </if>
+      <if test="tsn != null">
+        TSN,
+      </if>
+      <if test="tso != null">
+        TSO,
+      </if>
+      <if test="csn != null">
+        CSN,
+      </if>
+      <if test="cso != null">
+        CSO,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="fjzch != null">
+        FJZCH,
+      </if>
+      <if test="zjqdid != null">
+        ZJQDID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null">
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null">
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="chucrq != null">
+        #{chucrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tsn != null">
+        #{tsn,jdbcType=VARCHAR},
+      </if>
+      <if test="tso != null">
+        #{tso,jdbcType=VARCHAR},
+      </if>
+      <if test="csn != null">
+        #{csn,jdbcType=DECIMAL},
+      </if>
+      <if test="cso != null">
+        #{cso,jdbcType=DECIMAL},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fjzch != null">
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null">
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ComponentHistory">
+    update B_H2_025
+    <set>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null">
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null">
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="chucrq != null">
+        CHUCRQ = #{chucrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tsn != null">
+        TSN = #{tsn,jdbcType=VARCHAR},
+      </if>
+      <if test="tso != null">
+        TSO = #{tso,jdbcType=VARCHAR},
+      </if>
+      <if test="csn != null">
+        CSN = #{csn,jdbcType=DECIMAL},
+      </if>
+      <if test="cso != null">
+        CSO = #{cso,jdbcType=DECIMAL},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fjzch != null">
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null">
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ComponentHistory">
+    update B_H2_025
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      JH = #{jh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      CHUCRQ = #{chucrq,jdbcType=TIMESTAMP},
+      TSN = #{tsn,jdbcType=VARCHAR},
+      TSO = #{tso,jdbcType=VARCHAR},
+      CSN = #{csn,jdbcType=DECIMAL},
+      CSO = #{cso,jdbcType=DECIMAL},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      ZJQDID = #{zjqdid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据装机清单新增部件数据 -->
+  <insert id="insertByInstallList" parameterType="com.eray.thjw.produce.po.InstallationListEditable">
+    insert into B_H2_025 (ID, DPRTCODE, JH, 
+      XLH, CHUCRQ, TSN, 
+      TSO, CSN, CSO, WHSJ, 
+      FJZCH, ZJQDID)
+    values (sys_guid(), #{dprtcode,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, 
+      #{xlh,jdbcType=VARCHAR}, #{chucrq,jdbcType=TIMESTAMP}, #{tsn,jdbcType=VARCHAR}, 
+      #{tso,jdbcType=VARCHAR}, #{csn,jdbcType=DECIMAL}, #{cso,jdbcType=DECIMAL}, 
+      <choose>
+        <when test="zjzt == 1">
+	      #{azsj,jdbcType=TIMESTAMP}, 
+        </when>
+        <otherwise>
+          #{ccsj,jdbcType=TIMESTAMP}, 
+        </otherwise>
+      </choose>
+      #{fjzch,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 根据装机清单更新部件数据-->
+  <update id="updateByInstallList" parameterType="com.eray.thjw.produce.po.InstallationListEditable">
+    update B_H2_025 
+       SET JH=#{bjh,jdbcType=VARCHAR},
+       	   XLH=#{xlh,jdbcType=VARCHAR},
+       	   CHUCRQ=#{chucrq,jdbcType=TIMESTAMP},
+       	   TSN=#{tsn,jdbcType=VARCHAR},
+       	   TSO=#{tso,jdbcType=VARCHAR},
+       	   CSN=#{csn,jdbcType=DECIMAL},
+       	   CSO=#{cso,jdbcType=DECIMAL},
+       	   <choose>
+	        <when test="zjzt == 1">
+		      WHSJ=#{azsj,jdbcType=TIMESTAMP}, 
+	        </when>
+	        <otherwise>
+	          WHSJ=#{ccsj,jdbcType=TIMESTAMP}, 
+	        </otherwise>
+	      </choose>
+       	   FJZCH=#{fjzch,jdbcType=VARCHAR}
+     WHERE ZJQDID=#{id,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteByZjqdid">
+  	delete from B_H2_025  WHERE ZJQDID=#{zjqdid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

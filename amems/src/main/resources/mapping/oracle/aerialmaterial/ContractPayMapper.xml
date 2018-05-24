@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ContractPayMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ContractPay">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="FKRQ" jdbcType="TIMESTAMP" property="fkrq" />
+    <result column="FKFS" jdbcType="DECIMAL" property="fkfs" />
+    <result column="FKFSSM" jdbcType="VARCHAR" property="fkfssm" />
+    <result column="FKJE" jdbcType="DECIMAL" property="fkje" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.aerialmaterial.po.ContractPay" id="ContractPayJoinMap" extends="BaseResultMap">  
+     	<association property="zdr" javaType="com.eray.thjw.po.User">
+			<id column="UZDRID" property="id"/>
+       	  	<result column="ZDRREALNAME" property="realname"/>
+       	  	<result column="ZDRUSERNAME" property="username"/>
+      	</association>
+   	</resultMap> 
+   	
+  <sql id="Base_Column_List">
+    ID, MAINID, FKRQ, FKFS, FKFSSM, FKJE, BZ, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_00402
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <!-- 根据查询条件分页查询合同付款信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.ContractPay" resultMap="ContractPayJoinMap">
+	
+		select 
+			B00402.ID, B00402.MAINID, B00402.FKRQ, B00402.FKFS, B00402.FKFSSM, B00402.FKJE, B00402.BZ, B00402.ZT, B00402.WHDWID, B00402.WHRID, B00402.WHSJ,   	
+  				UZDR.ID AS UZDRID,UZDR.USERNAME AS ZDRUSERNAME,UZDR.REALNAME AS ZDRREALNAME
+           from B_H_00402 B00402
+           left join T_USER UZDR
+           on B00402.WHRID = UZDR.ID
+           where B00402.ZT = 1
+           	<include refid="Contractpay_Param"></include>
+           	<include refid="Contractpay_Join_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B00402.FKRQ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+     		
+	</select>
+	
+ 	<!-- 根据条件分页查询付款统计列表 -->
+	<select id="queryPayStatisticsPageList" parameterType="com.eray.thjw.po.BaseEntity" resultType="Map">
+		SELECT id,hth,jjcd,dprtcode,htqdrq,htlx,gysbm,gysmc,yf,wf,yfbl,fkcs,dhbl FROM (
+			select b1.id,
+				b1.hth,
+		    	b1.jjcd,
+		      	b1.dprtcode,
+		       	b1.htqdrq,
+		       	b1.htlx,
+		       	b1.gysbm,
+		       	b1.gysmc,
+		       	trunc(((CASE WHEN b1.fjfy IS NULL THEN 0 ELSE b1.fjfy END) + (CASE WHEN b3.fy IS NULL THEN 0 ELSE b3.fy END)), 2) yf,
+		       	trunc(((CASE WHEN b1.fjfy IS NULL THEN 0 ELSE b1.fjfy END) + (CASE WHEN b3.fy IS NULL THEN 0 ELSE b3.fy END) - (CASE WHEN b2.fkje IS NULL THEN 0 ELSE b2.fkje END)), 2) wf,
+		       	case
+		     		when ((CASE WHEN b1.fjfy IS NULL THEN 0 ELSE b1.fjfy END) + (CASE WHEN b3.fy IS NULL THEN 0 ELSE b3.fy END)) = 0 then
+		        		0
+		     		else
+		    			trunc((CASE WHEN b2.fkje IS NULL THEN 0 ELSE b2.fkje END) / ((CASE WHEN b1.fjfy IS NULL THEN 0 ELSE b1.fjfy END) + (CASE WHEN b3.fy IS NULL THEN 0 ELSE b3.fy END)) * 100, 2)
+		       		end yfbl,
+		       		b2.fkcs,
+		       	case
+		       		when (CASE WHEN b3.htsl IS NULL THEN 0 ELSE b3.htsl END) = 0 then
+		          		0
+		         	else
+		          		trunc((CASE WHEN b3.dhsl IS NULL THEN 0 ELSE b3.dhsl END) / b3.htsl * 100, 2)
+		       	end dhbl
+		  	from b_h_004 b1
+		  	join (select mainid,
+		               count(1) fkcs,
+		               sum(fkje) fkje
+		          from b_h_00402
+		         where zt = 1
+		         group by mainid) b2
+		    on b2.mainid = b1.id
+		   and b1.zt in (2,10)
+		  join (select mainid,
+		               sum(((CASE WHEN ht_clf IS NULL THEN 0 ELSE ht_clf END) + (CASE WHEN ht_gsf IS NULL THEN 0 ELSE ht_gsf END) + (CASE WHEN ht_qtf IS NULL THEN 0 ELSE ht_qtf END)) *
+		                   (CASE WHEN ht_sl IS NULL THEN 0 ELSE ht_sl END)) fy,
+		               sum(ht_sl) htsl,
+		               sum(dhsl) dhsl
+		          from b_h_00401
+		         where zt = 1
+		         group by mainid) b3
+		    on b1.id = b3.mainid
+		 where 1 = 1
+		 <include refid="pay_statistics_Join_Param"></include>
+	 ) A
+	 <!-- order by ID asc -->
+  		<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+    		<when test='pagination.sort == "auto"'>                       
+    			order by htqdrq desc, htlx asc, hth asc
+    		</when>
+    		<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+    		</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 根据条件分页查询付款明细列表 -->
+	<select id="queryPayDetailPageList" parameterType="com.eray.thjw.po.BaseEntity" resultType="Map">
+		SELECT id,hth,jjcd,dprtcode,htqdrq,htlx,gysbm,gysmc,fkrq,fkfs,fkje,bz FROM (
+			select b2.id,
+				   b2.hth,
+			       b2.jjcd,
+			       b2.dprtcode,
+			       b2.htqdrq,
+			       b2.htlx,
+			       b2.gysbm,
+			       b2.gysmc,
+			       b1.fkrq,
+			       case fkfs
+			         when 0 then
+			          b1.fkfssm
+			         when 1 then
+			          '支票'
+			         when 2 then
+			          '现金'
+			         when 3 then
+			          '汇款'
+			         else
+			          '-'
+			       end fkfs,
+			       b1.fkje,
+			       b1.bz
+			  from b_h_00402 b1
+			  join b_h_004 b2
+			    on b1.mainid = b2.id
+			   and b2.zt in (2,10)
+			   and b1.zt = 1
+			 where 1 = 1
+			 <include refid="pay_detail_Join_Param"></include>
+		 
+		 ) A
+		 <!-- order by ID asc -->
+  		<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+    		<when test='pagination.sort == "auto"'>                       
+    			order by htqdrq desc, htlx asc, hth asc, fkrq asc
+    		</when>
+    		<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+    		</otherwise>
+		</choose>
+		
+	</select>
+	
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_00402
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ContractPay">
+    insert into B_H_00402 (ID, MAINID, FKRQ, 
+      FKFS, FKFSSM, FKJE, 
+      BZ, ZT, WHDWID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{fkrq,jdbcType=TIMESTAMP}, 
+      #{fkfs,jdbcType=DECIMAL}, #{fkfssm,jdbcType=VARCHAR}, #{fkje,jdbcType=DECIMAL}, 
+      #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ContractPay">
+    insert into B_H_00402
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="fkrq != null">
+        FKRQ,
+      </if>
+      <if test="fkfs != null">
+        FKFS,
+      </if>
+      <if test="fkfssm != null">
+        FKFSSM,
+      </if>
+      <if test="fkje != null">
+        FKJE,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whrid != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="fkrq != null">
+        #{fkrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fkfs != null">
+        #{fkfs,jdbcType=DECIMAL},
+      </if>
+      <if test="fkfssm != null">
+        #{fkfssm,jdbcType=VARCHAR},
+      </if>
+      <if test="fkje != null">
+        #{fkje,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ContractPay">
+    update B_H_00402
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="fkrq != null">
+        FKRQ = #{fkrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fkfs != null">
+        FKFS = #{fkfs,jdbcType=DECIMAL},
+      </if>
+      <if test="fkfssm != null">
+        FKFSSM = #{fkfssm,jdbcType=VARCHAR},
+      </if>
+      <if test="fkje != null">
+        FKJE = #{fkje,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ContractPay">
+    update B_H_00402
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      FKRQ = #{fkrq,jdbcType=TIMESTAMP},
+      FKFS = #{fkfs,jdbcType=DECIMAL},
+      FKFSSM = #{fkfssm,jdbcType=VARCHAR},
+      FKJE = #{fkje,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <!-- 搜索参数 -->
+	<sql id="Contractpay_Param">
+		<if test="id != null and id != ''">
+		    and B00402.ID = #{id}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		    and (UPPER(B00402.FKFSSM) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="mainid != null and mainid != ''">
+		    and B00402.MAINID = #{mainid}
+		</if>
+		<if test="fkje != null and fkje != ''">
+		    and B00402.fkje = #{fkje}
+		</if>
+		<if test="paramsMap != null and paramsMap.fkrqBegin != null and paramsMap.fkrqBegin != ''">
+		    and B00402.FKRQ &gt;= to_date(#{paramsMap.fkrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.fkrqEnd != null and paramsMap.fkrqEnd != ''">
+		    and B00402.FKRQ &lt;= to_date(#{paramsMap.fkrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqBegin != null and paramsMap.whrqBegin != ''">
+		    and B00402.WHSJ &gt;= to_date(#{paramsMap.whrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrqEnd != null and paramsMap.whrqEnd != ''">
+		    and B00402.WHSJ &lt;= to_date(#{paramsMap.whrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+	</sql>
+	<sql id="Contractpay_Join_Param">
+		<if test="paramsMap != null and paramsMap.whrname != null and paramsMap.whrname != ''">
+		    and (UPPER(UZDR.REALNAME) like UPPER('%'||#{paramsMap.whrname}||'%')
+		    or UPPER(UZDR.USERNAME) like UPPER('%'||#{paramsMap.whrname}||'%')
+		    )
+		</if>
+	</sql>
+	<sql id="pay_statistics_Join_Param">
+		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (UPPER(b1.HTH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.dprtcode != null">
+		    and b1.DPRTCODE = #{paramsMap.dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.htlx != null and paramsMap.htlx != ''">
+		    and b1.HTLX = #{paramsMap.htlx}
+		</if>
+		<if test="paramsMap != null and paramsMap.jjcd != null and paramsMap.jjcd != ''">
+		    and b1.JJCD = #{paramsMap.jjcd}
+		</if>
+		<if test="paramsMap != null and paramsMap.gysid != null and paramsMap.gysid != ''">
+		    and b1.GYSID = #{paramsMap.gysid}
+		</if>
+		<if test="paramsMap != null and paramsMap.htqdrqBegin != null and paramsMap.htqdrqBegin != ''">
+		    and b1.HTQDRQ &gt;= to_date(#{paramsMap.htqdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.htqdrqEnd != null and paramsMap.htqdrqEnd!= ''">
+		    and b1.HTQDRQ &lt;= to_date(#{paramsMap.htqdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+	</sql>
+	<sql id="pay_detail_Join_Param">
+		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (UPPER(b2.HTH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.dprtcode != null">
+		    and b2.DPRTCODE = #{paramsMap.dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.htlx != null and paramsMap.htlx != ''">
+		    and b2.HTLX = #{paramsMap.htlx}
+		</if>
+		<if test="paramsMap != null and paramsMap.jjcd != null and paramsMap.jjcd != ''">
+		    and b2.JJCD = #{paramsMap.jjcd}
+		</if>
+		<if test="paramsMap != null and paramsMap.gysid != null and paramsMap.gysid != ''">
+		    and b2.GYSID = #{paramsMap.gysid}
+		</if>
+		<if test="paramsMap != null and paramsMap.htqdrqBegin != null and paramsMap.htqdrqBegin != ''">
+		    and b2.HTQDRQ &gt;= to_date(#{paramsMap.htqdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.htqdrqEnd != null and paramsMap.htqdrqEnd!= ''">
+		    and b2.HTQDRQ &lt;= to_date(#{paramsMap.htqdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+	</sql>
+</mapper>

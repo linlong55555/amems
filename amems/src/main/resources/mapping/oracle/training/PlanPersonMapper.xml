@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.PlanPersonMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.PlanPerson" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="PXJHID" property="pxjhid" jdbcType="VARCHAR" />
+    <result column="WXRYDAID" property="wxrydaid" jdbcType="VARCHAR" />
+    <result column="XM" property="xm" jdbcType="VARCHAR" />
+    <result column="GZDW" property="gzdw" jdbcType="VARCHAR" />
+    <result column="KQ" property="kq" jdbcType="DECIMAL" />
+    <result column="CQL" property="cql" jdbcType="DECIMAL" />
+    <result column="ZS" property="zs" jdbcType="VARCHAR" />
+    <result column="CJ" property="cj" jdbcType="VARCHAR" />
+    <result column="KHJG" property="khjg" jdbcType="DECIMAL" />
+    <result column="XCPXRQ" property="xcpxrq" jdbcType="TIMESTAMP" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="kcmc" property="kcmc" jdbcType="VARCHAR" />
+    <result column="KCBM" property="kcbm" jdbcType="VARCHAR" />
+    <result column="KCNR" property="kcnr" jdbcType="VARCHAR" />
+    <result column="PXGH" property="pxgh" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="IS_YC" property="isYc" jdbcType="DECIMAL" />
+    <result column="IS_SC" property="isSc" jdbcType="DECIMAL" />
+    <result column="CYBS" property="cybs" jdbcType="DECIMAL" />
+    <result column="PXLB" property="pxlb" jdbcType="VARCHAR" />
+    <result column="FXBS" property="fxbs" jdbcType="DECIMAL" />
+    <result column="PXXS" property="pxxs" jdbcType="VARCHAR" />
+    <result column="KSXS" property="ksxs" jdbcType="VARCHAR" />
+    <result column="KCDD" property="kcdd" jdbcType="VARCHAR" />
+    <result column="JSID" property="jsid" jdbcType="VARCHAR" />
+    <result column="JSXM" property="jsxm" jdbcType="VARCHAR" />
+    <result column="SJ_KSRQ" property="sjKsrq" jdbcType="TIMESTAMP" />
+    <result column="SJ_KSSJ" property="sjKssj" jdbcType="VARCHAR" />
+    <result column="SJ_JSRQ" property="sjJsrq" jdbcType="TIMESTAMP" />
+    <result column="SJ_JSSJ" property="sjJssj" jdbcType="VARCHAR" />
+    <result column="SJKS" property="sjks" jdbcType="VARCHAR" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="ZY" property="zy" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="JSZT" property="jszt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="RYBH" property="paramsMap.rybh" jdbcType="VARCHAR" />
+    <result column="WXRYID" property="paramsMap.wxryid" jdbcType="VARCHAR" />
+    <result column="sjgw" property="paramsMap.sjgw" jdbcType="VARCHAR" />
+    <result column="sy" property="paramsMap.sy" jdbcType="VARCHAR" />
+    <result column="PXJH" property="paramsMap.pxjh" jdbcType="VARCHAR" />
+    <result column="pxjhid" property="paramsMap.pxjhid" jdbcType="VARCHAR" />
+    <result column="WBBS" property="paramsMap.wbbs" jdbcType="DECIMAL" />
+    <result column="SZDW" property="paramsMap.szdw" jdbcType="VARCHAR" />
+    <result column="fxqx" property="paramsMap.fxqx" jdbcType="VARCHAR" />
+    
+    <result column="MID" property="paramsMap.mid" jdbcType="VARCHAR" />
+    <result column="MXM" property="paramsMap.mxm" jdbcType="VARCHAR" />
+    <result column="CID" property="paramsMap.cid" jdbcType="VARCHAR" />
+    <result column="CKCBH" property="paramsMap.kcbh" jdbcType="VARCHAR" />
+    <result column="CKCMC" property="paramsMap.kcmc" jdbcType="VARCHAR" />
+    <result column="CZQZ" property="paramsMap.zqz" jdbcType="VARCHAR" />
+    <result column="CZQDW" property="paramsMap.zqdw" jdbcType="VARCHAR" />
+    <result column="jg_dprtname" property="paramsMap.dprtname" jdbcType="VARCHAR" />
+    <result column="scpxjhid" property="paramsMap.scpxjhid" jdbcType="VARCHAR" />
+    <result column="is_ypx" property="paramsMap.is_ypx" jdbcType="DECIMAL" />
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+    
+    <result column="Mid" property="paramsMap.mid" jdbcType="VARCHAR" />
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <!-- 配置课程与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.training.po.PlanPerson" id="PlanPersonResultMap" extends="BaseResultMap">  
+	  	<association property="maintenancePersonnel" javaType="com.eray.thjw.quality.po.MaintenancePersonnel">  
+	       <id column="MID" property="id"/>   
+	        <result column="rybh" property="rybh"/>  
+	        <result column="MXM" property="xm"/>  
+	    </association>  
+	  	<association property="course" javaType="com.eray.thjw.training.po.Course">  
+	        <id column="CID" property="id"/>  
+	        <result column="CKCBH" property="kcbh"/>  
+	        <result column="CKCMC" property="kcmc"/>  
+	        <result column="CZQZ" property="zqz"/>  
+	        <result column="CZQDW" property="zqdw"/>  
+	        <result column="CISFX" property="isFx"/>  
+	    </association>  
+         <!--T_user 维护人  -->
+		 <association property="zdr" javaType="com.eray.thjw.po.User">
+	      <id column="ID" property="id" jdbcType="VARCHAR" />
+		  <result column="DRZHID" property="drzhid" jdbcType="VARCHAR" />
+		  <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+	      <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+	      <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+  		  <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+	    </association>
+	     <!-- 组织机构  -->
+      <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+       	 <id column="dprtcode" property="id"/>
+       	 <result column="jg_dprtname" property="dprtname"/>
+     </association>
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    B_P_00201.ID, B_P_00201.DPRTCODE, B_P_00201.PXJHID, B_P_00201.WXRYDAID, 
+    B_P_00201.XM, B_P_00201.GZDW, B_P_00201.KQ, B_P_00201.CQL, B_P_00201.ZS, B_P_00201.CJ, 
+    B_P_00201.KHJG, B_P_00201.XCPXRQ, B_P_00201.KCID,B_P_00201.kcmc, B_P_00201.KCBM, 
+    B_P_00201.KCNR, B_P_00201.PXGH, B_P_00201.BZ, B_P_00201.IS_YC, B_P_00201.IS_SC,B_P_00201.CYBS, 
+    B_P_00201.PXLB, B_P_00201.FXBS, B_P_00201.PXXS, B_P_00201.KSXS, B_P_00201.KCDD, B_P_00201.JSXM, 
+    B_P_00201.SJ_KSRQ, B_P_00201.SJ_KSSJ, B_P_00201.SJ_JSRQ, B_P_00201.SJ_JSSJ, B_P_00201.SJKS, 
+    B_P_00201.ZT, B_P_00201.JSZT, B_P_00201.WHBMID, B_P_00201.WHRID, B_P_00201.WHSJ, B_P_00201.FJJX, 
+    B_P_00201.ZY,B_P_00201.JSID
+  </sql>
+  <select id="queryAllByBhAndRy" resultMap="BaseResultMap" parameterType="com.eray.thjw.training.po.PlanPerson" >
+  	select 
+  	  	<include refid="Base_Column_List" />
+  	  	,D011.ATTACHCOUNT
+   	 	from B_P_00201
+   	 	LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011
+   	 	ON D011.MAINID = B_P_00201.ID
+    	where B_P_00201.WXRYDAID = #{wxrydaid,jdbcType=VARCHAR} AND B_P_00201.KCBM = #{kcbm,jdbcType=VARCHAR} AND 
+    	B_P_00201.ZT = 1 AND B_P_00201.IS_SC = 1 
+    order by B_P_00201.sj_ksrq desc, B_P_00201.sj_kssj desc
+  </select>
+  <select id="qeryAllPageList" resultMap="BaseResultMap" parameterType="com.eray.thjw.training.po.PlanPerson" >
+		
+		select t1.wxrydaid MID,
+		       t1.rybh,
+           t1.xm MXM,
+           t1.dprtcode,
+           t1.szdw,
+           t1.kcid CID,
+           t1.kcbh CKCBH,
+           t1.kcmc CKCMC,
+           t1.sjgw, 
+           t1.zqz CZQZ, 
+           t1.zqdw CZQDW, 
+           t1.fxqx, 
+           t1.sj_ksrq, 
+           t1.scpxjhid,
+           t1.xcpxrq, 
+           (case
+             when nvl(t1.xcpxrq, to_date('9999-12-31', 'YYYY-MM-DD'))&lt; t1.fxqx then
+              t1.xcpxrq - sysdate
+             else
+              t1.fxqx - sysdate
+           end) sy, 
+           t1.jh_ksrq PXJH, 
+           t1.pxjhid, 
+           t1.pxlb,
+           t1.sjks,
+           t1.pxxs,
+           t1.ksxs,
+           t1.jsxm,
+           t1.jsid,
+           t1.pxgh,
+           t1.cql,
+           t1.cj,
+           t1.zs,
+           t1.khjg,
+           t1.dprtname jg_dprtname,
+           t1.is_ypx,
+         COALESCE(t1.fjjx, '') fjjx
+      from (select temp_.wxrydaid,
+                   bz001.rybh,
+                   bz001.xm,
+                   bz001.szdw,
+                   bz001.dprtcode,
+                   temp_.kcid,
+                   bp003.kcbh,
+                   bp003.kcmc,
+                   bp001_sjgw.sjgw, 
+                   bp003.zqz,
+                   bp003.zqdw,
+                   jg.dprtname,
+                   (case
+                     when bp003.zqdw = 1 then
+                      (case
+                        when bp00201.sj_ksrq is null then
+                         sysdate
+                        else
+                         bp00201.sj_ksrq + bp003.zqz
+                      end)
+                     when bp003.zqdw = 2 then
+                      (case
+                        when bp00201.sj_ksrq is null then
+                         sysdate
+                        else
+                         add_months(bp00201.sj_ksrq, bp003.zqz)
+                      end)
+                     when bp003.zqdw = 3 then
+                      (case
+                        when bp00201.sj_ksrq is null then
+                         sysdate
+                        else
+                         add_months(bp00201.sj_ksrq, (bp003.zqz * 12))
+                      end)
+                   end) as fxqx, 
+                   bp00201.xcpxrq, 
+                   bp002.jhsj jh_ksrq,
+                   bp002.pxjhid,
+                   bp00201.sj_ksrq, 
+                   bp00201.pxjhid scpxjhid,
+                   bp00201.pxlb,
+                   bp00201.sjks,
+                   bp00201.pxxs,
+                   bp00201.ksxs,
+                   bp00201.jsxm,
+                   bp00201.jsid,
+                   bp00201.pxgh,
+                   bp00201.cql,
+                   bp00201.cj,
+                   bp00201.zs,
+                   bp00201.khjg,
+             bp003.fjjx,
+                   case when bp00201.pxjlid is null then 0 else 1 end is_ypx
+              from (select distinct wxrydaid, kcid
+                      from (select bp004.wxrydaid, bp004.kcid
+                              from b_p_004 bp004
+                            union all
+                            select bp006.wxrydaid, bp005.kcid
+                              from b_p_006 bp006
+                              join b_p_005 bp005
+                                on bp005.zt = 1
+                               and bp006.zt = 1
+                               and bp006.gwid = bp005.gwid
+                    join b_p_001 bp001
+                  on bp001.id = bp006.gwid
+                  join b_p_003 bp003
+                  on bp003.zt = 1
+                   and bp001.dprtcode = bp003.dprtcode
+                   and bp003.kcbh = bp005.kcid
+                   and COALESCE(bp003.fjjx, '-') =
+                     COALESCE(bp006.fjjx, '-'))) temp_
+              join b_p_003 bp003
+                on bp003.zt = 1
+               and bp003.is_fx = 1
+               and temp_.kcid = bp003.id
+              left join b_z_001 bz001
+                on temp_.wxrydaid = bz001.id
+              left join (select tmp_.sj_ksrq,
+                               tmp_.xcpxrq,
+                               tmp_.pxlb,
+                               tmp_.sjks,
+                               tmp_.pxxs,
+                               tmp_.ksxs,
+                               tmp_.jsxm,
+                               tmp_.jsid,
+                               tmp_.pxgh,
+                               tmp_.pxjhid,
+                               tmp_.cql,
+                               tmp_.cj,
+                               tmp_.zs,
+                               tmp_.khjg,
+                               bp004.kcid,
+                               bp004.wxrydaid,
+                               bp004.pxjlid
+                          from b_p_00201 tmp_
+                          join b_p_004 bp004
+                            on bp004.pxjlid = tmp_.id) bp00201
+                on bp00201.wxrydaid = temp_.wxrydaid
+               and bp00201.kcid = temp_.kcid
+               
+              left join (SELECT t1.kcid, t1.wxrydaid, t1.jhsj, t1.pxjhid
+                          FROM (SELECT ROW_NUMBER() OVER(PARTITION BY b_p_00201.kcid, b_p_00201.wxrydaid ORDER BY b_p_002.jh_ksrq desc, b_p_002.jh_kssj desc) rn,
+                                       b_p_00201.kcid,
+                                       b_p_00201.wxrydaid,
+                                       b_p_00201.pxjhid,
+                                       to_char(b_p_002.jh_ksrq, 'yyyy-mm-dd') ||
+                                       (case
+                                          when b_p_002.jh_kssj is null then
+                                           ''
+                                          else
+                                           ' ' || b_p_002.jh_kssj
+                                        end) jhsj
+                                  FROM b_p_00201
+                                  join b_p_002
+                                    on b_p_00201.zt = 1
+                                    and b_p_002.zt = 1
+                                   and b_p_00201.is_yc = 1
+                                   and b_p_00201.pxjhid = b_p_002.id) t1
+                         WHERE rn = 1) bp002
+                on temp_.kcid = bp002.kcid
+               and temp_.wxrydaid = bp002.wxrydaid
+            
+              left join (select bp006.wxrydaid,
+                                bp003.id kcid,
+                               wm_concat(bp001.id || '#_#' || bp001.dgmc) as sjgw
+                          from b_p_001 bp001 
+                          join b_p_006 bp006
+                            on bp001.zt = 1
+                           and bp006.zt = 1
+                           and bp001.id = bp006.gwid
+                          join b_p_005 bp005
+                            on bp001.zt = 1
+                           and bp005.zt = 1
+                           and bp005.gwid = bp001.id
+                  join b_p_003 bp003
+                on bp003.dprtcode = bp001.dprtcode
+                 and bp003.zt = 1
+                 and bp003.kcbh = bp005.kcid
+                 and coalesce(bp003.fjjx, '-') =
+                   coalesce(bp006.fjjx, '-')
+                group by bp006.wxrydaid, bp003.id
+                        
+                        ) bp001_sjgw
+                on bp001_sjgw.wxrydaid = temp_.wxrydaid
+               and bp001_sjgw.kcid = temp_.kcid
+               
+               left join t_department jg on(bz001.dprtcode=jg.id) ) t1
+			where t1.dprtcode=#{dprtcode,jdbcType=VARCHAR}
+			 <include refid="PlanPersonResultParam" />
+			  	<choose>                                                                                 
+				    	<when test='pagination.sort == "auto"'>                       
+				    		order by rybh,CKCBH asc
+				    		
+				    	</when>
+				    	<otherwise>
+						    order by ${pagination.sort} ${pagination.order}
+				    	</otherwise>
+				 </choose> 
+            
+  </select>  
+  <sql id="PlanPersonResultParam">
+  	 <if test="keyword != null and keyword != ''">
+		    and (  UPPER(t1.pxxs) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.ksxs) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.jsxm) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.pxgh) like UPPER('%'||#{keyword}||'%'))              <!-- 左右匹配 查询关键字 -->
+		</if>
+		<if test="paramsMap != null and paramsMap.is_ypx != null and paramsMap.is_ypx != ''">
+		    and t1.is_ypx = #{paramsMap.is_ypx, jdbcType=VARCHAR}
+		</if>
+		<if test="paramsMap != null and paramsMap.sjKsrqBegin != null and paramsMap.sjKsrqBegin != ''">
+		    and t1.sj_ksrq &gt;= to_date(#{paramsMap.sjKsrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sjKsrqEnd != null and paramsMap.sjKsrqEnd != ''">
+		    and t1.sj_ksrq &lt;= to_date(#{paramsMap.sjKsrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.xcpxrqBegin != null and paramsMap.xcpxrqBegin != ''">
+		    and t1.xcpxrq &gt;= to_date(#{paramsMap.xcpxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.xcpxrqEnd != null and paramsMap.xcpxrqEnd != ''">
+		    and t1.xcpxrq &lt;= to_date(#{paramsMap.xcpxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.ryKeyword != null and paramsMap.ryKeyword != ''">
+			and (UPPER(t1.rybh) like UPPER('%'||#{paramsMap.ryKeyword}||'%')
+		    	or UPPER(t1.xm) like UPPER('%'||#{paramsMap.ryKeyword}||'%'))
+		</if>
+		<if test="paramsMap != null and paramsMap.kcKeyword != null and paramsMap.kcKeyword != ''">
+			and (UPPER(t1.kcbh) like UPPER('%'||#{paramsMap.kcKeyword}||'%')
+		    	OR UPPER(t1.kcmc) like UPPER('%'||#{paramsMap.kcKeyword}||'%'))
+		</if>
+  
+  </sql>
+  
+   <select id="queryAllPageplanPersonList" resultMap="PlanPersonResultMap" parameterType="com.eray.thjw.training.po.PlanPerson" >
+	select t1.fjjx,t1.zy,t2.wbbs,t1.ID, t1.DPRTCODE, t1.PXJHID, t1.WXRYDAID, t1.XM, t1.GZDW, t1.KQ, t1.CQL, t1.ZS, t1.CJ, t1.KHJG, t1.XCPXRQ, t1.KCID, t1.KCmc,t1.KCBM, 
+        t1.KCNR, t1.PXGH, t1.BZ, t1.IS_YC, t1.IS_SC, t1.CYBS, t1.PXLB, t1.FXBS, t1.PXXS, t1.KSXS, t1.KCDD, t1.JSXM,t1.jsid, t1.SJ_KSRQ, 
+        t1.SJ_KSSJ, t1.SJ_JSRQ, t1.SJ_JSSJ, t1.SJKS, t1.ZT, t1.JSZT, t1.WHBMID, t1.WHRID, t1.WHSJ,t3.username || ' '|| t3.realname username,t4.dprtname jg_dprtname,t2.rybh
+        ,D011.ATTACHCOUNT,t2.id as MID
+      from b_p_00201 t1 
+      join b_z_001 t2 on t1.wxrydaid=t2.id and t2.zt=1 <!-- 徐勇20180425由left join 改为jion -->
+      left join t_user t3 on t3.id=t1.whrid
+      left join t_department t4 on t4.id=t1.dprtcode
+       LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT=1 GROUP BY MAINID) D011
+           ON D011.MAINID = t1.ID 
+			where 1=1 and t1.zt=1 and t1.is_sc=1
+			 <include refid="planPersonListParam" />
+			  	<choose>                                                                                 
+				    	<when test='pagination.sort == "auto"'>                       
+				    		order by  t2.wbbs,t1.gzdw,t2.rybh,t1.id desc
+				    	</when>
+				    	<otherwise>
+						    order by ${pagination.sort} ${pagination.order}
+				    	</otherwise>
+				 </choose> 
+ 	 </select>  
+ 	 
+ 	 
+  
+ <sql id="planPersonListParam">
+ 
+	<if test="paramsMap != null and paramsMap.pxDateBegin != null and paramsMap.pxDateBegin != ''">
+	    and t1.sj_ksrq &gt;= to_date(#{paramsMap.pxDateBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+	</if>
+	<if test="paramsMap != null and paramsMap.pxDateEnd != null and paramsMap.pxDateEnd != ''">
+	    and t1.sj_ksrq &lt;= to_date(#{paramsMap.pxDateEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+	</if>
+  	 <if test="keyword != null and keyword != ''">
+		    and (   UPPER(t1.jsxm) like UPPER('%'||#{keyword}||'%')
+		    	 or UPPER(t1.kcdd) like UPPER('%'||#{keyword}||'%')
+		    	 or UPPER(t1.pxxs) like UPPER('%'||#{keyword}||'%')
+		    	 or UPPER(t1.ksxs) like UPPER('%'||#{keyword}||'%')
+		    	 or UPPER(t1.bz) like UPPER('%'||#{keyword}||'%')
+		    	 or UPPER(t1.pxgh) like UPPER('%'||#{keyword}||'%')
+		    	 or UPPER(t1.zs) like UPPER('%'||#{keyword}||'%')
+			     or UPPER(t1.fjjx) like UPPER('%'||#{keyword}||'%')
+			     or UPPER(t1.zy) like UPPER('%'||#{keyword}||'%')
+		    	)
+	 </if>
+  	 <if test="paramsMap.ry != null and paramsMap.ry != ''">
+		    and (   UPPER(t2.rybh) like UPPER('%'||#{paramsMap.ry}||'%')
+		    	 or UPPER(t1.xm) like UPPER('%'||#{paramsMap.ry}||'%')
+		    	 or UPPER(t1.gzdw) like UPPER('%'||#{paramsMap.ry}||'%')
+		    	)
+	 </if>
+  	 <if test="paramsMap.kc != null and paramsMap.kc != ''">
+		    and (   UPPER(t1.kcbm) like UPPER('%'||#{paramsMap.kc}||'%')
+			     or UPPER(t1.kcmc) like UPPER('%'||#{paramsMap.kc}||'%')
+		    	)
+	 </if>
+	  <if test="dprtcode != null and dprtcode != ''">
+		    and  t1.dprtcode = #{dprtcode}
+	 </if>
+	  <if test="pxlb != null and pxlb != ''">
+		    and  t1.pxlb = #{pxlb}
+	 </if>
+	 
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   select t1.fjjx,t1.zy,t1.ID, t1.DPRTCODE, t1.PXJHID, t1.WXRYDAID, t1.XM, t1.GZDW, t1.KQ, t1.CQL, t1.ZS, t1.CJ, t1.KHJG, t1.XCPXRQ, t1.KCID, t1.KCmc,t1.KCBM, 
+        t1.KCNR, t1.PXGH, t1.BZ, t1.IS_YC, t1.IS_SC, t1.CYBS, t1.PXLB, t1.FXBS, t1.PXXS, t1.KSXS, t1.KCDD, t1.JSXM,t1.jsid, t1.SJ_KSRQ, 
+        t1.SJ_KSSJ, t1.SJ_JSRQ, t1.SJ_JSSJ, t1.SJKS, t1.ZT, t1.JSZT, t1.WHBMID, t1.WHRID, t1.WHSJ,t3.username || ' '|| t3.realname username,t4.dprtname,t2.rybh
+      from b_p_00201 t1 
+      left join b_z_001 t2 on t1.wxrydaid=t2.id and t2.zt=1
+      left join t_user t3 on t3.id=t1.whrid
+      left join t_department t4 on t4.id=t1.dprtcode
+      where 1=1 and t1.zt=1   and t1.ID = #{id,jdbcType=VARCHAR}
+    
+  </select>
+  
+  <select id="selectpxjhid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   select t1.ID, t1.DPRTCODE, t1.PXJHID, t1.WXRYDAID, t1.XM, t1.GZDW, t1.KQ, t1.CQL, t1.ZS, t1.CJ, t1.KHJG, t1.XCPXRQ, t1.KCID, t1.KCmc,t1.KCBM, 
+		    t1.KCNR, t1.PXGH, t1.BZ, t1.IS_YC, t1.IS_SC, t1.CYBS, t1.PXLB, t1.FXBS, t1.PXXS, t1.KSXS, t1.KCDD, t1.JSXM, t1.jsid, t1.SJ_KSRQ, 
+		    t1.SJ_KSSJ, t1.SJ_JSRQ, t1.SJ_JSSJ, t1.SJKS, t1.ZT, t1.JSZT, t1.WHBMID, t1.WHRID, t1.WHSJ,t3.username || ' '|| t3.realname username,t4.dprtname,t2.rybh
+			from b_p_00201 t1 
+			left join b_z_001 t2 on t1.wxrydaid=t2.id and t2.zt=1
+			left join t_user t3 on t3.id=t1.whrid
+			left join t_department t4 on t4.id=t1.dprtcode
+			where 1=1 and t1.zt=1  and t1.pxjhid = #{pxjhid,jdbcType=VARCHAR}
+    
+  </select>
+  <select id="selectMaxDateList" resultMap="BaseResultMap" parameterType="java.lang.String" >
+ select t1.kcid from( select sj_ksrq,id,kcid,pxjhid,wxrydaid,zt,is_sc,dprtcode from b_p_00201 b1 where b1.is_sc=1 and b1.zt=1 
+	  and b1.dprtcode = #{1,jdbcType=VARCHAR}  and b1.wxrydaid = #{0,jdbcType=VARCHAR} and b1.kcid is not null
+	 order by b1.sj_ksrq desc,b1.sj_kssj desc ) t1 group by t1.kcid
+    
+  </select>
+  <select id="selectMaxDate" resultMap="BaseResultMap" parameterType="java.lang.String" >
+ select * from( select sj_ksrq,id,kcid,pxjhid,wxrydaid,zt,is_sc,dprtcode from b_p_00201 b1 where b1.is_sc=1 and b1.zt=1 
+	  and b1.kcid = #{0,jdbcType=VARCHAR}  and b1.wxrydaid = #{1,jdbcType=VARCHAR}
+	 order by b1.sj_ksrq desc,b1.sj_kssj desc ) where rownum= 1 
+    
+  </select>
+  <select id="selectMAXpxjhid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   select t1.ID, t1.DPRTCODE, t1.PXJHID, t1.WXRYDAID, t1.XM, t1.GZDW, t1.KQ, t1.CQL, t1.ZS, t1.CJ, t1.KHJG, t1.XCPXRQ, t1.KCID, t1.KCmc,t1.KCBM, 
+		    t1.KCNR, t1.PXGH, t1.BZ, t1.IS_YC, t1.IS_SC, t1.CYBS, t1.PXLB, t1.FXBS, t1.PXXS, t1.KSXS, t1.KCDD, t1.JSXM,t1.jsid, t1.SJ_KSRQ, 
+		    t1.SJ_KSSJ,  t1.SJ_JSRQ, t1.SJ_JSSJ, t1.SJKS, t1.ZT, t1.JSZT, t1.WHBMID, t1.WHRID, t1.WHSJ,t3.username || ' '|| t3.realname username,t4.dprtname,t2.rybh
+      from b_p_00201 t1 
+      left join b_z_001 t2 on t1.wxrydaid=t2.id and t2.zt=1
+      left join t_user t3 on t3.id=t1.whrid
+      left join t_department t4 on t4.id=t1.dprtcode
+      where 1=1 and t1.zt=1 and t1.pxjhid = #{pxjhid,jdbcType=VARCHAR}
+      and ROWNUM =1
+      ORDER BY t1.sj_ksrq DESC
+    
+  </select>
+  
+  <select id="queryByPxjhId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+	    BP.ID, BP.DPRTCODE, BP.PXJHID, BP.WXRYDAID,BP.XM, BP.GZDW,BZ.RYBH,BZ.WBBS,BZ.SZDW
+    from B_P_00201 BP
+    left join B_Z_001 BZ
+    ON BP.WXRYDAID = BZ.ID
+    where BP.PXJHID = #{pxjhid,jdbcType=VARCHAR} and BP.ZT = 1 and BP.IS_YC = 1
+     	order by BZ.WBBS asc,BZ.SZDW desc,BZ.RYBH desc
+  </select>
+  <select id="queryByPxjhscId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+           BZ.wbbs,BP.ID, BP.DPRTCODE, BP.PXJHID, BP.WXRYDAID, BP.XM, BP.GZDW, BP.KQ, BP.CQL, BP.ZS, BP.CJ, BP.KHJG, BP.XCPXRQ, BP.KCID,BP.kcmc, BP.KCBM, 
+    BP.KCNR, BP.PXGH, BP.BZ, BP.IS_YC, BP.IS_SC, BP.CYBS, BP.PXLB, BP.FXBS, BP.PXXS, BP.KSXS, BP.KCDD, BP.JSXM, BP.jsid, BP.SJ_KSRQ, 
+   BP.SJ_KSSJ, BP.SJ_JSRQ, BP.SJ_JSSJ, BP.SJKS, BP.ZT, BP.JSZT, BP.WHBMID, BP.WHRID, BP.WHSJ, BP.FJJX, BP.ZY,BZ.RYBH,BZ.WXRYID,BZ.ID MID
+    from B_P_00201 BP
+    left join B_Z_001 BZ
+    ON BP.WXRYDAID = BZ.ID
+    where BP.PXJHID = #{pxjhid,jdbcType=VARCHAR} and BP.ZT = 1 
+     order by BZ.wbbs,bp.gzdw,BZ.Rybh desc
+  </select>
+  <select id="queryByPxjhsc" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+          BP.ID, BP.DPRTCODE, BP.PXJHID, BP.WXRYDAID, BP.XM, BP.GZDW, BP.KQ, BP.CQL, BP.ZS, BP.CJ, BP.KHJG, BP.XCPXRQ, BP.KCID,BP.kcmc, BP.KCBM, 
+    BP.KCNR, BP.PXGH, BP.BZ, BP.IS_YC, BP.IS_SC, BP.CYBS, BP.PXLB, BP.FXBS, BP.PXXS, BP.KSXS, BP.KCDD, BP.JSXM,BP.jsid, BP.SJ_KSRQ, 
+   BP.SJ_KSSJ, BP.SJ_JSRQ, BP.SJ_JSSJ, BP.SJKS, BP.ZT, BP.JSZT, BP.WHBMID, BP.WHRID, BP.WHSJ, BP.FJJX, BP.ZY,BZ.RYBH,BZ.WXRYID
+    from B_P_00201 BP
+    left join B_Z_001 BZ
+    ON BP.WXRYDAID = BZ.ID
+    where BP.PXJHID = #{pxjhid,jdbcType=VARCHAR} and BP.ZT = 1 and IS_SC = 1
+     order by bp.gzdw,BZ.Rybh
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_00201
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    update B_P_00201
+    set ZT = 0
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.PlanPerson" >
+    insert into B_P_00201 (ID, DPRTCODE, PXJHID, 
+      WXRYDAID, XM, GZDW, 
+      KQ, CQL, ZS, CJ, 
+      KHJG, XCPXRQ, KCID, 
+      KCBM, KCNR, PXGH, BZ, 
+      IS_YC, IS_SC, CYBS, PXLB, 
+      FXBS, PXXS, KSXS, KCDD, 
+      JSXM, SJ_KSRQ, SJ_KSSJ, 
+      SJ_JSRQ, SJ_JSSJ, SJKS, 
+      ZT, JSZT, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{pxjhid,jdbcType=VARCHAR}, 
+      #{wxrydaid,jdbcType=VARCHAR}, #{xm,jdbcType=VARCHAR}, #{gzdw,jdbcType=VARCHAR}, 
+      #{kq,jdbcType=DECIMAL}, #{cql,jdbcType=DECIMAL}, #{zs,jdbcType=VARCHAR}, #{cj,jdbcType=VARCHAR}, 
+      #{khjg,jdbcType=DECIMAL}, #{xcpxrq,jdbcType=TIMESTAMP}, #{kcid,jdbcType=VARCHAR}, 
+      #{kcbm,jdbcType=VARCHAR}, #{kcnr,jdbcType=VARCHAR}, #{pxgh,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, 
+      #{isYc,jdbcType=DECIMAL}, #{isSc,jdbcType=DECIMAL}, #{cybs,jdbcType=DECIMAL}, #{pxlb,jdbcType=VARCHAR}, 
+      #{fxbs,jdbcType=DECIMAL}, #{pxxs,jdbcType=VARCHAR}, #{ksxs,jdbcType=VARCHAR}, #{kcdd,jdbcType=VARCHAR}, 
+      #{jsxm,jdbcType=VARCHAR}, #{sjKsrq,jdbcType=TIMESTAMP}, #{sjKssj,jdbcType=VARCHAR}, 
+      #{sjJsrq,jdbcType=TIMESTAMP}, #{sjJssj,jdbcType=VARCHAR}, #{sjks,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{jszt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="batchInsert" parameterType="java.util.List">
+    insert into B_P_00201 (ID, DPRTCODE, PXJHID, 
+      WXRYDAID, XM, GZDW, 
+      KQ, CQL, ZS, CJ, 
+      KHJG, XCPXRQ, KCID, 
+      KCBM, KCNR, PXGH, BZ, 
+      IS_YC, IS_SC, CYBS, PXLB, 
+      FXBS, PXXS, KSXS, KCDD, 
+      JSXM, SJ_KSRQ, SJ_KSSJ, 
+      SJ_JSRQ, SJ_JSSJ, SJKS, 
+      ZT, JSZT, WHBMID, WHRID, 
+      WHSJ) 
+      
+     <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		select
+       #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.pxjhid,jdbcType=VARCHAR}, 
+      #{item.wxrydaid,jdbcType=VARCHAR}, #{item.xm,jdbcType=VARCHAR}, #{item.gzdw,jdbcType=VARCHAR}, 
+      #{item.kq,jdbcType=DECIMAL}, #{item.cql,jdbcType=DECIMAL}, #{item.zs,jdbcType=VARCHAR}, #{item.cj,jdbcType=VARCHAR}, 
+      #{item.khjg,jdbcType=DECIMAL}, #{item.xcpxrq,jdbcType=TIMESTAMP}, #{item.kcid,jdbcType=VARCHAR}, 
+      #{item.kcbm,jdbcType=VARCHAR}, #{item.kcnr,jdbcType=VARCHAR}, #{item.pxgh,jdbcType=VARCHAR}, #{item.bz,jdbcType=VARCHAR}, 
+      #{item.isYc,jdbcType=DECIMAL}, #{item.isSc,jdbcType=DECIMAL}, #{item.cybs,jdbcType=DECIMAL}, #{item.pxlb,jdbcType=VARCHAR}, 
+      #{item.fxbs,jdbcType=DECIMAL}, #{item.pxxs,jdbcType=VARCHAR}, #{item.ksxs,jdbcType=VARCHAR}, #{item.kcdd,jdbcType=VARCHAR}, 
+      #{item.jsxm,jdbcType=VARCHAR}, #{item.sjKsrq,jdbcType=TIMESTAMP}, #{item.sjKssj,jdbcType=VARCHAR}, 
+      #{item.sjJsrq,jdbcType=TIMESTAMP}, #{item.sjJssj,jdbcType=VARCHAR}, #{item.sjks,jdbcType=VARCHAR}, 
+      #{item.zt,jdbcType=DECIMAL}, #{item.jszt,jdbcType=DECIMAL}, #{item.whbmid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, 
+      sysdate
+		from dual 
+	 </foreach> 
+
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.PlanPerson" >
+    insert into B_P_00201
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="pxjhid != null" >
+        PXJHID,
+      </if>
+      <if test="wxrydaid != null" >
+        WXRYDAID,
+      </if>
+      <if test="xm != null" >
+        XM,
+      </if>
+      <if test="gzdw != null" >
+        GZDW,
+      </if>
+      <if test="kq != null" >
+        KQ,
+      </if>
+      <if test="cql != null" >
+        CQL,
+      </if>
+      <if test="zs != null" >
+        ZS,
+      </if>
+      <if test="cj != null" >
+        CJ,
+      </if>
+      <if test="khjg != null" >
+        KHJG,
+      </if>
+      <if test="xcpxrq != null" >
+        XCPXRQ,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="kcmc != null" >
+        kcmc,
+      </if>
+      <if test="kcbm != null" >
+        KCBM,
+      </if>
+      <if test="kcnr != null" >
+        KCNR,
+      </if>
+      <if test="pxgh != null" >
+        PXGH,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="isYc != null" >
+        IS_YC,
+      </if>
+      <if test="isSc != null" >
+        IS_SC,
+      </if>
+      <if test="cybs != null" >
+        CYBS,
+      </if>
+      <if test="pxlb != null" >
+        PXLB,
+      </if>
+      <if test="fxbs != null" >
+        FXBS,
+      </if>
+      <if test="pxxs != null" >
+        PXXS,
+      </if>
+      <if test="ksxs != null" >
+        KSXS,
+      </if>
+      <if test="kcdd != null" >
+        KCDD,
+      </if>
+      <if test="jsxm != null" >
+        JSXM,
+      </if>
+      <if test="sjKsrq != null" >
+        SJ_KSRQ,
+      </if>
+      <if test="sjKssj != null" >
+        SJ_KSSJ,
+      </if>
+        SJ_JSRQ,
+        SJ_JSSJ,
+      <if test="sjks != null" >
+        SJKS,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="zy != null" >
+        ZY,
+      </if>
+      <if test="jszt != null" >
+        JSZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+        <if test="jsid != null" >
+        JSID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pxjhid != null" >
+        #{pxjhid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxrydaid != null" >
+        #{wxrydaid,jdbcType=VARCHAR},
+      </if>
+      <if test="xm != null" >
+        #{xm,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdw != null" >
+        #{gzdw,jdbcType=VARCHAR},
+      </if>
+      <if test="kq != null" >
+        #{kq,jdbcType=DECIMAL},
+      </if>
+      <if test="cql != null" >
+        #{cql,jdbcType=DECIMAL},
+      </if>
+      <if test="zs != null" >
+        #{zs,jdbcType=VARCHAR},
+      </if>
+      <if test="cj != null" >
+        #{cj,jdbcType=VARCHAR},
+      </if>
+      <if test="khjg != null" >
+        #{khjg,jdbcType=DECIMAL},
+      </if>
+      <if test="xcpxrq != null" >
+        #{xcpxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcmc != null" >
+        #{kcmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kcbm != null" >
+        #{kcbm,jdbcType=VARCHAR},
+      </if>
+      <if test="kcnr != null" >
+        #{kcnr,jdbcType=VARCHAR},
+      </if>
+      <if test="pxgh != null" >
+        #{pxgh,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="isYc != null" >
+        #{isYc,jdbcType=DECIMAL},
+      </if>
+      <if test="isSc != null" >
+        #{isSc,jdbcType=DECIMAL},
+      </if>
+      <if test="cybs != null" >
+        #{cybs,jdbcType=DECIMAL},
+      </if>
+      <if test="pxlb != null" >
+        #{pxlb,jdbcType=VARCHAR},
+      </if>
+      <if test="fxbs != null" >
+        #{fxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="pxxs != null" >
+        #{pxxs,jdbcType=VARCHAR},
+      </if>
+      <if test="ksxs != null" >
+        #{ksxs,jdbcType=VARCHAR},
+      </if>
+      <if test="kcdd != null" >
+        #{kcdd,jdbcType=VARCHAR},
+      </if>
+      <if test="jsxm != null" >
+        #{jsxm,jdbcType=VARCHAR},
+      </if>
+      <if test="sjKsrq != null" >
+        #{sjKsrq,jdbcType=VARCHAR},
+      </if>
+      <if test="sjKssj != null" >
+        #{sjKssj,jdbcType=VARCHAR},
+      </if>
+      
+      	#{sjJsrq,jdbcType=TIMESTAMP},
+        #{sjJssj,jdbcType=VARCHAR},
+      <if test="sjks != null" >
+        #{sjks,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jszt != null" >
+        #{jszt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="jsid != null" >
+        #{jsid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.PlanPerson" >
+    update B_P_00201
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="pxjhid != null" >
+        PXJHID = #{pxjhid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxrydaid != null" >
+        WXRYDAID = #{wxrydaid,jdbcType=VARCHAR},
+      </if>
+      <if test="xm != null" >
+        XM = #{xm,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdw != null" >
+        GZDW = #{gzdw,jdbcType=VARCHAR},
+      </if>
+      <if test="kq != null" >
+        KQ = #{kq,jdbcType=DECIMAL},
+      </if>
+        CQL = #{cql,jdbcType=DECIMAL},
+      <if test="zs != null" >
+        ZS = #{zs,jdbcType=VARCHAR},
+      </if>
+      <if test="cj != null" >
+        CJ = #{cj,jdbcType=VARCHAR},
+      </if>
+        KHJG = #{khjg,jdbcType=DECIMAL},
+        XCPXRQ = #{xcpxrq,jdbcType=TIMESTAMP},
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcmc != null" >
+        kcmc = #{kcmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kcbm != null" >
+        KCBM = #{kcbm,jdbcType=VARCHAR},
+      </if>
+      <if test="kcnr != null" >
+        KCNR = #{kcnr,jdbcType=VARCHAR},
+      </if>
+      <if test="pxgh != null" >
+        PXGH = #{pxgh,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="isYc != null" >
+        IS_YC = #{isYc,jdbcType=DECIMAL},
+      </if>
+        IS_SC = #{isSc,jdbcType=DECIMAL},
+      <if test="cybs != null" >
+        CYBS = #{cybs,jdbcType=DECIMAL},
+      </if>
+      <if test="pxlb != null" >
+        PXLB = #{pxlb,jdbcType=VARCHAR},
+      </if>
+      <if test="fxbs != null" >
+        FXBS = #{fxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="pxxs != null" >
+        PXXS = #{pxxs,jdbcType=VARCHAR},
+      </if>
+      <if test="ksxs != null" >
+        KSXS = #{ksxs,jdbcType=VARCHAR},
+      </if>
+      <if test="kcdd != null" >
+        KCDD = #{kcdd,jdbcType=VARCHAR},
+      </if>
+      <if test="jsxm != null" >
+        JSXM = #{jsxm,jdbcType=VARCHAR},
+      </if>
+        SJ_KSRQ = #{sjKsrq,jdbcType=TIMESTAMP},
+        SJ_KSSJ = #{sjKssj,jdbcType=VARCHAR},
+        SJ_JSRQ = #{sjJsrq,jdbcType=TIMESTAMP},
+        SJ_JSSJ = #{sjJssj,jdbcType=VARCHAR},
+      <if test="sjks != null" >
+        SJKS = #{sjks,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        fjjx = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        zy = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jszt != null" >
+        JSZT = #{jszt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="jsid != null" >
+        JSID = #{jsid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.PlanPerson" >
+    update B_P_00201
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      PXJHID = #{pxjhid,jdbcType=VARCHAR},
+      WXRYDAID = #{wxrydaid,jdbcType=VARCHAR},
+      XM = #{xm,jdbcType=VARCHAR},
+      GZDW = #{gzdw,jdbcType=VARCHAR},
+      KQ = #{kq,jdbcType=DECIMAL},
+      CQL = #{cql,jdbcType=DECIMAL},
+      ZS = #{zs,jdbcType=VARCHAR},
+      CJ = #{cj,jdbcType=VARCHAR},
+      KHJG = #{khjg,jdbcType=DECIMAL},
+      XCPXRQ = #{xcpxrq,jdbcType=TIMESTAMP},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      KCBM = #{kcbm,jdbcType=VARCHAR},
+      KCNR = #{kcnr,jdbcType=VARCHAR},
+      PXGH = #{pxgh,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      IS_YC = #{isYc,jdbcType=DECIMAL},
+      IS_SC = #{isSc,jdbcType=DECIMAL},
+      CYBS = #{cybs,jdbcType=DECIMAL},
+      PXLB = #{pxlb,jdbcType=VARCHAR},
+      FXBS = #{fxbs,jdbcType=DECIMAL},
+      PXXS = #{pxxs,jdbcType=VARCHAR},
+      KSXS = #{ksxs,jdbcType=VARCHAR},
+      KCDD = #{kcdd,jdbcType=VARCHAR},
+      JSXM = #{jsxm,jdbcType=VARCHAR},
+      SJ_KSRQ = #{sjKsrq,jdbcType=TIMESTAMP},
+      SJ_KSSJ = #{sjKssj,jdbcType=VARCHAR},
+      SJ_JSRQ = #{sjJsrq,jdbcType=TIMESTAMP},
+      SJ_JSSJ = #{sjJssj,jdbcType=VARCHAR},
+      SJKS = #{sjks,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      JSZT = #{jszt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 删除列表中不存在的数据 -->
+  <delete id="deleteNotExist" parameterType="com.eray.thjw.quality.po.MaintenancePersonnel" >
+    DELETE FROM  B_P_00201 
+		WHERE WXRYDAID = #{id,jdbcType=VARCHAR}
+		<if test="trainings != null and trainings.size > 0">
+            AND ID NOT IN 
+            <foreach collection="trainings" item="item" index="index" open="(" close=")" separator=",">
+			#{item.id,jdbcType=VARCHAR}
+	   		</foreach>
+        </if>
+  </delete>
+  
+  <!-- 查询 -->
+  <select id="queryByWxrydaid" resultMap="PlanPersonResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />,
+    b_p_003.id as cid, b_p_003.kcbh as ckcbh, b_p_003.kcmc as ckcmc, 
+    b_p_003.zqz as czqz, b_p_003.zqdw as czqdw, b_p_003.is_fx as cisfx
+    from B_P_00201
+    left join b_p_003 on B_P_00201.kcid = b_p_003.id
+    where B_P_00201.WXRYDAID = #{id,jdbcType=VARCHAR} AND B_P_00201.ZT = 1 AND B_P_00201.IS_SC = 1
+    order by B_P_00201.sj_ksrq desc, B_P_00201.sj_kssj desc
+  </select>
+  
+  <!-- 根据组织机构查询 -->
+  <select id="queryByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    B_P_00201.ID, B_P_00201.DPRTCODE, B_P_00201.KCMC, B_P_00201.KCBM, B_P_00201.SJ_KSRQ, B_P_00201.SJ_KSSJ,
+    B_P_00201.SJKS, B_P_00201.FJJX, B_Z_001.RYBH
+    from B_P_00201
+    left join B_Z_001 on B_P_00201.wxrydaid = B_Z_001.id
+    where B_P_00201.dprtcode = #{dprtcode,jdbcType=VARCHAR} AND B_P_00201.ZT = 1 AND B_P_00201.IS_SC = 1
+    order by B_P_00201.sj_ksrq desc, B_P_00201.sj_kssj desc
+  </select>
+  
+  <!-- 维修人员更新培训记录 -->
+  <update id="updateByWxryda" parameterType="com.eray.thjw.training.po.PlanPerson" >
+    update B_P_00201
+    <set >
+      <if test="pxjhid != null" >
+        PXJHID = #{pxjhid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxrydaid != null" >
+        WXRYDAID = #{wxrydaid,jdbcType=VARCHAR},
+      </if>
+      <if test="xm != null" >
+        XM = #{xm,jdbcType=VARCHAR},
+      </if>
+      <if test="gzdw != null" >
+        GZDW = #{gzdw,jdbcType=VARCHAR},
+      </if>
+      <if test="kq != null" >
+        KQ = #{kq,jdbcType=DECIMAL},
+      </if>
+        CQL = #{cql,jdbcType=DECIMAL},
+      <if test="zs != null" >
+        ZS = #{zs,jdbcType=VARCHAR},
+      </if>
+      <if test="cj != null" >
+        CJ = #{cj,jdbcType=VARCHAR},
+      </if>
+        KHJG = #{khjg,jdbcType=DECIMAL},
+        XCPXRQ = #{xcpxrq,jdbcType=TIMESTAMP},
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcmc != null" >
+        kcmc = #{kcmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kcbm != null" >
+        KCBM = #{kcbm,jdbcType=VARCHAR},
+      </if>
+      <if test="kcnr != null" >
+        KCNR = #{kcnr,jdbcType=VARCHAR},
+      </if>
+      <if test="pxgh != null" >
+        PXGH = #{pxgh,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="isYc != null" >
+        IS_YC = #{isYc,jdbcType=DECIMAL},
+      </if>
+      <if test="isSc != null" >
+        IS_SC = #{isSc,jdbcType=DECIMAL},
+      </if>
+      <if test="cybs != null" >
+        CYBS = #{cybs,jdbcType=DECIMAL},
+      </if>
+      <if test="pxlb != null" >
+        PXLB = #{pxlb,jdbcType=VARCHAR},
+      </if>
+      <if test="fxbs != null" >
+        FXBS = #{fxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="pxxs != null" >
+        PXXS = #{pxxs,jdbcType=VARCHAR},
+      </if>
+      <if test="ksxs != null" >
+        KSXS = #{ksxs,jdbcType=VARCHAR},
+      </if>
+      <if test="kcdd != null" >
+        KCDD = #{kcdd,jdbcType=VARCHAR},
+      </if>
+      <if test="jsxm != null" >
+        JSXM = #{jsxm,jdbcType=VARCHAR},
+      </if>
+        SJ_KSRQ = #{sjKsrq,jdbcType=TIMESTAMP},
+        SJ_KSSJ = #{sjKssj,jdbcType=VARCHAR},
+        SJ_JSRQ = #{sjJsrq,jdbcType=TIMESTAMP},
+        SJ_JSSJ = #{sjJssj,jdbcType=VARCHAR},
+      <if test="sjks != null" >
+        SJKS = #{sjks,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjjx != null" >
+        fjjx = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="zy != null" >
+        zy = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="jszt != null" >
+        JSZT = #{jszt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="jsid != null" >
+        JSID = #{jsid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

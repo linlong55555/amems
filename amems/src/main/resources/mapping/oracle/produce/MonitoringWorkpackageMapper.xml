@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.MonitoringWorkpackageMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.MonitoringWorkpackage" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="JKSJGDID" property="jksjgdid" jdbcType="VARCHAR" />
+    <result column="DJBJKSJID" property="djbjksjid" jdbcType="VARCHAR" />
+    <result column="LX" property="lx" jdbcType="DECIMAL" />
+    <result column="GBID" property="gbid" jdbcType="VARCHAR" />
+    <result column="XSBS" property="xsbs" jdbcType="DECIMAL" />
+    
+    <!-- 扩充字段 start -->
+    <result column="BJXH" property="paramsMap.xh" jdbcType="VARCHAR" /><!-- 型号 -->
+    <result column="JKJHSJSJ" property="paramsMap.jhsjsj" jdbcType="VARCHAR" /><!-- 计划值+容差-->
+    <result column="KGBBH" property="paramsMap.gbbh" jdbcType="VARCHAR" /><!-- 工包编号-->
+    <result column="KZJH" property="paramsMap.zjh" jdbcType="VARCHAR" /><!-- 章节号 -->
+    <result column="KZJHZWMS" property="paramsMap.zjhzwms" jdbcType="VARCHAR" /><!-- 章节号中文描述-->
+    <result column="KZJHYWMS" property="paramsMap.zjhywms" jdbcType="VARCHAR" /><!-- 章节号英文描述-->
+    <result column="KJKSJLX" property="paramsMap.jksjlx" jdbcType="VARCHAR" /><!-- 监控数据类型 -->
+    <result column="LYZLX" property="paramsMap.lyzlx" jdbcType="DECIMAL" /><!-- 来源子类型（1一般项目、2时控项目、3时寿项目、4定检包、NULL）只有来源类型=1的才有子类型，其他都为NULL -->
+    <result column="KRWH" property="paramsMap.rwh" jdbcType="VARCHAR" /><!-- 任务号 -->
+    <result column="KBB" property="paramsMap.bb" jdbcType="VARCHAR" /><!-- 版本 -->
+    <result column="KRWMS" property="paramsMap.rwms" jdbcType="VARCHAR" /><!-- 任务描述 -->
+    <result column="KBJH" property="paramsMap.bjh" jdbcType="VARCHAR" /><!-- 部件号 -->
+    <result column="KXLH" property="paramsMap.xlh" jdbcType="VARCHAR" /><!-- 序列号 -->
+    <result column="KGZLX" property="paramsMap.gzlx" jdbcType="VARCHAR" /><!-- 工作类型 -->
+    <result column="KISHDWZ" property="paramsMap.isHdwz" jdbcType="VARCHAR" /><!-- 后到为准 -->
+    <result column="KLYID" property="paramsMap.lyid" jdbcType="VARCHAR" /><!-- 来源id -->
+    <result column="KXLH" property="paramsMap.xlh" jdbcType="VARCHAR" /><!-- 序列号 -->
+    <result column="KGDID" property="paramsMap.gdid" jdbcType="VARCHAR" /><!-- 工单id -->
+    
+    <!-- 扩充字段 end -->
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHDWID, WHRID, WHSJ, FJZCH, JKSJGDID, DJBJKSJID, LX, GBID, XSBS
+  </sql>
+  
+  <sql id="Wp_Column_List" >
+    s2009.ID, s2009.DPRTCODE, s2009.WHDWID, s2009.WHRID, s2009.WHSJ, s2009.FJZCH, s2009.JKSJGDID, s2009.DJBJKSJID, s2009.LX, s2009.GBID, s2009.XSBS
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 查询监控数据id集合,检查监控数据id是否存在 -->
+  <select id="query4CheckExist" resultType="java.lang.String" >
+    select JKSJGDID
+    from B_S2_009
+    where DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and FJZCH = #{fjzch,jdbcType=VARCHAR}
+    	  and JKSJGDID in
+   			 <foreach item="item" index="index" collection="jksjidList" open="(" separator="," close=")">  
+       			#{item}  
+   			 </foreach>  
+  </select>
+  
+  	<!-- 根据条件查询已选中的监控数据列表 -->
+  	<select id="queryCheckedList" resultMap="BaseResultMap" parameterType="com.eray.thjw.produce.po.MonitoringWorkpackage">
+    	select 
+    		<include refid="Wp_Column_List" />
+    		   ,s2901.jksjlx as KJKSJLX
+    		   ,s2901.WXXMLX as LYZLX
+       		   ,s2901.zjh as KZJH
+       		   ,Z.ZWMS AS KZJHZWMS
+		       ,Z.YWMS AS KZJHYWMS
+       		   ,s2901.jksjbm as KRWH
+       		   ,s2901.bb as KBB
+		       ,s2901.rwms as KRWMS
+		       ,s2901.bjh as KBJH
+		       ,s2901.xlh as KXLH
+		       ,s2901.gzlx as KGZLX
+		       ,s2901.is_hdwz as KISHDWZ
+		       ,s2901.lyid as KLYID
+		       ,s2904.jhsjsj as JKJHSJSJ
+		       ,s2007.gbbh as KGBBH
+		       ,d008.xingh as BJXH
+		       ,wo.id as KGDID
+  		from b_s2_009 s2009
+  		left join b_s2_008 wo
+    	on wo.jksjid = s2009.jksjgdid
+   		and wo.zt != 9
+  		join (select 1 jksjlx,
+	               g2012.zjh,
+	               g2012.rwh jksjbm,
+	               g2012.bb,
+	               g2012.rwms,
+	               g2012.WXXMLX,
+	               s2901.bjh,
+	               s2901.xlh,
+	               g2012.gzlx,
+	               g2012.is_hdwz,
+	               s2901.fjzch,
+	               s2901.dprtcode,
+	               s2901.id jksjid,
+	               s2901.lyid
+	          from b_s2_901 s2901
+	          join b_g2_012 g2012
+	            on g2012.id = s2901.lyid
+	           and s2901.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2901.lylx = 1
+	           and s2901.fjzch = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	        union all
+	        select 2 jksjlx,
+	               g2010.zjh,
+	               g2010.eobh jksjbm,
+	               g2010.bb,
+	               g2010.eozt rwms,
+	               NULL WXXMLX,
+	               s2901.bjh,
+	               s2901.xlh,
+	               g2010.gzlx,
+	               g2010.hdwz is_hdwz,
+	               s2901.fjzch,
+	               s2901.dprtcode,
+	               s2901.id jksjid,
+	               s2901.lyid
+	          from b_s2_901 s2901
+	          join b_g2_010 g2010
+	            on g2010.id = s2901.lyid
+	           and s2901.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2901.lylx = 2
+	           and s2901.fjzch = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	        union all
+	        select 6 jksjlx,
+	               g2014.zjh,
+	               g2014.zlbh jksjbm,
+	               g2014.bb,
+	               g2014.zlms rwms,
+	               NULL WXXMLX,
+	               s2901.bjh,
+	               s2901.xlh,
+	               '' gzlx,
+	               g2014.is_hdwz,
+	               s2901.fjzch,
+	               s2901.dprtcode,
+	               s2901.id jksjid,
+	               s2901.lyid
+	          from b_s2_901 s2901
+	          join b_g2_014 g2014
+	            on g2014.id = s2901.lyid
+	           and s2901.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2901.lylx = 3
+	           and s2901.fjzch = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	        union all
+	        select s2008.gdlx jksjlx,
+	               s2008.zjh,
+	               s2008.gdbh jksjbm,
+	               null bb,
+	               s2008.gdbt rwms,
+	               NULL WXXMLX,
+	               '' bjh,
+	               '' xlh,
+	               s2008.gzlb gzlx,
+	               null is_hdwz,
+	               s2008.fjzch,
+	               s2008.dprtcode,
+	               s2008.id jksjid,
+	               s2008.id lyid
+	          from b_s2_008 s2008
+	         where s2008.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2008.gdlx in(4,5)
+	           and s2008.zt = 2
+	           and s2008.fjzch = #{paramsMap.fjzch,jdbcType=VARCHAR}) s2901
+    	on s2009.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+   		and s2009.jksjgdid = s2901.jksjid
+  		left join (select t6.jksjid, max(t6.jhsjsj) jhsjsj
+               from (select t4.jksjid,
+                            wm_concat(t4.jklbh || '#_#' || t4.jhz || '#_#' ||
+                                      t4.ydz_q || '#_#' || t4.ydz_qdw ||
+                                      '#_#' || t4.ydz_h || '#_#' ||
+                                      t4.ydz_hdw) over(PARTITION BY t4.jksjid order by t4.jklbh) jhsjsj
+                       from (select t4.jksjid,
+                                    t4.jklbh,
+                                    t4.jhz,
+                                    t4.dw_zqz,
+                                    t4.ydz_q,
+                                    t4.ydz_qdw,
+                                    t4.ydz_h,
+                                    t4.ydz_hdw
+                               from b_s2_904 t4
+                               join b_s2_902 t2
+                                 on t4.jhz is not null
+                                and t4.zt = 1
+                                and t2.id = t4.jksjid
+                                and t2.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+                                and t2.fjzch = #{paramsMap.fjzch,jdbcType=VARCHAR}) t4) t6
+              		group by t6.jksjid) s2904
+    		on s2904.jksjid = s2901.jksjid
+  		left join b_s2_007 s2007
+    	on s2007.id = s2009.gbid
+    	left join d_008 d008
+    	on d008.dprtcode = s2901.dprtcode
+   		and d008.bjh = s2901.bjh
+    	LEFT JOIN D_005 Z on s2901.DPRTCODE = Z.DPRTCODE and s2901.ZJH = Z.ZJH
+    	where s2009.XSBS = 1 and s2009.dprtcode = #{dprtcode,jdbcType=VARCHAR} and s2009.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+ 		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (
+		    	   UPPER(s2901.jksjbm) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(s2901.rwms) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(s2901.bjh) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(s2901.xlh) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(d008.xingh) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(Z.ZJH) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    	or UPPER(Z.YWMS) like UPPER('%'||#{paramsMap.keyword}||'%')
+		    )
+		 </if>
+		 <if test="paramsMap != null and paramsMap.zjh != null and paramsMap.zjh != ''">
+		 	and Z.ZJH = #{paramsMap.zjh}
+		 </if>
+		 <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		    and s2009.ID in
+		    	<foreach collection="paramsMap.idList" item="id" index="index" open="(" close=")" separator=",">
+					#{id,jdbcType=VARCHAR}
+			 	</foreach>
+		</if>
+		 <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>   
+		    		order by s2901.jksjlx, s2901.jksjbm,s2009.id              
+		    	</when>
+		    	<otherwise>
+				    ORDER BY ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+  	</select>
+  
+  	<!-- 获取预组包中已选中的数量 -->
+  	<select id="getCheckedCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+    	select 
+    		count(1)
+  		from b_s2_009 s2009
+  		join (select s2901.id jksjid
+	          from b_s2_901 s2901
+	          join b_g2_012 g2012
+	            on g2012.id = s2901.lyid
+	           and s2901.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2901.lylx = 1
+	           and s2901.fjzch = #{fjzch,jdbcType=VARCHAR}
+	        union all
+	        select s2901.id jksjid
+	          from b_s2_901 s2901
+	          join b_g2_010 g2010
+	            on g2010.id = s2901.lyid
+	           and s2901.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2901.lylx = 2
+	           and s2901.fjzch = #{fjzch,jdbcType=VARCHAR}
+	        union all
+	        select s2901.id jksjid
+	          from b_s2_901 s2901
+	          join B_G2_014 g2014
+	            on g2014.id = s2901.lyid
+	           and s2901.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2901.lylx = 3
+	           and s2901.fjzch = #{fjzch,jdbcType=VARCHAR}
+	        union all
+	        select s2008.id jksjid
+	          from b_s2_008 s2008
+	         where s2008.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	           and s2008.gdlx in(4,5)
+	           and s2008.zt = 2
+	           and s2008.fjzch = #{fjzch,jdbcType=VARCHAR}) s2901
+    	on s2009.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+   		and s2009.jksjgdid = s2901.jksjid
+    	where s2009.XSBS = 1 and s2009.dprtcode = #{dprtcode,jdbcType=VARCHAR} and s2009.FJZCH = #{fjzch,jdbcType=VARCHAR}
+  	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S2_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  	<!-- 根据工包id删除待组包的监控项目 -->
+  	<delete id="deleteByGbid" parameterType="java.lang.String" >
+    	delete from B_S2_009
+    	where GBID = #{gbid,jdbcType=VARCHAR}
+  	</delete>
+  
+  	<!-- 批量删除待组包的监控项目 -->
+  	<delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_S2_009 B
+    	where B.ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+			or B.DJBJKSJID in 
+				(select B1.JKSJGDID from B_S2_009 B1 where ID in 
+					<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+						#{id,jdbcType=VARCHAR}
+					</foreach>
+				)
+  	</delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.MonitoringWorkpackage" >
+    insert into B_S2_009 (ID, DPRTCODE, WHDWID, 
+      WHRID, WHSJ, FJZCH, 
+      JKSJGDID, DJBJKSJID, LX, 
+      GBID, XSBS)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{fjzch,jdbcType=VARCHAR}, 
+      #{jksjgdid,jdbcType=VARCHAR}, #{djbjksjid,jdbcType=VARCHAR}, #{lx,jdbcType=DECIMAL}, 
+      #{gbid,jdbcType=VARCHAR}, #{xsbs,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.MonitoringWorkpackage" >
+    insert into B_S2_009
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="jksjgdid != null" >
+        JKSJGDID,
+      </if>
+      <if test="djbjksjid != null" >
+        DJBJKSJID,
+      </if>
+      <if test="lx != null" >
+        LX,
+      </if>
+      <if test="gbid != null" >
+        GBID,
+      </if>
+      <if test="xsbs != null" >
+        XSBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jksjgdid != null" >
+        #{jksjgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="djbjksjid != null" >
+        #{djbjksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="lx != null" >
+        #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="gbid != null" >
+        #{gbid,jdbcType=VARCHAR},
+      </if>
+      <if test="xsbs != null" >
+        #{xsbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.MonitoringWorkpackage" >
+    update B_S2_009
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="jksjgdid != null" >
+        JKSJGDID = #{jksjgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="djbjksjid != null" >
+        DJBJKSJID = #{djbjksjid,jdbcType=VARCHAR},
+      </if>
+      <if test="lx != null" >
+        LX = #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="gbid != null" >
+        GBID = #{gbid,jdbcType=VARCHAR},
+      </if>
+      <if test="xsbs != null" >
+        XSBS = #{xsbs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.MonitoringWorkpackage" >
+    update B_S2_009
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      JKSJGDID = #{jksjgdid,jdbcType=VARCHAR},
+      DJBJKSJID = #{djbjksjid,jdbcType=VARCHAR},
+      LX = #{lx,jdbcType=DECIMAL},
+      GBID = #{gbid,jdbcType=VARCHAR},
+      XSBS = #{xsbs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 根据监控数据id修改待组包的监控项目 -->
+  <update id="updateByJksjId" parameterType="com.eray.thjw.produce.po.MonitoringWorkpackage" >
+    update B_S2_009
+    set WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = sysdate,
+      DJBJKSJID = #{djbjksjid,jdbcType=VARCHAR},
+      GBID = #{gbid,jdbcType=VARCHAR},
+      XSBS = #{xsbs,jdbcType=DECIMAL}
+    where JKSJGDID = #{jksjgdid,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByGbid" parameterType="String">
+  	update b_s2_009 
+	set gbid = null 
+	where gbid = #{gbid,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 修改待组包的监控项目工包id字段 -->
+  	<update id="updateGbidById" parameterType="String">
+  		update b_s2_009 
+		set gbid = #{gbid,jdbcType=VARCHAR} 
+		where gbid is null 
+			and (id = #{id,jdbcType=VARCHAR}  
+			or DJBJKSJID = (select B1.JKSJGDID from B_S2_009 B1 where B1.ID = #{id,jdbcType=VARCHAR})
+			)
+  	</update>
+  
+  <!-- 修改监控数据显示标识为不显示 -->
+  <update id="updateByXsbs" parameterType="String">
+  	update b_s2_009 
+	set XSBS = 0 
+	where JKSJGDID = #{jksjid,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 批量清空待组包的监控项目工包id -->
+  	<update id="updateGbidByJksjgdid4Batch" parameterType="String">
+  		update b_s2_009 
+		set GBID = null
+		where JKSJGDID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</update>
+  	<!-- 根据定检包监控数据id清空待组包的监控项目工包id -->
+  	<update id="updateGbidByDjbjksjgdid" parameterType="String">
+  		update b_s2_009 
+		set gbid = null 
+		where DJBJKSJID = #{djbjksjid,jdbcType=VARCHAR}
+  	</update>
+  
+  <select id="getCountByGbid" parameterType="String" resultType="int">
+  	select count(1) from b_s2_009 where gbid = #{gbid,jdbcType=VARCHAR}
+  </select>
+   <select id="getCountByJksjgdid" parameterType="String" resultType="int">
+  	select count(1) from b_s2_009 where jksjgdid = #{jksjgdid,jdbcType=VARCHAR}
+  </select>
+</mapper>

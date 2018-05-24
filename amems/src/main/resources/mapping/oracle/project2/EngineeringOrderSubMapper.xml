@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.EngineeringOrderSubMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.EngineeringOrderSub" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="SCJSZY" property="scjszy" jdbcType="DECIMAL" />
+    <result column="YWJSYFW" property="ywjsyfw" jdbcType="VARCHAR" />
+    <result column="GZGS" property="gzgs" jdbcType="VARCHAR" />
+    <result column="FHX" property="fhx" jdbcType="VARCHAR" />
+    <result column="WXGZDXID" property="wxgzdxid" jdbcType="VARCHAR" />
+    <result column="WXGZDX" property="wxgzdx" jdbcType="VARCHAR" />
+    <result column="WXGZBS" property="wxgzbs" jdbcType="VARCHAR" />
+    <result column="WXGZBS_QT" property="wxgzbsQt" jdbcType="VARCHAR" />
+    <result column="IS_ZZPHBH" property="isZzphbh" jdbcType="DECIMAL" />
+    <result column="MTC" property="mtc" jdbcType="VARCHAR" />
+    <result column="WTC" property="wtc" jdbcType="VARCHAR" />
+    <result column="ARM" property="arm" jdbcType="VARCHAR" />
+    <result column="BHNR" property="bhnr" jdbcType="VARCHAR" />
+    <result column="YXSC" property="yxsc" jdbcType="VARCHAR" />
+    <result column="QCJG" property="qcjg" jdbcType="DECIMAL" />
+    <result column="QCJGDW" property="qcjgdw" jdbcType="VARCHAR" />
+    <result column="BFQCZB" property="bfqczb" jdbcType="DECIMAL" />
+    <result column="BFQCZBTZD" property="bfqczbtzd" jdbcType="VARCHAR" />
+    <result column="ZZTJBS" property="zztjbs" jdbcType="DECIMAL" />
+    <result column="ZZTJ" property="zztj" jdbcType="VARCHAR" />
+    <result column="GCJY" property="gcjy" jdbcType="VARCHAR" />
+    <result column="SCAP" property="scap" jdbcType="VARCHAR" />
+    <result column="YYJMS" property="yyjms" jdbcType="VARCHAR" />
+    <result column="CLCS" property="clcs" jdbcType="VARCHAR" />
+    <result column="GBJL_BC" property="gbjlBc" jdbcType="VARCHAR" />
+    <result column="GBJL_YQBBGX" property="gbjlYqbbgx" jdbcType="VARCHAR" />
+    <result column="GBJL_GBYY" property="gbjlGbyy" jdbcType="VARCHAR" />
+    <result column="IS_YXCBW" property="isYxcbw" jdbcType="DECIMAL" />
+    <result column="SYCJZRJQD" property="sycjzrjqd" jdbcType="VARCHAR" />
+    <result column="DQFZSJ" property="dqfzsj" jdbcType="VARCHAR" />
+    <result column="WXXMXGX" property="wxxmxgx" jdbcType="VARCHAR" />
+    <result column="FKYQ" property="fkyq" jdbcType="VARCHAR" />
+    <result column="HCXQSQD" property="hcxqsqd" jdbcType="VARCHAR" />
+    <result column="YYLJCL" property="yyljcl" jdbcType="VARCHAR" />
+    <result column="HHXX" property="hhxx" jdbcType="VARCHAR" />
+    <result column="QT" property="qt" jdbcType="VARCHAR" />
+    <result column="IS_TSGJSB" property="isTsgjsb" jdbcType="DECIMAL" />
+    <result column="IS_SP_QC" property="isSpQc" jdbcType="DECIMAL" />
+    <result column="SP_QCSM" property="spQcsm" jdbcType="VARCHAR" />
+    <result column="IS_SP_RG" property="isSpRg" jdbcType="DECIMAL" />
+    <result column="SP_RGSM" property="spRgsm" jdbcType="VARCHAR" />
+    <result column="SPQX" property="spqx" jdbcType="TIMESTAMP" />
+    <result column="SP_JGXX" property="spJgxx" jdbcType="VARCHAR" />
+    <result column="IS_DQFZSJ" property="isDqfzsj" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    B.ID, B.MAINID, B.SCJSZY, B.YWJSYFW, B.GZGS, B.FHX, B.WXGZDXID, B.WXGZDX, B.WXGZBS, B.WXGZBS_QT, 
+    B.IS_ZZPHBH, B.MTC, B.WTC, B.ARM, B.BHNR, B.YXSC, B.QCJG, B.QCJGDW, B.BFQCZB, B.BFQCZBTZD, B.ZZTJBS, B.ZZTJ, 
+    B.GCJY, B.SCAP, B.YYJMS, B.CLCS, B.GBJL_BC, B.GBJL_YQBBGX, B.GBJL_GBYY, B.IS_YXCBW, B.SYCJZRJQD, B.DQFZSJ, 
+    B.WXXMXGX, B.FKYQ, B.HCXQSQD, B.YYLJCL, B.HHXX, B.QT, B.IS_TSGJSB, B.IS_SP_QC, B.SP_QCSM, B.IS_SP_RG, 
+    B.SP_RGSM, B.SPQX, B.SP_JGXX, B.IS_DQFZSJ
+  </sql>
+  
+  <!-- 配置EO关系 注意：在写对应关系时,id字段需要重命名 -->
+  <resultMap type="com.eray.thjw.project2.po.EngineeringOrderSub" id="EOSubWithRelMap" extends="BaseResultMap">
+	    <!--  配置EO与部件航材关系 -->
+	    <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+	        <id column="HC_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="HC_ZJH" property="zjh" jdbcType="VARCHAR" />
+		    <result column="HC_YWMS" property="ywms" jdbcType="VARCHAR" />
+		    <result column="HC_ZWMS" property="zwms" jdbcType="VARCHAR" />
+		    <!-- 配置工卡与章节号关系 -->
+		    <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+		    	<id column="F_ZJH" property="zjh"/>
+		     	<result column="F_ZWMS" property="zwms"/>
+		        <result column="F_YWMS" property="ywms"/>
+		    </association>
+	    </association>
+  </resultMap>
+  
+  
+  <!--   新增EO从表数据 -->
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.EngineeringOrderSub" >
+    insert into B_G2_01000 (ID, MAINID, SCJSZY, 
+      YWJSYFW, GZGS, FHX, 
+      WXGZDXID, WXGZDX, WXGZBS, WXGZBS_QT, 
+      IS_ZZPHBH, MTC, WTC, 
+      ARM, BHNR, YXSC, QCJG, 
+      QCJGDW, BFQCZB, BFQCZBTZD, 
+      ZZTJBS, ZZTJ, GCJY, 
+      SCAP, YYJMS, CLCS, 
+      GBJL_BC, GBJL_YQBBGX, GBJL_GBYY, 
+      IS_YXCBW, SYCJZRJQD, DQFZSJ, 
+      WXXMXGX, FKYQ, HCXQSQD, 
+      YYLJCL, HHXX, QT, IS_TSGJSB, 
+      IS_SP_QC, SP_QCSM, IS_SP_RG, 
+      SP_RGSM, SPQX, SP_JGXX, 
+      IS_DQFZSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{scjszy,jdbcType=DECIMAL}, 
+      #{ywjsyfw,jdbcType=VARCHAR}, #{gzgs,jdbcType=VARCHAR}, #{fhx,jdbcType=VARCHAR}, 
+      #{wxgzdxid,jdbcType=VARCHAR}, #{wxgzdx,jdbcType=VARCHAR}, #{wxgzbs,jdbcType=VARCHAR}, #{wxgzbsQt,jdbcType=VARCHAR}, 
+      #{isZzphbh,jdbcType=DECIMAL}, #{mtc,jdbcType=VARCHAR}, #{wtc,jdbcType=VARCHAR}, 
+      #{arm,jdbcType=VARCHAR}, #{bhnr,jdbcType=VARCHAR}, #{yxsc,jdbcType=VARCHAR}, #{qcjg,jdbcType=DECIMAL}, 
+      #{qcjgdw,jdbcType=VARCHAR}, #{bfqczb,jdbcType=DECIMAL}, #{bfqczbtzd,jdbcType=VARCHAR}, 
+      #{zztjbs,jdbcType=DECIMAL}, #{zztj,jdbcType=VARCHAR}, #{gcjy,jdbcType=VARCHAR}, 
+      #{scap,jdbcType=VARCHAR}, #{yyjms,jdbcType=VARCHAR}, #{clcs,jdbcType=VARCHAR}, 
+      #{gbjlBc,jdbcType=VARCHAR}, #{gbjlYqbbgx,jdbcType=VARCHAR}, #{gbjlGbyy,jdbcType=VARCHAR}, 
+      #{isYxcbw,jdbcType=DECIMAL}, #{sycjzrjqd,jdbcType=VARCHAR}, #{dqfzsj,jdbcType=VARCHAR}, 
+      #{wxxmxgx,jdbcType=VARCHAR}, #{fkyq,jdbcType=VARCHAR}, #{hcxqsqd,jdbcType=VARCHAR}, 
+      #{yyljcl,jdbcType=VARCHAR}, #{hhxx,jdbcType=VARCHAR}, #{qt,jdbcType=VARCHAR}, #{isTsgjsb,jdbcType=DECIMAL}, 
+      #{isSpQc,jdbcType=DECIMAL}, #{spQcsm,jdbcType=VARCHAR}, #{isSpRg,jdbcType=DECIMAL}, 
+      #{spRgsm,jdbcType=VARCHAR}, #{spqx,jdbcType=TIMESTAMP}, #{spJgxx,jdbcType=VARCHAR}, 
+      #{isDqfzsj,jdbcType=DECIMAL})
+  </insert>
+ 
+  <!--   修改EO从表数据 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.EngineeringOrderSub" >
+    update B_G2_01000
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="scjszy != null" >
+        SCJSZY = #{scjszy,jdbcType=DECIMAL},
+      </if>
+      <if test="ywjsyfw != null" >
+        YWJSYFW = #{ywjsyfw,jdbcType=VARCHAR},
+      </if>
+      <if test="gzgs != null" >
+        GZGS = #{gzgs,jdbcType=VARCHAR},
+      </if>
+      <if test="fhx != null" >
+        FHX = #{fhx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxgzdxid != null" >
+        WXGZDXID = #{wxgzdxid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxgzdx != null" >
+        WXGZDX = #{wxgzdx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxgzbs != null" >
+        WXGZBS = #{wxgzbs,jdbcType=VARCHAR},
+      </if>
+      <if test="wxgzbsQt != null" >
+        WXGZBS_QT = #{wxgzbsQt,jdbcType=VARCHAR},
+      </if>
+      <if test="isZzphbh != null" >
+        IS_ZZPHBH = #{isZzphbh,jdbcType=DECIMAL},
+      </if>
+      <if test="mtc != null" >
+        MTC = #{mtc,jdbcType=VARCHAR},
+      </if>
+      <if test="wtc != null" >
+        WTC = #{wtc,jdbcType=VARCHAR},
+      </if>
+      <if test="arm != null" >
+        ARM = #{arm,jdbcType=VARCHAR},
+      </if>
+      <if test="bhnr != null" >
+        BHNR = #{bhnr,jdbcType=VARCHAR},
+      </if>
+      <if test="yxsc != null" >
+        YXSC = #{yxsc,jdbcType=VARCHAR},
+      </if>
+      <if test="qcjg != null" >
+        QCJG = #{qcjg,jdbcType=DECIMAL},
+      </if>
+      <if test="qcjgdw != null" >
+        QCJGDW = #{qcjgdw,jdbcType=VARCHAR},
+      </if>
+      <if test="bfqczb != null" >
+        BFQCZB = #{bfqczb,jdbcType=DECIMAL},
+      </if>
+      <if test="bfqczbtzd != null" >
+        BFQCZBTZD = #{bfqczbtzd,jdbcType=VARCHAR},
+      </if>
+      <if test="zztjbs != null" >
+        ZZTJBS = #{zztjbs,jdbcType=DECIMAL},
+      </if>
+      <if test="zztj != null" >
+        ZZTJ = #{zztj,jdbcType=VARCHAR},
+      </if>
+      <if test="gcjy != null" >
+        GCJY = #{gcjy,jdbcType=VARCHAR},
+      </if>
+      <if test="scap != null" >
+        SCAP = #{scap,jdbcType=VARCHAR},
+      </if>
+      <if test="yyjms != null" >
+        YYJMS = #{yyjms,jdbcType=VARCHAR},
+      </if>
+      <if test="clcs != null" >
+        CLCS = #{clcs,jdbcType=VARCHAR},
+      </if>
+      <if test="gbjlBc != null" >
+        GBJL_BC = #{gbjlBc,jdbcType=VARCHAR},
+      </if>
+      <if test="gbjlYqbbgx != null" >
+        GBJL_YQBBGX = #{gbjlYqbbgx,jdbcType=VARCHAR},
+      </if>
+      <if test="gbjlGbyy != null" >
+        GBJL_GBYY = #{gbjlGbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="isYxcbw != null" >
+        IS_YXCBW = #{isYxcbw,jdbcType=DECIMAL},
+      </if>
+      <if test="sycjzrjqd != null" >
+        SYCJZRJQD = #{sycjzrjqd,jdbcType=VARCHAR},
+      </if>
+      <if test="dqfzsj != null" >
+        DQFZSJ = #{dqfzsj,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmxgx != null" >
+        WXXMXGX = #{wxxmxgx,jdbcType=VARCHAR},
+      </if>
+      <if test="fkyq != null" >
+        FKYQ = #{fkyq,jdbcType=VARCHAR},
+      </if>
+      <if test="hcxqsqd != null" >
+        HCXQSQD = #{hcxqsqd,jdbcType=VARCHAR},
+      </if>
+      <if test="yyljcl != null" >
+        YYLJCL = #{yyljcl,jdbcType=VARCHAR},
+      </if>
+      <if test="hhxx != null" >
+        HHXX = #{hhxx,jdbcType=VARCHAR},
+      </if>
+      <if test="qt != null" >
+        QT = #{qt,jdbcType=VARCHAR},
+      </if>
+      <if test="isTsgjsb != null" >
+        IS_TSGJSB = #{isTsgjsb,jdbcType=DECIMAL},
+      </if>
+      <if test="isSpQc != null" >
+        IS_SP_QC = #{isSpQc,jdbcType=DECIMAL},
+      </if>
+      <if test="spQcsm != null" >
+        SP_QCSM = #{spQcsm,jdbcType=VARCHAR},
+      </if>
+      <if test="isSpRg != null" >
+        IS_SP_RG = #{isSpRg,jdbcType=DECIMAL},
+      </if>
+      <if test="spRgsm != null" >
+        SP_RGSM = #{spRgsm,jdbcType=VARCHAR},
+      </if>
+      <if test="spqx != null" >
+        SPQX = #{spqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spJgxx != null" >
+        SP_JGXX = #{spJgxx,jdbcType=VARCHAR},
+      </if>
+      <if test="isDqfzsj != null" >
+        IS_DQFZSJ = #{isDqfzsj,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+  <!-- 根据EOID查询EO从表信息 -->
+   <select id="selectById" resultMap="EOSubWithRelMap" parameterType="java.util.Map">
+		 select 
+		 	<include refid="Base_Column_List"></include>
+		    , HC.ID AS HC_ID
+		    , HC.ZJH AS HC_ZJH
+		    , HC.ywms AS HC_YWMS
+		    , HC.zwms AS HC_ZWMS
+		    , D005.ZJH AS F_ZJH
+        	, D005.ZWMS AS F_ZWMS
+        	, D005.YWMS AS F_YWMS
+		 from B_G2_01000 B
+		 LEFT JOIN D_008 HC ON B.WXGZDXID = HC.ID
+		 LEFT JOIN D_005 D005 ON HC.DPRTCODE = D005.DPRTCODE AND HC.ZJH = D005.ZJH
+		 where 1=1
+	    <include refid="EOSub_Param"></include>
+   </select>
+   
+   <!-- EO从表查询条件 start -->
+	<sql id="EOSub_Param">
+		<if test="mainid != null">
+		    and B.MAINID = #{mainid}
+		</if>
+	</sql>
+	<!-- EO从表查询条件end -->
+	
+  <!--  删除EO从表 -->
+  <delete id="deleteByMainId" parameterType="java.lang.String" >
+    	delete from B_G2_01000
+    	where MAINID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+</mapper>

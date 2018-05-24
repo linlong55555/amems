@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ReceiptSheetDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="mainid" jdbcType="VARCHAR" property="mainid" />
+    <result column="bjid" jdbcType="VARCHAR" property="bjid" />
+    <result column="pch" jdbcType="VARCHAR" property="pch" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="kwid" jdbcType="VARCHAR" property="kwid" />
+    <result column="sl" jdbcType="NUMERIC" property="sl" />
+    <result column="thsl" jdbcType="NUMERIC" property="thsl" />
+    <result column="kcllid" jdbcType="VARCHAR" property="kcllid" />
+    <result column="zt" jdbcType="INTEGER" property="zt" />
+    <result column="xgdjid" jdbcType="VARCHAR" property="xgdjid" />
+    <result column="whrid" jdbcType="VARCHAR" property="whrid" />
+    <result column="whsj" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="is_zj" jdbcType="INTEGER" property="iszj" />
+    <result column="yjid" jdbcType="VARCHAR" property="yjid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mainid, bjid, pch, sn, kwid, sl, thsl, kcllid, zt, xgdjid, whrid, whsj, yjid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_h_02001
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByMaind" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_h_02001
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPrimary" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_h_02001
+    where kcllid  = #{kcllid,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from b_h_02001
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail">
+    insert into b_h_02001 (id, mainid, bjid, 
+      pch, sn, kwid, sl, 
+      thsl, kcllid, zt, xgdjid, 
+      whrid, whsj)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, 
+      #{pch,jdbcType=VARCHAR}, #{sn,jdbcType=VARCHAR}, #{kwid,jdbcType=VARCHAR}, #{sl,jdbcType=NUMERIC}, 
+      #{thsl,jdbcType=NUMERIC}, #{kcllid,jdbcType=VARCHAR}, #{zt,jdbcType=INTEGER}, #{xgdjid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail">
+    insert into b_h_02001
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mainid != null">
+        mainid,
+      </if>
+      <if test="bjid != null">
+        bjid,
+      </if>
+      <if test="pch != null">
+        pch,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+      <if test="kwid != null">
+        kwid,
+      </if>
+      <if test="sl != null">
+        sl,
+      </if>
+      <if test="thsl != null">
+        thsl,
+      </if>
+      <if test="kcllid != null">
+        kcllid,
+      </if>
+      <if test="zt != null">
+        zt,
+      </if>
+      <if test="xgdjid != null">
+        xgdjid,
+      </if>
+      <if test="whrid != null">
+        whrid,
+      </if>
+      <if test="whsj != null">
+        whsj,
+      </if>
+      <if test="isZj != null">
+        is_zj,
+      </if>
+      <if test="yjid != null">
+        yjid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null">
+        #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null">
+        #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null">
+        #{sl,jdbcType=NUMERIC},
+      </if>
+      <if test="thsl != null">
+        #{thsl,jdbcType=NUMERIC},
+      </if>
+      <if test="kcllid != null">
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="xgdjid != null">
+        #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        current_timestamp,
+      </if>
+      <if test="isZj != null">
+        #{isZj,jdbcType=INTEGER},
+      </if>
+      <if test="yjid != null">
+        #{yjid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail">
+    update b_h_02001
+    <set>
+      <if test="mainid != null">
+        mainid = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        bjid = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null">
+        pch = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null">
+        kwid = #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null">
+        sl = #{sl,jdbcType=NUMERIC},
+      </if>
+      <if test="thsl != null">
+        thsl = #{thsl,jdbcType=NUMERIC},
+      </if>
+      <if test="kcllid != null">
+        kcllid = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        zt = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="xgdjid != null">
+        xgdjid = #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        whrid = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        whsj = current_timestamp,
+      </if>
+      <if test="isZj != null">
+        is_zj = #{isZj,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheetDetail">
+    update b_h_02001
+    set mainid = #{mainid,jdbcType=VARCHAR},
+      bjid = #{bjid,jdbcType=VARCHAR},
+      pch = #{pch,jdbcType=VARCHAR},
+      sn = #{sn,jdbcType=VARCHAR},
+      kwid = #{kwid,jdbcType=VARCHAR},
+      sl = #{sl,jdbcType=NUMERIC},
+      thsl = #{thsl,jdbcType=NUMERIC},
+      kcllid = #{kcllid,jdbcType=VARCHAR},
+      zt = #{zt,jdbcType=INTEGER},
+      xgdjid = #{xgdjid,jdbcType=VARCHAR},
+      whrid = #{whrid,jdbcType=VARCHAR},
+      whsj = #{whsj,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!-- 删除 -->
+  <delete id="deleteNotExist" parameterType="com.eray.thjw.aerialmaterial.po.ReceiptSheet" >
+      DELETE FROM  B_H_02001 
+		WHERE MAINID = #{id,jdbcType=VARCHAR}
+		<if test="details != null and details.size > 0">
+            AND ID NOT IN 
+            <foreach collection="details" item="item" index="index" open="(" close=")" separator=",">
+			#{item.id,jdbcType=VARCHAR}
+	   		</foreach>
+        </if>
+  </delete>
+</mapper>

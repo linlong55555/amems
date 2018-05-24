@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.production.dao.AirworthinessDirectiveMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.production.po.AirworthinessDirective" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="LSH" property="lsh" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BSH_YJRQ" property="bshYjrq" jdbcType="TIMESTAMP" />
+    <result column="BSH_SJRQ" property="bshSjrq" jdbcType="TIMESTAMP" />
+    <result column="BSH_RQ" property="bshRq" jdbcType="TIMESTAMP" />
+    <result column="BSH_SPDH" property="bshSpdh" jdbcType="VARCHAR" />
+    <result column="BSH_PZRID" property="bshPzrid" jdbcType="VARCHAR" />
+    <result column="SH_YJRQ" property="shYjrq" jdbcType="TIMESTAMP" />
+    <result column="SH_SJRQ" property="shSjrq" jdbcType="TIMESTAMP" />
+    <result column="SH_RQ" property="shRq" jdbcType="TIMESTAMP" />
+    <result column="SH_SPDH" property="shSpdh" jdbcType="VARCHAR" />
+    <result column="SH_PZRID" property="shPzrid" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="BSHYY" property="bshyy" jdbcType="VARCHAR" />
+    
+    <result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    <result column="ZDRREALNAME" property="zdrrealname" jdbcType="VARCHAR" />
+    
+    <result column="SHPZRNAME" property="shpzrName" jdbcType="VARCHAR" />
+    <result column="BSHPZRNAME" property="bshpzrName" jdbcType="VARCHAR" />
+    
+  </resultMap>
+   
+  
+  <sql id="Base_Column_List" >
+    ID, LSH, FJZCH, BSH_YJRQ, BSH_SJRQ, BSH_RQ, BSH_SPDH , BSH_PZRID, SH_YJRQ, SH_SJRQ, 
+    SH_RQ, SH_SPDH, SH_PZRID, BZ, ZDDWID, ZDRID, ZDSJ, ZT, DPRTCODE
+  </sql>
+  
+  <sql id="condition" >
+	    where ZT = '1'
+       
+        <if test="fjzch != null and fjzch != ''">
+          and FJZCH = #{fjzch} 
+       </if>
+       <if test="shPzrid != null and shPzrid != ''">
+          and t.SH_PZRID = #{shPzrid} 
+       </if>
+       <if test="bshPzrid != null and bshPzrid != ''">
+          and t.BSH_PZRID = #{bshPzrid} 
+       </if>
+       
+        <if test="bshSpdh != null and bshSpdh != ''">
+          and t.BSH_SPDH  like '%'||#{bshSpdh}||'%'
+       </if>
+       <if test="shSpdh != null and shSpdh != ''">
+          and t.SH_SPDH  like '%'||#{shSpdh}||'%'
+       </if>
+       
+         <if test="bshYjrqStart != null and bshYjrqStart != ''" >
+	       and (t.BSH_YJRQ >= #{bshYjrqStart} or t.BSH_YJRQ >= #{bshYjrqStart})
+	    </if>
+	    
+	     <if test="bshYjrqEnd != null and bshYjrqEnd != ''" >
+	       and ( #{bshYjrqEnd} >= t.BSH_YJRQ   or  #{bshYjrqEnd} >= t.BSH_YJRQ )
+	    </if>
+	    
+       <if test="bshSjrqStart != null and bshSjrqStart != ''" >
+	       and (t.BSH_SJRQ >= #{bshSjrqStart} or t.BSH_SJRQ >= #{bshSjrqStart})
+	    </if>
+	    
+	    <if test="bshSjrqEnd != null and bshSjrqEnd != ''" >
+	       and ( #{bshSjrqEnd} >= t.BSH_SJRQ   or  #{bshSjrqEnd} >= t.BSH_SJRQ )
+	    </if>
+	    
+	    <if test="shYjrqStart != null and shYjrqStart != ''" >
+	       and (t.SH_YJRQ >= #{shYjrqStart} or t.SH_YJRQ >= #{shYjrqStart})
+	    </if>
+	    
+	     <if test="shYjrqEnd != null and shYjrqEnd != ''" >
+	       and ( #{shYjrqEnd} >= t.SH_YJRQ   or  #{shYjrqEnd} >= t.SH_YJRQ )
+	    </if>
+	    
+       <if test="shSjrqStart != null and shSjrqStart != ''" >
+	       and (t.SH_SJRQ >= #{shSjrqStart} or t.SH_SJRQ >= #{shSjrqStart})
+	    </if>
+	    
+	    <if test="shSjrqEnd != null and shSjrqEnd != ''" >
+	       and ( #{shSjrqEnd} >= t.SH_SJRQ   or  #{shSjrqEnd} >= t.SH_SJRQ )
+	    </if>
+	    
+	    <if test="dprtcode != null and dprtcode != ''" >
+	       and ( t.DPRTCODE =  #{dprtcode} )
+	    </if>
+	    
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+		    t.ID, t.LSH, t.FJZCH, t.BSH_YJRQ, t.BSH_SJRQ
+		    , t.BSH_RQ, t.BSH_SPDH, t.BSH_PZRID, t.SH_YJRQ
+		    , t.SH_SJRQ, t.SH_RQ, t.SH_SPDH, t.SH_PZRID, t.BZ,t.BSHYY
+		    , t.ZDDWID, t.ZDRID, t.ZDSJ, t.ZT, t.DPRTCODE
+		    , u.username || ' ' || u.realname ZDRREALNAME
+		    , shpzr.username || ' ' || shpzr.realname SHPZRNAME
+	    	, bshpzr.username || ' ' || bshpzr.realname BSHPZRNAME
+		    from B_S_014 t left join t_user u on u.id = t.ZDRID
+		    left join t_user shpzr on shpzr.id = t.SH_PZRID
+		    left join t_user bshpzr on bshpzr.id = t.BSH_PZRID
+		    
+    where t.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="queryList" resultMap="BaseResultMap" parameterType="com.eray.thjw.production.po.AirworthinessDirective" >
+		    select 
+		    t.ID, t.LSH, t.FJZCH, t.BSH_YJRQ, t.BSH_SJRQ
+		    , t.BSH_RQ, t.BSH_SPDH, t.BSH_PZRID, t.SH_YJRQ
+		    , t.SH_SJRQ, t.SH_RQ, t.SH_SPDH, t.SH_PZRID, t.BZ
+		    , t.ZDDWID, t.ZDRID, t.ZDSJ, t.ZT, t.DPRTCODE
+		    , u.username || ' ' || u.realname ZDRREALNAME
+		    , t.bshyy
+		    from B_S_014 t left join t_user u on u.id = t.ZDRID
+		    <include refid="condition" />
+		    <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+		     <choose>                                                                 
+			    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+			    		 AND exists 
+			    		( SELECT 1 from D_007 where 
+			    		    t.FJZCH = FJZCH
+			    		AND t.DPRTCODE = DPRTCODE
+			    		AND zt = 1
+			    		)
+			    	</when>
+			    	<otherwise>
+					     AND exists 
+			    		( SELECT 1 from V_ROLE_JX where 
+			    			t.FJZCH= FJZCH
+			    		AND t.DPRTCODE = DPRTCODE
+			    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+			    		)
+			    	</otherwise>
+		   	</choose>
+		     
+		      order by t.BSH_RQ desc
+  </select>
+  
+  <select id="queryPage" resultMap="BaseResultMap" parameterType="com.eray.thjw.production.po.AirworthinessDirective" >
+		    select 
+		    t.ID, t.LSH, t.FJZCH, t.BSH_YJRQ, t.BSH_SJRQ
+		    , t.BSH_RQ, t.BSH_SPDH, t.BSH_PZRID, t.SH_YJRQ
+		    , t.SH_SJRQ, t.SH_RQ, t.SH_SPDH, t.SH_PZRID, t.BZ
+		    , t.ZDDWID, t.ZDRID, t.ZDSJ, t.ZT, t.DPRTCODE,d.DPRTNAME DPRTNAME
+		    , u.username || ' ' || u.realname ZDRREALNAME
+		    , shpzr.username || ' ' || shpzr.realname SHPZRNAME
+		    , bshpzr.username || ' ' || bshpzr.realname BSHPZRNAME
+		    , t.bshyy
+		    from B_S_014 t 
+		    left join t_user u on u.id = t.ZDRID
+		    left join t_department d on d.ID = t.DPRTCODE
+		    left join t_user bshpzr on bshpzr.id = t.BSH_PZRID
+		    left join t_user shpzr on shpzr.id = t.SH_PZRID
+		    
+		    where  t.ZT = '1' and t.fjzch = #{fjzch}
+		    <if test="keyword != null and keyword != ''">
+		        and (
+		              t.SH_SPDH like '%'||#{keyword}||'%'
+		              or (t.BSH_SPDH like '%'||#{keyword}||'%')
+			          or (bshpzr.REALNAME like '%'||#{keyword}||'%')
+			          or (shpzr.REALNAME like '%'||#{keyword}||'%')
+			          or (bshpzr.USERNAME like '%'||#{keyword}||'%')
+			          or (shpzr.USERNAME like '%'||#{keyword}||'%')
+		          )
+	       		</if> 
+	       		and t.DPRTCODE = #{dprtcode}
+	       		<choose>                                                                 
+					    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+					    		 AND exists 
+					    		( SELECT 1 from D_007 where 
+					    			t.fjzch = FJZCH
+					    		AND t.dprtcode = DPRTCODE
+					    		AND zt = 1
+					    		)
+					    	</when>
+					    	<when test='paramsMap.userId != null and paramsMap.userId !=""'>                       
+					    		AND exists 
+						    		( SELECT 1 from V_ROLE_JX where 
+						    			t.fjzch= FJZCH
+						    		AND t.dprtcode = DPRTCODE
+						    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+						    		)
+				    		</when>
+				   	</choose>
+	    		order by t.BSH_RQ desc
+  </select> 
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_014
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.production.po.AirworthinessDirective" >
+    insert into B_S_014 (ID, LSH, FJZCH, 
+      BSH_YJRQ, BSH_SJRQ, BSH_RQ, 
+      BSH_SPDH, BSH_PZRID, SH_YJRQ, 
+      SH_SJRQ, SH_RQ, SH_SPDH, 
+      SH_PZRID, BZ, ZDDWID, 
+      ZDRID, ZDSJ, ZT, 
+      DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{lsh,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, 
+      #{bshYjrq,jdbcType=TIMESTAMP}, #{bshSjrq,jdbcType=TIMESTAMP}, #{bshRq,jdbcType=TIMESTAMP}, 
+      #{bshSpdh,jdbcType=VARCHAR}, #{bshPzrid,jdbcType=VARCHAR}, #{shYjrq,jdbcType=TIMESTAMP}, 
+      #{shSjrq,jdbcType=TIMESTAMP}, #{shRq,jdbcType=TIMESTAMP}, #{shSpdh,jdbcType=VARCHAR}, 
+      #{shPzrid,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{zddwid,jdbcType=VARCHAR}, 
+      #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=VARCHAR}, 
+      #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.production.po.AirworthinessDirective" >
+    insert into B_S_014
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="lsh != null" >
+        LSH,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="bshYjrq != null" >
+        BSH_YJRQ,
+      </if>
+      <if test="bshSjrq != null" >
+        BSH_SJRQ,
+      </if>
+      <if test="bshRq != null" >
+        BSH_RQ,
+      </if>
+      <if test="bshSpdh != null" >
+        BSH_SPDH,
+      </if>
+      <if test="bshPzrid != null" >
+        BSH_PZRID,
+      </if>
+      <if test="shYjrq != null" >
+        SH_YJRQ,
+      </if>
+      <if test="shSjrq != null" >
+        SH_SJRQ,
+      </if>
+      <if test="shRq != null" >
+        SH_RQ,
+      </if>
+      <if test="shSpdh != null" >
+        SH_SPDH,
+      </if>
+      <if test="shPzrid != null" >
+        SH_PZRID,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+       <if test="bshyy != null" >
+        BSHYY,
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+     
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+        ZDSJ,
+        ZT
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="lsh != null" >
+        #{lsh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bshYjrq != null" >
+        #{bshYjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bshSjrq != null" >
+        #{bshSjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bshRq != null" >
+        #{bshRq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bshSpdh != null" >
+        #{bshSpdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bshPzrid != null" >
+        #{bshPzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shYjrq != null" >
+        #{shYjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shSjrq != null" >
+        #{shSjrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shRq != null" >
+        #{shRq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shSpdh != null" >
+        #{shSpdh,jdbcType=VARCHAR},
+      </if>
+      <if test="shPzrid != null" >
+        #{shPzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="bshyy != null" >
+       #{bshyy,jdbcType=VARCHAR},
+         
+      </if>
+      <if test="zddwid != null" >
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+     
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      
+        current_timestamp,
+        1
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.production.po.AirworthinessDirective" >
+    update B_S_014
+    <set >
+      <if test="lsh != null" >
+        LSH = #{lsh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      
+        BSH_YJRQ = #{bshYjrq,jdbcType=TIMESTAMP},
+        BSH_SJRQ = #{bshSjrq,jdbcType=TIMESTAMP},
+        BSH_RQ = #{bshRq,jdbcType=TIMESTAMP},
+      <if test="bshSpdh != null" >
+        BSH_SPDH = #{bshSpdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bshPzrid != null" >
+        BSH_PZRID = #{bshPzrid,jdbcType=VARCHAR},
+      </if>
+        SH_YJRQ = #{shYjrq,jdbcType=TIMESTAMP},
+        SH_SJRQ = #{shSjrq,jdbcType=TIMESTAMP},
+        SH_RQ = #{shRq,jdbcType=TIMESTAMP},
+      
+      <if test="shSpdh != null" >
+        SH_SPDH = #{shSpdh,jdbcType=VARCHAR},
+      </if>
+      <if test="shPzrid != null" >
+        SH_PZRID = #{shPzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+       <if test="bshyy != null" >
+        BSHYY = #{bshyy,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="zddwid != null" >
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <!-- <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if> -->
+      
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=VARCHAR},
+      </if>
+     <!--    ZDSJ = current_timestamp, -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.production.po.AirworthinessDirective" >
+    update B_S_014
+    set LSH = #{lsh,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      BSH_YJRQ = #{bshYjrq,jdbcType=TIMESTAMP},
+      BSH_SJRQ = #{bshSjrq,jdbcType=TIMESTAMP},
+      BSH_RQ = #{bshRq,jdbcType=TIMESTAMP},
+      BSH_SPDH = #{bshSpdh,jdbcType=VARCHAR},
+      BSH_PZRID = #{bshPzrid,jdbcType=VARCHAR},
+      SH_YJRQ = #{shYjrq,jdbcType=TIMESTAMP},
+      SH_SJRQ = #{shSjrq,jdbcType=TIMESTAMP},
+      SH_RQ = #{shRq,jdbcType=TIMESTAMP},
+      SH_SPDH = #{shSpdh,jdbcType=VARCHAR},
+      SH_PZRID = #{shPzrid,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=VARCHAR}
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

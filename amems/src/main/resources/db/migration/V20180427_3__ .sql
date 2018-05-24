@@ -1,0 +1,2 @@
+--生产指令编号
+insert into saibong_rule (cfkey,dprtcode,gznr) values ('10_GC_SCZL','-1','{"sn:2":{"join":"N","cont":{"hex":"D","posi":"B","fill":"0","len":3},"type":"$N"},"sn:1":{"join":"Y","cont":"YYYYMMdd","type":"$T"}}');

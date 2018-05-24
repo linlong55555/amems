@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.PersonnelToForeignLanguageMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.PersonnelToForeignLanguage" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="YZ" property="yz" jdbcType="VARCHAR" />
+    <result column="WYSP" property="wysp" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, DPRTCODE, ZT, WHBMID, WHRID, WHSJ, YZ, WYSP
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00106
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_Z_00106
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.PersonnelToForeignLanguage" >
+    insert into B_Z_00106 (ID, MAINID, DPRTCODE, 
+      ZT, WHBMID, WHRID, 
+      WHSJ, YZ, WYSP)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{yz,jdbcType=VARCHAR}, #{wysp,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.PersonnelToForeignLanguage" >
+    insert into B_Z_00106
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="yz != null" >
+        YZ,
+      </if>
+      <if test="wysp != null" >
+        WYSP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yz != null" >
+        #{yz,jdbcType=VARCHAR},
+      </if>
+      <if test="wysp != null" >
+        #{wysp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.PersonnelToForeignLanguage" >
+    update B_Z_00106
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yz != null" >
+        YZ = #{yz,jdbcType=VARCHAR},
+      </if>
+      <if test="wysp != null" >
+        WYSP = #{wysp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.PersonnelToForeignLanguage" >
+    update B_Z_00106
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      YZ = #{yz,jdbcType=VARCHAR},
+      WYSP = #{wysp,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 删除列表中不存在的数据 -->
+  <delete id="deleteNotExist" parameterType="com.eray.thjw.quality.po.MaintenancePersonnel" >
+    DELETE FROM  B_Z_00106 
+		WHERE MAINID = #{id,jdbcType=VARCHAR}
+		<if test="languages != null and languages.size > 0">
+            AND ID NOT IN 
+            <foreach collection="languages" item="item" index="index" open="(" close=")" separator=",">
+			#{item.id,jdbcType=VARCHAR}
+	   		</foreach>
+        </if>
+  </delete>
+  
+  <!-- 查询 -->
+  <select id="query" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00106
+    where MAINID = #{id,jdbcType=VARCHAR} AND ZT = 1
+  </select>
+  
+  <!-- 根据组织机构查询 -->
+  <select id="queryByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    B_Z_00106.ID, B_Z_00106.MAINID, B_Z_00106.DPRTCODE, B_Z_00106.ZT, B_Z_00106.WHBMID, 
+    B_Z_00106.WHRID, B_Z_00106.WHSJ, B_Z_00106.YZ, B_Z_00106.WYSP, B_Z_001.rybh
+    from B_Z_00106
+    left join B_Z_001 on B_Z_00106.mainid = B_Z_001.id
+    where B_Z_00106.dprtcode = #{dprtcode,jdbcType=VARCHAR} AND B_Z_00106.ZT = 1
+  </select>
+</mapper>

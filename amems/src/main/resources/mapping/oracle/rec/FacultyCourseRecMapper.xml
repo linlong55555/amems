@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.FacultyCourseRecMapper" >
+
+  <!-- 教员管理主列表 start-->
+  <select id="queryList4BP008" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		select B.*,
+		       T.USERNAME ||' '|| T.REALNAME as REC_CZR_NAME,
+		       D.dprtname as 	DPRTNAME,
+		       '教员编号:'||B.rybh||' ' as Rec_HD
+		from b_p_008_Rec B 
+		left join t_user T on T.id=B.whrid
+		left join T_DEPARTMENT D ON D.id = B.whbmid
+		WHERE 1=1
+		<if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+			and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		</if>
+		<if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+			AND B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		</if>
+		<if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+			AND B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		</if>
+		<if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+			AND (UPPER(B.RYBH) LIKE UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'))
+		</if>
+        order by B.REC_CZSJ DESC		
+  </select>
+  <!-- 教员管理主列表 end-->
+  
+  
+    <!-- 教员管理详情主列表 start-->
+  <select id="queryDiff4BP008" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		select B.*,
+		       T.USERNAME ||' '|| T.REALNAME as REC_CZR_NAME,
+		       'CURRENT' DATA_VERSION,
+		       (case when B.xb =1 then '男' else '女' end) as SEXNAME,
+		       (case when B.wbbs=1 then '内部' else '外部' end) as WBBSNAME,
+		       D.dprtname as 	DPRTNAME,
+		       '教员编号:'||B.rybh||' ' as Rec_HD
+		from b_p_008_Rec B 
+		left join t_user T on T.id=B.whrid
+		left join T_DEPARTMENT D ON D.id = B.whbmid
+		WHERE 1=1
+		<if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+			and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		</if>
+		<if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+			AND B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		</if>
+		<if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+			AND B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		</if>
+		<if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+			AND (UPPER(B.RYBH) LIKE UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'))
+		</if>
+		
+		
+		UNION ALL
+		
+		select B.*,
+		       T.USERNAME ||' '|| T.REALNAME as REC_CZR_NAME,
+		       'LAST' DATA_VERSION,
+		       (case when B.xb =1 then '男' else '女' end) as SEXNAME,
+		       (case when B.wbbs=1 then '内部' else '外部' end) as WBBSNAME,
+		       D.dprtname as 	DPRTNAME,
+		       '教员编号:'||B.rybh||' ' as Rec_HD
+		from b_p_008_Rec B 
+		left join t_user T on T.id=B.whrid
+		left join T_DEPARTMENT D ON D.id = B.whbmid
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_P_008_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_P_008_REC C 
+		              	WHERE C.ID= #{paramsMap.ID,jdbcType=VARCHAR} AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )  		
+  </select>
+  <!-- 教员管理详情主列表 end-->
+
+  <!-- 教员管理授权课程 详情 start-->
+  <select id="queryDiff4BP00801" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		select B.*,
+		       T.USERNAME ||' '|| T.REALNAME as REC_CZR_NAME,
+		       'CURRENT' DATA_VERSION,
+		       (case when B.zt = 1 then '有效'  else '无效' end) as ZTNAME,
+		       D.dprtname as 	DPRTNAME,
+		       '课程名称：'||C.Kcmc||' ' as Rec_HD
+		from b_p_00801_Rec B 
+		left join t_user T on T.id=B.whrid
+		left join b_p_008 S ON S.ID = B.MAINID
+    	LEFT JOIN B_P_003 C ON C.ID = B.KCID
+		left join T_DEPARTMENT D ON D.id = B.whbmid
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}	
+			
+		UNION ALL
+		
+		select B.*,
+		       T.USERNAME ||' '|| T.REALNAME as REC_CZR_NAME,
+		       'LAST' DATA_VERSION,
+		       (case when B.zt = 1 then '有效'  else '无效' end) as ZTNAME,
+		       D.dprtname as 	DPRTNAME,
+		       '课程名称：'||C.Kcmc||' ' as Rec_HD
+		from b_p_00801_Rec B 
+		left join t_user T on T.id=B.whrid
+		left join b_p_008 S ON S.ID = B.MAINID
+    	LEFT JOIN B_P_003 C ON C.ID = B.KCID
+		left join T_DEPARTMENT D ON D.id = B.whbmid
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_P_008_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_P_008_REC C 
+		              	WHERE C.ID= #{paramsMap.ID,jdbcType=VARCHAR} AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )  
+  </select>
+  <!-- 教员管理授权课程 详情 end-->
+  <!-- 附件清单start -->
+  <select id="queryDiff4D011" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT B.*, 'CURRENT' DATA_VERSION,
+  		  B.WBWJM ||'.'||B.HZM AS FWBWJM,
+           
+          B.REC_CZSM AS REC_CZSM,
+          
+	      B.REC_CZLS AS REC_CZLS,
+	      B.REC_XGLX AS REC_XGLX,
+      
+          RECWHR.USERNAME||' '||RECWHR.REALNAME AS REC_CZR_NAME, 
+	      B.REC_CZSJ AS REC_CZSJ,
+	      B.REC_IP AS REC_IP
+      
+		  FROM D_011_REC B   
+	  	  LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+	 
+	   	 
+		  WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		  AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	
+	UNION ALL
+	
+	SELECT B.*, 'LAST' DATA_VERSION ,
+ 		  B.WBWJM ||'.'||B.HZM AS FWBWJM,
+		        
+          B.REC_CZSM AS REC_CZSM,
+          
+	      B.REC_CZLS AS REC_CZLS,
+	      B.REC_XGLX AS REC_XGLX,
+      
+          RECWHR.USERNAME||' '||RECWHR.REALNAME AS REC_CZR_NAME, 
+	      B.REC_CZSJ AS REC_CZSJ,
+	      B.REC_IP AS REC_IP
+	
+		  FROM D_011_REC B
+	 	  LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+ 	  
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_P_008_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_P_008_REC C 
+		              	WHERE C.ID= #{paramsMap.ID,jdbcType=VARCHAR} AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )          
+	               
+  </select>  
+  <!-- 附件清单end -->
+  </mapper>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.produce.dao.PlanInitMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.PlanInit">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="WZ" jdbcType="DECIMAL" property="wz" />
+    <result column="JH" jdbcType="VARCHAR" property="jh" />
+    <result column="XLH" jdbcType="VARCHAR" property="xlh" />
+    <result column="JKLBH" jdbcType="VARCHAR" property="jklbh" />
+    <result column="JKFLBH" jdbcType="VARCHAR" property="jkflbh" />
+    <result column="CSZ" jdbcType="VARCHAR" property="csz" />
+    <result column="ZJQDID" jdbcType="VARCHAR" property="zjqdid" />
+    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, FJZCH, DPRTCODE, WZ, JH, XLH, JKLBH, JKFLBH, CSZ, ZJQDID, WHBMID, WHRID, WHSJ
+  </sql>
+  
+  <insert id="insertAll" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+		into D_00701 
+		 <trim prefix="(" suffix=")" suffixOverrides=",">
+		      <if test="item.id != null">
+		        ID,
+		      </if>
+		      <if test="item.fjzch != null">
+		        FJZCH,
+		      </if>
+		      <if test="item.dprtcode != null">
+		        DPRTCODE,
+		      </if>
+		      <if test="item.wz != null">
+		        WZ,
+		      </if>
+		      <if test="item.jh != null">
+		        JH,
+		      </if>
+		      <if test="item.xlh != null">
+		        XLH,
+		      </if>
+		      <if test="item.jklbh != null">
+		        JKLBH,
+		      </if>
+		      <if test="item.jkflbh != null">
+		        JKFLBH,
+		      </if>
+		      <if test="item.csz != null">
+		        CSZ,
+		      </if>
+		      <if test="item.zjqdid != null">
+		        ZJQDID,
+		      </if>
+		      <if test="item.whbmid != null">
+		        WHBMID,
+		      </if>
+		      <if test="item.whrid != null">
+		        WHRID,
+		      </if>
+		      <if test="item.whrid != null">
+		        WHSJ,
+		      </if>
+		   </trim>
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+		      <if test="item.id != null">
+		        #{item.id,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.fjzch != null">
+		        #{item.fjzch,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.dprtcode != null">
+		        #{item.dprtcode,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.wz != null">
+		        #{item.wz,jdbcType=DECIMAL},
+		      </if>
+		      <if test="item.jh != null">
+		        #{item.jh,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.xlh != null">
+		        #{item.xlh,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.jklbh != null">
+		        #{item.jklbh,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.jkflbh != null">
+		        #{item.jkflbh,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.csz != null">
+		        #{item.csz,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.zjqdid != null">
+		        #{item.zjqdid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.whbmid != null">
+		        #{item.whbmid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.whrid != null">
+		        #{item.whrid,jdbcType=VARCHAR},
+		      </if>
+		      <if test="item.whrid != null">
+		        sysdate,
+		      </if>
+		    </trim>
+		</foreach>
+		select 1 from dual
+	</insert>
+	
+	<update id="updateAll" parameterType="java.util.List" >
+  		<foreach collection="list" item="item" index="index" open="begin" close="end;" separator="" > 
+            update D_00701 
+            <set>       
+                csz = #{item.csz,jdbcType=VARCHAR},
+                jh=#{item.jh,jdbcType=DECIMAL},
+                xlh = #{item.xlh,jdbcType=DECIMAL},
+                whrid = #{item.whrid,jdbcType=DECIMAL},
+                whbmid = #{item.whbmid,jdbcType=DECIMAL},
+                whsj = sysdate
+            </set>
+            where id = #{item.id,jdbcType=VARCHAR};
+        </foreach>
+  </update>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from D_00701
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBodyInit" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from D_00701
+    where dprtcode=#{dprtcode,jdbcType=VARCHAR} and wz=11 and fjzch=#{fjzch,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from D_00701
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.PlanInit">
+    insert into D_00701 (ID, FJZCH, DPRTCODE, 
+      WZ, JH, XLH, JKLBH, 
+      JKFLBH, CSZ, ZJQDID, 
+      WHBMID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{wz,jdbcType=DECIMAL}, #{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{jklbh,jdbcType=VARCHAR}, 
+      #{jkflbh,jdbcType=VARCHAR}, #{csz,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.PlanInit">
+    insert into D_00701
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="fjzch != null">
+        FJZCH,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="wz != null">
+        WZ,
+      </if>
+      <if test="jh != null">
+        JH,
+      </if>
+      <if test="xlh != null">
+        XLH,
+      </if>
+      <if test="jklbh != null">
+        JKLBH,
+      </if>
+      <if test="jkflbh != null">
+        JKFLBH,
+      </if>
+      <if test="csz != null">
+        CSZ,
+      </if>
+      <if test="zjqdid != null">
+        ZJQDID,
+      </if>
+      <if test="whbmid != null">
+        WHBMID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whrid != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null">
+        #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null">
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null">
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null">
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null">
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="csz != null">
+        #{csz,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null">
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.PlanInit">
+    update D_00701
+    <set>
+      <if test="fjzch != null">
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null">
+        WZ = #{wz,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null">
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null">
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null">
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null">
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="csz != null">
+        CSZ = #{csz,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null">
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.PlanInit">
+    update D_00701
+    set FJZCH = #{fjzch,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WZ = #{wz,jdbcType=DECIMAL},
+      JH = #{jh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      JKLBH = #{jklbh,jdbcType=VARCHAR},
+      JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      CSZ = #{csz,jdbcType=VARCHAR},
+      ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

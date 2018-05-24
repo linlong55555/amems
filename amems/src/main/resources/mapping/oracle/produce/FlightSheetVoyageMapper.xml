@@ -1,0 +1,1663 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.produce.dao.FlightSheetVoyageMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.FlightSheetVoyage">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="HC" jdbcType="DECIMAL" property="hc" />
+    <result column="HCMS" jdbcType="VARCHAR" property="hcms" />
+    <result column="HBH" jdbcType="VARCHAR" property="hbh" />
+    <result column="FXRWLX" jdbcType="VARCHAR" property="fxrwlx" />
+    <result column="QFZ" jdbcType="VARCHAR" property="qfz" />
+    <result column="ZLZ" jdbcType="VARCHAR" property="zlz" />
+    <result column="KCSJ" jdbcType="TIMESTAMP" property="kcsj" />
+    <result column="QFSJ" jdbcType="TIMESTAMP" property="qfsj" />
+    <result column="LDSJ" jdbcType="TIMESTAMP" property="ldsj" />
+    <result column="TCSJ" jdbcType="TIMESTAMP" property="tcsj" />
+    <result column="SYSJ_FZ" jdbcType="DECIMAL" property="sysjFz" />
+    <result column="FXSJ_FZ" jdbcType="DECIMAL" property="fxsjFz" />
+    <result column="F1_SJ_FZ" jdbcType="DECIMAL" property="f1SjFz" />
+    <result column="F1_XH" jdbcType="DECIMAL" property="f1Xh" />
+    <result column="F1_HYTJL" jdbcType="DECIMAL" property="f1Hytjl" />
+    <result column="F2_SJ_FZ" jdbcType="DECIMAL" property="f2SjFz" />
+    <result column="F2_XH" jdbcType="DECIMAL" property="f2Xh" />
+    <result column="F2_HYTJL" jdbcType="DECIMAL" property="f2Hytjl" />
+    <result column="F3_SJ_FZ" jdbcType="DECIMAL" property="f3SjFz" />
+    <result column="F3_XH" jdbcType="DECIMAL" property="f3Xh" />
+    <result column="F3_HYTJL" jdbcType="DECIMAL" property="f3Hytjl" />
+    <result column="F4_SJ_FZ" jdbcType="DECIMAL" property="f4SjFz" />
+    <result column="F4_XH" jdbcType="DECIMAL" property="f4Xh" />
+    <result column="F4_HYTJL" jdbcType="DECIMAL" property="f4Hytjl" />
+    <result column="APU_SJ_FZ" jdbcType="DECIMAL" property="apuSjFz" />
+    <result column="APU_XH" jdbcType="DECIMAL" property="apuXh" />
+    <result column="APU_HYTJL" jdbcType="DECIMAL" property="apuHytjl" />
+    <result column="FXXH" jdbcType="DECIMAL" property="fxxh" />
+    <result column="LXQLCS" jdbcType="DECIMAL" property="lxqlcs" />
+    <result column="IDGTKSJ" jdbcType="VARCHAR" property="idgtksj" />
+    <result column="YYY" jdbcType="DECIMAL" property="yyy" />
+    <result column="RY_CYL" jdbcType="DECIMAL" property="ryCyl" />
+    <result column="RY_JYL" jdbcType="DECIMAL" property="ryJyl" />
+    <result column="RY_SYYL" jdbcType="DECIMAL" property="rySyyl" />
+    <result column="FXRID" jdbcType="VARCHAR" property="fxrid" />
+    <result column="FXR" jdbcType="VARCHAR" property="fxr" />
+    <result column="JZID" jdbcType="VARCHAR" property="jzid" />
+    <result column="JZ" jdbcType="VARCHAR" property="jz" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="FXRWLX" jdbcType="VARCHAR" property="fxrwlx" />
+    <result column="RYDW" jdbcType="VARCHAR" property="rydw" />
+    
+    <result column="FXJSLJ" jdbcType="VARCHAR" property="paramsMap.fxjslj" />
+    <result column="FDJ_1" jdbcType="VARCHAR" property="paramsMap.fdj_1" />
+    <result column="FDJ_2" jdbcType="VARCHAR" property="paramsMap.fdj_2" />
+    <result column="FDJ_3" jdbcType="VARCHAR" property="paramsMap.fdj_3" />
+    <result column="FDJ_4" jdbcType="VARCHAR" property="paramsMap.fdj_4" />
+    <result column="APU" jdbcType="VARCHAR" property="paramsMap.apu" />
+    
+    <!-- 小计累计 -->
+    <result column="lj_sysj" jdbcType="VARCHAR" property="paramsMap.lj_sysj" />  <!-- 累计：使用时间 -->
+    <result column="lj_fxsj" jdbcType="VARCHAR" property="paramsMap.lj_fxsj" />  <!-- 累计：飞行时间 -->
+    <result column="lj_fdj1_sj" jdbcType="VARCHAR" property="paramsMap.lj_fdj1_sj" />  <!-- 累计：1#时间 -->
+    <result column="lj_fdj1_xh" jdbcType="VARCHAR" property="paramsMap.lj_fdj1_xh" />  <!-- 累计：1#循环 -->
+    <result column="lj_fdj1_hytjl" jdbcType="VARCHAR" property="paramsMap.lj_fdj1_hytjl" />  <!-- 累计：1#滑油添加量 -->
+    <result column="lj_fdj2_sj" jdbcType="VARCHAR" property="paramsMap.lj_fdj2_sj" />  <!-- 累计：2#时间 -->
+    <result column="lj_fdj2_xh" jdbcType="VARCHAR" property="paramsMap.lj_fdj2_xh" />  <!-- 累计：2#循环 -->
+    <result column="lj_fdj2_hytjl" jdbcType="VARCHAR" property="paramsMap.lj_fdj2_hytjl" />  <!--  累计：2#滑油添加量 -->
+    <result column="lj_fdj3_sj" jdbcType="VARCHAR" property="paramsMap.lj_fdj3_sj" />  <!-- 累计：3#时间 -->
+    <result column="lj_fdj3_xh" jdbcType="VARCHAR" property="paramsMap.lj_fdj3_xh" />  <!-- 累计：3#循环 -->
+    <result column="lj_fdj3_hytjl" jdbcType="VARCHAR" property="paramsMap.lj_fdj3_hytjl" />  <!-- 累计：3#滑油添加量 -->
+    <result column="lj_fdj4_sj" jdbcType="VARCHAR" property="paramsMap.lj_fdj4_sj" />  <!-- 累计：4#时间 -->
+    <result column="lj_fdj4_xh" jdbcType="VARCHAR" property="paramsMap.lj_fdj4_xh" />  <!-- 累计：4#循环 -->
+    <result column="lj_fdj4_hytjl" jdbcType="VARCHAR" property="paramsMap.lj_fdj4_hytjl" />  <!-- 累计：4#滑油添加量 -->
+    <result column="lj_apu_sj" jdbcType="VARCHAR" property="paramsMap.lj_apu_sj" />  <!--  累计：APU时间 -->
+    <result column="lj_apu_xh" jdbcType="VARCHAR" property="paramsMap.lj_apu_xh" />  <!-- 累计：APU循环 -->
+    <result column="lj_apu_hytjl" jdbcType="VARCHAR" property="paramsMap.lj_apu_hytjl" />  <!-- 累计：APU滑油添加量 -->
+    <result column="lj_fxxh" jdbcType="VARCHAR" property="paramsMap.lj_fxxh" />  <!-- 累计：飞行循环 -->
+    <result column="lj_ry_jyl" jdbcType="VARCHAR" property="paramsMap.lj_ry_jyl" />  <!-- 累计：燃油加油量 -->
+    <result column="lj_ry_xhl" jdbcType="VARCHAR" property="paramsMap.lj_ry_xhl" />  <!-- 累计：燃油消耗量 -->
+    
+    <result column="bjh" jdbcType="VARCHAR" property="paramsMap.bjh" />  <!-- 部件号 -->
+    <result column="xlh" jdbcType="VARCHAR" property="paramsMap.xlh" />  <!-- 序列号 -->
+    <result column="bjh_zwmc" jdbcType="VARCHAR" property="paramsMap.bjh_zwmc" />  <!-- 部件中文名称 -->
+    <result column="bjh_ywmc" jdbcType="VARCHAR" property="paramsMap.bjh_ywmc" />  <!-- 部件英文名称 -->
+    <result column="cjjh" jdbcType="VARCHAR" property="paramsMap.cjjh" />  <!-- 厂家件号 -->
+    <result column="bjh_xh" jdbcType="VARCHAR" property="paramsMap.bjh_xh" />  <!-- 型号 -->
+    <result column="zjh" jdbcType="VARCHAR" property="paramsMap.zjh" />  <!-- 章节号 -->
+    <result column="zjh_zwmc" jdbcType="VARCHAR" property="paramsMap.zjh_zwmc" />  <!-- 章节号中文名称 -->
+    <result column="zjh_ywmc" jdbcType="VARCHAR" property="paramsMap.zjh_ywmc" />  <!-- 章节号英文名称 -->
+    <result column="llklx" jdbcType="VARCHAR" property="paramsMap.llklx" />  <!--	 履历卡类型：1无履历卡、2原装履历卡、3自制履历卡 -->
+    <result column="llkbh" jdbcType="VARCHAR" property="paramsMap.llkbh" />  <!--	 履历卡编号 -->
+    <result column="bjgzjl" jdbcType="VARCHAR" property="paramsMap.bjgzjl" />  <!--	部件改装记录-->
+    <result column="chucrq" jdbcType="VARCHAR" property="paramsMap.chucrq" />  <!--	出厂日期-->
+    <result column="cal" jdbcType="VARCHAR" property="paramsMap.cal" />  <!--	CAL-->
+    <result column="tsn" jdbcType="VARCHAR" property="paramsMap.tsn" />  <!--	TSN-->
+    <result column="tso" jdbcType="VARCHAR" property="paramsMap.tso" />  <!--	TSO-->
+    <result column="csn" jdbcType="VARCHAR" property="paramsMap.csn" />  <!--	CSN-->
+    <result column="cso" jdbcType="VARCHAR" property="paramsMap.cso" />  <!--	CSO-->
+    <result column="username" jdbcType="VARCHAR" property="paramsMap.username" />  <!--	username-->
+    <result column="realname" jdbcType="VARCHAR" property="paramsMap.realname" />  <!--	realname-->
+    <result column="dprtName" jdbcType="VARCHAR" property="paramsMap.dprtName" />  <!--	dprtName-->
+  </resultMap>
+  
+   <resultMap type="com.eray.thjw.produce.po.FlightSheetVoyage" id="FlighthistoryMap" extends="BaseResultMap">
+   	<association property="flightSheet" javaType="com.eray.thjw.produce.po.FlightSheet">  
+         <id column="FXJLBID" jdbcType="VARCHAR" property="id" />
+	    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+	    <result column="ZDDWID" jdbcType="VARCHAR" property="zddwid" />
+	    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+	    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+	    <result column="XDDWID" jdbcType="VARCHAR" property="xddwid" />
+	    <result column="XDRID" jdbcType="VARCHAR" property="xdrid" />
+	    <result column="XDSJ" jdbcType="TIMESTAMP" property="xdsj" />
+	    <result column="XDBZ" jdbcType="VARCHAR" property="xdbz" />
+	    <result column="FXJLBZT" jdbcType="DECIMAL" property="zt" />
+	    <result column="IS_XDTX" jdbcType="DECIMAL" property="isXdtx" />
+	    <result column="FXJLBH" jdbcType="VARCHAR" property="fxjlbh" />
+	    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+	    <result column="JLBYM" jdbcType="VARCHAR" property="jlbym" />
+	    <result column="FXRQ" jdbcType="TIMESTAMP" property="fxrq" />
+	    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+	    <result column="KCSJ" jdbcType="TIMESTAMP" property="kcsj" />
+	    <result column="HBH" jdbcType="VARCHAR" property="paramsMap.hbh" />
+	    <result column="HBHID" jdbcType="VARCHAR" property="paramsMap.hbhid" />
+    </association>  
+   </resultMap>
+  <sql id="Base_Column_List">
+    ID, MAINID, ZT, WHDWID, WHRID, WHSJ, HC, HCMS, HBH, QFZ, ZLZ, KCSJ, QFSJ, LDSJ, TCSJ, 
+    SYSJ_FZ, FXSJ_FZ, F1_SJ_FZ, F1_XH, F1_HYTJL, F2_SJ_FZ, F2_XH, F2_HYTJL, F3_SJ_FZ, 
+    F3_XH, F3_HYTJL, F4_SJ_FZ, F4_XH, F4_HYTJL, APU_SJ_FZ, APU_XH, APU_HYTJL, FXXH, LXQLCS, 
+    IDGTKSJ, YYY, RY_CYL, RY_JYL, RY_SYYL, FXRID, FXR, JZID, JZ, BZ, FXRWLX, RYDW
+  </sql>
+   <sql id="FlighthistoryParam">
+   WHERE 1 = 1
+    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+	   AND (UPPER(S2006.FXJLBH) LIKE UPPER('%' || #{paramsMap.keyword} || '%') or
+	       UPPER(S2006.Jlbym) LIKE UPPER('%' || #{paramsMap.keyword} || '%') or
+	       UPPER(S200601.HCMS) LIKE UPPER('%' || #{paramsMap.keyword} || '%') or
+	       UPPER(S200601.Hbh) LIKE UPPER('%' || #{paramsMap.keyword} || '%'))
+    </if>
+     <!--   飞行日期区间 -->
+    <if test="paramsMap != null and paramsMap.fxrqBegin != null and paramsMap.fxrqBegin != ''">
+		    and S2006.FXRQ &gt;= to_date(#{paramsMap.fxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+	</if>
+	<if test="paramsMap != null and paramsMap.fxrqEnd != null and paramsMap.fxrqEnd != ''">
+	    and S2006.FXRQ &lt;= to_date(#{paramsMap.fxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+	</if>
+	<!--   航班号 -->
+	<if test="paramsMap != null and paramsMap.hbh != null and paramsMap.hbh != ''">
+	    and UPPER(S200601.Hbh) LIKE UPPER('%' || #{paramsMap.hbh, jdbcType=VARCHAR} || '%')
+	</if>
+	<!--   记录本页码 -->
+	<if test="paramsMap != null and paramsMap.jlbym != null and paramsMap.jlbym != ''">
+	    and UPPER(S2006.Jlbym) LIKE UPPER('%' || #{paramsMap.jlbym, jdbcType=VARCHAR} || '%')
+	</if>
+	<!--   状态 -->
+	<if test="paramsMap != null and paramsMap.zt != null and paramsMap.zt != ''">
+	    and S2006.ZT  = #{paramsMap.zt}
+	</if>
+  </sql>
+  
+    <select id="queryBj" resultMap="FlighthistoryMap" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+    	SELECT T.DPRTCODE, --机构代码
+	       T.BJH, --部件号
+	       T.XLH, --序列号
+	       T.BJH_ZWMC, --部件中文名称
+	       T.BJH_YWMC, --部件英文名称
+	       T.CJJH, --厂家件号
+	       T.BJH_XH, --型号
+	       T.ZJH, --章节号
+	       T.ZJH_ZWMC, --章节号中文名称
+	       T.ZJH_YWMC, --章节号英文名称
+	       T.LLKLX, --履历卡类型：1无履历卡、2原装履历卡、3自制履历卡
+	       T.LLKBH, --履历卡编号
+	       T.BJGZJL, --部件改装记录
+	       T.CHUCRQ, --出厂日期
+	       T.CAL, --CAL
+	       (T.CS_TSN + T.LJ_FXSJ) TSN, --TSN
+	       (T.CS_TSO + T.LJ_FXSJ) TSO, --TSO
+	       (T.CS_CSN + T.LJ_FXXH) CSN, --CSN
+	       (T.CS_CSO + T.LJ_FXXH) CSO --CSO
+	  FROM (SELECT DUAL.DPRTCODE,
+	               DUAL.BJH,
+	               DUAL.XLH,
+	               D008.ZWMS BJH_ZWMC,
+	               D008.YWMS BJH_YWMC,
+	               D008.CJJH,
+	               D008.XINGH BJH_XH,
+	               D008.ZJH,
+	               D005.ZWMS ZJH_ZWMC,
+	               D005.YWMS ZJH_YWMC,
+	               H010.LLKLX,
+	               H010.LLKBH,
+	               H010.BJGZJL,
+	               H010.CHUCRQ,
+	               CASE
+	                 WHEN H010.CHUCRQ IS NOT NULL THEN
+	                  (SYSDATE - H010.CHUCRQ)
+	                 ELSE
+	                  NULL
+	               END CAL,
+	               CAST(COALESCE(H010.TSN, '0') AS INTEGER) CS_TSN,
+	               CAST(COALESCE(H010.TSO, '0') AS INTEGER) CS_TSO,
+	               CAST(COALESCE(H010.CSN, 0) AS INTEGER) CS_CSN,
+	               CAST(COALESCE(H010.CSO, 0) AS INTEGER) CS_CSO,
+	               (SELECT COALESCE(SUM(T00601.FXSJ_FZ), 0)
+	                  FROM B_S2_00601 T00601
+	                  JOIN B_S2_006 T006
+	                    ON T00601.MAINID = T006.ID
+	                   AND T00601.ZT = 1
+	                   AND T006.ZT IN (2, 12, 99)
+	                   AND T006.DPRTCODE = #{paramsMap.dprtcode}
+	                  JOIN B_S2_004 S2004
+	                    ON S2004.DPRTCODE = #{paramsMap.dprtcode}
+	                   AND S2004.BJH = #{paramsMap.jh}
+	                   AND S2004.XLH = #{paramsMap.xlh}
+	                   AND S2004.FJZCH = T006.FJZCH
+	                   AND COALESCE(S2004.AZSJ,
+	                                TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+	                       T00601.KCSJ
+	                   AND COALESCE(S2004.CCSJ,
+	                                TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;
+	                       T00601.KCSJ
+	                 WHERE 1 = 1
+	                   AND T00601.KCSJ &gt;= H010.WHSJ) LJ_FXSJ,
+	               (SELECT COALESCE(SUM(T00601.FXXH), 0)
+	                  FROM B_S2_00601 T00601
+	                  JOIN B_S2_006 T006
+	                    ON T00601.MAINID = T006.ID
+	                   AND T00601.ZT = 1
+	                   AND T006.ZT IN (2, 12, 99)
+	                   AND T006.DPRTCODE = #{paramsMap.dprtcode}
+	                  JOIN B_S2_004 S2004
+	                    ON S2004.DPRTCODE = #{paramsMap.dprtcode}
+	                   AND S2004.BJH = #{paramsMap.jh}
+	                   AND S2004.XLH = #{paramsMap.xlh}
+	                   AND S2004.FJZCH = T006.FJZCH
+	                   AND COALESCE(S2004.AZSJ,
+	                                TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+	                       T00601.KCSJ
+	                   AND COALESCE(S2004.CCSJ,
+	                                TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;
+	                       T00601.KCSJ
+	                 WHERE 1 = 1
+	                   AND T00601.KCSJ &gt;= H010.WHSJ) LJ_FXXH
+	          FROM (SELECT #{paramsMap.dprtcode} DPRTCODE,
+	                       #{paramsMap.jh} BJH,
+	                       #{paramsMap.xlh} XLH
+	                  FROM DUAL) DUAL
+	          LEFT JOIN D_008 D008
+	            ON D008.DPRTCODE = DUAL.DPRTCODE
+	           AND D008.BJH = DUAL.BJH
+	          LEFT JOIN D_005 D005
+	            ON D005.DPRTCODE = D008.DPRTCODE
+	           AND D005.ZJH = D008.ZJH
+	          LEFT JOIN B_H_010 H010
+	            ON H010.DPRTCODE = DUAL.DPRTCODE
+	           AND H010.JH = DUAL.BJH
+	           AND H010.XLH = DUAL.XLH) T
+	 WHERE 1 = 1
+    	
+    </select>
+  <select id="selectSubtotalByFlighthistory" resultMap="FlighthistoryMap" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+  	SELECT COALESCE(sum(S200601.SYSJ_FZ), 0) lj_sysj, <!-- 累计：使用时间 -->
+       COALESCE(sum(S200601.FXSJ_FZ), 0) lj_fxsj, <!-- 累计：飞行时间 -->
+       COALESCE(sum(S200601.F1_SJ_FZ), 0) lj_fdj1_sj, <!-- 累计：1#时间 -->
+       COALESCE(sum(S200601.F1_XH), 0) lj_fdj1_xh, <!-- 累计：1#循环 -->
+       COALESCE(sum(S200601.F1_HYTJL), 0) lj_fdj1_hytjl, <!-- 累计：1#滑油添加量 -->
+       COALESCE(sum(S200601.F2_SJ_FZ), 0) lj_fdj2_sj, <!-- 累计：2#时间 -->
+       COALESCE(sum(S200601.F2_XH), 0) lj_fdj2_xh, <!-- 累计：2#循环 -->
+       COALESCE(sum(S200601.F2_HYTJL), 0) lj_fdj2_hytjl,<!--  累计：2#滑油添加量 -->
+       COALESCE(sum(S200601.F3_SJ_FZ), 0) lj_fdj3_sj, <!-- 累计：3#时间 -->
+       COALESCE(sum(S200601.F3_XH), 0) lj_fdj3_xh, <!-- 累计：3#循环 -->
+       COALESCE(sum(S200601.F3_HYTJL), 0) lj_fdj3_hytjl, <!-- 累计：3#滑油添加量 -->
+       COALESCE(sum(S200601.F4_SJ_FZ), 0) lj_fdj4_sj, <!-- 累计：4#时间 -->
+       COALESCE(sum(S200601.F4_XH), 0) lj_fdj4_xh, <!-- 累计：4#循环 -->
+       COALESCE(sum(S200601.F4_HYTJL), 0) lj_fdj4_hytjl, <!-- 累计：4#滑油添加量 -->
+       COALESCE(sum(S200601.APU_SJ_FZ), 0) lj_apu_sj,<!--  累计：APU时间 -->
+       COALESCE(sum(S200601.APU_XH), 0) lj_apu_xh, <!-- 累计：APU循环 -->
+       COALESCE(sum(S200601.APU_HYTJL), 0) lj_apu_hytjl, <!-- 累计：APU滑油添加量 -->
+       COALESCE(sum(S200601.FXXH), 0) lj_fxxh, <!-- 累计：飞行循环 -->
+       COALESCE(sum(S200601.RY_JYL), 0) lj_ry_jyl, <!-- 累计：燃油加油量 -->
+       COALESCE(sum(COALESCE(S200601.RY_SYYL, 0) -
+                    COALESCE(S200601.RY_CYL, 0)),
+                0) lj_ry_xhl <!-- 累计：燃油消耗量 -->
+  FROM B_S2_00601 S200601
+  JOIN B_S2_006 S2006
+    ON S200601.MAINID = S2006.ID
+   AND S200601.ZT = 1
+   AND S2006.ZT IN (2, 12, 99)
+   AND S2006.DPRTCODE =  #{paramsMap.dprtcode,jdbcType=VARCHAR}
+   AND S2006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+  <include refid="FlighthistoryParam"></include> 
+  </select>
+   <select id="queryAllFlighthistory" resultMap="FlighthistoryMap" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+	  SELECT S2006.ID          FXJLBID, <!-- 飞行记录本ID -->
+	       S2006.ZT          FXJLBZT, <!-- 飞行记录本状态：2提交、12修订、99历史 -->
+	       S2006.FXRQ, <!-- 飞行日期 -->
+	       S2006.FJZCH, <!-- 飞机注册号 -->
+	       S2006.FXJLBH, <!-- 飞行记录本号 -->
+	       S2006.JLBYM, <!-- 飞行记录本页码 -->
+	       S2006.zdrid, <!-- 制单人id -->
+	       S2006.zdsj, <!-- 制单时间 -->
+	       S2006.dprtcode, <!-- 组织机构 -->
+	       t_department.dprtname, <!-- 组织机构名称 -->
+	       t_user.username, <!-- username -->
+	       t_user.realname, <!-- realname -->
+	       S200601.ID        , <!-- 飞行记录ID -->
+	       S200601.HC, <!-- 航次 -->
+	       S200601.HCMS, <!-- 航次描述 -->
+	       S200601.HBH, <!-- 航班号 -->
+	       S200601.QFZ, <!-- 起飞站 -->
+	       S200601.ZLZ, <!-- 着落站 -->
+	       S200601.KCSJ,<!--  开车时间 -->
+	       S200601.QFSJ, <!-- 起飞时间 -->
+	       S200601.LDSJ, <!-- 落地时间 -->
+	       S200601.TCSJ, <!-- 停车时间 -->
+	       S200601.SYSJ_FZ, <!-- 使用时间 -->
+	       S200601.FXSJ_FZ, <!-- 飞行时间 -->
+	       S200601.F1_SJ_FZ, <!-- 1#时间 -->
+	       S200601.F1_XH, <!-- 1#循环 -->
+	       S200601.F1_HYTJL, <!-- 1#滑油添加量 -->
+	       S200601.F2_SJ_FZ, <!-- 2#时间 -->
+	       S200601.F2_XH,<!--  2#循环 -->
+	       S200601.F2_HYTJL,<!--  2#滑油添加量 -->
+	       S200601.F3_SJ_FZ,<!--  3#时间 -->
+	       S200601.F3_XH, <!-- 3#循环 -->
+	       S200601.F3_HYTJL, <!-- 3#滑油添加量 -->
+	       S200601.F4_SJ_FZ, <!-- 4#时间 -->
+	       S200601.F4_XH, <!-- 4#循环 -->
+	       S200601.F4_HYTJL, <!-- 4#滑油添加量 -->
+	       S200601.APU_SJ_FZ, <!-- APU时间 -->
+	       S200601.APU_XH,<!--  APU循环 -->
+	       S200601.APU_HYTJL, <!-- APU滑油添加量 -->
+	       S200601.FXXH, <!-- 飞行循环 -->
+	       S200601.LXQLCS,<!--  连续起落次数 -->
+	       S200601.IDGTKSJ,<!-- IDG脱开时间 -->
+	       S200601.YYY, <!-- 液压油 -->
+	       S200601.RY_CYL,<!--  燃油存油量 -->
+	       S200601.RY_JYL, <!-- 燃油加油量 -->
+	       S200601.RY_SYYL, <!-- 燃油剩余量 -->
+	       S200601.FXR, <!-- 放行人 -->
+	       S200601.JZ, <!-- 机长 -->
+	       S200601.FXRWLX, <!-- 任务类型 -->
+	      <!--   累计飞行时间/飞行循环/滑油添加量  -->
+	       (SELECT (COALESCE(SUM(T00601.FXSJ_FZ), 0) +
+	               CAST(COALESCE(D00701.CSZ_FXSJ, '0') AS INTEGER)) || '#_#' ||
+	               (COALESCE(SUM(T00601.FXXH), 0) +
+	               CAST(COALESCE(D00701.CSZ_FXXH, '0') AS INTEGER)) || '#_#' ||
+	               COALESCE(SUM(T00601.SYSJ_FZ), 0) || '#_#' ||
+	               COALESCE(SUM(T00601.APU_HYTJL), 0) || '#_#' ||
+	               COALESCE(SUM(T00601.F1_HYTJL), 0) || '#_#' ||
+	               COALESCE(SUM(T00601.F2_HYTJL), 0) || '#_#' ||
+	               COALESCE(SUM(T00601.F3_HYTJL), 0) || '#_#' ||
+	               COALESCE(SUM(T00601.F4_HYTJL), 0)
+	          FROM B_S2_00601 T00601
+	          JOIN B_S2_006 T006
+	            ON T00601.MAINID = T006.ID
+	           AND T00601.ZT = 1
+	           AND T006.ZT IN (2, 12)
+	           AND T006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	           AND T006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	         WHERE 1 = 1
+	           AND T00601.KCSJ &lt;= S200601.KCSJ) FXJSLJ, <!-- 累计：飞行时间（分钟）+ '#_#' + 飞行循环 + '#_#' +  使用时间 + '#_#' +  APU滑油添加量 + '#_#' +  1#滑油添加量 + '#_#' +  2#滑油添加量 + '#_#' +  3#滑油添加量 + '#_#' +  4#滑油添加量 -->
+	       <!-- 1#发动机 -->
+	       (SELECT MAX(S2004.BJH) || '#_#' || MAX(S2004.XLH) || '#_#' ||
+	               (COALESCE(SUM(T00601.F1_SJ_FZ), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_SJ), '0') AS INTEGER)) ||
+	               '#_#' ||
+	               (COALESCE(SUM(T00601.F1_XH), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_XH), '0') AS INTEGER))
+	          FROM B_S2_00601 T00601
+	          JOIN B_S2_006 T006
+	            ON T00601.MAINID = T006.ID
+	           AND T00601.ZT = 1
+	           AND T006.ZT IN (2, 12)
+	           AND T006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	           AND T006.FJZCH =  #{paramsMap.fjzch,jdbcType=VARCHAR}
+	          JOIN (SELECT S2004.ID ZJQDID,
+	                      S2004.BJH,
+	                      S2004.XLH,
+	                      S2004.AZSJ,
+	                      S2004.CCSJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '2_30_EH' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_SJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '3_30_EC' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_XH
+	                 FROM B_S2_004 S2004
+	                 JOIN B_S2_00401 S200401
+	                   ON S2004.ID = S200401.MAINID
+	                  AND S2004.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	                  AND S2004.FJZCH =  #{paramsMap.fjzch,jdbcType=VARCHAR}
+	                  AND S2004.YXBS = 1
+	                  AND S2004.WZ = 21
+	                  AND S2004.CJ = 1
+	                  AND S200401.JKLBH IN ('2_30_EH', '3_30_EC')
+	                WHERE 1 = 1
+	                GROUP BY S2004.ID,
+	                         S2004.BJH,
+	                         S2004.XLH,
+	                         S2004.AZSJ,
+	                         S2004.CCSJ) S2004
+	            ON COALESCE(S2004.AZSJ,
+	                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+	               T00601.KCSJ
+	           AND COALESCE(S2004.CCSJ,
+	                        TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;
+	               T00601.KCSJ
+	         WHERE 1 = 1
+	           AND T00601.KCSJ &lt;= S200601.KCSJ
+	           AND COALESCE(S2004.AZSJ,
+                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+               S200601.KCSJ
+           AND COALESCE(S2004.CCSJ,
+                        TO_DATE('89991231235901', 'YYYYMMDDHH24MISS')) &gt;
+               S200601.KCSJ
+	           ) FDJ_1, <!-- 1#:部件号 + '#_#' + 序列号 + '#_#' + 发动机时间累计 + '#_#' + 发动机循环累计 -->
+	       <!-- 2#发动机 -->
+	       (SELECT MAX(S2004.BJH) || '#_#' || MAX(S2004.XLH) || '#_#' ||
+	               (COALESCE(SUM(T00601.F2_SJ_FZ), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_SJ), '0') AS INTEGER)) ||
+	               '#_#' ||
+	               (COALESCE(SUM(T00601.F2_XH), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_XH), '0') AS INTEGER))
+	          FROM B_S2_00601 T00601
+	          JOIN B_S2_006 T006
+	            ON T00601.MAINID = T006.ID
+	           AND T00601.ZT = 1
+	           AND T006.ZT IN (2, 12)
+	           AND T006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	           AND T006.FJZCH =  #{paramsMap.fjzch,jdbcType=VARCHAR}
+	          JOIN (SELECT S2004.ID ZJQDID,
+	                      S2004.BJH,
+	                      S2004.XLH,
+	                      S2004.AZSJ,
+	                      S2004.CCSJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '2_30_EH' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_SJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '3_30_EC' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_XH
+	                 FROM B_S2_004 S2004
+	                 JOIN B_S2_00401 S200401
+	                   ON S2004.ID = S200401.MAINID
+	                  AND S2004.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	                  AND S2004.FJZCH =  #{paramsMap.fjzch,jdbcType=VARCHAR}
+	                  AND S2004.YXBS = 1
+	                  AND S2004.WZ = 22
+	                  AND S2004.CJ = 1
+	                  AND S200401.JKLBH IN ('2_30_EH', '3_30_EC')
+	                WHERE 1 = 1
+	                GROUP BY S2004.ID,
+	                         S2004.BJH,
+	                         S2004.XLH,
+	                         S2004.AZSJ,
+	                         S2004.CCSJ) S2004
+	            ON COALESCE(S2004.AZSJ,
+	                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+	               T00601.KCSJ
+	           AND COALESCE(S2004.CCSJ,
+	                        TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;
+	               T00601.KCSJ
+	         WHERE 1 = 1
+	           AND T00601.KCSJ &lt;= S200601.KCSJ
+	           AND COALESCE(S2004.AZSJ,
+                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+               S200601.KCSJ
+           AND COALESCE(S2004.CCSJ,
+                        TO_DATE('89991231235901', 'YYYYMMDDHH24MISS')) &gt;
+               S200601.KCSJ
+	           ) FDJ_2, <!-- 2#:部件号 + '#_#' + 序列号 + '#_#' + 发动机时间累计 + '#_#' + 发动机循环累计 -->
+	        <!-- 3#发动机  -->
+	       (SELECT MAX(S2004.BJH) || '#_#' || MAX(S2004.XLH) || '#_#' ||
+	               (COALESCE(SUM(T00601.F3_SJ_FZ), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_SJ), '0') AS INTEGER)) ||
+	               '#_#' ||
+	               (COALESCE(SUM(T00601.F3_XH), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_XH), '0') AS INTEGER))
+	          FROM B_S2_00601 T00601
+	          JOIN B_S2_006 T006
+	            ON T00601.MAINID = T006.ID
+	           AND T00601.ZT = 1
+	           AND T006.ZT IN (2, 12)
+	           AND T006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	           AND T006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	          JOIN (SELECT S2004.ID ZJQDID,
+	                      S2004.BJH,
+	                      S2004.XLH,
+	                      S2004.AZSJ,
+	                      S2004.CCSJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '2_30_EH' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_SJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '3_30_EC' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_XH
+	                 FROM B_S2_004 S2004
+	                 JOIN B_S2_00401 S200401
+	                   ON S2004.ID = S200401.MAINID
+	                  AND S2004.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	                  AND S2004.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	                  AND S2004.YXBS = 1
+	                  AND S2004.WZ = 23
+	                  AND S2004.CJ = 1
+	                  AND S200401.JKLBH IN ('2_30_EH', '3_30_EC')
+	                WHERE 1 = 1
+	                GROUP BY S2004.ID,
+	                         S2004.BJH,
+	                         S2004.XLH,
+	                         S2004.AZSJ,
+	                         S2004.CCSJ) S2004
+	            ON COALESCE(S2004.AZSJ,
+	                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+	               T00601.KCSJ
+	           AND COALESCE(S2004.CCSJ,
+	                        TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;
+	               T00601.KCSJ
+	         WHERE 1 = 1
+	           AND T00601.KCSJ &lt;= S200601.KCSJ
+	           AND COALESCE(S2004.AZSJ,
+                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+               S200601.KCSJ
+           AND COALESCE(S2004.CCSJ,
+                        TO_DATE('89991231235901', 'YYYYMMDDHH24MISS')) &gt;
+               S200601.KCSJ
+	           ) FDJ_3, <!-- 3#:部件号 + '#_#' + 序列号 + '#_#' + 发动机时间累计 + '#_#' + 发动机循环累计 -->
+	        <!-- 4#发动机  -->
+	       (SELECT MAX(S2004.BJH) || '#_#' || MAX(S2004.XLH) || '#_#' ||
+	               (COALESCE(SUM(T00601.F4_SJ_FZ), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_SJ), '0') AS INTEGER)) ||
+	               '#_#' ||
+	               (COALESCE(SUM(T00601.F4_XH), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_FDJ_XH), '0') AS INTEGER))
+	          FROM B_S2_00601 T00601
+	          JOIN B_S2_006 T006
+	            ON T00601.MAINID = T006.ID
+	           AND T00601.ZT = 1
+	           AND T006.ZT IN (2, 12)
+	           AND T006.DPRTCODE =  #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	           AND T006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	          JOIN (SELECT S2004.ID ZJQDID,
+	                      S2004.BJH,
+	                      S2004.XLH,
+	                      S2004.AZSJ,
+	                      S2004.CCSJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '2_30_EH' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_SJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '3_30_EC' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_FDJ_XH
+	                 FROM B_S2_004 S2004
+	                 JOIN B_S2_00401 S200401
+	                   ON S2004.ID = S200401.MAINID
+	                  AND S2004.DPRTCODE =  #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	                  AND S2004.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	                  AND S2004.YXBS = 1
+	                  AND S2004.WZ = 24
+	                  AND S2004.CJ = 1
+	                  AND S200401.JKLBH IN ('2_30_EH', '3_30_EC')
+	                WHERE 1 = 1
+	                GROUP BY S2004.ID,
+	                         S2004.BJH,
+	                         S2004.XLH,
+	                         S2004.AZSJ,
+	                         S2004.CCSJ) S2004
+	            ON COALESCE(S2004.AZSJ,
+	                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+	               T00601.KCSJ
+	           AND COALESCE(S2004.CCSJ,
+	                        TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;
+	               T00601.KCSJ
+	         WHERE 1 = 1
+	           AND T00601.KCSJ &lt;= S200601.KCSJ
+	           AND COALESCE(S2004.AZSJ,
+                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+               S200601.KCSJ
+           AND COALESCE(S2004.CCSJ,
+                        TO_DATE('89991231235901', 'YYYYMMDDHH24MISS')) &gt;
+               S200601.KCSJ
+	           ) FDJ_4, <!-- 4#:部件号 + '#_#' + 序列号 + '#_#' + 发动机时间累计 + '#_#' + 发动机循环累计 -->
+	      <!--  APU -->
+	       (SELECT MAX(S2004.BJH) || '#_#' || MAX(S2004.XLH) || '#_#' ||
+	               (COALESCE(SUM(T00601.APU_SJ_FZ), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_APUSJ), '0') AS INTEGER)) ||
+	               '#_#' ||
+	               (COALESCE(SUM(T00601.APU_XH), 0) +
+	                CAST(COALESCE(MAX(S2004.CSZ_APUXH), '0') AS INTEGER))
+	          FROM B_S2_00601 T00601
+	          JOIN B_S2_006 T006
+	            ON T00601.MAINID = T006.ID
+	           AND T00601.ZT = 1
+	           AND T006.ZT IN (2, 12)
+	           AND T006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	           AND T006.FJZCH =  #{paramsMap.fjzch,jdbcType=VARCHAR}
+	          JOIN (SELECT S2004.ID ZJQDID,
+	                      S2004.BJH,
+	                      S2004.XLH,
+	                      S2004.AZSJ,
+	                      S2004.CCSJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '2_20_AH' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_APUSJ,
+	                      MAX(CASE
+	                            WHEN S200401.JKLBH = '3_20_AC' THEN
+	                             S200401.ZSSYY
+	                            ELSE
+	                             '0'
+	                          END) CSZ_APUXH
+	                 FROM B_S2_004 S2004
+	                 JOIN B_S2_00401 S200401
+	                   ON S2004.ID = S200401.MAINID
+	                  AND S2004.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	                  AND S2004.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	                  AND S2004.YXBS = 1
+	                  AND S2004.WZ = 31
+	                  AND S2004.CJ = 1
+	                  AND S200401.JKLBH IN ('2_20_AH', '3_20_AC')
+	                WHERE 1 = 1
+	                GROUP BY S2004.ID,
+	                         S2004.BJH,
+	                         S2004.XLH,
+	                         S2004.AZSJ,
+	                         S2004.CCSJ) S2004
+	            ON COALESCE(S2004.AZSJ,
+	                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+	               T00601.KCSJ
+	           AND COALESCE(S2004.CCSJ,
+	                        TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;
+	               T00601.KCSJ
+	         WHERE 1 = 1
+	           AND T00601.KCSJ &lt;= S200601.KCSJ
+	           AND COALESCE(S2004.AZSJ,
+                        TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+               S200601.KCSJ
+           AND COALESCE(S2004.CCSJ,
+                        TO_DATE('89991231235901', 'YYYYMMDDHH24MISS')) &gt;
+               S200601.KCSJ
+	           ) APU <!-- APU:部件号 + '#_#' + 序列号 + '#_#' + APU时间累计 + '#_#' + APU循环累计 -->
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.MAINID = S2006.ID
+	   AND S200601.ZT = 1
+	   AND S2006.ZT IN (2, 12, 99)
+	   AND S2006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	   AND S2006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	  JOIN (SELECT D00701.DPRTCODE,
+	               D00701.FJZCH,
+	               MAX(CASE
+	                     WHEN D00701.JKLBH = '2_10_FH' THEN
+	                      D00701.CSZ
+	                     ELSE
+	                      '0'
+	                   END) CSZ_FXSJ,
+	               MAX(CASE
+	                     WHEN D00701.JKLBH = '3_10_FC' THEN
+	                      D00701.CSZ
+	                     ELSE
+	                      '0'
+	                   END) CSZ_FXXH
+	          FROM D_00701 D00701
+	         WHERE D00701.JKLBH IN ('2_10_FH', '3_10_FC')
+	           AND D00701.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	           AND D00701.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	         GROUP BY D00701.DPRTCODE, D00701.FJZCH) D00701
+	    ON D00701.DPRTCODE = S2006.DPRTCODE
+	   AND D00701.FJZCH = S2006.FJZCH
+	   left join t_user on t_user.id = S2006.zdrid
+	   left join t_department on t_department.id = S2006.dprtcode
+	  <include refid="FlighthistoryParam"></include> 
+   	<choose>
+		 <when test='pagination.sort == "auto"'>
+		    	 ORDER BY S200601.KCSJ DESC
+		 </when>
+	     <otherwise>
+			     ORDER BY ${pagination.sort} ${pagination.order}
+	     </otherwise>
+    </choose>
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_00601
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_S2_00601
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+    insert into B_S2_00601 (ID, MAINID, ZT, 
+      WHDWID, WHRID, WHSJ, 
+      HC, HCMS, HBH, QFZ, 
+      ZLZ, KCSJ, QFSJ, 
+      LDSJ, TCSJ, SYSJ_FZ, 
+      FXSJ_FZ, F1_SJ_FZ, F1_XH, 
+      F1_HYTJL, F2_SJ_FZ, F2_XH, 
+      F2_HYTJL, F3_SJ_FZ, F3_XH, 
+      F3_HYTJL, F4_SJ_FZ, F4_XH, 
+      F4_HYTJL, APU_SJ_FZ, APU_XH, 
+      APU_HYTJL, FXXH, LXQLCS, 
+      IDGTKSJ, YYY, RY_CYL, 
+      RY_JYL, RY_SYYL, FXRID, 
+      FXR, JZID, JZ, BZ,
+      FXRWLX, RYDW
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{hc,jdbcType=DECIMAL}, #{hcms,jdbcType=VARCHAR}, #{hbh,jdbcType=VARCHAR}, #{qfz,jdbcType=VARCHAR}, 
+      #{zlz,jdbcType=VARCHAR}, #{kcsj,jdbcType=TIMESTAMP}, #{qfsj,jdbcType=TIMESTAMP}, 
+      #{ldsj,jdbcType=TIMESTAMP}, #{tcsj,jdbcType=TIMESTAMP}, #{sysjFz,jdbcType=DECIMAL}, 
+      #{fxsjFz,jdbcType=DECIMAL}, #{f1SjFz,jdbcType=DECIMAL}, #{f1Xh,jdbcType=DECIMAL}, 
+      #{f1Hytjl,jdbcType=DECIMAL}, #{f2SjFz,jdbcType=DECIMAL}, #{f2Xh,jdbcType=DECIMAL}, 
+      #{f2Hytjl,jdbcType=DECIMAL}, #{f3SjFz,jdbcType=DECIMAL}, #{f3Xh,jdbcType=DECIMAL}, 
+      #{f3Hytjl,jdbcType=DECIMAL}, #{f4SjFz,jdbcType=DECIMAL}, #{f4Xh,jdbcType=DECIMAL}, 
+      #{f4Hytjl,jdbcType=DECIMAL}, #{apuSjFz,jdbcType=DECIMAL}, #{apuXh,jdbcType=DECIMAL}, 
+      #{apuHytjl,jdbcType=DECIMAL}, #{fxxh,jdbcType=DECIMAL}, #{lxqlcs,jdbcType=DECIMAL}, 
+      #{idgtksj,jdbcType=VARCHAR}, #{yyy,jdbcType=DECIMAL}, #{ryCyl,jdbcType=DECIMAL}, 
+      #{ryJyl,jdbcType=DECIMAL}, #{rySyyl,jdbcType=DECIMAL}, #{fxrid,jdbcType=VARCHAR}, 
+      #{fxr,jdbcType=VARCHAR}, #{jzid,jdbcType=VARCHAR}, #{jz,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR},
+      #{fxrwlx,jdbcType=VARCHAR}, #{rydw,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+    insert into B_S2_00601
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="hc != null">
+        HC,
+      </if>
+      <if test="hcms != null">
+        HCMS,
+      </if>
+      <if test="hbh != null">
+        HBH,
+      </if>
+      <if test="qfz != null">
+        QFZ,
+      </if>
+      <if test="zlz != null">
+        ZLZ,
+      </if>
+      <if test="kcsj != null">
+        KCSJ,
+      </if>
+      <if test="qfsj != null">
+        QFSJ,
+      </if>
+      <if test="ldsj != null">
+        LDSJ,
+      </if>
+      <if test="tcsj != null">
+        TCSJ,
+      </if>
+      <if test="sysjFz != null">
+        SYSJ_FZ,
+      </if>
+      <if test="fxsjFz != null">
+        FXSJ_FZ,
+      </if>
+      <if test="f1SjFz != null">
+        F1_SJ_FZ,
+      </if>
+      <if test="f1Xh != null">
+        F1_XH,
+      </if>
+      <if test="f1Hytjl != null">
+        F1_HYTJL,
+      </if>
+      <if test="f2SjFz != null">
+        F2_SJ_FZ,
+      </if>
+      <if test="f2Xh != null">
+        F2_XH,
+      </if>
+      <if test="f2Hytjl != null">
+        F2_HYTJL,
+      </if>
+      <if test="f3SjFz != null">
+        F3_SJ_FZ,
+      </if>
+      <if test="f3Xh != null">
+        F3_XH,
+      </if>
+      <if test="f3Hytjl != null">
+        F3_HYTJL,
+      </if>
+      <if test="f4SjFz != null">
+        F4_SJ_FZ,
+      </if>
+      <if test="f4Xh != null">
+        F4_XH,
+      </if>
+      <if test="f4Hytjl != null">
+        F4_HYTJL,
+      </if>
+      <if test="apuSjFz != null">
+        APU_SJ_FZ,
+      </if>
+      <if test="apuXh != null">
+        APU_XH,
+      </if>
+      <if test="apuHytjl != null">
+        APU_HYTJL,
+      </if>
+      <if test="fxxh != null">
+        FXXH,
+      </if>
+      <if test="lxqlcs != null">
+        LXQLCS,
+      </if>
+      <if test="idgtksj != null">
+        IDGTKSJ,
+      </if>
+      <if test="yyy != null">
+        YYY,
+      </if>
+      <if test="ryCyl != null">
+        RY_CYL,
+      </if>
+      <if test="ryJyl != null">
+        RY_JYL,
+      </if>
+      <if test="rySyyl != null">
+        RY_SYYL,
+      </if>
+      <if test="fxrid != null">
+        FXRID,
+      </if>
+      <if test="fxr != null">
+        FXR,
+      </if>
+      <if test="jzid != null">
+        JZID,
+      </if>
+      <if test="jz != null">
+        JZ,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="fxrwlx != null">
+        FXRWLX,
+      </if>
+      <if test="rydw != null">
+        RYDW,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hc != null">
+        #{hc,jdbcType=DECIMAL},
+      </if>
+      <if test="hcms != null">
+        #{hcms,jdbcType=VARCHAR},
+      </if>
+      <if test="hbh != null">
+        #{hbh,jdbcType=VARCHAR},
+      </if>
+      <if test="qfz != null">
+        #{qfz,jdbcType=VARCHAR},
+      </if>
+      <if test="zlz != null">
+        #{zlz,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsj != null">
+        #{kcsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qfsj != null">
+        #{qfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ldsj != null">
+        #{ldsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tcsj != null">
+        #{tcsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sysjFz != null">
+        #{sysjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="fxsjFz != null">
+        #{fxsjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f1SjFz != null">
+        #{f1SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f1Xh != null">
+        #{f1Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f1Hytjl != null">
+        #{f1Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="f2SjFz != null">
+        #{f2SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f2Xh != null">
+        #{f2Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f2Hytjl != null">
+        #{f2Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="f3SjFz != null">
+        #{f3SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f3Xh != null">
+        #{f3Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f3Hytjl != null">
+        #{f3Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="f4SjFz != null">
+        #{f4SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f4Xh != null">
+        #{f4Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f4Hytjl != null">
+        #{f4Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="apuSjFz != null">
+        #{apuSjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="apuXh != null">
+        #{apuXh,jdbcType=DECIMAL},
+      </if>
+      <if test="apuHytjl != null">
+        #{apuHytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="fxxh != null">
+        #{fxxh,jdbcType=DECIMAL},
+      </if>
+      <if test="lxqlcs != null">
+        #{lxqlcs,jdbcType=DECIMAL},
+      </if>
+      <if test="idgtksj != null">
+        #{idgtksj,jdbcType=VARCHAR},
+      </if>
+      <if test="yyy != null">
+        #{yyy,jdbcType=DECIMAL},
+      </if>
+      <if test="ryCyl != null">
+        #{ryCyl,jdbcType=DECIMAL},
+      </if>
+      <if test="ryJyl != null">
+        #{ryJyl,jdbcType=DECIMAL},
+      </if>
+      <if test="rySyyl != null">
+        #{rySyyl,jdbcType=DECIMAL},
+      </if>
+      <if test="fxrid != null">
+        #{fxrid,jdbcType=VARCHAR},
+      </if>
+      <if test="fxr != null">
+        #{fxr,jdbcType=VARCHAR},
+      </if>
+      <if test="jzid != null">
+        #{jzid,jdbcType=VARCHAR},
+      </if>
+      <if test="jz != null">
+        #{jz,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrwlx != null">
+        #{fxrwlx,jdbcType=VARCHAR},
+      </if>
+      <if test="rydw != null">
+        #{rydw,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+    update B_S2_00601
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hc != null">
+        HC = #{hc,jdbcType=DECIMAL},
+      </if>
+      <if test="hcms != null">
+        HCMS = #{hcms,jdbcType=VARCHAR},
+      </if>
+      <if test="hbh != null">
+        HBH = #{hbh,jdbcType=VARCHAR},
+      </if>
+      <if test="qfz != null">
+        QFZ = #{qfz,jdbcType=VARCHAR},
+      </if>
+      <if test="zlz != null">
+        ZLZ = #{zlz,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsj != null">
+        KCSJ = #{kcsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qfsj != null">
+        QFSJ = #{qfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ldsj != null">
+        LDSJ = #{ldsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tcsj != null">
+        TCSJ = #{tcsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sysjFz != null">
+        SYSJ_FZ = #{sysjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="fxsjFz != null">
+        FXSJ_FZ = #{fxsjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f1SjFz != null">
+        F1_SJ_FZ = #{f1SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f1Xh != null">
+        F1_XH = #{f1Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f1Hytjl != null">
+        F1_HYTJL = #{f1Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="f2SjFz != null">
+        F2_SJ_FZ = #{f2SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f2Xh != null">
+        F2_XH = #{f2Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f2Hytjl != null">
+        F2_HYTJL = #{f2Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="f3SjFz != null">
+        F3_SJ_FZ = #{f3SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f3Xh != null">
+        F3_XH = #{f3Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f3Hytjl != null">
+        F3_HYTJL = #{f3Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="f4SjFz != null">
+        F4_SJ_FZ = #{f4SjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="f4Xh != null">
+        F4_XH = #{f4Xh,jdbcType=DECIMAL},
+      </if>
+      <if test="f4Hytjl != null">
+        F4_HYTJL = #{f4Hytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="apuSjFz != null">
+        APU_SJ_FZ = #{apuSjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="apuXh != null">
+        APU_XH = #{apuXh,jdbcType=DECIMAL},
+      </if>
+      <if test="apuHytjl != null">
+        APU_HYTJL = #{apuHytjl,jdbcType=DECIMAL},
+      </if>
+      <if test="fxxh != null">
+        FXXH = #{fxxh,jdbcType=DECIMAL},
+      </if>
+      <if test="lxqlcs != null">
+        LXQLCS = #{lxqlcs,jdbcType=DECIMAL},
+      </if>
+      <if test="idgtksj != null">
+        IDGTKSJ = #{idgtksj,jdbcType=VARCHAR},
+      </if>
+      <if test="yyy != null">
+        YYY = #{yyy,jdbcType=DECIMAL},
+      </if>
+      <if test="ryCyl != null">
+        RY_CYL = #{ryCyl,jdbcType=DECIMAL},
+      </if>
+      <if test="ryJyl != null">
+        RY_JYL = #{ryJyl,jdbcType=DECIMAL},
+      </if>
+      <if test="rySyyl != null">
+        RY_SYYL = #{rySyyl,jdbcType=DECIMAL},
+      </if>
+      <if test="fxrid != null">
+        FXRID = #{fxrid,jdbcType=VARCHAR},
+      </if>
+      <if test="fxr != null">
+        FXR = #{fxr,jdbcType=VARCHAR},
+      </if>
+      <if test="jzid != null">
+        JZID = #{jzid,jdbcType=VARCHAR},
+      </if>
+      <if test="jz != null">
+        JZ = #{jz,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrwlx != null">
+        FXRWLX = #{fxrwlx,jdbcType=VARCHAR},
+      </if>
+      <if test="rydw != null">
+        RYDW = #{rydw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+    update B_S2_00601
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      HC = #{hc,jdbcType=DECIMAL},
+      HCMS = #{hcms,jdbcType=VARCHAR},
+      HBH = #{hbh,jdbcType=VARCHAR},
+      QFZ = #{qfz,jdbcType=VARCHAR},
+      ZLZ = #{zlz,jdbcType=VARCHAR},
+      KCSJ = #{kcsj,jdbcType=TIMESTAMP},
+      QFSJ = #{qfsj,jdbcType=TIMESTAMP},
+      LDSJ = #{ldsj,jdbcType=TIMESTAMP},
+      TCSJ = #{tcsj,jdbcType=TIMESTAMP},
+      SYSJ_FZ = #{sysjFz,jdbcType=DECIMAL},
+      FXSJ_FZ = #{fxsjFz,jdbcType=DECIMAL},
+      F1_SJ_FZ = #{f1SjFz,jdbcType=DECIMAL},
+      F1_XH = #{f1Xh,jdbcType=DECIMAL},
+      F1_HYTJL = #{f1Hytjl,jdbcType=DECIMAL},
+      F2_SJ_FZ = #{f2SjFz,jdbcType=DECIMAL},
+      F2_XH = #{f2Xh,jdbcType=DECIMAL},
+      F2_HYTJL = #{f2Hytjl,jdbcType=DECIMAL},
+      F3_SJ_FZ = #{f3SjFz,jdbcType=DECIMAL},
+      F3_XH = #{f3Xh,jdbcType=DECIMAL},
+      F3_HYTJL = #{f3Hytjl,jdbcType=DECIMAL},
+      F4_SJ_FZ = #{f4SjFz,jdbcType=DECIMAL},
+      F4_XH = #{f4Xh,jdbcType=DECIMAL},
+      F4_HYTJL = #{f4Hytjl,jdbcType=DECIMAL},
+      APU_SJ_FZ = #{apuSjFz,jdbcType=DECIMAL},
+      APU_XH = #{apuXh,jdbcType=DECIMAL},
+      APU_HYTJL = #{apuHytjl,jdbcType=DECIMAL},
+      FXXH = #{fxxh,jdbcType=DECIMAL},
+      LXQLCS = #{lxqlcs,jdbcType=DECIMAL},
+      IDGTKSJ = #{idgtksj,jdbcType=VARCHAR},
+      YYY = #{yyy,jdbcType=DECIMAL},
+      RY_CYL = #{ryCyl,jdbcType=DECIMAL},
+      RY_JYL = #{ryJyl,jdbcType=DECIMAL},
+      RY_SYYL = #{rySyyl,jdbcType=DECIMAL},
+      FXRID = #{fxrid,jdbcType=VARCHAR},
+      FXR = #{fxr,jdbcType=VARCHAR},
+      JZID = #{jzid,jdbcType=VARCHAR},
+      JZ = #{jz,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      FXRWLX = #{fxrwlx,jdbcType=VARCHAR},
+      RYDW = #{rydw,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <!-- start 发动机滑油添加 -->
+  <select id="select4MointorDate" parameterType="map" resultType="map">
+  	SELECT 
+  	   S200601.ID FXLLID, --飞行履历ID
+       S2006.FXRQ, --飞行日期
+       S2006.ID FLBID,--飞行记录本id
+       case when #{paramsMap.fdj} = 1 
+       then S200601.F1_HYTJL 
+       when #{paramsMap.fdj} =2 
+       then S200601.F2_HYTJL 
+       when #{paramsMap.fdj} =3 
+       then S200601.F3_HYTJL 
+       when #{paramsMap.fdj} =4 
+       then S200601.F4_HYTJL 
+       when #{paramsMap.fdj} =5
+       then S200601.APU_HYTJL
+       end as HYTJL,  --发动机滑油添加量
+       S200601.KCSJ --开车时间
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.MAINID = S2006.ID 
+	
+	   AND S200601.ZT = 1
+	   AND S2006.ZT IN (2, 12, 99)
+	   AND S2006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	   AND S2006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	   AND S2006.FXRQ &gt;= to_date(#{paramsMap.fxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+	   AND S2006.FXRQ &lt;= to_date(#{paramsMap.fxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+	   AND (
+	   case when #{paramsMap.fdj} = 1 
+       then S200601.F1_HYTJL 
+       when #{paramsMap.fdj} =2 
+       then S200601.F2_HYTJL 
+       when #{paramsMap.fdj} =3 
+       then S200601.F3_HYTJL 
+       when #{paramsMap.fdj} =4 
+       then S200601.F4_HYTJL 
+       when #{paramsMap.fdj} =5 
+       then S200601.APU_HYTJL 
+       end &gt; 0 )
+	 WHERE 1 = 1
+ 	ORDER BY S200601.KCSJ ASC
+  </select>
+  <!-- end -->
+  <!-- start 发动机滑油消耗率 -->
+  <select id="select4MointorFj" parameterType="map" resultType="map">
+  	SELECT S200601.FXLLID, --飞行履历ID
+       S200601.FXRQ, --飞行日期
+       S200601.HYTJL, --滑油添加量
+       COALESCE(S200601.LJ_FXSJ, 0) LJ_FXSJ, --上次加油后的累计飞行时间分钟
+        case when (COALESCE(S200601.LJ_FXSJ, 0) = 0  ) then 0 
+       else  ROUND((S200601.HYTJL /ROUND((COALESCE(S200601.LJ_FXSJ, 0) / 60), 2)),3) end  HYXHL --滑油消耗率
+  FROM (SELECT S200601.FXLLID,
+               S200601.FXRQ,
+               S200601.HYTJL,
+               S200601.KCSJ,
+               (SELECT SUM(T00601.FXSJ_FZ) FXSJ
+                  FROM B_S2_00601 T00601
+                  JOIN B_S2_006 T006
+                    ON T00601.MAINID = T006.ID 
+
+                   AND T00601.ZT = 1
+                   AND T006.ZT IN (2, 12, 99)
+                   AND T006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+                   AND T006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+                 WHERE 1 = 1
+                   AND T00601.KCSJ &lt;= S200601.KCSJ
+                   AND T00601.KCSJ &gt;
+                       COALESCE(S200601.Q_KCSJ,
+                                TO_DATE('1790101000000', 'YYYYMMDDHH24MISS'))) LJ_FXSJ
+          FROM (SELECT S200601.ID 
+
+ FXLLID,
+                       S2006.FXRQ,
+                       case when #{paramsMap.fdj} = 1 
+				       then S200601.F1_HYTJL 
+				       when #{paramsMap.fdj} =2 
+				       then S200601.F2_HYTJL 
+				       when #{paramsMap.fdj} =3 
+				       then S200601.F3_HYTJL 
+				       when #{paramsMap.fdj} =4 
+				       then S200601.F4_HYTJL 
+				       when #{paramsMap.fdj} =5 
+				       then S200601.APU_HYTJL 
+				       end as HYTJL,  --发动机滑油添加量
+                       S200601.KCSJ,
+                       (SELECT MAX(T00601.KCSJ) KCSJ
+                          FROM B_S2_00601 T00601
+                          JOIN B_S2_006 T006
+                            ON T00601.MAINID = T006.ID 
+
+                           AND T00601.ZT = 1
+                           AND T006.ZT IN (2, 12, 99)
+                           AND T006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+                           AND T006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+                            AND (
+							   case when #{paramsMap.fdj} = 1 
+						       then T00601.F1_HYTJL 
+						       when #{paramsMap.fdj} =2 
+						       then T00601.F2_HYTJL 
+						       when #{paramsMap.fdj} =3 
+						       then T00601.F3_HYTJL 
+						       when #{paramsMap.fdj} =4 
+						       then T00601.F4_HYTJL 
+						       when #{paramsMap.fdj} =5 
+						       then T00601.APU_HYTJL 
+						       end &gt; 0 )
+                         WHERE 1 = 1
+                           AND T00601.KCSJ &lt; S200601.KCSJ) Q_KCSJ --前一条开车时间
+                  FROM B_S2_00601 S200601
+                  JOIN B_S2_006 S2006
+                    ON S200601.MAINID = S2006.ID 
+
+                   AND S200601.ZT = 1
+                   AND S2006.ZT IN (2, 12, 99)
+                   AND S2006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+                   AND S2006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+                   AND S2006.FXRQ &lt;= to_date(#{paramsMap.fxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+                    AND (
+				   case when #{paramsMap.fdj} = 1 
+				       then S200601.F1_HYTJL 
+				       when #{paramsMap.fdj} =2 
+				       then S200601.F2_HYTJL 
+				       when #{paramsMap.fdj} =3 
+				       then S200601.F3_HYTJL 
+				       when #{paramsMap.fdj} =4 
+				       then S200601.F4_HYTJL 
+				       when #{paramsMap.fdj} =5 
+				       then S200601.APU_HYTJL 
+				       end &gt; 0 )
+                 WHERE 1 = 1) S200601
+         WHERE 1 = 1) S200601
+ ORDER BY S200601.KCSJ DESC
+  </select>
+  <!-- end -->
+  
+  <!-- 删除飞行数据 -->
+  <delete id="deleteNotExist" parameterType="com.eray.thjw.produce.po.FlightSheet" >
+      DELETE FROM B_S2_00601 
+		WHERE MAINID = #{id,jdbcType=VARCHAR}
+		<if test="flightSheetVoyageList != null and flightSheetVoyageList.size > 0">
+            AND ID NOT IN 
+            <foreach collection="flightSheetVoyageList" item="item" index="index" open="(" close=")" separator=",">
+			NVL(#{item.id,jdbcType=VARCHAR}, '0')
+	   		</foreach>
+        </if>
+  </delete>
+  
+  <!-- 根据mainid查询飞行数据 -->
+  <select id="queryByMainid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_00601
+    where mainid = #{mainid,jdbcType=VARCHAR} and zt = 1
+  </select>
+  
+  <select id="selectRwlxByFlighthistory"  resultMap="BaseResultMap" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+	  	SELECT S200601.FXRWLX, --任务类型
+	       COALESCE(sum(S200601.FXSJ_FZ), 0) lj_fxsj --累计：飞行时间
+	  FROM B_S2_00601 S200601
+	  JOIN B_S2_006 S2006
+	    ON S200601.MAINID = S2006.ID
+	    AND S200601.ZT = 1
+	    AND S2006.ZT IN (2, 12, 99)
+	    AND S2006.DPRTCODE = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+	    AND S2006.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	 WHERE 1 = 1
+        <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		  AND (
+		  	  UPPER(S2006.FXJLBH) LIKE UPPER('%' || #{paramsMap.keyword} || '%') or
+		      UPPER(S2006.Jlbym) LIKE UPPER('%' || #{paramsMap.keyword} || '%') or
+		      UPPER(S200601.Hbh) LIKE UPPER('%' || #{paramsMap.keyword} || '%'))
+		</if>
+		  <!--   飞行日期区间 -->
+	    <if test="paramsMap != null and paramsMap.fxrqBegin != null and paramsMap.fxrqBegin != ''">
+			    and S2006.FXRQ &gt;= to_date(#{paramsMap.fxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.fxrqEnd != null and paramsMap.fxrqEnd != ''">
+		    and S2006.FXRQ &lt;= to_date(#{paramsMap.fxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<!--   航班号 -->
+		<if test="paramsMap != null and paramsMap.hbh != null and paramsMap.hbh != ''">
+		    and UPPER(S200601.Hbh) LIKE UPPER('%' || #{paramsMap.hbh, jdbcType=VARCHAR} || '%')
+		</if>
+		<!--   记录本页码 -->
+		<if test="paramsMap != null and paramsMap.jlbym != null and paramsMap.jlbym != ''">
+		    and UPPER(S2006.Jlbym) LIKE UPPER('%' || #{paramsMap.jlbym, jdbcType=VARCHAR} || '%')
+		</if>
+		<!--   状态 -->
+		<if test="paramsMap != null and paramsMap.zt != null and paramsMap.zt != ''">
+		    and S2006.ZT  = #{paramsMap.zt}
+		</if>
+		 GROUP BY S200601.FXRWLX
+  
+  </select>
+  
+   <!-- 根据参数查询:导入专用 -->
+   <select id="findFlightVoyageByParam" resultType="com.eray.thjw.produce.po.FlightSheetVoyage" parameterType="java.util.Map">
+		select 
+		 	<include refid="Base_Column_List"></include>
+		from B_S2_00601
+	 	WHERE MAINID = #{mainid,jdbcType=VARCHAR} 
+	      AND HBH = #{hbh,jdbcType=VARCHAR}
+   </select>
+   
+  <!-- 批量修改: 导入专用 -->
+  <update id="update4Batch" parameterType="java.util.List">
+  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+       update B_S2_00601 
+       set
+		      ZT = #{item.zt,jdbcType=DECIMAL},
+		      WHDWID = #{item.whdwid,jdbcType=VARCHAR},
+		      WHRID = #{item.whrid,jdbcType=VARCHAR},
+		      WHSJ = #{item.whsj,jdbcType=TIMESTAMP},
+		      HC = #{item.hc,jdbcType=DECIMAL},
+		      HCMS = #{item.hcms,jdbcType=VARCHAR},
+		      HBH = #{item.hbh,jdbcType=VARCHAR},
+		      QFZ = #{item.qfz,jdbcType=VARCHAR},
+		      ZLZ = #{item.zlz,jdbcType=VARCHAR},
+		      KCSJ = #{item.kcsj,jdbcType=TIMESTAMP},
+		      QFSJ = #{item.qfsj,jdbcType=TIMESTAMP},
+		      LDSJ = #{item.ldsj,jdbcType=TIMESTAMP},
+		      TCSJ = #{item.tcsj,jdbcType=TIMESTAMP},
+		      SYSJ_FZ = #{item.sysjFz,jdbcType=DECIMAL},
+		      FXSJ_FZ = #{item.fxsjFz,jdbcType=DECIMAL},
+		      F1_SJ_FZ = #{item.f1SjFz,jdbcType=DECIMAL},
+		      F1_XH = #{item.f1Xh,jdbcType=DECIMAL},
+		      F1_HYTJL = #{item.f1Hytjl,jdbcType=DECIMAL},
+		      F2_SJ_FZ = #{item.f2SjFz,jdbcType=DECIMAL},
+		      F2_XH = #{item.f2Xh,jdbcType=DECIMAL},
+		      F2_HYTJL = #{item.f2Hytjl,jdbcType=DECIMAL},
+		      F3_SJ_FZ = #{item.f3SjFz,jdbcType=DECIMAL},
+		      F3_XH = #{item.f3Xh,jdbcType=DECIMAL},
+		      F3_HYTJL = #{item.f3Hytjl,jdbcType=DECIMAL},
+		      F4_SJ_FZ = #{item.f4SjFz,jdbcType=DECIMAL},
+		      F4_XH = #{item.f4Xh,jdbcType=DECIMAL},
+		      F4_HYTJL = #{item.f4Hytjl,jdbcType=DECIMAL},
+		      APU_SJ_FZ = #{item.apuSjFz,jdbcType=DECIMAL},
+		      APU_XH = #{item.apuXh,jdbcType=DECIMAL},
+		      APU_HYTJL = #{item.apuHytjl,jdbcType=DECIMAL},
+		      FXXH = #{item.fxxh,jdbcType=DECIMAL},
+		      LXQLCS = #{item.lxqlcs,jdbcType=DECIMAL},
+		      IDGTKSJ = #{item.idgtksj,jdbcType=VARCHAR},
+		      YYY = #{item.yyy,jdbcType=DECIMAL},
+		      RY_CYL = #{item.ryCyl,jdbcType=DECIMAL},
+		      RY_JYL = #{item.ryJyl,jdbcType=DECIMAL},
+		      RY_SYYL = #{item.rySyyl,jdbcType=DECIMAL},
+		      JZ = #{item.jz,jdbcType=VARCHAR},
+		      FXRWLX = #{item.fxrwlx,jdbcType=VARCHAR}
+      where ID = #{item.id,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+  
+  <!-- 批量新增：导入专用  -->
+  <insert id="insert4Batch" parameterType="java.util.List" >
+    INSERT INTO B_S2_00601 (ID, MAINID, ZT, 
+						      WHDWID, WHRID, WHSJ, 
+						      HC, HCMS, HBH, QFZ, 
+						      ZLZ, KCSJ, QFSJ, 
+						      LDSJ, TCSJ, SYSJ_FZ, 
+						      FXSJ_FZ, F1_SJ_FZ, F1_XH, 
+						      F1_HYTJL, F2_SJ_FZ, F2_XH, 
+						      F2_HYTJL, F3_SJ_FZ, F3_XH, 
+						      F3_HYTJL, F4_SJ_FZ, F4_XH, 
+						      F4_HYTJL, APU_SJ_FZ, APU_XH, 
+						      APU_HYTJL, FXXH, LXQLCS, 
+						      IDGTKSJ, YYY, RY_CYL, 
+						      RY_JYL, RY_SYYL, FXRID, 
+						      FXR, JZID, JZ, BZ, FXRWLX)
+	      <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		    select 
+		     	  #{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, 
+			      #{item.whdwid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, #{item.whsj,jdbcType=TIMESTAMP}, 
+			      #{item.hc,jdbcType=DECIMAL}, #{item.hcms,jdbcType=VARCHAR}, #{item.hbh,jdbcType=VARCHAR}, #{item.qfz,jdbcType=VARCHAR}, 
+			      #{item.zlz,jdbcType=VARCHAR}, #{item.kcsj,jdbcType=TIMESTAMP}, #{item.qfsj,jdbcType=TIMESTAMP}, 
+			      #{item.ldsj,jdbcType=TIMESTAMP}, #{item.tcsj,jdbcType=TIMESTAMP}, #{item.sysjFz,jdbcType=DECIMAL}, 
+			      #{item.fxsjFz,jdbcType=DECIMAL}, #{item.f1SjFz,jdbcType=DECIMAL}, #{item.f1Xh,jdbcType=DECIMAL}, 
+			      #{item.f1Hytjl,jdbcType=DECIMAL}, #{item.f2SjFz,jdbcType=DECIMAL}, #{item.f2Xh,jdbcType=DECIMAL}, 
+			      #{item.f2Hytjl,jdbcType=DECIMAL}, #{item.f3SjFz,jdbcType=DECIMAL}, #{item.f3Xh,jdbcType=DECIMAL}, 
+			      #{item.f3Hytjl,jdbcType=DECIMAL}, #{item.f4SjFz,jdbcType=DECIMAL}, #{item.f4Xh,jdbcType=DECIMAL}, 
+			      #{item.f4Hytjl,jdbcType=DECIMAL}, #{item.apuSjFz,jdbcType=DECIMAL}, #{item.apuXh,jdbcType=DECIMAL}, 
+			      #{item.apuHytjl,jdbcType=DECIMAL}, #{item.fxxh,jdbcType=DECIMAL}, #{item.lxqlcs,jdbcType=DECIMAL}, 
+			      #{item.idgtksj,jdbcType=VARCHAR}, #{item.yyy,jdbcType=DECIMAL}, #{item.ryCyl,jdbcType=DECIMAL}, 
+			      #{item.ryJyl,jdbcType=DECIMAL}, #{item.rySyyl,jdbcType=DECIMAL}, #{item.fxrid,jdbcType=VARCHAR}, 
+			      #{item.fxr,jdbcType=VARCHAR}, #{item.jzid,jdbcType=VARCHAR}, #{item.jz,jdbcType=VARCHAR}, #{item.bz,jdbcType=VARCHAR},
+			      #{item.fxrwlx,jdbcType=VARCHAR}
+		  	from dual
+	    </foreach>
+    </insert>
+    
+     <!-- 批量更新航次、航材描述：导入专用 -->
+	  <update id="updateHcHcms4Batch" parameterType="java.util.List">
+	  		<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+		  		   <!-- 第四步：更新mainid航次 --> 
+		  		   update b_s2_00601 set (hc,hcms) =
+				   (
+				      <!-- 第三步：取出对应ID航次 -->
+				      select q.hc, q.hcms
+				      from
+			          (
+			              <!-- 第二步：产生航次 -->
+					      select w.id,rownum*2 as hc,'航次'|| 
+												       case
+												          when rownum = 1 then '一'
+												          when rownum = 2 then '二'
+												          when rownum = 3 then '三'
+												          when rownum = 4 then '四'
+												          when rownum = 5 then '五'
+												          when rownum = 6 then '六'
+												          when rownum = 7 then '七'
+												          when rownum = 8 then '八'
+												          when rownum = 9 then '九'
+												          when rownum = 10 then '十'
+												          else rownum||''
+												      end hcms
+					      from
+					      (
+					           <!-- 第一步：排序asc -->
+					           select t.id
+					           from b_s2_00601 t
+					           where t.mainid= #{item.mainid,jdbcType=VARCHAR}
+					           order by t.kcsj asc
+					       ) w
+					    ) q
+						where q.id = b_s2_00601.id
+				   ) 
+				  where b_s2_00601.mainid= #{item.mainid,jdbcType=VARCHAR}
+	  		</foreach>
+	  </update>
+	  
+	
+	<!-- LW:查询物料基本信息 -->
+	<select id="queryMaterialBj" resultMap="FlighthistoryMap" parameterType="com.eray.thjw.produce.po.FlightSheetVoyage">
+    	SELECT T.DPRTCODE, --机构代码
+		       T.BJH, --部件号
+		       T.XLH, --序列号
+		       T.BJH_ZWMC, --部件中文名称
+		       T.BJH_YWMC, --部件英文名称
+		       T.CJJH, --厂家件号
+		       T.BJH_XH, --型号
+		       T.ZJH, --章节号
+		       T.ZJH_ZWMC, --章节号中文名称
+		       T.ZJH_YWMC, --章节号英文名称
+		       T.LLKLX, --履历卡类型：1无履历卡、2原装履历卡、3自制履历卡
+		       T.LLKBH, --履历卡编号
+		       T.BJGZJL, --部件改装记录
+		       T.CHUCRQ, --出厂日期
+		       T.CAL, --CAL
+		       (T.CS_TSN + T.LJ_FXSJ) TSN, --TSN
+		       (T.CS_TSO + T.LJ_FXSJ) TSO, --TSO
+		       (T.CS_CSN + T.LJ_FXXH) CSN, --CSN
+		       (T.CS_CSO + T.LJ_FXXH) CSO --CSO
+		  FROM (SELECT DUAL.DPRTCODE,
+		               DUAL.BJH,
+		               DUAL.XLH,
+		               D008.ZWMS BJH_ZWMC,
+		               D008.YWMS BJH_YWMC,
+		               D008.CJJH,
+		               D008.XINGH BJH_XH,
+		               D008.ZJH,
+		               D005.ZWMS ZJH_ZWMC,
+		               D005.YWMS ZJH_YWMC,
+		               H010.LLKLX,
+		               H010.LLKBH,
+		               H010.BJGZJL,
+		               H010.CHUCRQ,
+		               CASE
+		                 WHEN H010.CHUCRQ IS NOT NULL THEN
+		                  (SYSDATE - H010.CHUCRQ)
+		                 ELSE
+		                  NULL
+		               END CAL,
+		               CAST(COALESCE(H010.TSN, '0') AS INTEGER) CS_TSN,
+		               CAST(COALESCE(H010.TSO, '0') AS INTEGER) CS_TSO,
+		               CAST(COALESCE(H010.CSN, 0) AS INTEGER) CS_CSN,
+		               CAST(COALESCE(H010.CSO, 0) AS INTEGER) CS_CSO,
+		               (SELECT COALESCE(SUM(T00601.FXSJ_FZ), 0)
+		                  FROM B_S2_00601 T00601
+		                  JOIN B_S2_006 T006
+		                    ON T00601.MAINID = T006.ID
+		                   AND T00601.ZT = 1
+		                   AND T006.ZT IN (2, 12, 99)
+		                   AND T006.DPRTCODE = #{paramsMap.dprtcode}
+		                  JOIN B_S2_004 S2004
+		                    ON S2004.DPRTCODE = #{paramsMap.dprtcode}
+		                   AND S2004.BJH = #{paramsMap.jh}
+		                   AND S2004.XLH = #{paramsMap.xlh}
+		                   AND S2004.FJZCH = T006.FJZCH
+		                   AND COALESCE(S2004.AZSJ,
+		                                TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+		                       T00601.KCSJ
+		                   AND COALESCE(S2004.CCSJ,
+		                                TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;=
+		                       T00601.KCSJ
+		                 WHERE 1 = 1
+		                   AND T00601.KCSJ >= H010.WHSJ) LJ_FXSJ,
+		               (SELECT COALESCE(SUM(T00601.FXXH), 0)
+		                  FROM B_S2_00601 T00601
+		                  JOIN B_S2_006 T006
+		                    ON T00601.MAINID = T006.ID
+		                   AND T00601.ZT = 1
+		                   AND T006.ZT IN (2, 12, 99)
+		                   AND T006.DPRTCODE = #{paramsMap.dprtcode}
+		                  JOIN B_S2_004 S2004
+		                    ON S2004.DPRTCODE = #{paramsMap.dprtcode}
+		                   AND S2004.BJH = #{paramsMap.jh}
+		                   AND S2004.XLH = #{paramsMap.xlh}
+		                   AND S2004.FJZCH = T006.FJZCH
+		                   AND COALESCE(S2004.AZSJ,
+		                                TO_DATE('17900101000000', 'YYYYMMDDHH24MISS')) &lt;=
+		                       T00601.KCSJ
+		                   AND COALESCE(S2004.CCSJ,
+		                                TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &gt;=
+		                       T00601.KCSJ
+		                 WHERE 1 = 1
+		                   AND T00601.KCSJ >= H010.WHSJ) LJ_FXXH
+		          FROM (SELECT #{paramsMap.dprtcode} DPRTCODE,
+		                       #{paramsMap.jh} BJH,
+		                       #{paramsMap.xlh} XLH
+		                  FROM DUAL) DUAL
+		          LEFT JOIN D_008 D008
+		            ON D008.DPRTCODE = DUAL.DPRTCODE
+		           AND D008.BJH = DUAL.BJH
+		          LEFT JOIN D_005 D005
+		            ON D005.DPRTCODE = D008.DPRTCODE
+		           AND D005.ZJH = D008.ZJH
+		          LEFT JOIN B_H_010 H010
+		            ON H010.DPRTCODE = DUAL.DPRTCODE
+		           AND H010.JH = DUAL.BJH
+		           AND H010.XLH = DUAL.XLH) T
+		 WHERE 1 = 1
+    </select>
+    
+	  
+</mapper>

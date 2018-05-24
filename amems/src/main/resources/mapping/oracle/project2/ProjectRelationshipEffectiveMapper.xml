@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.ProjectRelationshipEffectiveMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.ProjectRelationshipEffective" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="WXXMID" property="wxxmid" jdbcType="VARCHAR" />
+    <result column="RWH" property="rwh" jdbcType="VARCHAR" />
+    <result column="XGWXXMID" property="xgwxxmid" jdbcType="VARCHAR" />
+    <result column="XGRWH" property="xgrwh" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, JX, WXXMID, RWH, XGWXXMID, XGRWH
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_01103
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_01103
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.ProjectRelationshipEffective" >
+    insert into B_G2_01103 (ID, MAINID, JX, 
+      WXXMID, RWH, XGWXXMID, 
+      XGRWH)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{jx,jdbcType=VARCHAR}, 
+      #{wxxmid,jdbcType=VARCHAR}, #{rwh,jdbcType=VARCHAR}, #{xgwxxmid,jdbcType=VARCHAR}, 
+      #{xgrwh,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.ProjectRelationshipEffective" >
+    insert into B_G2_01103
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="wxxmid != null" >
+        WXXMID,
+      </if>
+      <if test="rwh != null" >
+        RWH,
+      </if>
+      <if test="xgwxxmid != null" >
+        XGWXXMID,
+      </if>
+      <if test="xgrwh != null" >
+        XGRWH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmid != null" >
+        #{wxxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rwh != null" >
+        #{rwh,jdbcType=VARCHAR},
+      </if>
+      <if test="xgwxxmid != null" >
+        #{xgwxxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgrwh != null" >
+        #{xgrwh,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.ProjectRelationshipEffective" >
+    update B_G2_01103
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="wxxmid != null" >
+        WXXMID = #{wxxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rwh != null" >
+        RWH = #{rwh,jdbcType=VARCHAR},
+      </if>
+      <if test="xgwxxmid != null" >
+        XGWXXMID = #{xgwxxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="xgrwh != null" >
+        XGRWH = #{xgrwh,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.ProjectRelationshipEffective" >
+    update B_G2_01103
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      JX = #{jx,jdbcType=VARCHAR},
+      WXXMID = #{wxxmid,jdbcType=VARCHAR},
+      RWH = #{rwh,jdbcType=VARCHAR},
+      XGWXXMID = #{xgwxxmid,jdbcType=VARCHAR},
+      XGRWH = #{xgrwh,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 维修项目同步到生效区 -->
+  <update id="synchronize" parameterType="com.eray.thjw.project2.po.ProjectEffective" >
+    INSERT INTO B_G2_01103(
+    	ID, MAINID, JX,  WXXMID, RWH, XGWXXMID,  XGRWH) 
+      
+    SELECT SYS_GUID(),#{id,jdbcType=VARCHAR},B3.JX,B1.WXXMID,B1.RWH,B3.ID,B3.RWH 
+    	FROM B_G2_01102 B1 
+    	  INNER JOIN B_G2_01202 B2 ON B1.WXXMID = B2.MAINID
+    	  INNER JOIN B_G2_012 B3 ON B2.JX = B3.JX AND B2.WXXMBH = B3.RWH AND B3.B_BBID IS NULL
+    	WHERE B1.MAINID = #{id,jdbcType=VARCHAR} 
+  </update>
+</mapper>

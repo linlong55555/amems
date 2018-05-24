@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionmessage.dao.WorkersimplexRecMapper" >
+   
+  <!-- 故障保留单日志列表 开始 -->
+  
+  <select id="queryList4BBS009" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT 
+	       		     B.ID AS "ID",
+       B.RWDH AS "RWDH",
+       B.RWLX AS "RWLX",
+       B.RWZLX AS "RWZLX",
+       B.FXJLDID AS "FXJLDID",
+       B.ZT AS "ZT",
+       B.XSZT AS "XSZT",
+       B.XGGDID AS "XGGDID",
+       B.DPRTCODE AS "DPRTCODE",
+       B.RWXX AS "RWXX",
+       B.FJZCH AS "FJZCH",
+       B.BJH AS "BJH",
+       B.XLH AS "XLH",
+       B.DYSJ AS "DYSJ",
+       B.DYBMID AS "DYBMID",
+       B.DYRID AS "DYRID",
+       B.GZXX AS "GZXX",
+       B.CLCS AS "CLCS",
+       B.JHGS_RS AS "JHGS_RS",
+       B.JHGS_XS AS "JHGS_XS",
+       B.SJGS_RS AS "SJGS_RS",
+       B.SJGS_XS AS "SJGS_XS",
+       B.GSSH_ZT AS "GSSH_ZT",
+       B.GSSH_DCBBH AS "GSSH_DCBBH",
+       B.GSSH_TJRID AS "GSSH_TJRID",
+       B.GSSH_TJRQ AS "GSSH_TJRQ",
+       B.GSSH_BZ AS "GSSH_BZ",
+       B.BZ AS "BZ",
+       B.ZDJSRID AS "ZDJSRID",
+       B.ZDJSRQ AS "ZDJSRQ",
+       B.ZDJSYY AS "ZDJSYY",
+       B.WHDWID AS "WHDWID",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID" 
+      		    ,CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_NAME",
+      		    TJ.USERNAME ||' '|| TJ.REALNAME AS "GSSH_TJRIDNAME"
+		        ,WHR.REALNAME AS "WHR_REALNAME",
+		        TO_char(B.GSSH_TJRQ,'yyyy-MM-dd') AS "GSSH_TJRQS"
+		        ,WHDW.DPRTNAME AS "WHDW_DRPTNAME"
+		        ,  '任务单号:'||B.rwdh || ' ' ||(
+		       F_GETREC_HD(B.REC_CZSM)
+		        ) AS "REC_HD",
+		        (
+		        CASE 
+		           WHEN B.rwlx = 1 THEN '定检执行任务'
+		           WHEN B.rwlx = 2 THEN 
+			           (CASE 
+			           WHEN B.rwzlx = 1 THEN '非例行-时控件工单'
+			           WHEN B.rwzlx = 2 THEN	'非例行-附加工单'
+			           WHEN B.rwzlx = 3 THEN	'非例行-排故工单'
+		           	   END )
+		         END 
+		        ) AS "RWLXS"
+		        FROM B_S_009_REC B 
+		        LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+		        LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.WHDWID
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		        LEFT JOIN T_USER TJ ON TJ.ID = B.GSSH_TJRID 
+		         
+		        
+		        WHERE 1=1 and B.REC_CZSM in (15,24) 
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		         </if>
+		          <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		        	and (
+		                 B.rwdh like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+		            )
+		         </if>
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff4BBS009" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	    
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+               
+               B.ID AS "ID",
+       B.RWDH AS "RWDH",
+       B.RWLX AS "RWLX",
+       B.RWZLX AS "RWZLX",
+       B.FXJLDID AS "FXJLDID",
+       B.ZT AS "ZT",
+       B.XSZT AS "XSZT",
+       B.XGGDID AS "XGGDID",
+       B.DPRTCODE AS "DPRTCODE",
+       B.RWXX AS "RWXX",
+       B.FJZCH AS "FJZCH",
+       B.BJH AS "BJH",
+       B.XLH AS "XLH",
+       B.DYSJ AS "DYSJ",
+       B.DYBMID AS "DYBMID",
+       B.DYRID AS "DYRID",
+       B.GZXX AS "GZXX",
+       B.CLCS AS "CLCS",
+       B.JHGS_RS AS "JHGS_RS",
+       B.JHGS_XS AS "JHGS_XS",
+       B.SJGS_RS AS "SJGS_RS",
+       B.SJGS_XS AS "SJGS_XS",
+       B.GSSH_ZT AS "GSSH_ZT",
+       B.GSSH_DCBBH AS "GSSH_DCBBH",
+       B.GSSH_TJRID AS "GSSH_TJRID",
+       B.GSSH_TJRQ AS "GSSH_TJRQ",
+       B.GSSH_BZ AS "GSSH_BZ",
+       B.BZ AS "BZ",
+       B.ZDJSRID AS "ZDJSRID",
+       B.ZDJSRQ AS "ZDJSRQ",
+       B.ZDJSYY AS "ZDJSYY",
+       B.WHDWID AS "WHDWID",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+               CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_NAME",
+               TJ.USERNAME ||' '|| TJ.REALNAME AS "GSSH_TJRIDNAME",
+               WHR.REALNAME AS "WHR_REALNAME",
+               TO_char(B.GSSH_TJRQ,'yyyy-MM-dd') AS "GSSH_TJRQS",
+               WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+               '任务单号:'||B.rwdh || ' ' || (F_GETREC_HD(B.REC_CZSM)) AS "REC_HD",
+		        (
+		        CASE 
+		           WHEN B.rwlx = 1 THEN '定检执行任务'
+		           WHEN B.rwlx = 2 THEN 
+			           (CASE 
+			           WHEN B.rwzlx = 1 THEN '非例行-时控件工单'
+			           WHEN B.rwzlx = 2 THEN	'非例行-附加工单'
+			           WHEN B.rwzlx = 3 THEN	'非例行-排故工单'
+		           	   END )
+		         END 
+		        ) AS "RWLXS",
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) AS "DATA_VERSION"
+               
+          FROM B_S_009_REC B
+          LEFT JOIN T_USER WHR
+            ON WHR.ID = B.WHRID
+         
+          LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+               LEFT JOIN T_USER TJ ON TJ.ID = B.GSSH_TJRID 
+          LEFT JOIN T_DEPARTMENT WHDW
+            ON WHDW.ID = B.WHRID
+         WHERE   B.REC_CZSM in ('15','24')  and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from B_S_009_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+                   
+       ) AS A WHERE 2 >="RNO" 
+       
+  </select>
+</mapper>

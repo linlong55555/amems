@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.RequisitionCostMapper">
+	
+	<!-- 根据条件分页查询单击领用成本列表 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.po.BaseEntity" resultType="Map">
+		select b4.hclx AS "HCLX",
+	        b4.hclx_ej AS "HCLX_EJ",
+	        b4.gljb AS "GLJB",
+	        b3.bjh AS "BJH",
+	        b3.pch AS "PCH",
+	        b3.sn AS "SN",
+	        b4.zwms AS "ZWMS",
+	        b4.ywms AS "YWMS",
+	       ((CASE WHEN b3.kcsl IS NULL THEN 0 ELSE b3.kcsl END) - (CASE WHEN b2.tksl IS NULL THEN 0 ELSE b2.tksl END)) "SYSL",
+	        b4.jldw AS "JLDW",
+	        b3.kccb AS "KCCB",
+	        round(((CASE WHEN b3.kcsl IS NULL THEN 0 ELSE b3.kcsl END) - (CASE WHEN b2.tksl IS NULL THEN 0 ELSE b2.tksl END)) * (CASE WHEN b3.kccb IS NULL THEN 0 ELSE b3.kccb END), 2) "LYCB",
+	        to_char(b1.cksj, 'yyyy-mm-dd') "CKRQ",
+	        b1.ckdh AS "CKBH",
+	        b3.kcsl AS "KCSL",
+	        b2.tksl AS "TKSL",
+	        b1.bz AS "BZ",
+	        b4.cjjh AS "CJJH",
+	        b4.zjh AS "ZJH",
+	        b4.hcjz AS "HCJZ",
+	        b4.gg AS "GG",
+	        b4.xingh AS "XINGH",
+	        b3.ckh AS "CKH",
+	        b3.ckmc AS "CKMC",
+	        b5.jd AS "JD",
+	        d12.JDMS AS "JDMS",
+	        b3.kwh AS "KWH",
+	        b3.xkzh AS "XKZH",
+	        b3.shzh AS "SHZH",
+	        b3.shzwz AS "SHZWZ",
+	        b3.dprtcode AS "DPRTCODE",
+	        b6.zwms as "ZZWMS",
+	        b6.ywms as "ZYWMS"
+	    from b_h_013 b1
+	    join b_h_01301 b2
+	    on b1.id = b2.mainid
+	    and b1.zt = 2
+	    <if test="paramsMap != null and paramsMap.fjzch != null and paramsMap.fjzch != ''">
+		    and (b1.fjzch = #{paramsMap.fjzch} or b1.fjzch = '00000')
+		</if>
+	    and b1.cksj &gt;= to_timestamp(#{paramsMap.ckrqBegin, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+	    and b1.cksj &lt;= to_timestamp(#{paramsMap.ckrqEnd, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI:SS')
+	    and b1.cklx = 1
+	    and b2.zt = 1
+	    join b_h_017 b3
+	    on b3.id = b2.kcllid
+	    join d_008 b4
+	    on b3.bjid = b4.id
+	    left join d_009 b5
+	    on b3.ckid = b5.id
+	    left join d_012 d12
+	    on d12.id = b5.JD
+	    left join D_005 b6
+   		on b4.zjh = b6.zjh and b6.dprtcode = #{paramsMap.dprtcode}
+	    where 1 = 1 and b3.dprtcode = #{paramsMap.dprtcode}
+	    <if test="paramsMap != null and paramsMap.hclx != null and paramsMap.hclx == ''">
+		    and b4.hclx in (1, 4, 5)
+		</if>
+	    <if test="paramsMap != null and paramsMap.hclx != null and paramsMap.hclx != ''">
+		    and b4.hclx in (2, 3)
+		</if>
+	    <if test="paramsMap != null and paramsMap.hclxej != null and paramsMap.hclxej != ''">
+		    and b4.hclx_ej = CAST(#{paramsMap.hclxej} as NUMERIC)
+		</if>
+
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by "LYCB" DESC,bjh DESC
+	    	</when>
+	    	<otherwise>
+			    order by "${pagination.sort}" ${pagination.order}
+	    	</otherwise>
+		</choose>
+	</select>
+  
+</mapper>

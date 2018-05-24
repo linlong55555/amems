@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.AirworthinessDirectiveRecMapper" >
+   
+  <!-- 故障保留单日志列表 开始 -->
+  
+  <select id="queryList4Bs014" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT 	       		 
+	       		   B.ID AS "ID",
+			       B.LSH AS "LSH",
+			       B.FJZCH AS "FJZCH",
+			       B.BSH_YJRQ AS "BSH_YJRQ",
+			       B.BSH_SJRQ AS "BSH_SJRQ",
+			       B.BSH_RQ AS "BSH_RQ",
+			       B.BSH_SPDH AS "BSH_SPDH",
+			       B.BSH_PZRID AS "BSH_PZRID",
+			       B.SH_YJRQ AS "SH_YJRQ",
+			       B.SH_SJRQ AS "SH_SJRQ",
+			       B.SH_RQ AS "SH_RQ",
+			       B.SH_SPDH AS "SH_SPDH",
+			       B.SH_PZRID AS "SH_PZRID",
+			       B.BZ AS "BZ",
+			       B.ZDDWID AS "ZDDWID",
+			       B.ZDRID AS "ZDRID",
+			       B.ZDSJ AS "ZDSJ",
+			       B.ZT AS "ZT",
+			       B.DPRTCODE AS "DPRTCODE",
+			       B.REC_XGLX AS "REC_XGLX",
+			       B.REC_CZRID AS "REC_CZRID",
+			       B.REC_CZSJ AS "REC_CZSJ",
+			       B.REC_IP AS "REC_IP",
+			       B.REC_CZSM AS "REC_CZSM",
+			       B.REC_CZLS AS "REC_CZLS",
+			       B.REC_ZBID AS "REC_ZBID",
+			       B.BSHYY  AS "BSHYY" 
+	       		      
+      		    ,CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR"
+		        ,  '指令流水号:'||B.LSH || ' ' ||(
+		          F_GETREC_HD(B.REC_CZSM)
+		        ) AS "REC_HD"
+		        FROM b_s_014_REC B 
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		         
+		        
+		        WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		         </if>
+		            <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		        	and (
+		                 B.FJZCH like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+		            )
+		         </if>  
+		         <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+		     <choose>                                                                 
+			    	<when test='paramsMap.LOGINED_USERTYPE!=null and paramsMap.LOGINED_USERTYPE == "admin"'>                       
+			    		 AND exists 
+			    		( SELECT 1 from D_007 where 
+			    		    B.fjzch = FJZCH
+			    		AND B.dprtcode = DPRTCODE
+			    		AND zt = 1
+			    		)
+			    	</when>
+			    	<otherwise>
+					     AND exists 
+			    		( SELECT 1 from V_ROLE_JX where 
+			    		B.FJZCH = FJZCH
+			    		AND B.DPRTCODE = DPRTCODE
+			    		AND USER_ID = #{paramsMap.LOGINED_USERID,jdbcType=VARCHAR}
+			    		)
+			    	</otherwise>
+		   	</choose>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff4Bs014" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) "RNO",
+               B.ID AS "ID",
+			       B.LSH AS "LSH",
+			       B.FJZCH AS "FJZCH",
+			       B.BSH_YJRQ AS "BSH_YJRQ",
+			       B.BSH_SJRQ AS "BSH_SJRQ",
+			       B.BSH_RQ AS "BSH_RQ",
+			       B.BSH_SPDH AS "BSH_SPDH",
+			       B.BSH_PZRID AS "BSH_PZRID",
+			       B.SH_YJRQ AS "SH_YJRQ",
+			       B.SH_SJRQ AS "SH_SJRQ",
+			       B.SH_RQ AS "SH_RQ",
+			       B.SH_SPDH AS "SH_SPDH",
+			       B.SH_PZRID AS "SH_PZRID",
+			       B.BZ AS "BZ",
+			       B.ZDDWID AS "ZDDWID",
+			       B.ZDRID AS "ZDRID",
+			       B.ZDSJ AS "ZDSJ",
+			       B.ZT AS "ZT",
+			       B.DPRTCODE AS "DPRTCODE",
+			       B.REC_XGLX AS "REC_XGLX",
+			       B.REC_CZRID AS "REC_CZRID",
+			       B.REC_CZSJ AS "REC_CZSJ",
+			       B.REC_IP AS "REC_IP",
+			       B.REC_CZSM AS "REC_CZSM",
+			       B.REC_CZLS AS "REC_CZLS",
+			       B.REC_ZBID AS "REC_ZBID",
+			       B.BSHYY  AS "BSHYY"
+               
+               , CASE B.ZT WHEN 1 THEN '有效' ELSE '无效' END AS "ZT_STR"
+               ,JG.DPRTNAME  AS "DPRTCODE_STR"
+               ,CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR"
+               ,(CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) AS "REC_XGLX_STR"
+		          
+		        ,(CASE  WHEN B.BSHYY=1 THEN '定检原因' 
+		        WHEN B.BSHYY=2 THEN '故障原因' 
+		        WHEN B.BSHYY=3 THEN '缺件原因(航材、工具)' 
+		        WHEN B.BSHYY=4 THEN '机组原因' 
+		        WHEN B.BSHYY=5 THEN '其他原因' 
+		        ELSE ''  END) AS "BSHYY_STR"
+		       ,(CASE  WHEN  B.BSH_YJRQ IS NULL THEN '' ELSE to_char(B.BSH_YJRQ ,'yyyy-MM-dd HH24:mi')  END) AS "BSH_YJRQ_STR"
+		       ,(CASE  WHEN  B.BSH_SJRQ IS NULL THEN '' ELSE to_char(B.BSH_SJRQ ,'yyyy-MM-dd HH24:mi')   END) AS "BSH_SJRQ_STR"
+		       ,(CASE  WHEN  B.BSH_RQ IS NULL THEN '' ELSE to_char(B.BSH_RQ ,'yyyy-MM-dd HH24:mi')   END) AS "BSH_RQ_STR"  
+		       ,BSH_PZR.USERNAME ||' '|| BSH_PZR.REALNAME AS "BSH_PZR_STR"
+		       
+		       ,(CASE  WHEN  B.SH_YJRQ IS NULL THEN '' ELSE to_char(B.SH_YJRQ ,'yyyy-MM-dd HH24:mi')   END) AS "SH_YJRQ_STR"
+		       ,(CASE  WHEN  B.SH_SJRQ IS NULL THEN '' ELSE to_char(B.SH_SJRQ ,'yyyy-MM-dd HH24:mi')   END) AS "SH_SJRQ_STR" 
+		       ,(CASE  WHEN  B.SH_RQ IS NULL THEN '' ELSE to_char(B.SH_RQ ,'yyyy-MM-dd HH24:mi')   END) AS "SH_RQ_STR" 
+		       ,SH_PZR.USERNAME ||' '|| SH_PZR.REALNAME AS "SH_PZR_STR"
+		       
+		       ,ZDR.USERNAME ||' '|| ZDR.REALNAME AS "ZDR_STR"
+		       ,ZDDW.DPRTNAME  AS "ZDDW_STR"
+		        
+		        
+               ,'指令流水号:'||B.LSH || ' ' || (F_GETREC_HD(B.REC_CZSM)) AS "REC_HD",
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) AS "DATA_VERSION"
+               
+          FROM b_s_014_REC B
+          LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+          LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+          
+          LEFT JOIN T_USER BSH_PZR ON BSH_PZR.ID = B.BSH_PZRID
+          LEFT JOIN T_USER SH_PZR ON SH_PZR.ID = B.SH_PZRID
+          
+          LEFT JOIN T_USER ZDR ON ZDR.ID = B.ZDRID
+          LEFT JOIN T_DEPARTMENT ZDDW ON ZDDW.ID = B.ZDDWID
+          
+          WHERE 
+           B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from b_s_014_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+                   
+       ) AS A WHERE 2 >="RNO"
+       
+  </select>
+    
+  
+  
+</mapper>

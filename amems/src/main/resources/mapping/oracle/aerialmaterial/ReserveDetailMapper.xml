@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ReserveDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ReserveDetail">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+    <result column="SQSL" jdbcType="DECIMAL" property="sqsl" />
+    <result column="SHSL" jdbcType="DECIMAL" property="shsl" />
+    <result column="SL" jdbcType="DECIMAL" property="sl" />
+    <result column="YT" jdbcType="VARCHAR" property="yt" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="XJZT" jdbcType="DECIMAL" property="xjzt" />
+    <result column="XJDH" jdbcType="VARCHAR" property="xjdh" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="YCGSL" jdbcType="DECIMAL" property="ycgsl" />
+  </resultMap>
+  
+   <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  <resultMap type="com.eray.thjw.aerialmaterial.po.ReserveDetail" id="ReserveDetailToMaterialMap" extends="BaseResultMap">  
+      <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">
+         <id column="MID" property="id"/>
+	    <result column="MBJH" property="bjh" jdbcType="VARCHAR" />
+	    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+	    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+	    <result column="JLDW" property="jldw" jdbcType="VARCHAR" />
+	    <result column="CJJH" property="cjjh" jdbcType="VARCHAR" />
+	    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+	    <result column="HCJZ" property="hcjz" jdbcType="DECIMAL" />
+	    <result column="GLJB" property="gljb" jdbcType="DECIMAL" />
+	    <result column="SXKZ" property="sxkz" jdbcType="DECIMAL" />
+	    <result column="HCLX" property="hclx" jdbcType="DECIMAL" />
+	    <result column="HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+	    <result column="IS_MEL" property="isMel" jdbcType="DECIMAL" />
+	    <result column="MIN_KCL" property="minKcl" jdbcType="DECIMAL" />
+	    <result column="MAX_KCL" property="maxKcl" jdbcType="DECIMAL" />
+	    <result column="R_JCSJ" property="rJcsj" jdbcType="VARCHAR" />
+	    <result column="XH" property="xh" jdbcType="VARCHAR" />
+	    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+	    <result column="BMID" property="bmid" jdbcType="VARCHAR" />
+	    <result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+	    <result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" />
+	    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+	    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+	    <result column="FZJH" property="fixChapter.zjh" jdbcType="VARCHAR" />
+	    <result column="FZWMS" property="fixChapter.zwms" jdbcType="VARCHAR" />
+	    <result column="FYWMS" property="fixChapter.ywms" jdbcType="VARCHAR" />
+     </association>
+  </resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, BJID, BJH, SQSL, SHSL, SL, YT, ZT, BZ, XJZT, XJDH, WHDWID, WHRID, WHSJ, YCGSL
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_00201
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据提订单id查询提订详情信息 --> 
+  <select id="queryReserveDetailListByMainId"  parameterType="java.lang.String" resultMap="ReserveDetailToMaterialMap" >
+     select 
+	    B00201.ID, B00201.MAINID, B00201.BJID, B00201.BJH, B00201.SQSL, B00201.SHSL, B00201.SL, B00201.YT, B00201.ZT, B00201.BZ, B00201.XJZT, B00201.XJDH, B00201.WHDWID, B00201.WHRID,
+	    B00201.WHSJ,B00201.YCGSL,D.ID AS MID,D.BJH AS MBJH,D.ZWMS,D.YWMS,D.CJJH,D.XH,D.GLJB,D.ZJH,D.HCLX,D.HCLX_EJ,
+	    D.JLDW,D005.ZJH AS FZJH,D005.ZWMS AS FZWMS,D005.YWMS AS FYWMS
+	    from B_H_00201 B00201
+	    join D_008 D
+	    on D.ID = B00201.BJID
+	    left join D_005 D005
+	    on D.ZJH = D005.ZJH and D.DPRTCODE = D005.DPRTCODE
+		where B00201.ZT IN (1) and B00201.MAINID = #{mainid}
+  </select>
+  
+  <!-- 根据提订单id集合查询提订详情信息 --> 
+  <select id="queryReserveDetailListByIds"  resultType="Map">
+     select 
+	    B00201.ID, B00201.MAINID, B00201.BJID, B00201.BJH, B00201.SQSL, B00201.SHSL, B00201.SL, B00201.YT, B00201.ZT, B00201.BZ, B00201.XJZT, B00201.XJDH, B00201.WHDWID, B00201.WHRID,
+	    B00201.WHSJ,B00201.YCGSL,D.ZWMS,D.YWMS,D.CJJH,D.XH,D.ZJH,D.HCLX,D.JLDW,B002.SQDH,B002.YQQX,D005.ZWMS AS ZZWMS,D005.YWMS AS ZYWMS,
+	    to_date(to_char(B002.YQQX,'YYYY-MM-DD'),'YYYY-MM-DD') - to_date(to_char(sysdate,'YYYY-MM-DD'),'YYYY-MM-DD') as SYTS,
+	    B002.ZT AS RESERVEZT,HT.ID AS HTID,HT.HTLSH,HT.HTH,HT.DHSL,HT.RKSL,HT.HTSL,HT.HTDHRQ
+	    from B_H_00201 B00201
+	    left join D_008 D
+	    on D.ID = B00201.BJID
+	    left join b_h_002 B002
+	    on B00201.MAINID = B002.ID
+	    left join (select B004.ID,B004.HTLSH,B004.HTH,B00401.TDDHCID,B00401.DHSL,B00401.RKSL,B00401.HT_SL AS HTSL,B00401.HT_DHRQ AS HTDHRQ from b_h_00401 B00401,b_h_004 B004 where B00401.MAINID = B004.ID AND B004.ZT NOT IN(8) AND B00401.ZT = 1) HT
+	    on HT.TDDHCID = B00201.ID
+	    left join D_005 D005
+	    on D.ZJH = D005.ZJH and D.DPRTCODE = D005.DPRTCODE
+		where B00201.ZT IN (1) AND B00201.MAINID in 
+		 <foreach collection="list" item="mainidList" index="index" open="(" close=")" separator=",">
+			#{mainidList}
+		 </foreach>
+  </select>
+  
+  <!-- 根据提订单详情id集合查询提订详情信息 --> 
+  <select id="queryByIds" resultMap="BaseResultMap">
+     select 
+	   <include refid="Base_Column_List" />
+	    from B_H_00201
+		where ID in 
+		 <foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+  </select>
+  
+  <!-- 搜索参数 -->
+	<sql id="ReserveDetailParam">
+		<if test="keyword != null and keyword != ''">
+		    and (UPPER(D.BJH) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(D.ZWMS) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(D.YWMS) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(D.CJJH) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(B002.SQDH) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrqBegin != null and paramsMap.sqrqBegin != ''">
+		    and B002.SQSJ &gt;= to_date(#{paramsMap.sqrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrqEnd != null and paramsMap.sqrqEnd != ''">
+		    and B002.SQSJ &lt;= to_date(#{paramsMap.sqrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.yqqxBegin != null and paramsMap.yqqxBegin != ''">
+		    and B002.YQQX &gt;= to_date(#{paramsMap.yqqxBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.yqqxEnd != null and paramsMap.yqqxEnd != ''">
+		    and B002.YQQX &lt;= to_date(#{paramsMap.yqqxEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrname != null and paramsMap.sqrname != ''">
+		    and (UPPER(U.REALNAME) like UPPER('%'||#{paramsMap.sqrname}||'%')
+		    or UPPER(U.USERNAME) like UPPER('%'||#{paramsMap.sqrname}||'%')
+		    )
+		</if>
+		<if test="idList != null">
+		    and B00201.ID not in 
+		 	<foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+		 	</foreach>
+		</if> 
+	</sql>
+  
+   <!-- 根据查询条件分页查询航材提订详情信息(弹窗) --> 
+  <select id="queryReserveDetailPageList"  resultType="Map" parameterType="com.eray.thjw.aerialmaterial.po.ReserveDetail">
+     select 
+	    B00201.ID, B00201.MAINID AS TDDID, B00201.BJID, B00201.BJH, B00201.SQSL, B00201.SHSL, B00201.SL, B00201.YT, B00201.ZT, B00201.BZ, B00201.XJZT, B00201.XJDH, B00201.WHDWID, B00201.WHRID,
+	    B00201.WHSJ,B00201.YCGSL,D.ZWMS,D.YWMS,D.CJJH,D.XH,D.ZJH,D.HCLX,D.JLDW,B002.SQDH,B002.YQQX,B002.SQSJ,U.USERNAME,U.REALNAME
+	    from B_H_00201 B00201
+	    left join D_008 D
+	    on D.ID = B00201.BJID
+	    left join b_h_002 B002
+	    on B00201.MAINID = B002.ID
+	    left join T_USER U
+	    on U.ID = B002.SQRID
+		where B00201.ZT IN (1) AND B002.ZT in (3) AND B002.DPRTCODE = #{dprtcode}
+		AND B00201.YCGSL &lt; B00201.SL
+ 	<include refid="ReserveDetailParam"></include>
+ 	order by B002.YQQX
+ 
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_00201
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ReserveDetail">
+    insert into B_H_00201 (ID, MAINID, BJID, 
+      BJH, SQSL, SHSL, SL, 
+      YT, ZT, BZ, XJZT, 
+      XJDH, WHDWID, WHRID, YCGSL,
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, 
+      #{bjh,jdbcType=VARCHAR}, #{sqsl,jdbcType=DECIMAL}, #{shsl,jdbcType=DECIMAL}, #{sl,jdbcType=DECIMAL}, 
+      #{yt,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{xjzt,jdbcType=DECIMAL}, 
+      #{xjdh,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{ycgsl,jdbcType=DECIMAL}, 
+      sysdate)
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ReserveDetail">
+    insert into B_H_00201
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="bjh != null">
+        BJH,
+      </if>
+      <if test="sqsl != null">
+        SQSL,
+      </if>
+      <if test="shsl != null">
+        SHSL,
+      </if>
+      <if test="sl != null">
+        SL,
+      </if>
+      <if test="yt != null">
+        YT,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="xjzt != null">
+        XJZT,
+      </if>
+      <if test="xjdh != null">
+        XJDH,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+        WHSJ,
+      <if test="ycgsl != null">
+        YCGSL,
+      </if> 
+       
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsl != null">
+        #{sqsl,jdbcType=DECIMAL},
+      </if>
+      <if test="shsl != null">
+        #{shsl,jdbcType=DECIMAL},
+      </if>
+      <if test="sl != null">
+        #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="yt != null">
+        #{yt,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xjzt != null">
+        #{xjzt,jdbcType=DECIMAL},
+      </if>
+      <if test="xjdh != null">
+        #{xjdh,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+        sysdate,
+      <if test="ycgsl != null">
+        #{ycgsl,jdbcType=DECIMAL},
+      </if> 
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ReserveDetail">
+    update B_H_00201
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsl != null">
+        SQSL = #{sqsl,jdbcType=DECIMAL},
+      </if>
+      <if test="shsl != null">
+        SHSL = #{shsl,jdbcType=DECIMAL},
+      </if>
+      <if test="sl != null">
+        SL = #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="yt != null">
+        YT = #{yt,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xjzt != null">
+        XJZT = #{xjzt,jdbcType=DECIMAL},
+      </if>
+      <if test="xjdh != null">
+        XJDH = #{xjdh,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = sysdate,
+      </if>
+      <if test="ycgsl != null">
+        YCGSL = #{ycgsl,jdbcType=DECIMAL},
+      </if>
+      
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ReserveDetail">
+    update B_H_00201
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      SQSL = #{sqsl,jdbcType=DECIMAL},
+      SHSL = #{shsl,jdbcType=DECIMAL},
+      SL = #{sl,jdbcType=DECIMAL},
+      YT = #{yt,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      XJZT = #{xjzt,jdbcType=DECIMAL},
+      XJDH = #{xjdh,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      YCGSL = #{ycgsl,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateYcgsl" parameterType="com.eray.thjw.aerialmaterial.po.ReserveDetail">
+    update B_H_00201
+    set
+      YCGSL = #{ycgsl,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

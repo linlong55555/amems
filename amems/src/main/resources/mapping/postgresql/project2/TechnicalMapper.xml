@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.TechnicalMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.Technical" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="PGDH" property="pgdh" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="JSWJID" property="jswjid" jdbcType="VARCHAR" />
+    <result column="GLPGDID" property="glpgdid" jdbcType="VARCHAR" />
+    <result column="PGQX" property="pgqx" jdbcType="TIMESTAMP" />
+    <result column="PGDZT" property="pgdzt" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="FL" property="fl" jdbcType="VARCHAR" />
+    <result column="FBRQ" property="fbrq" jdbcType="TIMESTAMP" />
+    <result column="DJ" property="dj" jdbcType="VARCHAR" />
+    <result column="JJCD" property="jjcd" jdbcType="VARCHAR" />
+    <result column="WCZL" property="wczl" jdbcType="DECIMAL" />
+    <result column="XGWJ" property="xgwj" jdbcType="VARCHAR" />
+    <result column="SJGZ" property="sjgz" jdbcType="VARCHAR" />
+    <result column="WJZY" property="wjzy" jdbcType="VARCHAR" />
+    <result column="SYX" property="syx" jdbcType="DECIMAL" />
+    <result column="SYXDX" property="syxdx" jdbcType="VARCHAR" />
+    <result column="IS_JSTG" property="isJstg" jdbcType="DECIMAL" />
+    <result column="IS_JSZL" property="isJszl" jdbcType="DECIMAL" />
+    <result column="IS_GCZL" property="isGczl" jdbcType="DECIMAL" />
+    <result column="IS_NRC" property="isNrc" jdbcType="DECIMAL" />
+    <result column="IS_XDWXFA" property="isXdwxfa" jdbcType="DECIMAL" />
+    <result column="IS_XDMEL" property="isXdmel" jdbcType="DECIMAL" />
+    <result column="IS_XDGK" property="isXdgk" jdbcType="DECIMAL" />
+    <result column="IS_QT" property="isQt" jdbcType="DECIMAL" />
+    <result column="QT_MS" property="qtMs" jdbcType="VARCHAR" />
+    <result column="FZBMID" property="fzbmid" jdbcType="VARCHAR" />
+    <result column="FZRID" property="fzrid" jdbcType="VARCHAR" />
+    <result column="IS_MFHC" property="isMfhc" jdbcType="DECIMAL" />
+    <result column="IS_ZBHC" property="isZbhc" jdbcType="DECIMAL" />
+    <result column="IS_TSGJ" property="isTsgj" jdbcType="DECIMAL" />
+    <result column="IS_YXZLPH" property="isYxzlph" jdbcType="DECIMAL" />
+    <result column="GBTJ" property="gbtj" jdbcType="VARCHAR" />
+    <result column="FWXJNR" property="fwxjnr" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="PGBMID" property="pgbmid" jdbcType="VARCHAR" />
+    <result column="PGRID" property="pgrid" jdbcType="VARCHAR" />
+    <result column="PGSJ" property="pgsj" jdbcType="TIMESTAMP" />
+    <result column="PGYJ" property="pgyj" jdbcType="VARCHAR" />
+    <result column="SHBMID" property="shbmid" jdbcType="VARCHAR" />
+    <result column="SHRID" property="shrid" jdbcType="VARCHAR" />
+    <result column="SHSJ" property="shsj" jdbcType="TIMESTAMP" />
+    <result column="SHYJ" property="shyj" jdbcType="VARCHAR" />
+    <result column="PFBMID" property="pfbmid" jdbcType="VARCHAR" />
+    <result column="PFRID" property="pfrid" jdbcType="VARCHAR" />
+    <result column="PFSJ" property="pfsj" jdbcType="TIMESTAMP" />
+    <result column="PFYJ" property="pfyj" jdbcType="VARCHAR" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBRQ" property="gbrq" jdbcType="TIMESTAMP" />
+    <result column="GBYY" property="gbyy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, PGDH, JX, JSWJID, GLPGDID, PGQX, PGDZT, ZJH, FL, FBRQ, DJ, JJCD, WCZL, 
+    XGWJ, SJGZ, WJZY, SYX, SYXDX, IS_JSTG, IS_JSZL, IS_GCZL, IS_NRC, IS_XDWXFA, IS_XDMEL, 
+    IS_XDGK, IS_QT, QT_MS, FZBMID, FZRID, IS_MFHC, IS_ZBHC, IS_TSGJ, IS_YXZLPH, GBTJ, 
+    FWXJNR, BZ, ZT, PGBMID, PGRID, PGSJ, PGYJ, SHBMID, SHRID, SHSJ, SHYJ, PFBMID, PFRID, 
+    PFSJ, PFYJ, GBRID, GBRQ, GBYY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.Technical" >
+    insert into B_G2_001 (ID, DPRTCODE, PGDH, 
+      JX, JSWJID, GLPGDID, 
+      PGQX, PGDZT, ZJH, 
+      FL, FBRQ, DJ, JJCD, 
+      WCZL, XGWJ, SJGZ, WJZY, 
+      SYX, SYXDX, IS_JSTG, 
+      IS_JSZL, IS_GCZL, IS_NRC, 
+      IS_XDWXFA, IS_XDMEL, IS_XDGK, 
+      IS_QT, QT_MS, FZBMID, 
+      FZRID, IS_MFHC, IS_ZBHC, 
+      IS_TSGJ, IS_YXZLPH, GBTJ, 
+      FWXJNR, BZ, ZT, PGBMID, 
+      PGRID, PGSJ, PGYJ, 
+      SHBMID, SHRID, SHSJ, 
+      SHYJ, PFBMID, PFRID, 
+      PFSJ, PFYJ, GBRID, 
+      GBRQ, GBYY)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{pgdh,jdbcType=VARCHAR}, 
+      #{jx,jdbcType=VARCHAR}, #{jswjid,jdbcType=VARCHAR}, #{glpgdid,jdbcType=VARCHAR}, 
+      #{pgqx,jdbcType=TIMESTAMP}, #{pgdzt,jdbcType=VARCHAR}, #{zjh,jdbcType=VARCHAR}, 
+      #{fl,jdbcType=VARCHAR}, #{fbrq,jdbcType=TIMESTAMP}, #{dj,jdbcType=VARCHAR}, #{jjcd,jdbcType=VARCHAR}, 
+      #{wczl,jdbcType=DECIMAL}, #{xgwj,jdbcType=VARCHAR}, #{sjgz,jdbcType=VARCHAR}, #{wjzy,jdbcType=VARCHAR}, 
+      #{syx,jdbcType=DECIMAL}, #{syxdx,jdbcType=VARCHAR}, #{isJstg,jdbcType=DECIMAL}, 
+      #{isJszl,jdbcType=DECIMAL}, #{isGczl,jdbcType=DECIMAL}, #{isNrc,jdbcType=DECIMAL}, 
+      #{isXdwxfa,jdbcType=DECIMAL}, #{isXdmel,jdbcType=DECIMAL}, #{isXdgk,jdbcType=DECIMAL}, 
+      #{isQt,jdbcType=DECIMAL}, #{qtMs,jdbcType=VARCHAR}, #{fzbmid,jdbcType=VARCHAR}, 
+      #{fzrid,jdbcType=VARCHAR}, #{isMfhc,jdbcType=DECIMAL}, #{isZbhc,jdbcType=DECIMAL}, 
+      #{isTsgj,jdbcType=DECIMAL}, #{isYxzlph,jdbcType=DECIMAL}, #{gbtj,jdbcType=VARCHAR}, 
+      #{fwxjnr,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{pgbmid,jdbcType=VARCHAR}, 
+      #{pgrid,jdbcType=VARCHAR}, #{pgsj,jdbcType=TIMESTAMP}, #{pgyj,jdbcType=VARCHAR}, 
+      #{shbmid,jdbcType=VARCHAR}, #{shrid,jdbcType=VARCHAR}, #{shsj,jdbcType=TIMESTAMP}, 
+      #{shyj,jdbcType=VARCHAR}, #{pfbmid,jdbcType=VARCHAR}, #{pfrid,jdbcType=VARCHAR}, 
+      #{pfsj,jdbcType=TIMESTAMP}, #{pfyj,jdbcType=VARCHAR}, #{gbrid,jdbcType=VARCHAR}, 
+      #{gbrq,jdbcType=TIMESTAMP}, #{gbyy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.Technical" >
+    insert into B_G2_001
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="pgdh != null" >
+        PGDH,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="jswjid != null" >
+        JSWJID,
+      </if>
+      <if test="glpgdid != null" >
+        GLPGDID,
+      </if>
+      <if test="pgqx != null" >
+        PGQX,
+      </if>
+      <if test="pgdzt != null" >
+        PGDZT,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="fl != null" >
+        FL,
+      </if>
+      <if test="fbrq != null" >
+        FBRQ,
+      </if>
+      <if test="dj != null" >
+        DJ,
+      </if>
+      <if test="jjcd != null" >
+        JJCD,
+      </if>
+      <if test="wczl != null" >
+        WCZL,
+      </if>
+      <if test="xgwj != null" >
+        XGWJ,
+      </if>
+      <if test="sjgz != null" >
+        SJGZ,
+      </if>
+      <if test="wjzy != null" >
+        WJZY,
+      </if>
+      <if test="syx != null" >
+        SYX,
+      </if>
+      <if test="syxdx != null" >
+        SYXDX,
+      </if>
+      <if test="isJstg != null" >
+        IS_JSTG,
+      </if>
+      <if test="isJszl != null" >
+        IS_JSZL,
+      </if>
+      <if test="isGczl != null" >
+        IS_GCZL,
+      </if>
+      <if test="isNrc != null" >
+        IS_NRC,
+      </if>
+      <if test="isXdwxfa != null" >
+        IS_XDWXFA,
+      </if>
+      <if test="isXdmel != null" >
+        IS_XDMEL,
+      </if>
+      <if test="isXdgk != null" >
+        IS_XDGK,
+      </if>
+      <if test="isQt != null" >
+        IS_QT,
+      </if>
+      <if test="qtMs != null" >
+        QT_MS,
+      </if>
+      <if test="fzbmid != null" >
+        FZBMID,
+      </if>
+      <if test="fzrid != null" >
+        FZRID,
+      </if>
+      <if test="isMfhc != null" >
+        IS_MFHC,
+      </if>
+      <if test="isZbhc != null" >
+        IS_ZBHC,
+      </if>
+      <if test="isTsgj != null" >
+        IS_TSGJ,
+      </if>
+      <if test="isYxzlph != null" >
+        IS_YXZLPH,
+      </if>
+      <if test="gbtj != null" >
+        GBTJ,
+      </if>
+      <if test="fwxjnr != null" >
+        FWXJNR,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="pgbmid != null" >
+        PGBMID,
+      </if>
+      <if test="pgrid != null" >
+        PGRID,
+      </if>
+      <if test="pgsj != null" >
+        PGSJ,
+      </if>
+      <if test="pgyj != null" >
+        PGYJ,
+      </if>
+      <if test="shbmid != null" >
+        SHBMID,
+      </if>
+      <if test="shrid != null" >
+        SHRID,
+      </if>
+      <if test="shsj != null" >
+        SHSJ,
+      </if>
+      <if test="shyj != null" >
+        SHYJ,
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID,
+      </if>
+      <if test="pfrid != null" >
+        PFRID,
+      </if>
+      <if test="pfsj != null" >
+        PFSJ,
+      </if>
+      <if test="pfyj != null" >
+        PFYJ,
+      </if>
+      <if test="gbrid != null" >
+        GBRID,
+      </if>
+      <if test="gbrq != null" >
+        GBRQ,
+      </if>
+      <if test="gbyy != null" >
+        GBYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdh != null" >
+        #{pgdh,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjid != null" >
+        #{jswjid,jdbcType=VARCHAR},
+      </if>
+      <if test="glpgdid != null" >
+        #{glpgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgqx != null" >
+        #{pgqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pgdzt != null" >
+        #{pgdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="fl != null" >
+        #{fl,jdbcType=VARCHAR},
+      </if>
+      <if test="fbrq != null" >
+        #{fbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dj != null" >
+        #{dj,jdbcType=VARCHAR},
+      </if>
+      <if test="jjcd != null" >
+        #{jjcd,jdbcType=VARCHAR},
+      </if>
+      <if test="wczl != null" >
+        #{wczl,jdbcType=DECIMAL},
+      </if>
+      <if test="xgwj != null" >
+        #{xgwj,jdbcType=VARCHAR},
+      </if>
+      <if test="sjgz != null" >
+        #{sjgz,jdbcType=VARCHAR},
+      </if>
+      <if test="wjzy != null" >
+        #{wjzy,jdbcType=VARCHAR},
+      </if>
+      <if test="syx != null" >
+        #{syx,jdbcType=DECIMAL},
+      </if>
+      <if test="syxdx != null" >
+        #{syxdx,jdbcType=VARCHAR},
+      </if>
+      <if test="isJstg != null" >
+        #{isJstg,jdbcType=DECIMAL},
+      </if>
+      <if test="isJszl != null" >
+        #{isJszl,jdbcType=DECIMAL},
+      </if>
+      <if test="isGczl != null" >
+        #{isGczl,jdbcType=DECIMAL},
+      </if>
+      <if test="isNrc != null" >
+        #{isNrc,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdwxfa != null" >
+        #{isXdwxfa,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdmel != null" >
+        #{isXdmel,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdgk != null" >
+        #{isXdgk,jdbcType=DECIMAL},
+      </if>
+      <if test="isQt != null" >
+        #{isQt,jdbcType=DECIMAL},
+      </if>
+      <if test="qtMs != null" >
+        #{qtMs,jdbcType=VARCHAR},
+      </if>
+      <if test="fzbmid != null" >
+        #{fzbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="fzrid != null" >
+        #{fzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="isMfhc != null" >
+        #{isMfhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isZbhc != null" >
+        #{isZbhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isTsgj != null" >
+        #{isTsgj,jdbcType=DECIMAL},
+      </if>
+      <if test="isYxzlph != null" >
+        #{isYxzlph,jdbcType=DECIMAL},
+      </if>
+      <if test="gbtj != null" >
+        #{gbtj,jdbcType=VARCHAR},
+      </if>
+      <if test="fwxjnr != null" >
+        #{fwxjnr,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="pgbmid != null" >
+        #{pgbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgrid != null" >
+        #{pgrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgsj != null" >
+        #{pgsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pgyj != null" >
+        #{pgyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null" >
+        #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null" >
+        #{shsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shyj != null" >
+        #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfbmid != null" >
+        #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null" >
+        #{pfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pfyj != null" >
+        #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        #{gbyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.Technical" >
+    update B_G2_001
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdh != null" >
+        PGDH = #{pgdh,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjid != null" >
+        JSWJID = #{jswjid,jdbcType=VARCHAR},
+      </if>
+      <if test="glpgdid != null" >
+        GLPGDID = #{glpgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgqx != null" >
+        PGQX = #{pgqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pgdzt != null" >
+        PGDZT = #{pgdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="fl != null" >
+        FL = #{fl,jdbcType=VARCHAR},
+      </if>
+      <if test="fbrq != null" >
+        FBRQ = #{fbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dj != null" >
+        DJ = #{dj,jdbcType=VARCHAR},
+      </if>
+      <if test="jjcd != null" >
+        JJCD = #{jjcd,jdbcType=VARCHAR},
+      </if>
+      <if test="wczl != null" >
+        WCZL = #{wczl,jdbcType=DECIMAL},
+      </if>
+      <if test="xgwj != null" >
+        XGWJ = #{xgwj,jdbcType=VARCHAR},
+      </if>
+      <if test="sjgz != null" >
+        SJGZ = #{sjgz,jdbcType=VARCHAR},
+      </if>
+      <if test="wjzy != null" >
+        WJZY = #{wjzy,jdbcType=VARCHAR},
+      </if>
+      <if test="syx != null" >
+        SYX = #{syx,jdbcType=DECIMAL},
+      </if>
+      <if test="syxdx != null" >
+        SYXDX = #{syxdx,jdbcType=VARCHAR},
+      </if>
+      <if test="isJstg != null" >
+        IS_JSTG = #{isJstg,jdbcType=DECIMAL},
+      </if>
+      <if test="isJszl != null" >
+        IS_JSZL = #{isJszl,jdbcType=DECIMAL},
+      </if>
+      <if test="isGczl != null" >
+        IS_GCZL = #{isGczl,jdbcType=DECIMAL},
+      </if>
+      <if test="isNrc != null" >
+        IS_NRC = #{isNrc,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdwxfa != null" >
+        IS_XDWXFA = #{isXdwxfa,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdmel != null" >
+        IS_XDMEL = #{isXdmel,jdbcType=DECIMAL},
+      </if>
+      <if test="isXdgk != null" >
+        IS_XDGK = #{isXdgk,jdbcType=DECIMAL},
+      </if>
+      <if test="isQt != null" >
+        IS_QT = #{isQt,jdbcType=DECIMAL},
+      </if>
+      <if test="qtMs != null" >
+        QT_MS = #{qtMs,jdbcType=VARCHAR},
+      </if>
+      <if test="fzbmid != null" >
+        FZBMID = #{fzbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="fzrid != null" >
+        FZRID = #{fzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="isMfhc != null" >
+        IS_MFHC = #{isMfhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isZbhc != null" >
+        IS_ZBHC = #{isZbhc,jdbcType=DECIMAL},
+      </if>
+      <if test="isTsgj != null" >
+        IS_TSGJ = #{isTsgj,jdbcType=DECIMAL},
+      </if>
+      <if test="isYxzlph != null" >
+        IS_YXZLPH = #{isYxzlph,jdbcType=DECIMAL},
+      </if>
+      <if test="gbtj != null" >
+        GBTJ = #{gbtj,jdbcType=VARCHAR},
+      </if>
+      <if test="fwxjnr != null" >
+        FWXJNR = #{fwxjnr,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="pgbmid != null" >
+        PGBMID = #{pgbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgrid != null" >
+        PGRID = #{pgrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgsj != null" >
+        PGSJ = #{pgsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pgyj != null" >
+        PGYJ = #{pgyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null" >
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHRID = #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null" >
+        SHSJ = #{shsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shyj != null" >
+        SHYJ = #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        PFRID = #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null" >
+        PFSJ = #{pfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pfyj != null" >
+        PFYJ = #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.Technical" >
+    update B_G2_001
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      PGDH = #{pgdh,jdbcType=VARCHAR},
+      JX = #{jx,jdbcType=VARCHAR},
+      JSWJID = #{jswjid,jdbcType=VARCHAR},
+      GLPGDID = #{glpgdid,jdbcType=VARCHAR},
+      PGQX = #{pgqx,jdbcType=TIMESTAMP},
+      PGDZT = #{pgdzt,jdbcType=VARCHAR},
+      ZJH = #{zjh,jdbcType=VARCHAR},
+      FL = #{fl,jdbcType=VARCHAR},
+      FBRQ = #{fbrq,jdbcType=TIMESTAMP},
+      DJ = #{dj,jdbcType=VARCHAR},
+      JJCD = #{jjcd,jdbcType=VARCHAR},
+      WCZL = #{wczl,jdbcType=DECIMAL},
+      XGWJ = #{xgwj,jdbcType=VARCHAR},
+      SJGZ = #{sjgz,jdbcType=VARCHAR},
+      WJZY = #{wjzy,jdbcType=VARCHAR},
+      SYX = #{syx,jdbcType=DECIMAL},
+      SYXDX = #{syxdx,jdbcType=VARCHAR},
+      IS_JSTG = #{isJstg,jdbcType=DECIMAL},
+      IS_JSZL = #{isJszl,jdbcType=DECIMAL},
+      IS_GCZL = #{isGczl,jdbcType=DECIMAL},
+      IS_NRC = #{isNrc,jdbcType=DECIMAL},
+      IS_XDWXFA = #{isXdwxfa,jdbcType=DECIMAL},
+      IS_XDMEL = #{isXdmel,jdbcType=DECIMAL},
+      IS_XDGK = #{isXdgk,jdbcType=DECIMAL},
+      IS_QT = #{isQt,jdbcType=DECIMAL},
+      QT_MS = #{qtMs,jdbcType=VARCHAR},
+      FZBMID = #{fzbmid,jdbcType=VARCHAR},
+      FZRID = #{fzrid,jdbcType=VARCHAR},
+      IS_MFHC = #{isMfhc,jdbcType=DECIMAL},
+      IS_ZBHC = #{isZbhc,jdbcType=DECIMAL},
+      IS_TSGJ = #{isTsgj,jdbcType=DECIMAL},
+      IS_YXZLPH = #{isYxzlph,jdbcType=DECIMAL},
+      GBTJ = #{gbtj,jdbcType=VARCHAR},
+      FWXJNR = #{fwxjnr,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      PGBMID = #{pgbmid,jdbcType=VARCHAR},
+      PGRID = #{pgrid,jdbcType=VARCHAR},
+      PGSJ = #{pgsj,jdbcType=TIMESTAMP},
+      PGYJ = #{pgyj,jdbcType=VARCHAR},
+      SHBMID = #{shbmid,jdbcType=VARCHAR},
+      SHRID = #{shrid,jdbcType=VARCHAR},
+      SHSJ = #{shsj,jdbcType=TIMESTAMP},
+      SHYJ = #{shyj,jdbcType=VARCHAR},
+      PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      PFRID = #{pfrid,jdbcType=VARCHAR},
+      PFSJ = #{pfsj,jdbcType=TIMESTAMP},
+      PFYJ = #{pfyj,jdbcType=VARCHAR},
+      GBRID = #{gbrid,jdbcType=VARCHAR},
+      GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      GBYY = #{gbyy,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

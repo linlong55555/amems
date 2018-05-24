@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.MonitorItemMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.MonitorItem" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DJXMID" property="djxmid" jdbcType="VARCHAR" />
+    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+    <result column="ZQZ" property="zqz" jdbcType="DECIMAL" />
+    <result column="DW" property="dw" jdbcType="DECIMAL" />
+    <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DJXMID, JKLBH, JKFLBH, ZQZ, DW, PXH, WHBMID, WHRID, WHSJ, ZT, DPRTCODE
+  </sql>
+  
+  <select id="queryListByDjxmid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01201
+    where DJXMID = #{djxmid,jdbcType=VARCHAR} and ZT = 1 order by JKLBH
+  </select>
+  
+  <select id="selectByDjxmidAndJklAndJkf" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01201
+    where DJXMID = #{djxmid,jdbcType=VARCHAR} and JKLBH = #{jklbh,jdbcType=VARCHAR} and JKFLBH = #{jkflbh,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01201
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_01201
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByDjxmid" parameterType="java.lang.String" >
+    delete from B_G_01201
+    where DJXMID = #{djxmid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.po.MonitorItem" >
+    insert into B_G_01201 (ID, DJXMID, JKLBH, 
+      JKFLBH, ZQZ, DW, PXH, 
+      WHBMID, WHRID, WHSJ, 
+      ZT, DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{djxmid,jdbcType=VARCHAR}, #{jklbh,jdbcType=VARCHAR}, 
+      #{jkflbh,jdbcType=VARCHAR}, #{zqz,jdbcType=DECIMAL}, #{dw,jdbcType=DECIMAL}, #{pxh,jdbcType=DECIMAL}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, current_timestamp, 
+      #{zt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.MonitorItem" >
+    insert into B_G_01201
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="djxmid != null" >
+        DJXMID,
+      </if>
+      <if test="jklbh != null" >
+        JKLBH,
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH,
+      </if>
+      <if test="zqz != null" >
+        ZQZ,
+      </if>
+      <if test="dw != null" >
+        DW,
+      </if>
+      <if test="pxh != null" >
+        PXH,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+        WHSJ,
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmid != null" >
+        #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zqz != null" >
+        #{zqz,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        #{dw,jdbcType=DECIMAL},
+      </if>
+      <if test="pxh != null" >
+        #{pxh,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+        current_timestamp,
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.MonitorItem" >
+    update B_G_01201
+    <set >
+      <if test="djxmid != null" >
+        DJXMID = #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null" >
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null" >
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zqz != null" >
+        ZQZ = #{zqz,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        DW = #{dw,jdbcType=DECIMAL},
+      </if>
+      <if test="pxh != null" >
+        PXH = #{pxh,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.MonitorItem" >
+    update B_G_01201
+    set DJXMID = #{djxmid,jdbcType=VARCHAR},
+      JKLBH = #{jklbh,jdbcType=VARCHAR},
+      JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      ZQZ = #{zqz,jdbcType=DECIMAL},
+      DW = #{dw,jdbcType=DECIMAL},
+      PXH = #{pxh,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL}
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 设置无效 -->
+  <update id="updateNotEffById" parameterType="java.lang.String" >
+    update B_G_01201
+    set ZT = 0
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <update id="updateByDjxmid" parameterType="java.lang.String" >
+    update B_G_01201
+    set ZT = 0
+    where DJXMID = #{djxmid,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.ShapeStructureRepairMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.ShapeStructureRepair" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="SJLX" property="sjlx" jdbcType="INTEGER" />
+    <result column="WXFAID" property="wxfaid" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="QXMS" property="qxms" jdbcType="VARCHAR" />
+    <result column="WZ" property="wz" jdbcType="VARCHAR" />
+    <result column="FXRQ" property="fxrq" jdbcType="TIMESTAMP" />
+    <result column="XLRQ" property="xlrq" jdbcType="TIMESTAMP" />
+    <result column="XLYJ" property="xlyj" jdbcType="VARCHAR" />
+    <result column="XLFS" property="xlfs" jdbcType="INTEGER" />
+    <result column="IS_GB" property="is_gb" jdbcType="INTEGER" />
+    <result column="is_xlxjc" property="is_xlxjc" jdbcType="INTEGER" />
+    <result column="lxjcjg" property="lxjcjg" jdbcType="VARCHAR" />
+    <result column="IS_JRWXFQ" property="is_jrwxfq" jdbcType="INTEGER" />
+    <result column="XLQFJ" property="xlqfj" jdbcType="VARCHAR" />
+    <result column="XLHFJ" property="xlhfj" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />   
+    <result column="zt" property="zt" jdbcType="INTEGER" />
+   <association property="whr" javaType="com.eray.thjw.po.User">
+			<id column="whrid" property="id" />
+			<result column="whr_realname" property="realname" />
+			<result column="whr_username" property="username" />
+	</association>
+	 <association property="whbmname" javaType="com.eray.thjw.po.Department">
+			<id column="whbmid" property="id" />
+			<result column="dprtname" property="dprtname" />			
+	</association>
+	 <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+			<id column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    		<result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    		<result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+    		<result column="R_JCSJ" property="rJcsj" jdbcType="VARCHAR" />
+   		 	<result column="BMID" property="bmid" jdbcType="VARCHAR" />
+    		<result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+    		<result column="ZT" property="zt" jdbcType="DECIMAL" />
+    		<result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" /> 
+    		<result column="DISPLAYNAME" property="displayname" jdbcType="VARCHAR" />
+    		<result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />		
+	</association>
+  </resultMap>
+  <sql id="baseParam">
+  		where 1=1 and b.zt=1
+		<if test="paramsMap != null and paramsMap.fxrqDateBegin != null and paramsMap.fxrqDateBegin != ''">
+		    and b.fxrq &gt;=to_date(#{paramsMap.fxrqDateBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')  
+		</if>
+		<if test="paramsMap != null and paramsMap.fxrqDateEnd != null and paramsMap.fxrqDateEnd != ''">
+		    and b.fxrq &lt;=to_date(#{paramsMap.fxrqDateEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if> 
+		<if test="paramsMap != null and paramsMap.xlrqDateBegin != null and paramsMap.xlrqDateBegin != ''">
+		    and b.xlrq &gt;=to_date(#{paramsMap.xlrqDateBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')  
+		</if>
+		<if test="paramsMap != null and paramsMap.xlrqDateEnd != null and paramsMap.xlrqDateEnd != ''">
+		    and b.xlrq &lt;=to_date(#{paramsMap.xlrqDateEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if> 
+		<!-- 机构id -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and b.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		</if>
+		<if test="xlfs != null and xlfs != '' and xlfs != 0">
+			and b.xlfs = #{xlfs,jdbcType=INTEGER}
+		</if>
+		<if test="fjzch != null and fjzch != ''">
+			and b.fjzch = #{fjzch,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null and keyword != ''" >
+			and ( b.zjh like '%'||#{keyword,jdbcType=VARCHAR}||'%'
+				or b.fjzch like '%'||#{keyword,jdbcType=VARCHAR}||'%'
+			)
+		</if>
+  		 <if test="id != null and id !='' ">
+		    and b.ID = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="sjlx != null and sjlx !='' ">
+		    and b.sjlx = #{sjlx,jdbcType=INTEGER}
+		</if>  
+	</sql>
+ 	<select id="getList" parameterType="com.eray.thjw.po.ShapeStructureRepair" resultMap="BaseResultMap" >
+ 		select b.id,b.dprtcode,b.fjzch,b.sjlx,b.wxfaid,b.zjh,b.qxms,b.wz,b.fxrq,b.xlrq,b.xlyj,b.xlfs,b.is_gb,b.is_xlxjc,
+ 		b.lxjcjg,b.is_jrwxfq,b.xlqfj,b.xlhfj,b.whbmid,b.whrid,b.whsj,b.zt,t.username as whr_username,t.realname as whr_realname,
+ 		t1.dprtname,d.zwms
+		from b_g_015 b
+ 		left join t_user t on b.whrid=t.id
+		left join t_department t1 on t1.id=b.whbmid
+		left join d_005 d on b.zjh=d.zjh and b.dprtcode=d.dprtcode
+ 		<include refid="baseParam"/>
+  		<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by whsj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+ 	</select>
+ 	<insert id="insertRecord" parameterType="com.eray.thjw.po.ShapeStructureRepair">
+ 		 insert into b_g_015
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dprtcode != null">
+        dprtcode,
+      </if>
+      <if test="fjzch != null">
+        fjzch,
+      </if>
+      <if test="sjlx != null">
+        sjlx,
+      </if>
+      <if test="wxfaid != null">
+        wxfaid,
+      </if>
+      <if test="zjh != null">
+        zjh,
+      </if>
+      <if test="qxms != null">
+        qxms,
+      </if>
+      <if test="wz != null">
+        wz,
+      </if>
+      <if test="fxrq != null">
+        fxrq,
+      </if>
+      <if test="xlrq != null">
+        xlrq,
+      </if>
+      <if test="xlyj != null">
+        xlyj,
+      </if>
+      <if test="xlfs != null">
+        xlfs,
+      </if>
+      <if test="is_gb != null">
+        is_gb,
+      </if>
+      <if test="is_xlxjc != null">
+        is_xlxjc,
+      </if>
+      <if test="lxjcjg != null">
+        lxjcjg,
+      </if>
+      <if test="is_jrwxfq != null">
+        is_jrwxfq,
+      </if>
+      <if test="xlqfj != null">
+        xlqfj,
+      </if>
+      <if test="xlhfj != null">
+        xlhfj,
+      </if>
+      <if test="whbmid != null">
+        whbmid,
+      </if>
+      <if test="whrid != null">
+        whrid,
+      </if>
+      <if test="whrid != null">
+        whsj,
+      </if>
+      <if test="zt != null">
+        zt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="sjlx != null">
+        #{sjlx,jdbcType=INTEGER},
+      </if>
+      <if test="wxfaid != null">
+        #{wxfaid,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null">
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="qxms != null">
+        #{qxms,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null">
+        #{wz,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrq != null">
+        #{fxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xlrq != null">
+        #{xlrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xlyj != null">
+        #{xlyj,jdbcType=VARCHAR},
+      </if>
+      <if test="xlfs != null">
+        #{xlfs,jdbcType=INTEGER},
+      </if>
+      <if test="is_gb != null">
+        #{is_gb,jdbcType=INTEGER},
+      </if>
+      <if test="is_xlxjc != null">
+        #{is_xlxjc,jdbcType=INTEGER},
+      </if>
+      <if test="lxjcjg != null">
+        #{lxjcjg,jdbcType=VARCHAR},
+      </if>
+      <if test="is_jrwxfq != null">
+        #{is_jrwxfq,jdbcType=INTEGER},
+      </if>
+      <if test="xlqfj != null">
+        #{xlqfj,jdbcType=VARCHAR},
+      </if>
+      <if test="xlhfj != null">
+        #{xlhfj,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        current_timestamp,
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=INTEGER},
+      </if>
+    </trim>
+ 	</insert>
+ 	<update id="updateRecordById" parameterType="com.eray.thjw.po.ShapeStructureRepair">
+ 		update b_g_015 
+   	<set>
+      <if test="sjlx != null">
+        sjlx=#{sjlx,jdbcType=INTEGER},
+      </if>
+      <if test="wxfaid != null">
+       wxfaid=#{wxfaid,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null">
+        zjh=#{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="qxms != null">
+        qxms=#{qxms,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null">
+        wz=#{wz,jdbcType=VARCHAR},
+      </if>
+      <if test="fxrq != null">
+        fxrq=#{fxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xlrq != null">
+        xlrq=#{xlrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xlyj != null">
+        xlyj=#{xlyj,jdbcType=VARCHAR},
+      </if>
+      <if test="xlfs != null">
+        xlfs=#{xlfs,jdbcType=INTEGER},
+      </if>
+      <if test="is_gb != null">
+        is_gb=#{is_gb,jdbcType=INTEGER},
+      </if>
+      <if test="is_xlxjc != null">
+        is_xlxjc=#{is_xlxjc,jdbcType=INTEGER},
+      </if>
+      <if test="lxjcjg != null">
+        lxjcjg=#{lxjcjg,jdbcType=VARCHAR},
+      </if>
+      <if test="is_jrwxfq != null">
+        is_jrwxfq=#{is_jrwxfq,jdbcType=INTEGER},
+      </if>
+      <if test="xlqfj != null">
+        xlqfj=#{xlqfj,jdbcType=VARCHAR},
+      </if>
+      <if test="xlhfj != null">
+        xlhfj=#{xlhfj,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        whbmid=#{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        whrid=#{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        whsj=current_timestamp,
+      </if>
+      <if test="zt != null">
+        zt=#{zt,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+ 	</update>
+ 	<select id="getRecordById" parameterType="String" resultMap="BaseResultMap">
+ 		select b.id,b.dprtcode,b.fjzch,b.sjlx,b.wxfaid,b.zjh,b.qxms,b.wz,b.fxrq,b.xlrq,b.xlyj,b.xlfs,b.is_gb,b.is_xlxjc,
+ 		b.lxjcjg,b.is_jrwxfq,b.xlqfj,b.xlhfj,b.whbmid,b.whrid,b.whsj,b.zt,t.username,t.realname,t1.dprtname,d.zwms
+		from b_g_015 b
+ 		left join t_user t on b.whrid=t.id
+		left join t_department t1 on t1.id=b.whbmid
+		left join d_005 d on b.zjh=d.zjh and b.dprtcode=d.dprtcode
+		where b.ID = #{id,jdbcType=VARCHAR}
+ 	</select>
+ 	<delete id="deleteById" parameterType="String" >
+ 		update b_g_015 set zt=0,whrid=#{whrid,jdbcType=VARCHAR},whbmid=#{whbmid,jdbcType=VARCHAR},whsj=current_timestamp
+ 		where id= #{id,jdbcType=VARCHAR}
+ 	</delete>
+</mapper>

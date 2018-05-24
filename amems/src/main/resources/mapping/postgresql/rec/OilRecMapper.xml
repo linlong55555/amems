@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.OilRecMapper" >
+   
+  <!-- 故障保留单日志列表 开始 -->
+  <select id="queryList4B_J_005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT 
+	       		 B.ID AS "ID",
+       B.YPGG AS "YPGG",
+       B.YPMD AS "YPMD",
+       B.MS AS "MS",
+       B.DPRTCODE AS "DPRTCODE",
+       B.ZT AS "ZT",
+       B.WHBMID AS "WHBMID",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID"     
+		        ,WHR.USERNAME ||' '|| WHR.REALNAME AS "CZR_REALNAME"
+		       
+		        ,WHDW.DPRTNAME AS "WHDW_DRPTNAME"
+		        
+		        , B.ypgg||' '||(
+		       F_GETREC_HD(B.REC_CZSM)
+		        ) AS "REC_HD"
+		        FROM b_j_005_REC B 
+		        LEFT JOIN T_USER WHR ON WHR.ID = B.rec_czrid
+		       
+		        LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.rec_czrid
+		        WHERE 1=1
+	       		 <if test='czls!=null and czls!=""'>
+		        	and B.REC_CZLS = #{czls,jdbcType=VARCHAR}
+		         </if>
+		         <if test='id!=null and id!=""'>
+		        	and B.ID = #{id,jdbcType=VARCHAR}
+		         </if>
+	         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		        and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		     </if>
+		     <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		        and ( B.ypgg like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+		     </if>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff4B_J_005" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+               
+               B.ID AS "ID",
+       B.YPGG AS "YPGG",
+       B.YPMD AS "YPMD",
+       B.MS AS "MS",
+       B.DPRTCODE AS "DPRTCODE",
+       B.ZT AS "ZT",
+       B.WHBMID AS "WHBMID",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+               WHR.USERNAME ||' '|| WHR.REALNAME AS "WHR_REALNAME",
+               CZR.USERNAME ||' '|| CZR.REALNAME AS "CZR_REALNAME",
+               WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+                 (CASE
+				WHEN B.ZT =0 THEN '无效'
+				WHEN B.ZT =1 THEN '有效'
+				END) AS "NEW_ZT",
+               '油品规格:'||B.ypgg || ' ' || (F_GETREC_HD(B.REC_CZSM)) AS "REC_HD",
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) AS "DATA_VERSION"
+               
+          FROM b_j_005_REC B
+          LEFT JOIN T_USER WHR
+            ON WHR.ID = B.WHRID
+          LEFT JOIN T_USER CZR
+            ON CZR.ID = B.rec_czrid
+          LEFT JOIN T_DEPARTMENT WHDW
+            ON WHDW.ID = B.WHBMID
+         WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from b_j_005_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+       
+  </select>
+</mapper>

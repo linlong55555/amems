@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ContractMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Contract">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="HTLX" jdbcType="DECIMAL" property="htlx" />
+    <result column="HTLSH" jdbcType="VARCHAR" property="htlsh" />
+    <result column="HTH" jdbcType="VARCHAR" property="hth" />
+    <result column="JJCD" jdbcType="DECIMAL" property="jjcd" />
+    <result column="GYSID" jdbcType="VARCHAR" property="gysid" />
+    <result column="GYSBM" jdbcType="VARCHAR" property="gysbm" />
+    <result column="GYSMC" jdbcType="VARCHAR" property="gysmc" />
+    <result column="HTQDRQ" jdbcType="TIMESTAMP" property="htqdrq" />
+    <result column="FJFY" jdbcType="DECIMAL" property="fjfy" />
+    <result column="HTFY" jdbcType="DECIMAL" property="htfy" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="DHZT" jdbcType="DECIMAL" property="dhzt" />
+    <result column="ZDBMID" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="ZDRID" jdbcType="VARCHAR" property="zdrid" />
+    <result column="ZDSJ" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="ZDJSRID" jdbcType="VARCHAR" property="zdjsrid" />
+    <result column="ZDJSRQ" jdbcType="TIMESTAMP" property="zdjsrq" />
+    <result column="ZDJSYY" jdbcType="VARCHAR" property="zdjsyy" />
+  </resultMap>
+  
+  	<!-- 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.aerialmaterial.po.Contract" id="ContractJoinMap" extends="BaseResultMap">  
+     	<association property="zdr" javaType="com.eray.thjw.po.User">
+			<id column="UZDRID" property="id"/>
+       	  	<result column="ZDRREALNAME" property="realname"/>
+       	  	<result column="ZDRUSERNAME" property="username"/>
+      	</association>
+      	
+      	<association property="zdjsr" javaType="com.eray.thjw.po.User">
+			<id column="UZDJSRID" property="id"/>
+       	  	<result column="ZDJSRREALNAME" property="realname"/>
+       	  	<result column="ZDJSRUSERNAME" property="username"/>
+      	</association>
+      	
+   	</resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, HTLX, HTLSH, HTH, JJCD, GYSID, GYSBM, GYSMC, HTQDRQ, BZ, ZT, DHZT, 
+    ZDBMID, ZDRID, ZDSJ,ZDJSRID, ZDJSRQ, ZDJSYY,FJFY
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_004
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+ 	 <!-- 根据id查询合同信息(制单人、指定结束人、合同费用) -->
+  	<select id="selectById" parameterType="java.lang.String" resultMap="ContractJoinMap">
+    	select 
+    		B004.ID, B004.DPRTCODE, B004.HTLX, B004.HTLSH, B004.HTH, B004.JJCD, B004.GYSID, B004.GYSBM, B004.GYSMC, B004.HTQDRQ, B004.BZ, B004.ZT, B004.DHZT, 
+			B004.ZDBMID, B004.ZDRID, B004.ZDSJ,B004.ZDJSRID, B004.ZDJSRQ, B004.ZDJSYY,B004.FJFY,
+			TRUNC(((CASE WHEN B004.FJFY IS NULL THEN 0 ELSE B004.FJFY END) + B00401.FY), 2) HTFY,
+			UZDR.ID AS UZDRID,UZDR.USERNAME AS ZDRUSERNAME,UZDR.REALNAME AS ZDRREALNAME,
+			UZDJSR.ID AS UZDJSRID,UZDJSR.USERNAME AS ZDJSRUSERNAME,UZDJSR.REALNAME AS ZDJSRREALNAME
+    	from B_H_004 B004
+    	left join T_USER UZDR
+            on B004.ZDRID = UZDR.ID
+            left join T_USER UZDJSR
+            on B004.ZDJSRID = UZDJSR.ID
+            join (select MAINID,
+              		SUM(((CASE WHEN HT_CLF IS NULL THEN 0 ELSE HT_CLF END) + (CASE WHEN HT_GSF IS NULL THEN 0 ELSE HT_GSF END) + (CASE WHEN HT_QTF IS NULL THEN 0 ELSE HT_QTF END)) *
+                  	(CASE WHEN HT_SL IS NULL THEN 0 ELSE HT_SL END)) FY
+         			from B_H_00401
+        			where ZT = 1
+        			group by MAINID) B00401
+   			on B004.ID = B00401.MAINID
+   	 	where B004.ID = #{id,jdbcType=VARCHAR}
+  	</select>
+  
+  	<!-- 根据查询条件分页查询合同信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.aerialmaterial.po.Contract" resultMap="ContractJoinMap">
+	
+		select 
+           	B004.ID, B004.DPRTCODE, B004.HTLX, B004.HTLSH, B004.HTH, B004.JJCD, B004.GYSID, B004.GYSBM, B004.GYSMC, B004.HTQDRQ, B004.BZ, B004.ZT, B004.DHZT, 
+  				B004.ZDBMID, B004.ZDRID, B004.ZDSJ,B004.ZDJSRID, B004.ZDJSRQ, B004.ZDJSYY,B004.FJFY,
+  				TRUNC(((CASE WHEN B004.FJFY IS NULL THEN 0 ELSE B004.FJFY END) + B00401.FY), 2) HTFY,
+  				UZDR.ID AS UZDRID,UZDR.USERNAME AS ZDRUSERNAME,UZDR.REALNAME AS ZDRREALNAME,
+  				UZDJSR.ID AS UZDJSRID,UZDJSR.USERNAME AS ZDJSRUSERNAME,UZDJSR.REALNAME AS ZDJSRREALNAME
+           from B_H_004 B004
+           left join T_USER UZDR
+           on B004.ZDRID = UZDR.ID
+           left join T_USER UZDJSR
+           on B004.ZDJSRID = UZDJSR.ID
+           join (select MAINID,
+             		SUM(((CASE WHEN HT_CLF IS NULL THEN 0 ELSE HT_CLF END) + (CASE WHEN HT_GSF IS NULL THEN 0 ELSE HT_GSF END) + (CASE WHEN HT_QTF IS NULL THEN 0 ELSE HT_QTF END)) *
+                 	(CASE WHEN HT_SL IS NULL THEN 0 ELSE HT_SL END)) FY
+        			from B_H_00401
+       			where ZT = 1
+       			group by MAINID) B00401
+  			on B004.ID = B00401.MAINID
+           where B004.ZT NOT IN (8)
+           	<include refid="Contract_Param"></include>
+           	<include refid="Contract_Join_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B004.HTQDRQ DESC,B004.JJCD DESC,B004.id
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+	</select>
+	
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_004
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Contract">
+    insert into B_H_004 (ID, DPRTCODE, HTLX, 
+      HTLSH, HTH, JJCD, GYSID, 
+      GYSBM, GYSMC, HTQDRQ,FJFY, 
+      BZ, ZT, DHZT, ZDBMID, 
+      ZDRID, ZDSJ,ZDJSRID, ZDJSRQ, ZDJSYY)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{htlx,jdbcType=DECIMAL}, 
+      #{htlsh,jdbcType=VARCHAR}, #{hth,jdbcType=VARCHAR}, #{jjcd,jdbcType=DECIMAL}, #{gysid,jdbcType=VARCHAR}, 
+      #{gysbm,jdbcType=VARCHAR}, #{gysmc,jdbcType=VARCHAR}, #{htqdrq,jdbcType=TIMESTAMP}, #{fjfy,jdbcType=DECIMAL},
+      #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{dhzt,jdbcType=DECIMAL}, #{zdbmid,jdbcType=VARCHAR}, 
+      #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP},#{zdjsrid,jdbcType=VARCHAR}, #{zdjsrq,jdbcType=TIMESTAMP},#{zdjsyy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Contract">
+    insert into B_H_004
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="htlx != null">
+        HTLX,
+      </if>
+      <if test="htlsh != null">
+        HTLSH,
+      </if>
+      <if test="hth != null">
+        HTH,
+      </if>
+      <if test="jjcd != null">
+        JJCD,
+      </if>
+      <if test="gysid != null">
+        GYSID,
+      </if>
+      <if test="gysbm != null">
+        GYSBM,
+      </if>
+      <if test="gysmc != null">
+        GYSMC,
+      </if>
+      <if test="htqdrq != null">
+        HTQDRQ,
+      </if>
+      <if test="fjfy != null">
+        FJFY,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="dhzt != null">
+        DHZT,
+      </if>
+      <if test="zdbmid != null">
+        ZDBMID,
+      </if>
+      <if test="zdrid != null">
+        ZDRID,
+      </if>
+      <if test="zdrid != null">
+        ZDSJ,
+      </if>
+      <if test="zdjsrid != null">
+        ZDJSRID,
+      </if>
+      <if test="zdjsrid != null">
+        ZDJSRQ,
+      </if>
+      <if test="zdjsyy != null">
+        ZDJSYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="htlx != null">
+        #{htlx,jdbcType=DECIMAL},
+      </if>
+      <if test="htlsh != null">
+        #{htlsh,jdbcType=VARCHAR},
+      </if>
+      <if test="hth != null">
+        #{hth,jdbcType=VARCHAR},
+      </if>
+      <if test="jjcd != null">
+        #{jjcd,jdbcType=DECIMAL},
+      </if>
+      <if test="gysid != null">
+        #{gysid,jdbcType=VARCHAR},
+      </if>
+      <if test="gysbm != null">
+        #{gysbm,jdbcType=VARCHAR},
+      </if>
+      <if test="gysmc != null">
+        #{gysmc,jdbcType=VARCHAR},
+      </if>
+      <if test="htqdrq != null">
+        #{htqdrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fjfy != null">
+        #{fjfy,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dhzt != null">
+        #{dhzt,jdbcType=DECIMAL},
+      </if>
+      <if test="zdbmid != null">
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        sysdate,
+      </if>
+      <if test="zdjsrid != null">
+        #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null">
+        sysdate,
+      </if>
+      <if test="zdjsyy != null">
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <!-- 作废 -->
+  <update id="cancel" parameterType="java.lang.String">
+    update B_H_004 set ZT = 8 where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据条件修改合同状态为完成 -->
+  <update id="updateFinish" parameterType="java.lang.String">
+    update B_H_004 set ZT = 10 where ID = #{id,jdbcType=VARCHAR} and not exists(select ID FROM B_H_00401 WHERE MAINID = #{id,jdbcType=VARCHAR} and HT_SL &lt;&gt; DHSL)
+  </update>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Contract">
+    update B_H_004
+    <set>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="htlx != null">
+        HTLX = #{htlx,jdbcType=DECIMAL},
+      </if>
+      <if test="htlsh != null">
+        HTLSH = #{htlsh,jdbcType=VARCHAR},
+      </if>
+      <if test="hth != null">
+        HTH = #{hth,jdbcType=VARCHAR},
+      </if>
+      <if test="jjcd != null">
+        JJCD = #{jjcd,jdbcType=DECIMAL},
+      </if>
+      <if test="gysid != null">
+        GYSID = #{gysid,jdbcType=VARCHAR},
+      </if>
+      <if test="gysbm != null">
+        GYSBM = #{gysbm,jdbcType=VARCHAR},
+      </if>
+      <if test="gysmc != null">
+        GYSMC = #{gysmc,jdbcType=VARCHAR},
+      </if>
+      <if test="htqdrq != null">
+        HTQDRQ = #{htqdrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fjfy != null">
+        FJFY = #{fjfy,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dhzt != null">
+        DHZT = #{dhzt,jdbcType=DECIMAL},
+      </if>
+      <if test="zdbmid != null">
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        ZDSJ = sysdate,
+      </if>
+      <if test="zdjsrid != null">
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsyy != null">
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null">
+        ZDJSRQ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.Contract">
+    update B_H_004
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      set HTLX = #{htlx,jdbcType=DECIMAL},
+      HTLSH = #{htlsh,jdbcType=VARCHAR},
+      HTH = #{hth,jdbcType=VARCHAR},
+      JJCD = #{jjcd,jdbcType=DECIMAL},
+      GYSID = #{gysid,jdbcType=VARCHAR},
+      GYSBM = #{gysbm,jdbcType=VARCHAR},
+      GYSMC = #{gysmc,jdbcType=VARCHAR},
+      HTQDRQ = #{htqdrq,jdbcType=TIMESTAMP},
+      FJFY = #{fjfy,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      DHZT = #{dhzt,jdbcType=DECIMAL},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 搜索参数 -->
+	<sql id="Contract_Param">
+		<if test="id != null and id != ''">
+		    and B004.ID = #{id}
+		</if>
+		<if test="dprtcode != null">
+		    and B004.DPRTCODE = #{dprtcode}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		    and (UPPER(B004.HTLSH) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(B004.HTH) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(B004.GYSBM) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(B004.GYSMC) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(B004.BZ) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="jjcd != null and jjcd != ''">
+		    and B004.JJCD = #{jjcd}
+		</if>
+		<if test="htlx != null and htlx != ''">
+		    and B004.HTLX = #{htlx}
+		</if>
+		<if test="gysid != null and gysid != ''">
+		    and B004.GYSID = #{gysid}
+		</if>
+		<if test="dhzt != null and dhzt != ''">
+		    and B004.DHZT = #{dhzt}
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqBegin != null and paramsMap.zdrqBegin != ''">
+		    and B004.ZDSJ &gt;= to_date(#{paramsMap.zdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqEnd != null and paramsMap.zdrqEnd != ''">
+		    and B004.ZDSJ &lt;= to_date(#{paramsMap.zdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.htqdrqBegin != null and paramsMap.htqdrqBegin != ''">
+		    and B004.HTQDRQ &gt;= to_date(#{paramsMap.htqdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.htqdrqEnd != null and paramsMap.htqdrqEnd!= ''">
+		    and B004.HTQDRQ &lt;= to_date(#{paramsMap.htqdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+	</sql>
+	<sql id="Contract_Join_Param">
+		<if test="paramsMap != null and paramsMap.zdrname != null and paramsMap.zdrname != ''">
+		    and (UPPER(UZDR.REALNAME) like UPPER('%'||#{paramsMap.zdrname}||'%')
+		    or UPPER(UZDR.USERNAME) like UPPER('%'||#{paramsMap.zdrname}||'%')
+		    )
+		</if>
+	</sql>
+	
+	<!-- 模态框查询合同列表 -->
+	<select id="queryPageInModal" parameterType="com.eray.thjw.aerialmaterial.po.Contract" resultMap="ContractJoinMap">
+		
+		SELECT BH004.ID, BH004.HTLSH, BH004.HTH, 
+				BH004.HTQDRQ, BH004.DHZT, BH004.JJCD, 
+				D015.ID GYSID, D015.GYSBM GYSBM, D015.GYSMC GYSMC,
+				BH004.BZ,
+				ZDR.ID UZDRID, ZDR.USERNAME ZDRUSERNAME, ZDR.REALNAME ZDRREALNAME,
+				BH004.ZDSJ 
+		FROM B_H_004 BH004 
+			LEFT JOIN D_015 D015 ON BH004.GYSID = D015.ID 
+			LEFT JOIN T_USER ZDR ON BH004.ZDRID = ZDR.ID 
+			WHERE 
+				BH004.HTLX = #{htlx,jdbcType=DECIMAL}  
+				AND BH004.DPRTCODE = #{dprtcode,jdbcType=VARCHAR} 
+				AND BH004.ZT = 2
+				AND BH004.DHZT IN (1,2)
+			<if test="keyword != null and keyword != ''">
+			    AND (UPPER(BH004.HTLSH) like UPPER('%'||#{keyword}||'%') or
+			    	 UPPER(BH004.HTH) like UPPER('%'||#{keyword}||'%') or
+			    	 UPPER(BH004.GYSBM) like UPPER('%'||#{keyword}||'%') or
+			    	 UPPER(BH004.GYSMC) like UPPER('%'||#{keyword}||'%')
+			    )
+			</if>
+	</select>
+</mapper>

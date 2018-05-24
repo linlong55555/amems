@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ProcurementCatalogMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ProcurementCatalog">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="GYSID" jdbcType="VARCHAR" property="gysid" />
+    <result column="GYSBM" jdbcType="VARCHAR" property="gysbm" />
+    <result column="GYSLB" jdbcType="DECIMAL" property="gyslb" />
+    <result column="BJLB" jdbcType="DECIMAL" property="bjlb" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+    <result column="BJ_CLF" jdbcType="DECIMAL" property="bjClf" />
+    <result column="BJ_GSF" jdbcType="DECIMAL" property="bjGsf" />
+    <result column="BJ_QTF" jdbcType="DECIMAL" property="bjQtf" />
+    <result column="YXQ_KS" jdbcType="TIMESTAMP" property="yxqKs" />
+    <result column="YXQ_JS" jdbcType="TIMESTAMP" property="yxqJs" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="BMID" jdbcType="VARCHAR" property="bmid" />
+    <result column="CJRID" jdbcType="VARCHAR" property="cjrid" />
+    <result column="CJSJ" jdbcType="TIMESTAMP" property="cjsj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, GYSID, GYSBM, GYSLB, BJLB, BJID, BJH, BJ_CLF, BJ_GSF, BJ_QTF, YXQ_KS, 
+    YXQ_JS, BZ, ZT, BMID, CJRID, CJSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from D_013
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据查询条件采购目录信息 -->
+	<select id="queryProcurementCatalogList" parameterType="com.eray.thjw.aerialmaterial.po.ProcurementCatalog" resultMap="BaseResultMap">
+		select 
+    	<include refid="Base_Column_List" />
+    	from D_013
+   		where DPRTCODE = #{dprtcode}
+		  and ZT = 1
+		  and GYSID = #{gysid}
+		  and YXQ_KS &lt;= current_timestamp
+		  and (YXQ_JS &gt; current_timestamp or YXQ_JS is null)
+		  and BJID in 
+		 <foreach collection="bjIdList" item="bjId" index="index" open="(" close=")" separator=",">
+			#{bjId}
+		 </foreach>
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from D_013
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ProcurementCatalog">
+    insert into D_013 (ID, DPRTCODE, GYSID, 
+      GYSBM, GYSLB, BJLB, 
+      BJID, BJH, BJ_CLF, BJ_GSF, 
+      BJ_QTF, YXQ_KS, YXQ_JS, 
+      BZ, ZT, BMID, CJRID, 
+      CJSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{gysid,jdbcType=VARCHAR}, 
+      #{gysbm,jdbcType=VARCHAR}, #{gyslb,jdbcType=DECIMAL}, #{bjlb,jdbcType=DECIMAL}, 
+      #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{bjClf,jdbcType=DECIMAL}, #{bjGsf,jdbcType=DECIMAL}, 
+      #{bjQtf,jdbcType=DECIMAL}, #{yxqKs,jdbcType=TIMESTAMP}, #{yxqJs,jdbcType=TIMESTAMP}, 
+      #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{bmid,jdbcType=VARCHAR}, #{cjrid,jdbcType=VARCHAR}, 
+      #{cjsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ProcurementCatalog">
+    insert into D_013
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="gysid != null">
+        GYSID,
+      </if>
+      <if test="gysbm != null">
+        GYSBM,
+      </if>
+      <if test="gyslb != null">
+        GYSLB,
+      </if>
+      <if test="bjlb != null">
+        BJLB,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="bjh != null">
+        BJH,
+      </if>
+      <if test="bjClf != null">
+        BJ_CLF,
+      </if>
+      <if test="bjGsf != null">
+        BJ_GSF,
+      </if>
+      <if test="bjQtf != null">
+        BJ_QTF,
+      </if>
+      <if test="yxqKs != null">
+        YXQ_KS,
+      </if>
+      <if test="yxqJs != null">
+        YXQ_JS,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bmid != null">
+        BMID,
+      </if>
+      <if test="cjrid != null">
+        CJRID,
+      </if>
+        CJSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="gysid != null">
+        #{gysid,jdbcType=VARCHAR},
+      </if>
+      <if test="gysbm != null">
+        #{gysbm,jdbcType=VARCHAR},
+      </if>
+      <if test="gyslb != null">
+        #{gyslb,jdbcType=DECIMAL},
+      </if>
+      <if test="bjlb != null">
+        #{bjlb,jdbcType=DECIMAL},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjClf != null">
+        #{bjClf,jdbcType=DECIMAL},
+      </if>
+      <if test="bjGsf != null">
+        #{bjGsf,jdbcType=DECIMAL},
+      </if>
+      <if test="bjQtf != null">
+        #{bjQtf,jdbcType=DECIMAL},
+      </if>
+      <if test="yxqKs != null">
+        #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null">
+        #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bmid != null">
+        #{bmid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjrid != null">
+        #{cjrid,jdbcType=VARCHAR},
+      </if>
+        current_timestamp,
+    </trim>
+  </insert>
+  <!-- 根据条件修改采购合同状态 -->
+  <update id="updateStatus" parameterType="com.eray.thjw.aerialmaterial.po.ProcurementCatalog">
+    update D_013 set ZT = 0 where YXQ_KS &gt;= #{yxqKs,jdbcType=TIMESTAMP}
+    and GYSID = #{gysid,jdbcType=VARCHAR}
+    and BJID = #{bjid,jdbcType=VARCHAR}
+  </update>
+  <!-- 根据条件修改采购合同有效期结束 -->
+  <update id="updateYxqJs" parameterType="com.eray.thjw.aerialmaterial.po.ProcurementCatalog">
+    update D_013 set YXQ_JS = #{yxqKs,jdbcType=TIMESTAMP} where YXQ_JS &gt; #{yxqKs,jdbcType=TIMESTAMP} or YXQ_JS is null
+    and GYSID = #{gysid,jdbcType=VARCHAR}
+    and BJID = #{bjid,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ProcurementCatalog">
+    update D_013
+    <set>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="gysid != null">
+        GYSID = #{gysid,jdbcType=VARCHAR},
+      </if>
+      <if test="gysbm != null">
+        GYSBM = #{gysbm,jdbcType=VARCHAR},
+      </if>
+      <if test="gyslb != null">
+        GYSLB = #{gyslb,jdbcType=DECIMAL},
+      </if>
+      <if test="bjlb != null">
+        BJLB = #{bjlb,jdbcType=DECIMAL},
+      </if>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjClf != null">
+        BJ_CLF = #{bjClf,jdbcType=DECIMAL},
+      </if>
+      <if test="bjGsf != null">
+        BJ_GSF = #{bjGsf,jdbcType=DECIMAL},
+      </if>
+      <if test="bjQtf != null">
+        BJ_QTF = #{bjQtf,jdbcType=DECIMAL},
+      </if>
+      <if test="yxqKs != null">
+        YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null">
+        YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bmid != null">
+        BMID = #{bmid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjrid != null">
+        CJRID = #{cjrid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjsj != null">
+        CJSJ = #{cjsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ProcurementCatalog">
+    update D_013
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set GYSID = #{gysid,jdbcType=VARCHAR},
+      GYSBM = #{gysbm,jdbcType=VARCHAR},
+      GYSLB = #{gyslb,jdbcType=DECIMAL},
+      BJLB = #{bjlb,jdbcType=DECIMAL},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      BJ_CLF = #{bjClf,jdbcType=DECIMAL},
+      BJ_GSF = #{bjGsf,jdbcType=DECIMAL},
+      BJ_QTF = #{bjQtf,jdbcType=DECIMAL},
+      YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BMID = #{bmid,jdbcType=VARCHAR},
+      CJRID = #{cjrid,jdbcType=VARCHAR},
+      CJSJ = #{cjsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.FixedCheckWorkContentMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.FixedCheckWorkContent" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DJXMID" property="djxmid" jdbcType="VARCHAR" />
+    <result column="NBXH" property="nbxh" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="WZ" property="wz" jdbcType="VARCHAR" />
+    <result column="CKSC" property="cksc" jdbcType="VARCHAR" />
+    <result column="CKGK" property="ckgk" jdbcType="VARCHAR" />
+    <result column="IS_BJ" property="isBj" jdbcType="DECIMAL" />
+    <result column="IS_MI" property="isMi" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="XMLY" property="xmly" jdbcType="VARCHAR" />
+    <result column="GZLX" property="gzlx" jdbcType="VARCHAR" />
+    <result column="SCMS_ZW" property="scmsZw" jdbcType="VARCHAR" />
+    <result column="SCMS_YW" property="scmsYw" jdbcType="VARCHAR" />
+    <result column="JCLX" property="jclx" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="GZZW" property="gzzw" jdbcType="VARCHAR" />
+    <result column="FJZCHSTR" property="fjzchstr" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 配置维修方案与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.po.FixedCheckWorkContent" id="FixToFixToJobCardMap" extends="BaseResultMap">  
+	  	<association property="fixedCheckWorkContent" javaType="com.eray.thjw.po.FixedCheckWorkContent">  
+	        <id column="ID_OLD" property="id" jdbcType="VARCHAR" />
+		    <result column="DJXMID_OLD" property="djxmid" jdbcType="VARCHAR" />
+		    <result column="NBXH_OLD" property="nbxh" jdbcType="VARCHAR" />
+		    <result column="ZJH_OLD" property="zjh" jdbcType="VARCHAR" />
+		    <result column="WZ_OLD" property="wz" jdbcType="VARCHAR" />
+		    <result column="CKSC_OLD" property="cksc" jdbcType="VARCHAR" />
+		    <result column="CKGK_OLD" property="ckgk" jdbcType="VARCHAR" />
+		    <result column="IS_BJ_OLD" property="isBj" jdbcType="DECIMAL" />
+		    <result column="IS_MI_OLD" property="isMi" jdbcType="DECIMAL" />
+		    <result column="BZ_OLD" property="bz" jdbcType="VARCHAR" />
+		    <result column="ZT_OLD" property="zt" jdbcType="DECIMAL" />
+		    <result column="WHBMID_OLD" property="whbmid" jdbcType="VARCHAR" />
+		    <result column="WHRID_OLD" property="whrid" jdbcType="VARCHAR" />
+		    <result column="WHSJ_OLD" property="whsj" jdbcType="TIMESTAMP" />
+		    <result column="DPRTCODE_OLD" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="XMLY_OLD" property="xmly" jdbcType="VARCHAR" />
+		    <result column="GZLX_OLD" property="gzlx" jdbcType="VARCHAR" />
+		    <result column="SCMS_ZW_OLD" property="scmsZw" jdbcType="VARCHAR" />
+		    <result column="SCMS_YW_OLD" property="scmsYw" jdbcType="VARCHAR" />
+		    <result column="JCLX_OLD" property="jclx" jdbcType="VARCHAR" />
+		    <result column="FJZCH_OLD" property="fjzch" jdbcType="VARCHAR" />
+		    <result column="GZZW_OLD" property="gzzw" jdbcType="VARCHAR" />
+		    <result column="FJZCHSTR_OLD" property="fjzchstr" jdbcType="VARCHAR" />
+	    </association>  
+	    
+	    <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+         	<id column="FZJH" property="zjh"/>
+         	<result column="FZWMS" property="zwms"/>
+         	<result column="FYWMS" property="ywms"/>
+      	</association>
+	    
+	    <collection property="jobCardList" ofType="com.eray.thjw.po.JobCard" >  
+           <id property="id" column="JOBID" />
+           <result property="gdbh" column="JOBGDBH" />  
+           <result property="gzzt" column="JOBGZZT" />  
+           <result property="zt" column="JOBZT" /> 
+        </collection> 
+        
+        <collection property="fixedCheckWorkPlaneList" ofType="com.eray.thjw.po.FixedCheckWorkPlane" >  
+           <id property="id" column="PLANEID" />
+           <result property="mainid" column="PMAINID" />  
+           <result property="fjzch" column="PFJZCH" />  
+           <result property="whrid" column="PWHRID" /> 
+        </collection>  
+        
+	</resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, DJXMID, NBXH, ZJH, WZ, CKSC, CKGK, IS_BJ, IS_MI, BZ, ZT, WHBMID, WHRID, 
+    WHSJ, DPRTCODE,XMLY,GZLX,SCMS_ZW,SCMS_YW,JCLX,FJZCH,GZZW
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01202
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryNbxhByDjxmid" resultType="java.lang.String" parameterType="java.lang.String" >
+  	select max(NBXH) nbxh from b_g_01202
+  	where DJXMID = #{djxmid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryListSelective" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01202
+    where ZT = 1 and DJXMID = #{djxmid,jdbcType=VARCHAR}
+    order by NBXH asc
+  </select>
+  
+  <select id="queryListByDjxmid" resultMap="FixToFixToJobCardMap" parameterType="java.lang.String" >
+	  select B1.ID, 
+	  		 B1.DJXMID, 
+	  		 B1.NBXH,
+	  		 B1.ZJH, 
+	  		 B1.WZ, 
+	  		 B1.CKSC, 
+	  		 B1.CKGK, 
+	  		 B1.IS_BJ, 
+	  		 B1.IS_MI, 
+	  		 B1.BZ, 
+	  		 B1.ZT, 
+	  		 B1.WHBMID, 
+	  		 B1.WHRID, 
+   			 B1.WHSJ, 
+   			 B1.DPRTCODE,
+   			 B1.XMLY,
+   			 B1.GZLX,
+   			 B1.SCMS_ZW,
+   			 B1.SCMS_YW,
+   			 B1.JCLX,
+   			 B1.FJZCH,
+   			 B1.GZZW,
+   			 B3.ID as ID_OLD, 
+	  		 B3.DJXMID as DJXMID_OLD, 
+	  		 B3.NBXH as NBXH_OLD,
+	  		 B3.ZJH as ZJH_OLD, 
+	  		 B3.WZ as WZ_OLD, 
+	  		 B3.CKSC as CKSC_OLD, 
+	  		 B3.CKGK as CKGK_OLD, 
+	  		 B3.IS_BJ as IS_BJ_OLD, 
+	  		 B3.IS_MI as IS_MI_OLD, 
+	  		 B3.BZ as BZ_OLD, 
+	  		 B3.ZT as ZT_OLD, 
+	  		 B3.WHBMID as WHBMID_OLD, 
+	  		 B3.WHRID as WHRID_OLD, 
+   			 B3.WHSJ as WHSJ_OLD, 
+   			 B3.DPRTCODE as DPRTCODE_OLD,
+   			 B3.XMLY as XMLY_OLD,
+   			 B3.GZLX as GZLX_OLD,
+   			 B3.SCMS_ZW as SCMS_ZW_OLD,
+   			 B3.SCMS_YW as SCMS_YW_OLD,
+   			 B3.JCLX as JCLX_OLD,
+   			 B3.FJZCH as FJZCH_OLD,
+   			 B3.GZZW as GZZW_OLD,
+   			 B13.ID as JOBID,
+   			 B13.GDBH as JOBGDBH,
+   			 B13.GZZT as JOBGZZT,
+   			 B13.ZT as JOBZT,
+   			 B01.ID as PLANEID,
+   			 B01.MAINID as PMAINID,
+   			 B01.FJZCH as PFJZCH,   
+       		(select max(B.FJZCH) from (
+       			select A.MAINID,string_agg(A.FJZCH,',') over(PARTITION BY A.MAINID ORDER BY A.FJZCH) FJZCH
+                from B_G_0120201 A) B
+         		where B.MAINID = B1.ID
+         		group by B.MAINID) FJZCHSTR,
+ 			(select max(B.FJZCH) from (
+       			select A.MAINID,string_agg(A.FJZCH,',') over(PARTITION BY A.MAINID ORDER BY A.FJZCH) FJZCH
+                from B_G_0120201 A) B
+         		where B.MAINID = B3.ID
+         		group by B.MAINID) FJZCHSTR_OLD,
+         	D005.ZJH AS FZJH,
+         	D005.ZWMS AS FZWMS,
+         	D005.YWMS AS FYWMS
+   	    from B_G_01202 B1
+		LEFT JOIN B_G_012 B2
+		ON B1.DJXMID = B2.B_BBID
+		LEFT JOIN B_G_01202 B3
+		ON B2.ID = B3.DJXMID AND B1.NBXH = B3.NBXH
+		LEFT JOIN b_g_012 B12
+		ON B1.DJXMID = B12.ID
+		LEFT JOIN b_g_013 B13
+		ON B13.DJBH = B12.DJBH and B1.DPRTCODE = B13.DPRTCODE AND B1.NBXH = B13.NBXH AND B13.GKLX = 1 AND B13.ZT NOT IN (4,8,9) 
+		LEFT JOIN B_G_0120201 B01
+		ON B1.ID = B01.MAINID
+		LEFT JOIN D_005 D005
+	    ON B1.ZJH = D005.ZJH and B1.DPRTCODE = D005.DPRTCODE
+    	where B1.DJXMID = #{djxmid,jdbcType=VARCHAR}
+    	order by B1.NBXH asc
+  </select>
+  
+  <!-- 根据条件分页查询差异列表 -->
+	<select id="queryDiffPageList" parameterType="com.eray.thjw.po.BaseEntity" resultType="Map">
+	
+	 	select C.DJXMMC as "DJXMMC",C.HJXMBH as "HJXMBH",C.XDNRX as "XDNRX",C.XDNR as "XDNR" from (
+
+			select 
+          			A2.ZWMS as DJXMMC,A2.DJBH as HJXMBH,A1.NBXH as XDNRX,
+      
+      				case when A1.ZT = 1 and (B1.NBXH is null OR B1.ZT = 0) then 'add'
+           			when A1.ZT = 0 and B1.ZT = 1 then 'del'
+           			when 
+             				(  A1.ZJH != B1.ZJH or (A1.ZJH is null and B1.ZJH is not null) or (A1.ZJH is not null and B1.ZJH is null) 
+              			or A1.XMLY != B1.XMLY or (A1.XMLY is null and B1.XMLY is not null) or (A1.XMLY is not null and B1.XMLY is null) 
+              			or A1.GZLX != B1.GZLX or (A1.Scms_Zw is null and B1.GZLX is not null) or (A1.GZLX is not null and B1.GZLX is null) 
+              			or A1.SCMS_ZW != B1.SCMS_ZW or (A1.SCMS_ZW is null and B1.SCMS_ZW is not null) or (A1.SCMS_ZW is not null and B1.SCMS_ZW is null) 
+              			or A1.SCMS_YW != B1.SCMS_YW or (A1.SCMS_YW is null and B1.SCMS_YW is not null) or (A1.SCMS_YW is not null and B1.SCMS_YW is null) 
+              			or A1.JCLX != B1.JCLX or (A1.JCLX is null and B1.JCLX is not null) or (A1.JCLX is not null and B1.JCLX is null) 
+              			or A1.FJZCH != B1.FJZCH or (A1.FJZCH is null and B1.FJZCH is not null) or (A1.FJZCH is not null and B1.FJZCH is null) 
+              			or A1.GZZW != B1.GZZW or (A1.GZZW is null and B1.GZZW is not null) or (A1.GZZW is not null and B1.GZZW is null) 
+              			or A1.CKSC != B1.CKSC or (A1.CKSC is null and B1.CKSC is not null) or (A1.CKSC is not null and B1.CKSC is null) 
+             				or A1.CKGK != B1.CKGK or (A1.CKGK is null and B1.CKGK is not null) or (A1.CKGK is not null and B1.CKGK is null) 
+             			 	or A1.IS_BJ != B1.IS_BJ or (A1.IS_BJ is null and B1.IS_BJ is not null) or (A1.IS_BJ is not null and B1.IS_BJ is null) 
+             			 	or A1.IS_MI != B1.IS_MI or (A1.IS_MI is null and B1.IS_MI is not null) or (A1.IS_MI is not null and B1.IS_MI is null) 
+            			  	or A1.BZ != B1.BZ or (A1.BZ is null and B1.BZ is not null) or (A1.BZ is not null and B1.BZ is null) 
+            			  	or (
+            			  		select max(A4.FJZCH) from 
+            			  			(select A3.MAINID,string_agg(A3.FJZCH,',') over(PARTITION BY A3.MAINID ORDER BY A3.FJZCH) FJZCH from B_G_0120201 A3 ) A4
+		         			 where A4.MAINID = A1.ID
+		         			 group by A4.MAINID
+		         		)!=(
+		         		select max(B4.FJZCH) from 
+		         			(select B3.MAINID,string_agg(B3.FJZCH,',') over(PARTITION BY B3.MAINID ORDER BY B3.FJZCH) FJZCH from B_G_0120201 B3) B4
+		         			where B4.MAINID = B1.ID
+		         			group by B4.MAINID
+		         		)
+		        	)
+             			and A1.ZT = 1 and B1.ZT = 1
+           			then 'edit' ELSE 'normal' END as XDNR
+      
+      			from B_G_01202 A1
+        			join B_G_012 A2
+        			on A1.DJXMID = A2.ID and A2.DPRTCODE = #{paramsMap.dprtcode} and A2.WXFABH = #{paramsMap.wxfabh} and A2.BB = cast(#{paramsMap.wxfabb} as NUMERIC) AND A2.ZT not in(8)
+        			left join B_G_01202 B1
+        			on A2.F_BBID = B1.DJXMID and A1.NBXH = B1.NBXH
+        
+  				) C where C.XDNR != 'normal'
+  
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by HJXMBH DESC,XDNRX ASC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+	</select>
+  
+  <delete id="deleteByDjxmid" parameterType="java.lang.String" >
+    delete from B_G_01202
+    where DJXMID = #{djxmid,jdbcType=VARCHAR}
+  </delete>
+  
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+	    delete from B_G_01202
+	    where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.po.FixedCheckWorkContent" >
+    insert into B_G_01202 (ID, DJXMID, NBXH, 
+      ZJH, WZ, CKSC, 
+      CKGK, IS_BJ, IS_MI, BZ, 
+      ZT, WHBMID, WHRID, 
+      WHSJ, DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{djxmid,jdbcType=VARCHAR}, #{nbxh,jdbcType=VARCHAR}, 
+      #{zjh,jdbcType=VARCHAR}, #{wz,jdbcType=VARCHAR}, #{cksc,jdbcType=VARCHAR}, 
+      #{ckgk,jdbcType=VARCHAR}, #{isBj,jdbcType=DECIMAL}, #{isMi,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      current_timestamp, #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.FixedCheckWorkContent" >
+    insert into B_G_01202
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="djxmid != null" >
+        DJXMID,
+      </if>
+      <if test="nbxh != null" >
+        NBXH,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="wz != null" >
+        WZ,
+      </if>
+      <if test="cksc != null" >
+        CKSC,
+      </if>
+      <if test="ckgk != null" >
+        CKGK,
+      </if>
+      <if test="isBj != null" >
+        IS_BJ,
+      </if>
+      <if test="isMi != null" >
+        IS_MI,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+        WHSJ,
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="xmly != null" >
+        XMLY,
+      </if>
+      <if test="gzlx != null" >
+        GZLX,
+      </if>
+      <if test="scmsZw != null" >
+        SCMS_ZW,
+      </if>
+      <if test="scmsYw != null" >
+        SCMS_YW,
+      </if>
+      <if test="jclx != null" >
+        JCLX,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="gzzw != null" >
+        GZZW,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="djxmid != null" >
+        #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="nbxh != null" >
+        #{nbxh,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        #{wz,jdbcType=VARCHAR},
+      </if>
+      <if test="cksc != null" >
+        #{cksc,jdbcType=VARCHAR},
+      </if>
+      <if test="ckgk != null" >
+        #{ckgk,jdbcType=VARCHAR},
+      </if>
+      <if test="isBj != null" >
+        #{isBj,jdbcType=DECIMAL},
+      </if>
+      <if test="isMi != null" >
+        #{isMi,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+        current_timestamp,
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="xmly != null" >
+        #{xmly,jdbcType=VARCHAR},
+      </if>
+      <if test="gzlx != null" >
+        #{gzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="scmsZw != null" >
+        #{scmsZw,jdbcType=VARCHAR},
+      </if>
+      <if test="scmsYw != null" >
+        #{scmsYw,jdbcType=VARCHAR},
+      </if>
+      <if test="jclx != null" >
+        #{jclx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzw != null" >
+        #{gzzw,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.FixedCheckWorkContent" >
+    update B_G_01202
+    <set >
+      <if test="djxmid != null" >
+        DJXMID = #{djxmid,jdbcType=VARCHAR},
+      </if>
+      <if test="nbxh != null" >
+        NBXH = #{nbxh,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="wz != null" >
+        WZ = #{wz,jdbcType=VARCHAR},
+      </if>
+      <if test="ckgk != null" >
+        CKSC = #{cksc,jdbcType=VARCHAR},
+      </if>
+      <if test="ckgk != null" >
+        CKGK = #{ckgk,jdbcType=VARCHAR},
+      </if>
+      <if test="isBj != null" >
+        IS_BJ = #{isBj,jdbcType=DECIMAL},
+      </if>
+      <if test="isMi != null" >
+        IS_MI = #{isMi,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="xmly != null" >
+        XMLY = #{xmly,jdbcType=VARCHAR},
+      </if>
+      <if test="gzlx != null" >
+        GZLX = #{gzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="scmsZw != null" >
+        SCMS_ZW = #{scmsZw,jdbcType=VARCHAR},
+      </if>
+      <if test="scmsYw != null" >
+        SCMS_YW = #{scmsYw,jdbcType=VARCHAR},
+      </if>
+      <if test="jclx != null" >
+        JCLX = #{jclx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="gzzw != null" >
+        GZZW = #{gzzw,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.FixedCheckWorkContent" >
+    update B_G_01202
+    set DJXMID = #{djxmid,jdbcType=VARCHAR},
+      NBXH = #{nbxh,jdbcType=VARCHAR},
+      ZJH = #{zjh,jdbcType=VARCHAR},
+      WZ = #{wz,jdbcType=VARCHAR},
+      CKSC = #{cksc,jdbcType=VARCHAR},
+      CKGK = #{ckgk,jdbcType=VARCHAR},
+      IS_BJ = #{isBj,jdbcType=DECIMAL},
+      IS_MI = #{isMi,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.basic.dao.PropertyrightMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.basic.po.Propertyright" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="CQBH" property="cqbh" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="GSID" property="gsid" jdbcType="VARCHAR" />
+    <result column="GSMC" property="gsmc" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    
+    	<association property="whr" javaType="com.eray.thjw.po.User">  
+	        <id column="WHRID" property="id"/>  
+	        <result column="whr_username" property="username"/>  
+	        <result column="whr_realname" property="realname"/>  
+	    </association>  
+	  <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+	  <association property="bm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="whbmid" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+	  <association property="customer" javaType="com.eray.thjw.baseinfo.po.Customer">
+         <id column="gsid" property="id"/>
+         <result column="gs_mc" property="khmc"/>
+         <result column="gs_bm" property="khbm"/>
+     </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    D_026.ID,  D_026.DPRTCODE,  D_026.WHBMID,  D_026.WHRID,  D_026.WHSJ,  D_026.ZT,  D_026.CQBH,  D_026.FJZCH,  D_026.GSID,  D_026.GSMC,  D_026.BZ
+  </sql>
+    <!-- 查询适航性资料参数 -->
+	<sql id="PropertyrightParam">
+	   where 
+	   D_026.zt = 1
+	   	<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (lower(D_026.cqbh) like lower('%'||#{paramsMap.keyword}||'%'))              <!-- 左右匹配 查询关键字 -->
+		</if>
+	     <if test="dprtcode != null and dprtcode != ''">
+            and  D_026.dprtcode = #{dprtcode}
+         </if>
+	     <if test="fjzch != null and fjzch != ''">
+            and  COALESCE(D_026.fjzch,'-') = #{fjzch}
+         </if>
+         <if test="paramsMap != null and paramsMap.gs != null and paramsMap.gs != ''">
+		    and (lower(gs.khmc) like lower('%'||#{paramsMap.gs}||'%')
+		    	or lower(gs.khbm) like lower('%'||#{paramsMap.gs}||'%'))
+		</if>
+	     <if test="id != null and id != ''">
+            and  D_026.id = #{id}
+         </if>
+	</sql>
+   <select id="queryAll" resultMap="BaseResultMap" parameterType="com.eray.thjw.basic.po.Propertyright" >
+    select 
+    <include refid="Base_Column_List" />
+    ,whr.realname whr_realname, whr.username whr_username,jg.dprtname jg_dprtname,gs.khmc gs_mc,gs.khbm gs_bm
+    ,bm.dprtname bm_dprtname
+    from D_026
+    	 left join t_user whr on (D_026.whrid = whr.id)
+    	 left join t_department jg on(D_026.dprtcode=jg.id)
+    	 left join t_department bm on(D_026.whbmid=bm.id)
+    	 left join D_019 gs on(D_026.gsid=gs.id)
+     <include refid="PropertyrightParam"></include> 
+    	<choose>                                                                                 
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by whsj asc
+	    		
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 </choose> 
+   </select>
+   
+     <!-- 根据条件查询数量-->
+  <select id="findByCqbh" parameterType="com.eray.thjw.basic.po.Propertyright" resultType="int">
+  	select count(1) from D_026 where 
+  	dprtcode=#{dprtcode,jdbcType=VARCHAR} and 
+  	cqbh=#{cqbh,jdbcType=VARCHAR} and
+  	zt = 1
+	 <if test="id != null and id != ''">
+         and  D_026.id != #{id}
+      </if>
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,whr.realname whr_realname, whr.username whr_username,jg.dprtname jg_dprtname,gs.khmc gs_mc,gs.khbm gs_bm
+    from D_026
+     left join t_user whr on (D_026.whrid = whr.id)
+  	 left join t_department jg on(D_026.dprtcode=jg.id)
+  	 left join D_019 gs on(D_026.gsid=gs.id)
+    where D_026.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_026
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.basic.po.Propertyright" >
+    insert into D_026 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      CQBH, FJZCH, GSID, 
+      GSMC, BZ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{cqbh,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{gsid,jdbcType=VARCHAR}, 
+      #{gsmc,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.basic.po.Propertyright" >
+    insert into D_026
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="cqbh != null" >
+        CQBH,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="gsid != null" >
+        GSID,
+      </if>
+      <if test="gsmc != null" >
+        GSMC,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="cqbh != null" >
+        #{cqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="gsid != null" >
+        #{gsid,jdbcType=VARCHAR},
+      </if>
+      <if test="gsmc != null" >
+        #{gsmc,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.basic.po.Propertyright" >
+    update D_026
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="cqbh != null" >
+        CQBH = #{cqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="gsid != null" >
+        GSID = #{gsid,jdbcType=VARCHAR},
+      </if>
+      <if test="gsmc != null" >
+        GSMC = #{gsmc,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.basic.po.Propertyright" >
+    update D_026
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      CQBH = #{cqbh,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      GSID = #{gsid,jdbcType=VARCHAR},
+      GSMC = #{gsmc,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  	<select id="selectAllByDprtcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+  		<include refid="Base_Column_List"></include>
+  		from D_026  
+    	where zt = 1 and dprtcode = #{dprtcode, jdbcType=VARCHAR}
+  	</select>
+  	
+  <select id="selectByPrimaryHCMainData" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_026
+    where  ZT=1 AND cqbh = #{0,jdbcType=VARCHAR} AND DPRTCODE = #{1,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

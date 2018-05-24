@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MaterialRequisitionDetailWorkOrderMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetailWorkOrder">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="GDLX" jdbcType="DECIMAL" property="gdlx" />
+    <result column="GDBH" jdbcType="VARCHAR" property="gdbh" />
+    <result column="GDID" jdbcType="VARCHAR" property="gdid" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, MAINID, GDLX, GDBH, GDID, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_0070101
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+   <select id="selectByMainMainId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_0070101
+    where ZT = 1 and mainId in ( select ID from B_H_00701 where ZT = 1 and MAINID = #{id,jdbcType=VARCHAR}) order by mainId
+  </select>  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_0070101
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByMainId" parameterType="java.lang.String">
+    delete from B_H_0070101
+    where MAINID = #{mainId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByMainIdNotIds" parameterType="java.util.Map">
+    delete from B_H_0070101
+    where 
+    ID not in
+   	<foreach item="idItem" collection="list" open="(" separator="," close=")">
+		#{idItem}
+	</foreach>
+     and MAINID = #{mainId, jdbcType=VARCHAR} 
+  </delete>
+  <delete id="deleteByMainIds" parameterType="java.util.List">
+    delete from B_H_0070101
+    where MAINID in
+    <foreach item="idItem" collection="list" open="(" separator="," close=")">
+		#{idItem}
+	</foreach>
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetailWorkOrder">
+    insert into B_H_0070101 (ID, MAINID, GDLX, 
+      GDBH, GDID, ZT, WHDWID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{gdlx,jdbcType=DECIMAL}, 
+      #{gdbh,jdbcType=VARCHAR}, #{gdid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetailWorkOrder">
+    insert into B_H_0070101
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="gdlx != null">
+        GDLX,
+      </if>
+      <if test="gdbh != null">
+        GDBH,
+      </if>
+      <if test="gdid != null">
+        GDID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="gdlx != null">
+        #{gdlx,jdbcType=DECIMAL},
+      </if>
+      <if test="gdbh != null">
+        #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gdid != null">
+        #{gdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertMapSelective" parameterType="java.util.Map">
+    insert into B_H_0070101
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="gdlx != null">
+        GDLX,
+      </if>
+      <if test="gdbh != null">
+        GDBH,
+      </if>
+      <if test="gdid != null">
+        GDID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whrid != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="gdlx != null">
+        #{gdlx,jdbcType=DECIMAL},
+      </if>
+      <if test="gdbh != null">
+        #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gdid != null">
+        #{gdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        current_timestamp,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetailWorkOrder">
+    update B_H_0070101
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="gdlx != null">
+        GDLX = #{gdlx,jdbcType=DECIMAL},
+      </if>
+      <if test="gdbh != null">
+        GDBH = #{gdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="gdid != null">
+        GDID = #{gdid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetailWorkOrder">
+    update B_H_0070101
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      GDLX = #{gdlx,jdbcType=DECIMAL},
+      GDBH = #{gdbh,jdbcType=VARCHAR},
+      GDID = #{gdid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

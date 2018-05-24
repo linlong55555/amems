@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.PlaneLoadMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlaneLoad" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZXRQ" property="zxrq" jdbcType="TIMESTAMP" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="MS" property="ms" jdbcType="VARCHAR" />
+    <result column="ZXYZD_X1" property="zxyzd_x1" jdbcType="DECIMAL" />
+    <result column="ZXYZD_X2" property="zxyzd_x2" jdbcType="DECIMAL" />
+    <result column="ZXYZD_X3" property="zxyzd_x3" jdbcType="DECIMAL" />
+    <result column="ZXYZD_Y1" property="zxyzd_y1" jdbcType="DECIMAL" />
+    <result column="ZXYZD_Y2" property="zxyzd_y2" jdbcType="DECIMAL" />
+    <result column="ZXYZD_Y3" property="zxyzd_y3" jdbcType="DECIMAL" />
+    <result column="ZXYZD_Z1" property="zxyzd_z1" jdbcType="DECIMAL" />
+    <result column="ZXYZD_Z2" property="zxyzd_z2" jdbcType="DECIMAL" />
+    <result column="ZXYZD_Z3" property="zxyzd_z3" jdbcType="DECIMAL" />
+    <result column="WJZD" property="wjzd" jdbcType="DECIMAL" />
+   	<result column="GX" property="gx" jdbcType="VARCHAR" />
+    <result column="FJZL_SZ" property="fjzl_sz" jdbcType="DECIMAL" />
+   	<result column="FJZL_DW" property="fjzl_dw" jdbcType="VARCHAR" />
+    <result column="FJZL_SZ" property="fjzl_sz" jdbcType="DECIMAL" />
+   	<result column="FJZL_DW" property="fjzl_dw" jdbcType="VARCHAR" />
+    <result column="HXZX_SZ" property="hxzx_sz" jdbcType="DECIMAL" />
+   	<result column="HXZX_DW" property="hxzx_dw" jdbcType="VARCHAR" />
+    <result column="ZXZX_SZ" property="zxzx_sz" jdbcType="DECIMAL" />
+   	<result column="ZXZX_DW" property="zxzx_dw" jdbcType="VARCHAR" />
+   	<result column="BZ" property="bz" jdbcType="VARCHAR" />
+   	<result column="ZT" property="zt" jdbcType="DECIMAL" />
+   	<result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+   	<result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+   	<result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+   	
+   	  <association property="zdr_user" javaType="com.eray.thjw.po.User">
+         <id column="zdrid" property="id"/>
+         <result column="zdr_realname" property="realname"/>
+         <result column="zdr_username" property="username"/>
+     </association>
+     
+        <association property="bm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="zddwid" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+   	
+   	
+   	 <association property="zdr" javaType="com.eray.thjw.po.User">
+			<id column="zdrid" property="id" />
+			<result column="zdr_realname" property="realname" />
+			<result column="zdr_username" property="username" />
+	</association>
+	<association property="zd_department" javaType="com.eray.thjw.po.Department">
+			<id column="zddwid" property="id" />
+			<result column="zd_dprtname" property="dprtname" />
+	</association>
+  </resultMap>
+  <resultMap id="AttachmentBaseResultMap" type="com.eray.thjw.flightdata.po.Attachment">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+		<result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+		<result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+		<result column="WJDX" property="wjdx" jdbcType="DECIMAL" />
+		<result column="HZM" property="hzm" jdbcType="VARCHAR" />
+		<result column="SM" property="sm" jdbcType="VARCHAR" />
+		<result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+		<result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+		<result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+		<result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+		<result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+		<result column="CZRNAME" property="czrname" jdbcType="VARCHAR" />
+
+	</resultMap>
+  <insert id="insertPlaneLoad" parameterType="com.eray.thjw.productionplan.po.PlaneLoad">
+		insert into
+		b_s_018
+		(id,dprtcode,zxrq,fjzch,ms,zxyzd_x1,zxyzd_x2,zxyzd_x3,zxyzd_y1,zxyzd_y2,zxyzd_y3,
+		zxyzd_z1,zxyzd_z2,zxyzd_z3,wjzd,gx,fjzl_sz,fjzl_dw,hxzx_sz,hxzx_dw,zxzx_sz,zxzx_dw,
+		bz,zt,zddwid,zdrid,zdsj)
+		values
+		(#{id,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},#{zxrq,jdbcType=TIMESTAMP},
+		#{fjzch,jdbcType=VARCHAR},#{ms,jdbcType=VARCHAR},#{zxyzd_x1,jdbcType=DECIMAL},
+		#{zxyzd_x2,jdbcType=DECIMAL},#{zxyzd_x3,jdbcType=DECIMAL},#{zxyzd_y1,jdbcType=DECIMAL},
+		#{zxyzd_y2,jdbcType=DECIMAL},#{zxyzd_y3,jdbcType=DECIMAL},#{zxyzd_z1,jdbcType=DECIMAL},
+		#{zxyzd_z2,jdbcType=DECIMAL},#{zxyzd_z3,jdbcType=DECIMAL},#{wjzd,jdbcType=DECIMAL},	
+		#{gx,jdbcType=VARCHAR},	#{fjzl_sz,jdbcType=DECIMAL},#{fjzl_dw,jdbcType=VARCHAR},
+		#{hxzx_sz,jdbcType=DECIMAL},#{hxzx_dw,jdbcType=VARCHAR},#{zxzx_sz,jdbcType=DECIMAL},
+		#{zxzx_dw,jdbcType=VARCHAR},#{bz,jdbcType=VARCHAR},#{zt,jdbcType=DECIMAL},
+		#{zddwid,jdbcType=VARCHAR},#{zdrid,jdbcType=VARCHAR},current_timestamp
+		)
+	</insert>
+	<sql id="planeLoadParam">
+		where
+		1=1 and b.zt=1
+		<!-- 机构id -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and b.dprtcode = #{dprtcode}
+		</if>
+		<if test="fjzch != null and fjzch != ''">
+			and b.fjzch = #{fjzch}
+		</if>
+		<if test="keyword != null and keyword != ''" >
+			and ( b.ms like '%'||#{keyword}||'%'
+			or b.gx like '%'||#{keyword}||'%')
+		</if>
+  		 <if test="id != null and id !='' ">
+		    and b.ID = #{id}
+		</if> 
+	</sql>
+	<select id="getPlaneLoadList" parameterType="com.eray.thjw.productionplan.po.PlaneLoad" 
+	 resultMap="BaseResultMap">
+	 	select  b.id,
+	 			b.dprtcode,
+	 			b.zxrq,
+	 			b.fjzch,
+	 			b.ms,
+	 			b.zxyzd_x1,
+	 			b.zxyzd_x2,
+	 			b.zxyzd_x3,
+	 			b.zxyzd_y1,
+	 			b.zxyzd_y2,
+	 			b.zxyzd_y3,
+	 			b.zxyzd_z1,
+	 			b.zxyzd_z2,
+	 			b.zxyzd_z3,
+	 			b.wjzd,
+	 			b.gx,
+	 			b.fjzl_sz,
+	 			b.fjzl_dw,
+	 			b.hxzx_sz,
+	 			b.hxzx_dw,
+	 			b.zxzx_sz,
+	 			b.zxzx_dw,
+	 			b.bz,
+	 			b.zt,
+	 			b.zddwid,
+	 			b.zdrid,
+	 			b.zdsj,
+ 				jg.dprtname jg_dprtname,
+				bm.dprtname bm_dprtname,
+				zdr.realname zdr_realname,zdr.username zdr_username
+				from b_s_018 b 
+				left join t_user zdr on (b.zdrid=zdr.id)
+				left join t_department jg on(b.dprtcode=jg.id)
+				left join t_department bm on(b.zddwid=bm.id)
+					<include refid="planeLoadParam" />
+				<choose>
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by b.zdsj desc
+			    	</when>
+			    	<otherwise>
+					    order by b.${pagination.sort} ${pagination.order}
+			    	</otherwise>
+				</choose>
+	
+	 </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_018
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+    <sql id="Base_Column_List" >
+    ID, DPRTCODE, ZXRQ, FJZCH, MS, ZXYZD_X1, ZXYZD_X2, ZXYZD_X3, ZXYZD_Y1, ZXYZD_Y2, 
+    ZXYZD_Y3, ZXYZD_Z1, ZXYZD_Z2, ZXYZD_Z3, WJZD, GX, FJZL_SZ, FJZL_DW, HXZX_SZ, HXZX_DW, 
+    ZXZX_SZ, ZXZX_DW, BZ, ZT, ZDDWID, ZDRID, ZDSJ
+  </sql>
+  
+<update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.PlaneLoad" >
+    update B_S_018 
+     <set >
+       <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zxrq != null" >
+        ZXRQ = #{zxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if> 
+      <if test="ms != null" >
+        MS = #{ms,jdbcType=VARCHAR},
+      </if>
+      <if test="zxyzd_x1 != null" >
+        ZXYZD_X1 = #{zxyzd_x1,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_x2 != null" >
+        ZXYZD_X2 = #{zxyzd_x2,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_x3 != null" >
+        ZXYZD_X3 = #{zxyzd_x3,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_y1 != null" >
+        ZXYZD_Y1 = #{zxyzd_y1,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_y2 != null" >
+        ZXYZD_Y2 = #{zxyzd_y2,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_y3 != null" >
+        ZXYZD_Y3 = #{zxyzd_y3,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_z1 != null" >
+        ZXYZD_Z1 = #{zxyzd_z1,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_z2 != null" >
+        ZXYZD_Z2 = #{zxyzd_z2,jdbcType=DECIMAL},
+      </if>
+      <if test="zxyzd_z3 != null" >
+        ZXYZD_Z3 = #{zxyzd_z3,jdbcType=DECIMAL},
+      </if>
+      <if test="wjzd != null" >
+        WJZD = #{wjzd,jdbcType=DECIMAL},
+      </if>
+      <if test="gx != null" >
+        GX = #{gx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzl_sz != null" >
+        FJZL_SZ = #{fjzl_sz,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzl_dw != null" >
+        FJZL_DW = #{fjzl_dw,jdbcType=VARCHAR},
+      </if>
+      <if test="hxzx_sz != null" >
+        HXZX_SZ = #{hxzx_sz,jdbcType=DECIMAL},
+      </if>
+      <if test="hxzx_dw != null" >
+        HXZX_DW = #{hxzx_dw,jdbcType=VARCHAR},
+      </if>
+      <if test="zxzx_sz != null" >
+        ZXZX_SZ = #{zxzx_sz,jdbcType=DECIMAL},
+      </if>
+      <if test="zxzx_dw != null" >
+        ZXZX_DW = #{zxzx_dw,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if> 
+    </set> 
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_018
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  
+</mapper>

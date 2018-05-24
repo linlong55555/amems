@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.FixedCheckItemMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.FixedCheckItem" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="WXFABH" property="wxfabh" jdbcType="VARCHAR" />
+    <result column="DJBH" property="djbh" jdbcType="VARCHAR" />
+    <result column="BB" property="bb" jdbcType="DECIMAL" />
+    <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+    <result column="ZYXS" property="zyxs" jdbcType="DECIMAL" />
+    <result column="JHGS_RS" property="jhgsRs" jdbcType="DECIMAL" />
+    <result column="JHGS_XSS" property="jhgsXss" jdbcType="DECIMAL" />
+    <result column="YXX" property="yxx" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDRREALNAME" property="zdrrealname" jdbcType="VARCHAR" />
+    <result column="ZDRUSERNAME" property="zdrusername" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="SHBMID" property="shbmid" jdbcType="VARCHAR" />
+    <result column="SHYJ" property="shyj" jdbcType="VARCHAR" />
+    <result column="SHRID" property="shrid" jdbcType="VARCHAR" />
+    <result column="SHRUSERNAME" property="shrusername" jdbcType="VARCHAR" />
+    <result column="SHRREALNAME" property="shrrealname" jdbcType="VARCHAR" />
+    <result column="SHSJ" property="shsj" jdbcType="TIMESTAMP" />
+    <result column="PFBMID" property="pfbmid" jdbcType="VARCHAR" />
+    <result column="PFYJ" property="pfyj" jdbcType="VARCHAR" />
+    <result column="PFRID" property="pfrid" jdbcType="VARCHAR" />
+    <result column="PFRUSERNAME" property="pfrusername" jdbcType="VARCHAR" />
+    <result column="PFRREALNAME" property="pfrrealname" jdbcType="VARCHAR" />
+    <result column="PFSJ" property="pfsj" jdbcType="TIMESTAMP" />
+    <result column="SXSJ" property="sxsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="SPZT" property="spzt" jdbcType="DECIMAL" />
+    <result column="ZXBS" property="zxbs" jdbcType="DECIMAL" />
+    <result column="F_BBID" property="fBbid" jdbcType="VARCHAR" />
+    <result column="B_BBID" property="bBbid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  	<!-- 配置定检项目与维修方案关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.po.FixedCheckItem" id="FixedCheckItemToMaintenanceMap" extends="BaseResultMap">  
+	  	<association property="maintenance" javaType="com.eray.thjw.po.Maintenance">  
+	        <id column="MID" property="id"/>  
+	        <result column="MWXFABH" property="wxfabh"/>  
+	        <result column="MBB" property="bb"/>  
+	        <result column="MZWMS" property="zwms"/>
+	        <result column="MJX" property="jx"/>
+	    </association>  
+	</resultMap> 
+  
+	<!-- 配置定检项目与用户关系 注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.po.FixedCheckItem" id="FixedCheckItemToUserMap" extends="BaseResultMap">  
+	  	<association property="user" javaType="com.eray.thjw.po.User">  
+	        <id column="userId" property="id"/>  
+	        <result column="USERNAME" property="username"/>  
+	        <result column="REALNAME" property="realname"/>  
+	    </association>  
+	</resultMap> 
+	
+	<!-- 配置定检项目与监控项目关系 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.po.FixedCheckItem" id="FixedCheckItemToMonitorMap" extends="BaseResultMap">  
+       <collection property="monitorItemList" ofType="com.eray.thjw.po.MonitorItem" >  
+           <id column="MID" property="id" />  
+           <result column="DJXMID" property="djxmid" />  
+           <result column="JKLBH" property="jklbh" /> 
+           <result column="JKFLBH" property="jkflbh" /> 
+           <result column="ZQZ" property="zqz" /> 
+           <result column="DW" property="dw" /> 
+           <result column="MZT" property="zt" /> 
+       </collection>  
+   </resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, WXFABH, DJBH, BB, PXH, ZWMS, YWMS, ZYXS, JHGS_RS, JHGS_XSS, YXX, BZ, ZDBMID, 
+    ZDRID, ZDSJ, SXSJ, ZT, SPZT, ZXBS, F_BBID, B_BBID, DPRTCODE
+  </sql>
+  
+	<sql id="Fix_Column_List" >
+	  	B.ID, B.WXFABH, B.DJBH, B.BB, B.PXH, B.ZWMS, B.YWMS, B.ZYXS, B.JHGS_RS, B.JHGS_XSS, B.YXX, B.BZ, B.ZDBMID, 
+	  	B.ZDRID, B.ZDSJ, B.SXSJ, B.ZT, B.SPZT, B.ZXBS, B.F_BBID, B.B_BBID, B.DPRTCODE
+	</sql>
+  
+     <!-- 定检项目与用户表字段 -->
+	<sql id="Fix_User_List" >
+	    B.ID, B.WXFABH, B.DJBH, B.BB, B.PXH, B.ZWMS, B.YWMS, B.ZYXS, B.JHGS_RS, B.JHGS_XSS, B.YXX, B.BZ, B.ZDBMID, 
+    	B.ZDRID, B.ZDSJ, B.SXSJ, B.ZT, B.SPZT, B.ZXBS, B.F_BBID, B.B_BBID, B.DPRTCODE,U.ID AS userId ,U.USERNAME ,U.REALNAME
+	</sql>
+	
+	<!-- 定检项目与用户表字段 包含制单人,审核人,批准人 -->
+	<sql id="Fix_ZSP_List" >
+	    B.ID, B.WXFABH, B.DJBH, B.BB, B.PXH, B.ZWMS, B.YWMS, B.ZYXS, B.JHGS_RS, B.JHGS_XSS, B.YXX, B.BZ, B.ZDBMID, 
+    	B.ZDRID, B.ZDSJ, B.SXSJ, B.ZT, B.SPZT, B.ZXBS, B.F_BBID, B.B_BBID, B.DPRTCODE,
+    	B.SHBMID,B.SHYJ,B.SHRID,B.SHSJ,
+    	B.PFBMID, B.PFYJ, B.PFRID, B.PFSJ,
+    	UZ.USERNAME AS ZDRUSERNAME ,UZ.REALNAME AS ZDRREALNAME ,
+    	US.USERNAME AS SHRUSERNAME ,US.REALNAME AS SHRREALNAME ,
+    	UP.USERNAME AS PFRUSERNAME ,UP.REALNAME as PFRREALNAME
+	</sql>
+	
+	<!-- 定检项目与监控项目表字段-->
+	<sql id="Fix_Monitor_List" >
+	    B.ID, B.WXFABH, B.DJBH, B.BB, B.PXH, B.ZWMS, B.YWMS, B.ZYXS, B.JHGS_RS, B.JHGS_XSS, B.YXX, B.BZ, B.ZDBMID, 
+    	B.ZDRID, B.ZDSJ, B.SXSJ, B.ZT, B.SPZT, B.ZXBS, B.F_BBID, B.B_BBID, B.DPRTCODE,M.ID AS MID ,M.DJXMID ,M.JKLBH,M.JKFLBH,M.ZQZ,M.DW,M.ZT AS MZT
+	</sql>
+	
+	<!-- 搜索参数 -->
+	<sql id="Fix_User_Param">
+		<if test="keyword != null and keyword != ''">
+		    and (UPPER(B.DJBH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B.ZWMS) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B.BZ) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B.BB) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(U.USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(U.REALNAME) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="zt != null and zt != ''">
+		    and B.ZT = #{zt}
+		</if>
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.sjSxrqBegin != null and paramsMap.sjSxrqBegin != ''">
+		    and B.SXSJ &gt;= to_date(#{paramsMap.sjSxrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sjSxrqEnd != null and paramsMap.sjSxrqEnd != ''">
+		    and B.SXSJ &lt;= to_date(#{paramsMap.sjSxrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqBegin != null and paramsMap.zdrqBegin != ''">
+		    and B.ZDSJ &gt;= to_date(#{paramsMap.zdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqEnd != null and paramsMap.zdrqEnd != ''">
+		    and B.ZDSJ &lt;= to_date(#{paramsMap.zdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="zdrrealname != null and zdrrealname != ''">
+		    and (
+		    	UPPER(U.USERNAME) like UPPER('%'||#{zdrrealname}||'%')
+		    	or UPPER(U.REALNAME) like UPPER('%'||#{zdrrealname}||'%')
+		    )
+		</if>
+		<if test="pxh != null and pxh != ''">
+		    and B.PXH = #{pxh}
+		</if>
+		<if test="spzt != null and spzt != ''">
+		    and B.SPZT = #{spzt}
+		</if>
+		<if test="yxx != null">
+		    and B.YXX = #{yxx}
+		</if>
+		<if test="bb != null and bb != ''">
+		    and B.BB &lt;= #{bb}
+		</if>
+		<if test="wxfabh != null and wxfabh != ''">
+		    and B.WXFABH = #{wxfabh}
+		</if>
+		<if test="id != null and id != ''">
+			and B.ID = #{id}
+		</if>
+	</sql>
+ 
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from B_G_012
+	    where ID = #{id,jdbcType=VARCHAR}
+	</select>
+  
+  	<!-- 根据定检项目id集合定检项目信息 -->
+	<select id="queryByIdList" resultMap="BaseResultMap" >
+		select 
+		<include refid="Base_Column_List" />
+    	from B_G_012
+    	where ID in
+		<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+ 	</select>
+  
+  <select id="selectByZxbsAndBh" resultMap="FixedCheckItemToMaintenanceMap" parameterType="com.eray.thjw.po.FixedCheckItem" >
+    select 
+   		B.ID, B.WXFABH, B.DJBH, B.BB, B.PXH, B.ZWMS, B.YWMS, B.ZYXS, B.JHGS_RS, B.JHGS_XSS, B.YXX, B.BZ, B.ZDBMID, 
+    	B.ZDRID, B.ZDSJ, B.SXSJ, B.ZT, B.SPZT, B.ZXBS, B.F_BBID, B.B_BBID, B.DPRTCODE,
+    	B.SHBMID,B.SHYJ,B.SHRID,B.SHSJ,
+    	B.PFBMID, B.PFYJ, B.PFRID, B.PFSJ,
+    	UZ.USERNAME AS ZDRUSERNAME ,UZ.REALNAME AS ZDRREALNAME ,
+    	US.USERNAME AS SHRUSERNAME ,US.REALNAME AS SHRREALNAME ,
+    	UP.USERNAME AS PFRUSERNAME ,UP.REALNAME as PFRREALNAME ,
+    	B011.WXFABH AS MWXFABH ,B011.ZWMS AS MZWMS
+    from B_G_012 B
+    LEFT JOIN T_USER UZ
+    ON UZ.ID = B.ZDRID
+    LEFT JOIN T_USER US
+    ON US.ID = B.SHRID
+    LEFT JOIN T_USER UP
+    ON UP.ID = B.PFRID
+    LEFT JOIN (
+	    SELECT W.WXFABH,W.ZWMS from B_G_011 W 
+	   	JOIN (SELECT WXFABH,MAX(BB) AS BB FROM B_G_011 where DPRTCODE = #{dprtcode} and ZT in (1,2,3) GROUP BY WXFABH) C
+	   	ON W.WXFABH = C.WXFABH AND W.BB = C.BB
+		WHERE W.DPRTCODE = #{dprtcode} and W.ZT in (1,2,3)
+    ) B011
+    ON B011.WXFABH = B.WXFABH
+    where B.ZT != 8 and B.DPRTCODE = #{dprtcode}
+    and 
+    (
+    (
+	exists (select 1 from B_G_012 where DJBH = #{djbh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode} and ZT != 8 )
+	and B.bb in (select MAX(BB) AS BB from B_G_012 where DJBH = #{djbh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode} and ZT != 8)
+	)
+	or 
+	(
+	not exists (select 1 from B_G_012 where DJBH = #{djbh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode} and ZT != 8)
+	and B.bb in (select MAX(BB) AS BB from B_G_012 where DJBH = #{djbh,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode})
+	)
+	)
+    and B.djbh = #{djbh,jdbcType=VARCHAR}
+  </select>
+  
+   <!-- 根据id查询定检项目,包含制单人,审核人,批准人-->
+  <select id="selectById" resultMap="FixedCheckItemToMaintenanceMap" parameterType="java.lang.String" >
+    select 
+    	B.ID, B.WXFABH, B.DJBH, B.BB, B.PXH, B.ZWMS, B.YWMS, B.ZYXS, B.JHGS_RS, B.JHGS_XSS, B.YXX, B.BZ, B.ZDBMID, 
+    	B.ZDRID, B.ZDSJ, B.SXSJ, B.ZT, B.SPZT, B.ZXBS, B.F_BBID, B.B_BBID, B.DPRTCODE,
+    	B.SHBMID,B.SHYJ,B.SHRID,B.SHSJ,
+    	B.PFBMID, B.PFYJ, B.PFRID, B.PFSJ,
+    	UZ.USERNAME AS ZDRUSERNAME ,UZ.REALNAME AS ZDRREALNAME ,
+    	US.USERNAME AS SHRUSERNAME ,US.REALNAME AS SHRREALNAME ,
+    	UP.USERNAME AS PFRUSERNAME ,UP.REALNAME as PFRREALNAME ,
+    	B011.WXFABH AS MWXFABH ,B011.ZWMS AS MZWMS
+    from B_G_012 B
+    LEFT JOIN T_USER UZ
+    ON UZ.ID = B.ZDRID
+    LEFT JOIN T_USER US
+    ON US.ID = B.SHRID
+    LEFT JOIN T_USER UP
+    ON UP.ID = B.PFRID
+    JOIN (SELECT T.WXFABH, T.BB, T.ZWMS, T.YWMS, T.JX, T.DPRTCODE
+          FROM (SELECT ROW_NUMBER() OVER(PARTITION BY WXFABH, DPRTCODE ORDER BY BB DESC) rn,
+                       WXFABH,
+                       BB,
+                       ZWMS,
+                       YWMS,
+                       JX,
+                       DPRTCODE
+                  FROM B_G_011
+                  where ZT in (1, 2, 3)) T
+          WHERE T.rn = 1) B011
+    ON B011.DPRTCODE = B.DPRTCODE AND B011.WXFABH = B.WXFABH
+    where B.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="queryByWxfabh" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_012
+    where ZT != 8 and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and WXFABH = #{wxfabh,jdbcType=VARCHAR}
+    order by F_BBID asc,ZWMS desc
+  </select>
+   <!-- 根据条件查询有差异维修方案的定检项目信息 -->
+  <select id="queryByMap" resultMap="BaseResultMap" parameterType="Map" >
+    SELECT B1.ID, B1.WXFABH, B1.DJBH, B1.BB, B1.PXH, B1.ZWMS, B1.YWMS, B1.ZYXS, B1.JHGS_RS, B1.JHGS_XSS, B1.YXX, B1.BZ, B1.ZDBMID, 
+    	B1.ZDRID, B1.ZDSJ, B1.SXSJ, B1.ZT, B1.SPZT, B1.ZXBS, B1.F_BBID, B1.B_BBID, B1.DPRTCODE
+    	FROM B_G_012 B1
+    	join (select B.DJBH,MAX(B.BB) AS BB
+        		from B_G_012 B
+        		where B.ZT != 8 and B.DPRTCODE = #{dprtcode} AND B.BB &lt;= #{bb} AND B.WXFABH = #{wxfabh}
+          		GROUP BY B.DJBH) B2
+        on B1.DJBH = B2.DJBH and B1.BB = B2.BB
+    WHERE B1.ZT != 8 and B1.DPRTCODE = #{dprtcode} AND B1.WXFABH = #{wxfabh} 
+  </select>
+ 
+  	<select id="findJoinMonitorByIds" resultMap="FixedCheckItemToMonitorMap" parameterType="Map">
+
+		select <include refid="Fix_Monitor_List" /> 
+		from B_G_012 B 
+		left join B_G_01201 M
+		on B.ID = M.DJXMID AND M.ZT IN (1)
+		where B.ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+			
+	</select> 
+  
+    <select id="getMaxPxh" resultType="BigDecimal" parameterType="java.lang.String" >
+	    select MAX(PXH) from B_G_012
+  	</select>
+  	
+	<select id="findAllSelective" resultMap="BaseResultMap">
+
+		select 
+			<include refid="Fix_Column_List" />
+		from B_G_012 B
+		join
+		(SELECT DJBH,MAX(BB) AS BB FROM  B_G_012 GROUP BY DJBH) C 
+		on B.BB = C.BB and B.DJBH = C.DJBH 
+		where B.ZT != 8 
+		order by B.PXH asc
+	
+	</select> 
+	
+	<select id="queryOrderList" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select 
+			<include refid="Fix_Column_List" />
+		from B_G_012 B 
+		join
+		(SELECT DJBH,MAX(BB) AS BB FROM B_G_012 where ZT != 8 and DPRTCODE = #{dprtcode} and WXFABH = #{wxfabh} GROUP BY DJBH) C 
+		on B.BB = C.BB and B.DJBH = C.DJBH 
+		where B.ZT != 8
+	        and B.DPRTCODE = #{dprtcode}
+	        and B.WXFABH = #{wxfabh}
+		order by B.PXH asc,B.DJBH asc
+	
+	</select>  
+  
+  	<!-- 根据查询条件分页查询定检项目信息 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.po.FixedCheckItem" resultMap="FixedCheckItemToUserMap">
+				select 
+	            	<include refid="Fix_User_List" />
+	            from B_G_012 B
+	            	 join T_USER U on B.ZDRID = U.ID 
+	            	 join
+	            	 (SELECT DJBH,MAX(BB) AS BB FROM B_G_012 where WXFABH = #{wxfabh} 
+	            	 <if test="dprtcode != null">
+					     and DPRTCODE = #{dprtcode}
+					 </if>
+	            	 AND BB &lt;= #{bb} AND ZT != 8 GROUP BY DJBH) C
+	            	 on B.BB = C.BB and B.DJBH = C.DJBH 
+	            where B.ZT != 8
+	            	<include refid="Fix_User_Param"></include>
+	            	<choose>
+				    	<when test='pagination.sort == "auto"'>
+				    		order by PXH asc 
+				    	</when>
+				    	<otherwise>
+						    order by ${pagination.sort} ${pagination.order}
+				    	</otherwise>
+				 	</choose>	
+	</select>  
+	
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_012
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.FixedCheckItem" >
+    insert into B_G_012 (ID, WXFABH, DJBH, 
+      BB, PXH, ZWMS, YWMS, 
+      ZYXS, JHGS_RS, JHGS_XSS, 
+      YXX, BZ, ZDBMID, ZDRID, 
+      ZDSJ, SXSJ, ZT, 
+      SPZT, ZXBS, F_BBID, 
+      B_BBID, DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{wxfabh,jdbcType=VARCHAR}, #{djbh,jdbcType=VARCHAR}, 
+      #{bb,jdbcType=DECIMAL}, #{pxh,jdbcType=DECIMAL}, #{zwms,jdbcType=VARCHAR}, #{ywms,jdbcType=VARCHAR}, 
+      #{zyxs,jdbcType=DECIMAL}, #{jhgsRs,jdbcType=DECIMAL}, #{jhgsXss,jdbcType=DECIMAL}, 
+      #{yxx,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      sysdate, #{sxsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{spzt,jdbcType=DECIMAL}, #{zxbs,jdbcType=DECIMAL}, #{fBbid,jdbcType=VARCHAR}, 
+      #{bBbid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.FixedCheckItem" >
+    insert into B_G_012
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="wxfabh != null" >
+        WXFABH,
+      </if>
+      <if test="djbh != null" >
+        DJBH,
+      </if>
+      <if test="bb != null" >
+        BB,
+      </if>
+      <if test="pxh != null" >
+        PXH,
+      </if>
+      <if test="zwms != null" >
+        ZWMS,
+      </if>
+      <if test="ywms != null" >
+        YWMS,
+      </if>
+      <if test="zyxs != null" >
+        ZYXS,
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS,
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS,
+      </if>
+      <if test="yxx != null" >
+        YXX,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+        ZDSJ,
+      <if test="sxsj != null" >
+        SXSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="spzt != null" >
+        SPZT,
+      </if>
+      <if test="zxbs != null" >
+        ZXBS,
+      </if>
+      <if test="fBbid != null" >
+        F_BBID,
+      </if>
+      <if test="bBbid != null" >
+        B_BBID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="wxfabh != null" >
+        #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null" >
+        #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="pxh != null" >
+        #{pxh,jdbcType=DECIMAL},
+      </if>
+      <if test="zwms != null" >
+        #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null" >
+        #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="zyxs != null" >
+        #{zyxs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsRs != null" >
+        #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="yxx != null" >
+        #{yxx,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null" >
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+        sysdate,
+      <if test="sxsj != null" >
+        #{sxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="spzt != null" >
+        #{spzt,jdbcType=DECIMAL},
+      </if>
+      <if test="zxbs != null" >
+        #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 修改定检项目生效 -->
+	<update id="updateEffective" parameterType="Map" >
+    	update B_G_012
+    	set 
+      		SXSJ = sysdate,
+      		ZT = #{zt,jdbcType=DECIMAL},
+      		ZXBS = #{zxbs,jdbcType=DECIMAL}
+		where ID in 
+			 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+			 </foreach>
+	</update>
+	
+	<!-- 小于当前版本的定检项目最新标识修改成老版本 -->
+	<update id="updateBbToOld" parameterType="Map" >
+    	update B_G_012
+    	set 
+      		ZXBS = #{zxbs,jdbcType=DECIMAL}
+		where ID in 
+			 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+			 </foreach>
+	</update>
+	
+	<!-- 将定检项目修改成待生效 -->
+	<update id="updateWaitEffective" parameterType="Map" >
+    	update B_G_012
+    	set 
+      		ZT = #{zt,jdbcType=DECIMAL}
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 批量审核 -->
+	<update id="updateBatchAudit" parameterType="Map" >
+    	update B_G_012
+    	set 
+    		SPZT = 2,
+    		SHRID = #{shrid,jdbcType=VARCHAR},
+    		SHBMID = #{shbmid,jdbcType=VARCHAR},
+    		SHYJ = #{shyj,jdbcType=VARCHAR},
+      		SHSJ = sysdate
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 批量批准 -->
+	<update id="updateBatchApprove" parameterType="Map" >
+    	update B_G_012
+    	set 
+    		SPZT = 3,
+    		PFRID = #{pfrid,jdbcType=VARCHAR},
+    		PFBMID = #{pfbmid,jdbcType=VARCHAR},
+    		PFYJ = #{pfyj,jdbcType=VARCHAR},
+      		PFSJ = sysdate
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 根据维修方案编号、版本作废 -->
+	<update id="cancelByWxfabhAndBb" parameterType="java.lang.String" >
+    	update B_G_012 set ZT = 8 where DPRTCODE = #{dprtcode} and BB = #{wxfabb} and WXFABH = #{wxfabh}
+	</update>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.FixedCheckItem" >
+    update B_G_012
+    <set >
+      <if test="wxfabh != null" >
+        WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null" >
+        DJBH = #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="pxh != null" >
+        PXH = #{pxh,jdbcType=DECIMAL},
+      </if>
+      <if test="zwms != null" >
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null" >
+        YWMS = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="zyxs != null" >
+        ZYXS = #{zyxs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsRs != null" >
+        JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      </if>
+      <if test="jhgsXss != null" >
+        JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      </if>
+      <if test="yxx != null" >
+        YXX = #{yxx,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sxsj != null" >
+        SXSJ = #{sxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="spzt != null" >
+        SPZT = #{spzt,jdbcType=DECIMAL},
+      </if>
+      <if test="zxbs != null" >
+        ZXBS = #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        F_BBID = #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        B_BBID = #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="shbmid != null" >
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shyj != null" >
+        SHYJ = #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHRID = #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHSJ = sysdate,
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfyj != null" >
+        PFYJ = #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        PFRID = #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        PFSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.FixedCheckItem" >
+    update B_G_012
+    set WXFABH = #{wxfabh,jdbcType=VARCHAR},
+      DJBH = #{djbh,jdbcType=VARCHAR},
+      BB = #{bb,jdbcType=DECIMAL},
+      PXH = #{pxh,jdbcType=DECIMAL},
+      ZWMS = #{zwms,jdbcType=VARCHAR},
+      YWMS = #{ywms,jdbcType=VARCHAR},
+      ZYXS = #{zyxs,jdbcType=DECIMAL},
+      JHGS_RS = #{jhgsRs,jdbcType=DECIMAL},
+      JHGS_XSS = #{jhgsXss,jdbcType=DECIMAL},
+      YXX = #{yxx,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      SXSJ = #{sxsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      SPZT = #{spzt,jdbcType=DECIMAL},
+      ZXBS = #{zxbs,jdbcType=DECIMAL},
+      F_BBID = #{fBbid,jdbcType=VARCHAR},
+      B_BBID = #{bBbid,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      SHBMID = #{shbmid,jdbcType=VARCHAR},
+      SHYJ = #{shyj,jdbcType=VARCHAR},
+      SHRID = #{shrid,jdbcType=VARCHAR},
+      SHSJ = #{shsj,jdbcType=TIMESTAMP},
+      PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      PFYJ = #{pfyj,jdbcType=VARCHAR},
+      PFRID = #{pfrid,jdbcType=VARCHAR},
+      PFSJ = #{pfsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

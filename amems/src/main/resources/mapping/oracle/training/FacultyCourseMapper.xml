@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.FacultyCourseMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.FacultyCourse" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="SQKSRQ" property="sqksrq" jdbcType="TIMESTAMP" />
+    <result column="SQJSRQ" property="sqjsrq" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="KCMC" property="paramsMap.kcmc" jdbcType="VARCHAR" />
+    <result column="ISFX" property="paramsMap.isfx" jdbcType="VARCHAR" />
+    <result column="KCBH" property="paramsMap.kcbh" jdbcType="VARCHAR" />
+    <result column="COURSEID" property="paramsMap.courseid" jdbcType="VARCHAR" />
+    <result column="FJJX" property="paramsMap.fjjx" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, KCID, SQKSRQ, SQJSRQ, ZT, WHBMID, WHRID, WHSJ
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_00801
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryPageByParam" resultMap="BaseResultMap" parameterType="com.eray.thjw.training.po.FacultyCourse">
+  	select 
+  		B.ID,
+  		B.MAINID,
+  		B.KCID,
+  		B.SQKSRQ,
+  		B.SQJSRQ,
+  		B.ZT,
+  		B.WHBMID,
+  		B.WHRID,
+  		B.WHSJ,
+  		T.KCMC,
+  		T.IS_FX AS ISFX,
+  		T.KCBH,
+  		T.FJJX,
+  		T.ID AS COURSEID
+  	from B_P_00801 B LEFT JOIN B_P_003 T ON T.ID = B.KCID 
+  	<include refid="Base_Query_tj" />
+  		AND B.ZT = 1 order by T.KCMC
+  </select>
+  
+  
+  <sql id="Base_Query_tj">
+	  where 1=1
+	  	  <if test="kcid !=null and kcid!=''">
+	  	   	 	AND B.KCID = #{kcid,jdbcType=VARCHAR}
+	  	  </if>
+	      <if test="dprtcode != null and dprtcode !=''" >
+	     		and   T.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	      </if>
+	      <if test="zt != null" >
+	     		and   B.ZT = #{zt,jdbcType=DECIMAL}
+	      </if>
+	      <if test="mainid !=null and mainid !=''">
+	      	and B.MAINID = #{mainid,jdbcType=VARCHAR}
+	      </if>
+	      <if test="paramsMap != null and paramsMap.courseIdList != null and paramsMap.courseIdList != ''">
+		    and B.id in
+     			 <foreach item="item" index="index" collection="paramsMap.courseIdList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		 </if>
+   </sql>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_00801
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.FacultyCourse" >
+    insert into B_P_00801 (ID, MAINID, KCID, 
+      SQKSRQ, SQJSRQ, ZT, 
+      WHBMID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcid,jdbcType=VARCHAR}, 
+      #{sqksrq,jdbcType=TIMESTAMP}, #{sqjsrq,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.FacultyCourse" >
+    insert into B_P_00801
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="sqksrq != null" >
+        SQKSRQ,
+      </if>
+      <if test="sqjsrq != null" >
+        SQJSRQ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqksrq != null" >
+        #{sqksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sqjsrq != null" >
+        #{sqjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.FacultyCourse" >
+    update B_P_00801
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqksrq != null" >
+        SQKSRQ = #{sqksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sqjsrq != null" >
+        SQJSRQ = #{sqjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.FacultyCourse" >
+    update B_P_00801
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      SQKSRQ = #{sqksrq,jdbcType=TIMESTAMP},
+      SQJSRQ = #{sqjsrq,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByMainId" parameterType="com.eray.thjw.training.po.FacultyCourse">
+	      update B_P_00801
+	    set ZT = #{zt,jdbcType=VARCHAR}
+	    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </update>
+</mapper>

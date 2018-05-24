@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.CheckingMonitoringMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.CheckingMonitoring" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="BJXLH" property="bjxlh" jdbcType="VARCHAR" />
+    <result column="JKXMBH_F" property="jkxmbhF" jdbcType="VARCHAR" />
+    <result column="JKFLBH_F" property="jkflbhF" jdbcType="VARCHAR" />
+    <result column="JKZ_F" property="jkzF" jdbcType="VARCHAR" />
+    <result column="JKXMBH_S" property="jkxmbhS" jdbcType="VARCHAR" />
+    <result column="JKFLBH_S" property="jkflbhS" jdbcType="VARCHAR" />
+    <result column="JKZ_S" property="jkzS" jdbcType="VARCHAR" />
+    <result column="JKXMBH_T" property="jkxmbhT" jdbcType="VARCHAR" />
+    <result column="JKFLBH_T" property="jkflbhT" jdbcType="VARCHAR" />
+    <result column="JKZ_T" property="jkzT" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, FJZCH, ZJQDID, BJH, BJXLH, JKXMBH_F, JKFLBH_F, JKZ_F, JKXMBH_S, JKFLBH_S, 
+    JKZ_S, JKXMBH_T, JKFLBH_T, JKZ_T, WHBMID, WHRID, WHSJ, ZT, DPRTCODE
+  </sql>
+  
+   <!-- 添加b_g_01401 定检任务监控项目 -->
+   <insert id="save" parameterType="com.eray.thjw.productionplan.po.CheckingMonitoring">
+    insert into b_g_01401 (ID, MAINID,FJZCH,ZJQDID,BJH,BJXLH,JKXMBH_F,JKFLBH_F,JKZ_F,JKXMBH_S,JKFLBH_S,JKZ_S,JKXMBH_T,JKFLBH_T,JKZ_T,WHBMID,WHRID,WHSJ,ZT,DPRTCODE)
+    values (#{id},#{mainid},#{fjzch},#{zjqdid},#{bjh},#{bjxlh},#{jkxmbhF},#{jkflbhF},#{jkzF},#{jkxmbhS},#{jkflbhS},#{jkzS},#{jkxmbhT},#{jkflbhT},#{jkzT},#{whbmid},#{whrid},current_timestamp,#{zt},#{dprtcode})
+  </insert>
+  
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_01401
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

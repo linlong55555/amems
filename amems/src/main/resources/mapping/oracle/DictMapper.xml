@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.system.dao.DictMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.Dict" >
+    <id column="LXID" property="lxid" jdbcType="DECIMAL" />
+    <id column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="LXMC" property="lxmc" jdbcType="VARCHAR" />
+    <result column="XLMS" property="xlms" jdbcType="VARCHAR" />
+    <result column="IS_BJ" property="isBj" jdbcType="DECIMAL" />
+    <result column="IS_XZ" property="isXz" jdbcType="DECIMAL" />
+    <result column="IS_SC" property="isSc" jdbcType="DECIMAL" />
+    <result column="IS_MC" property="isMc" jdbcType="DECIMAL" />
+    <result column="IS_SZ" property="isSz" jdbcType="DECIMAL" />
+    <result column="IS_SZ" property="isSz" jdbcType="DECIMAL" />
+  </resultMap>
+   
+    <resultMap type="com.eray.thjw.system.po.Dict" id="DicAndItemMap" extends="BaseResultMap">  
+       <collection property="itemList" ofType="com.eray.thjw.system.po.DictItem">  
+           <id property="id" column="itemId" />
+		    <result column="LXID" property="lxid" jdbcType="DECIMAL" />
+		    <result column="MC" property="mc" jdbcType="VARCHAR" />
+		    <result column="SZ" property="sz" jdbcType="VARCHAR" />
+		    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+		    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+       </collection>  
+   </resultMap> 
+   
+  <sql id="Base_Column_List" >
+    LXID, LXMC, XLMS, IS_BJ, IS_XZ, IS_SC, IS_MC, IS_SZ,DPRTCODE
+  </sql>
+  
+  <sql id="Dic_Item_Column_List" >
+    d.LXID, 
+    d.LXMC, 
+    d.XLMS, 
+    d.IS_BJ, 
+    d.IS_XZ, 
+    d.IS_SC, 
+    d.IS_MC, 
+    d.IS_SZ,
+    d.DPRTCODE,
+		    
+    i.id as itemId,
+    i.LXID,
+    i.MC,  
+    i.SZ,
+    i.WHRID,
+    i.WHSJ
+  </sql>
+  
+  <select id="selectDicAndItems" resultMap="DicAndItemMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Dic_Item_Column_List" />
+    from D_001 d  
+    inner join D_00101 i 
+    on d.lxid = i.lxid   and d.dprtcode = i.dprtcode
+    order by xc
+  </select>
+  
+    <!-- 根据条件查询字典信息 -->
+	<select id="getNewDicListByDprtcode"  parameterType="com.eray.thjw.system.po.Dict"  resultMap="BaseResultMap">
+	       select  <include refid="Base_Column_List"></include> 
+	       from D_001  t
+		   where (t.dprtcode =#{dprtcode} 	or  
+		   		  
+		   		  ( not EXISTS ( select 1 from D_001 where  lxid=t.lxid  and dprtcode = #{dprtcode}) and dprtcode = '-1' )
+      		 	 )
+			order by XLMS,LXMC
+	</select>
+	<!-- 根据条件查询某一个字典 -->
+	<select id="selectDict" resultMap="BaseResultMap"  >
+	           
+	  select  <include refid="Base_Column_List"></include>  from D_001 
+	  
+	  where lxid=#{0,jdbcType=DECIMAL} and dprtcode=#{1,jdbcType=VARCHAR}
+			
+	</select>
+	<!--  新增字典项明细 -->
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.DictItem" >
+	   INSERT INTO d_001 (LXID, LXMC, XLMS, IS_BJ, IS_XZ, IS_SC, IS_MC, IS_SZ,dprtcode)
+	   
+	   (select  LXID, LXMC, XLMS, IS_BJ, IS_XZ, IS_SC, IS_MC, IS_SZ,#{dprtcode,jdbcType=VARCHAR} dprtcode from d_001 
+	   
+	   where lxid=#{lxid,jdbcType=DECIMAL} and dprtcode='-1')
+  </insert>
+  <!-- 同步删除字典 -->
+  <delete id="deleteByPrimaryKey">
+    delete from D_001
+    where LXID = #{0,jdbcType=DECIMAL} AND DPRTCODE=#{1,jdbcType=VARCHAR}
+  </delete>
+</mapper>

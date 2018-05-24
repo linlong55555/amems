@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.AuditItemMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.AuditItem" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="SHXMDBH" property="shxmdbh" jdbcType="VARCHAR" />
+    <result column="SJ_SHRQ" property="sjShrq" jdbcType="TIMESTAMP" />
+    <result column="SHLB" property="shlb" jdbcType="DECIMAL" />
+    <result column="LX" property="lx" jdbcType="DECIMAL" />
+    <result column="SHDXID" property="shdxid" jdbcType="VARCHAR" />
+    <result column="SHDXBH" property="shdxbh" jdbcType="VARCHAR" />
+    <result column="SHDXMC" property="shdxmc" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="SHCY" property="paramsMap.shcy" jdbcType="VARCHAR" />
+    <result column="FJCOUNT" property="paramsMap.fjcount" jdbcType="VARCHAR" />
+  </resultMap>
+  
+       <!--  注意：在写对应关系时,id字段需要重命名 -->
+	<resultMap type="com.eray.thjw.quality.po.AuditItem" id="AuditItemToAllMap" extends="BaseResultMap">  
+	  	<association property="whr" javaType="com.eray.thjw.po.User">  
+	        <id column="WHRID" property="id"/>  
+	        <result column="whr_username" property="username"/>  
+	        <result column="whr_realname" property="realname"/>  
+	    </association>  
+		  <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+	         <id column="dprtcode" property="id"/>
+	         <result column="jg_dprtname" property="dprtname"/>
+	     </association>  
+	</resultMap> 
+	
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, SHXMDBH, SJ_SHRQ, SHLB, LX, SHDXID, SHDXBH, SHDXMC, ZT, WHBMID, WHRID, 
+    WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_Z_009
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.AuditItem" >
+    insert into B_Z_009 (ID, DPRTCODE, SHXMDBH, 
+      SJ_SHRQ, SHLB, LX, 
+      SHDXID, SHDXBH, SHDXMC, 
+      ZT, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{shxmdbh,jdbcType=VARCHAR}, 
+      #{sjShrq,jdbcType=TIMESTAMP}, #{shlb,jdbcType=DECIMAL}, #{lx,jdbcType=DECIMAL}, 
+      #{shdxid,jdbcType=VARCHAR}, #{shdxbh,jdbcType=VARCHAR}, #{shdxmc,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.AuditItem" >
+    insert into B_Z_009
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="shxmdbh != null" >
+        SHXMDBH,
+      </if>
+      <if test="sjShrq != null" >
+        SJ_SHRQ,
+      </if>
+      <if test="shlb != null" >
+        SHLB,
+      </if>
+      <if test="lx != null" >
+        LX,
+      </if>
+      <if test="shdxid != null" >
+        SHDXID,
+      </if>
+      <if test="shdxbh != null" >
+        SHDXBH,
+      </if>
+      <if test="shdxmc != null" >
+        SHDXMC,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="shxmdbh != null" >
+        #{shxmdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="sjShrq != null" >
+        #{sjShrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shlb != null" >
+        #{shlb,jdbcType=DECIMAL},
+      </if>
+      <if test="lx != null" >
+        #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="shdxid != null" >
+        #{shdxid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdxbh != null" >
+        #{shdxbh,jdbcType=VARCHAR},
+      </if>
+      <if test="shdxmc != null" >
+        #{shdxmc,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.AuditItem" >
+    update B_Z_009
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="shxmdbh != null" >
+        SHXMDBH = #{shxmdbh,jdbcType=VARCHAR},
+      </if>
+      <if test="sjShrq != null" >
+        SJ_SHRQ = #{sjShrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shlb != null" >
+        SHLB = #{shlb,jdbcType=DECIMAL},
+      </if>
+      <if test="lx != null" >
+        LX = #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="shdxid != null" >
+        SHDXID = #{shdxid,jdbcType=VARCHAR},
+      </if>
+      <if test="shdxbh != null" >
+        SHDXBH = #{shdxbh,jdbcType=VARCHAR},
+      </if>
+      <if test="shdxmc != null" >
+        SHDXMC = #{shdxmc,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.AuditItem" >
+    update B_Z_009
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      SHXMDBH = #{shxmdbh,jdbcType=VARCHAR},
+      SJ_SHRQ = #{sjShrq,jdbcType=TIMESTAMP},
+      SHLB = #{shlb,jdbcType=DECIMAL},
+      LX = #{lx,jdbcType=DECIMAL},
+      SHDXID = #{shdxid,jdbcType=VARCHAR},
+      SHDXBH = #{shdxbh,jdbcType=VARCHAR},
+      SHDXMC = #{shdxmc,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="queryAll" resultMap="AuditItemToAllMap" parameterType="com.eray.thjw.quality.po.AuditItem" >
+	  SELECT Z009.ID,--审核项目单ID
+	       Z009.ZT,--状态：1保存、2提交、9关闭
+	       Z009.SHXMDBH,--审核项目单编号
+	       Z009.LX,--类型：1内部、2外部
+	       Z009.SHDXID,--审核对象ID，关联部门ID
+	       Z009.SHDXBH,--审核对象编号
+	       Z009.SHDXMC,--审核对象名称
+	       Z009.SHLB,--审核类别：11初审、12复审、21转向审核
+	       Z009.SJ_SHRQ,--实际审核日期YYYYMMDD
+	       Z901.SHCY, --审核成员
+	       TUSER.REALNAME whr_realname,--维护人
+	       TUSER.USERNAME whr_username,--维护人
+	       Z009.WHSJ, --维护时间
+	       jg.dprtname jg_dprtname,
+	       FJ.ATTACHCOUNT fjcount <!-- 附件个数 -->
+	  FROM B_Z_009 Z009
+	  LEFT JOIN (SELECT Z901.YWID,
+	                    WM_CONCAT(Z901.JS || '#_#' || Z901.CYID || '#_#' ||
+	                              Z901.CYBH || '#_#' || Z901.CYMC) SHCY
+	               FROM B_Z_901 Z901
+	              WHERE Z901.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND Z901.ZT = 1
+	                AND Z901.YWLX = 13
+	              GROUP BY YWID) Z901
+	    ON Z901.YWID = Z009.ID
+	  LEFT JOIN T_USER TUSER
+	    ON TUSER.ID = Z009.WHRID
+	  left join t_department jg 
+   		ON(Z009.dprtcode=jg.id)
+   		 <!--  工单附件数量 -->   
+	 LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) FJ
+         ON FJ.MAINID = Z009.id
+	 WHERE Z009.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+   <include refid="AuditItemParam"></include>
+     <choose>                                                                                 
+    	<when test='pagination.sort == "auto"'>                       
+    		 ORDER BY Z009.SJ_SHRQ DESC
+    	</when>
+    	<otherwise>
+		    order by ${pagination.sort} ${pagination.order}
+    	</otherwise>
+	 </choose> 
+  </select>
+  
+   <!-- 查询适航性资料参数 -->
+	<sql id="AuditItemParam">
+	   	<!--  <if test="keyword != null and keyword != ''">
+		    and (   B_G2_000.jswjbh like '%'||#{keyword}||'%'
+		    	or scfj.wbwjm like '%'||#{keyword}||'%'
+		    	or B_G2_000.jswjzt like '%'||#{keyword}||'%'
+		    	or B_G2_000.bz like '%'||#{keyword}||'%'
+		    	or scfj.wbwjm like '%'||#{keyword}||'%'
+		    	or zj.zjh like '%'||#{keyword}||'%'
+		    	or zj.zwms like '%'||#{keyword}||'%')            
+		</if> -->
+	     <if test="lx != null and lx != ''">
+            and  Z009.lx = #{lx}
+         </if>
+         <choose>                                                                                 
+	    	<when test="shdxid != null and shdxid != ''">                       
+	    		 and  Z009.shdxid = #{shdxid}
+	    	</when>
+	    	<otherwise>
+			   <if test="shdxmc != null and shdxmc != ''">
+		         and (UPPER(Z009.shdxbh) like UPPER('%'||#{shdxmc}||'%')
+		    		  or UPPER(Z009.shdxmc) like UPPER('%'||#{shdxmc}||'%'))
+		       </if>
+	    	</otherwise>
+		 </choose> 
+		<if test="paramsMap != null and paramsMap.shrqBegin != null and paramsMap.shrqBegin != ''">
+		    and Z009.sj_shrq &gt;= to_date(#{paramsMap.shrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.shrqEnd != null and paramsMap.shrqEnd != ''">
+		    and Z009.sj_shrq &lt;= to_date(#{paramsMap.shrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+          <!--B_G2_000id-->
+	     <if test="shlb != null">
+            and  Z009.shlb = #{shlb}
+         </if>
+	     <if test="id != null and id != ''">
+            and  Z009.id = #{id}
+         </if>
+	</sql>
+  
+    <select id="queryCount" parameterType="com.eray.thjw.quality.po.Auditnotice" resultType="int">
+		select count(1)
+			from B_Z_009 b
+		where b.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		  <if test="id != null and id != '' ">
+            and  b.id = #{id}
+         </if>
+         <if test="shxmdbh != null and shxmdbh != '' ">
+            and  b.shxmdbh = #{shxmdbh}
+         </if>
+		
+	</select>
+  
+</mapper>

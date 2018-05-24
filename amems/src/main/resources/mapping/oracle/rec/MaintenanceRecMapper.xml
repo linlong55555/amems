@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.MaintenanceRecMapper" >
+   
+	<!-- 维修方案日志列表 开始 -->
+  
+	<select id="queryList_BG011_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+				SELECT B.* ,      
+		        	WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME,
+		        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+		        	WHDW.DPRTNAME WHDW_DRPTNAME,
+			        B.WXFABH||' '||'版本'||B.BB||' '||(
+			        CASE 
+						WHEN B.REC_CZSM = 0 THEN '创建'
+			           	WHEN B.REC_CZSM = 1 THEN '提交'
+			          	WHEN B.REC_CZSM = 2 THEN '已审核'
+			           	WHEN B.REC_CZSM = 3 THEN '已批准'
+			           	WHEN B.REC_CZSM = 4 THEN '中止（关闭）'
+			           	WHEN B.REC_CZSM = 5 THEN '审核驳回'
+			           	WHEN B.REC_CZSM = 6 THEN '批准驳回'
+			           	WHEN B.REC_CZSM = 8 THEN '作废'
+			           	WHEN B.REC_CZSM = 9 THEN '指定结束'
+			           	WHEN B.REC_CZSM = 10 THEN '完成'
+			           	WHEN B.REC_CZSM = 11 THEN '撤销'
+			           	WHEN B.REC_CZSM = 12 THEN '修改'
+			           	WHEN B.REC_CZSM = 13 THEN '改版'
+			           	WHEN B.REC_CZSM = 14 THEN '已生效'
+			           	WHEN B.REC_CZSM = 15 THEN '提交生产确认'
+			           	WHEN B.REC_CZSM = 16 THEN '借出确认'
+			           	WHEN B.REC_CZSM = 17 THEN '归还'
+			           	WHEN B.REC_CZSM = 18 THEN '导入'
+					END 
+			        ) REC_HD
+				FROM B_G_011_REC B 
+	        	LEFT JOIN T_USER WHR ON WHR.ID = B.ZDRID
+	        	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	        	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.ZDBMID
+		        WHERE 1=1
+				<if test='paramsMap!=null and paramsMap.REC_CZLS!=null and paramsMap.REC_CZLS!=""'>
+					and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	       	 	</if>
+	        	<if test='paramsMap!=null and paramsMap.ID!=null and paramsMap.ID!=""'>
+	        		and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	        	</if>
+	        	<if test='paramsMap!=null and paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		       		and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		        </if>
+		        <if test='paramsMap!=null and paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and (
+		                UPPER(B.WXFABH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+		           	)
+		    	</if>
+				order by B.REC_CZSJ DESC,B.BB DESC
+	</select>
+  
+	<select id="queryDiff_BG011_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT * FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+            	B.*,
+            	WHR.USERNAME||' '||WHR.REALNAME WHR_REALNAME,
+	        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+	        	WHDW.DPRTNAME WHDW_DRPTNAME,
+	        	SXR.USERNAME||' '||SXR.REALNAME SXR_REALNAME,
+	        	SXDW.DPRTNAME SXDW_DRPTNAME,
+	        	JXR.USERNAME||' '||JXR.REALNAME JXR_REALNAME,
+            	to_char(B.JH_SXRQ,'YYYY-MM-DD') JHSXRQ,
+		        to_char(B.SJ_SXRQ,'YYYY-MM-DD') SJSXRQ,
+            	(
+         		CASE 
+		          	WHEN B.ZT = 1 THEN '未生效'
+		          	WHEN B.ZT = 2 THEN '待生效'
+		          	WHEN B.ZT = 3 THEN '生效'
+		          	WHEN B.ZT = 8 THEN '作废'
+		          	WHEN B.ZT = 9 THEN '关闭'
+         		END 
+     	   		) STATUS_NAME,
+     	   		(
+         		CASE 
+		          	WHEN B.ZXBS = 0 THEN '未生效'
+		          	WHEN B.ZXBS = 1 THEN '生效'
+		          	WHEN B.ZXBS = 2 THEN '失效'
+         		END 
+     	   		) ZT_NAME,
+            	'维修方案编号:'||B.WXFABH || ' ' || (
+            	CASE
+			 		WHEN B.REC_CZSM = 0 THEN '创建'
+              		WHEN B.REC_CZSM = 1 THEN '提交'
+              		WHEN B.REC_CZSM = 2 THEN '已审核'
+              		WHEN B.REC_CZSM = 3 THEN '已批准'
+              		WHEN B.REC_CZSM = 4 THEN '中止（关闭）'
+              		WHEN B.REC_CZSM = 5 THEN '审核驳回'
+              		WHEN B.REC_CZSM = 6 THEN '批准驳回'
+              		WHEN B.REC_CZSM = 8 THEN '作废'
+              		WHEN B.REC_CZSM = 9 THEN '指定结束'
+              		WHEN B.REC_CZSM = 10 THEN '完成'
+              		WHEN B.REC_CZSM = 11 THEN '撤销'
+              		WHEN B.REC_CZSM = 12 THEN '修改'
+              		WHEN B.REC_CZSM = 13 THEN '改版'
+              		WHEN B.REC_CZSM = 14 THEN '已生效'
+              		WHEN B.REC_CZSM = 15 THEN '提交生产确认'
+              		WHEN B.REC_CZSM = 16 THEN '借出确认'
+             	 	WHEN B.REC_CZSM = 17 THEN '归还'
+              		WHEN B.REC_CZSM = 18 THEN '导入'
+            	END
+            	) REC_HD,
+            	(CASE 
+            		WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+            		ELSE 'LAST'
+            	END
+            	) DATA_VERSION
+               
+			FROM B_G_011_REC B
+          	LEFT JOIN T_USER WHR ON WHR.ID = B.ZDRID
+          	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+          	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.ZDBMID
+          	LEFT JOIN T_USER SXR ON SXR.ID = B.SXRID
+          	LEFT JOIN T_DEPARTMENT SXDW ON SXDW.ID = B.SXBMID
+          	LEFT JOIN T_USER JXR ON JXR.ID = B.SXJYRID
+         	WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           	AND (select rec_czsj from B_G_011_REC where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+	</select>
+   
+	<select id="queryDiff_BG01101_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT B.*, 'CURRENT' DATA_VERSION ,BG005.JSZLH,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+			(CASE 
+	         	WHEN B.REC_XGLX = 1 THEN '新增'
+	         	WHEN B.REC_XGLX = 2 THEN '修改'
+	         	WHEN B.REC_XGLX = 3 THEN '删除'
+	      	END
+	      	) REC_XGLX_TEXT ,
+		 	(CASE
+				WHEN B.REC_CZSM = 0 THEN '创建'
+	            WHEN B.REC_CZSM = 1 THEN '提交'
+	            WHEN B.REC_CZSM = 2 THEN '已审核'
+	            WHEN B.REC_CZSM = 3 THEN '已批准'
+	            WHEN B.REC_CZSM = 4 THEN '中止（关闭）'
+	            WHEN B.REC_CZSM = 5 THEN '审核驳回'
+	            WHEN B.REC_CZSM = 6 THEN '批准驳回'
+	            WHEN B.REC_CZSM = 8 THEN '作废'
+	            WHEN B.REC_CZSM = 9 THEN '指定结束'
+	            WHEN B.REC_CZSM = 10 THEN '完成'
+	            WHEN B.REC_CZSM = 11 THEN '撤销'
+	            WHEN B.REC_CZSM = 12 THEN '修改'
+	            WHEN B.REC_CZSM = 13 THEN '改版'
+	            WHEN B.REC_CZSM = 14 THEN '已生效'
+	            WHEN B.REC_CZSM = 15 THEN '提交生产确认'
+	            WHEN B.REC_CZSM = 16 THEN '借出确认'
+	            WHEN B.REC_CZSM = 17 THEN '归还'
+	            WHEN B.REC_CZSM = 18 THEN '导入'
+			END) REC_HD
+	  	FROM B_G_01101_REC B
+	  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	  	LEFT JOIN B_G_005 BG005 ON BG005.ID = B.XDTZSID
+	 	WHERE B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	 	
+		UNION ALL
+	
+		SELECT B.*, 'LAST' DATA_VERSION ,BG005.JSZLH,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME WHR_REC_REALNAME,
+			(CASE 
+         		WHEN B.REC_XGLX = 1 THEN '新增'
+         		WHEN B.REC_XGLX = 2 THEN '修改'
+         		WHEN B.REC_XGLX = 3 THEN '删除'
+      		END) REC_XGLX_TEXT ,
+	 		(CASE
+                 WHEN B.REC_CZSM = 0 THEN '创建'
+                 WHEN B.REC_CZSM = 1 THEN '提交'
+                 WHEN B.REC_CZSM = 2 THEN '已审核'
+                 WHEN B.REC_CZSM = 3 THEN '已批准'
+                 WHEN B.REC_CZSM = 4 THEN '中止（关闭）'
+                 WHEN B.REC_CZSM = 5 THEN '审核驳回'
+                 WHEN B.REC_CZSM = 6 THEN '批准驳回'
+                 WHEN B.REC_CZSM = 8 THEN '作废'
+                 WHEN B.REC_CZSM = 9 THEN '指定结束'
+                 WHEN B.REC_CZSM = 10 THEN '完成'
+                 WHEN B.REC_CZSM = 11 THEN '撤销'
+                 WHEN B.REC_CZSM = 12 THEN '修改'
+                 WHEN B.REC_CZSM = 13 THEN '改版'
+                 WHEN B.REC_CZSM = 14 THEN '已生效'
+                 WHEN B.REC_CZSM = 15 THEN '提交生产确认'
+                 WHEN B.REC_CZSM = 16 THEN '借出确认'
+                 WHEN B.REC_CZSM = 17 THEN '归还'
+                 WHEN B.REC_CZSM = 18 THEN '导入'
+			END) REC_HD
+		FROM B_G_01101_REC B
+		LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+		LEFT JOIN B_G_005 BG005 ON BG005.ID = B.XDTZSID
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_G_011_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_G_011_REC C WHERE 
+		              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )  
+  	</select>
+  	<!-- 维修方案日志 结束 -->
+
+</mapper>

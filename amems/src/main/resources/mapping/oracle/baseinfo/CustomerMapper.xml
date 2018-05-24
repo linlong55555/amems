@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.baseinfo.dao.CustomerMapper">
+   <resultMap id="baseReuslt" type="com.eray.thjw.baseinfo.po.Customer">
+     <id column="ID" jdbcType="VARCHAR"  property="id"/>
+     <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode"/>
+     <result column="WHBMID" jdbcType="VARCHAR" property="whbmid"/>
+     <result column="WHRID" jdbcType="VARCHAR" property="whrid"/>
+     <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj"/>
+     <result column="ZT" jdbcType="INTEGER" property="zt"/>
+     <result column="KHBM" jdbcType="VARCHAR" property="khbm"/>
+     <result column="KHMC" jdbcType="VARCHAR" property="khmc"/>
+     <result column="CS" jdbcType="VARCHAR" property="cs"/>
+     <result column="GJ" jdbcType="VARCHAR" property="gj"/>
+     <result column="LXDH" jdbcType="VARCHAR" property="lxdh"/>
+     <result column="KHFL" jdbcType="VARCHAR" property="khfl"/>
+     <result column="BZ" jdbcType="VARCHAR" property="bz"/>
+     <result column="YB" jdbcType="VARCHAR" property="yb"/>
+     <result column="KHJC" jdbcType="VARCHAR" property="khjc"/>
+  </resultMap>
+  
+  <sql id="common_column">
+    t.ID, t.DPRTCODE, t.WHBMID, t.WHRID, t.WHSJ, t.ZT, t.KHBM, t.KHMC, t.CS, t.GJ, t.LXDH, 
+    t.KHFL, t.BZ, t.YB, t.KHJC,  to_char(t.WHSJ,'yyyy-mm-dd hh24:mi:ss') AS whsjstr
+  </sql>
+  <sql id="Base_Query">
+      where t.ZT = 1
+      <if test="khbm != null and khbm !=''">
+          and  lower(t.KHBM) like lower("%",#{khbm},"%")
+      </if>
+      <if test="khmc != null and khmc !=''">
+          and  lower(t.KHMC) like lower("%",#{khmc},"%")
+      </if>
+      <if test="khjc != null and khjc !=''">
+          and  lower(t.KHJC) like lower("%",#{khjc},"%")
+      </if>
+      <if test="dprtcode != null and dprtcode != ''">
+            and  t.DPRTCODE = #{dprtcode}
+      </if>
+  </sql>
+  
+  <select id="getCustomerList" parameterType="com.eray.thjw.baseinfo.po.Customer" resultMap="baseReuslt">
+     SELECT <include refid="common_column"></include>, 
+           t2.DPRTNAME AS dprtname, 
+           t3.username||' '||t3.realname AS whr
+       FROM D_019 t
+       LEFT JOIN t_department t2 on t.dprtcode = t2.id 
+       LEFT JOIN t_user t3 on t.whrid = t3.id
+       <include refid="Base_Query"></include>
+       <if test="keyword != null and keyword !=''">
+           and ((lower(t.KHBM) like lower('%'||#{keyword}||'%') ) 
+           or (lower(t.KHMC) like lower('%'||#{keyword}||'%') ))
+       </if>
+       <choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by t.WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	   </choose>
+  </select>
+  
+  <insert id="addCustomer" parameterType="com.eray.thjw.baseinfo.po.Customer">
+     INSERT INTO D_019(ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, KHBM, KHMC, CS, GJ, LXDH, KHFL, BZ, YB, KHJC)
+     VALUES(#{id,jdbcType=VARCHAR}, #{dprtcode, jdbcType=VARCHAR}, #{whbmid, jdbcType=VARCHAR}, 
+            #{whrid, jdbcType=VARCHAR}, #{whsj, jdbcType=TIMESTAMP}, #{zt, jdbcType=INTEGER},
+            #{khbm, jdbcType=VARCHAR}, #{khmc, jdbcType=VARCHAR} , #{cs, jdbcType=VARCHAR}, #{gj, jdbcType=VARCHAR},
+            #{lxdh, jdbcType=VARCHAR}, #{khfl, jdbcType=VARCHAR} , #{bz, jdbcType=VARCHAR} ,#{yb, jdbcType=VARCHAR},
+            #{khjc, jdbcType=VARCHAR})
+   </insert>
+   
+   <update id="delCustomer" parameterType="com.eray.thjw.baseinfo.po.Customer">
+      UPDATE D_019
+      SET ZT = #{zt,jdbcType=INTEGER}
+      WHERE ID = #{id,jdbcType=VARCHAR}
+   </update>
+   
+   <update id="updateCustomer" parameterType="com.eray.thjw.baseinfo.po.Customer">
+     UPDATE D_019
+     <set>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null">
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="khbm != null">
+        KHBM = #{khbm,jdbcType=VARCHAR},
+      </if>
+      <if test="khmc != null">
+        KHMC = #{khmc,jdbcType=VARCHAR},
+      </if>   
+      <if test="cs != null">
+        CS = #{cs,jdbcType=VARCHAR},
+      </if>   
+      <if test="gj != null">
+        GJ = #{gj,jdbcType=VARCHAR},
+      </if>   
+      <if test="lxdh != null">
+        LXDH = #{lxdh,jdbcType=VARCHAR},
+      </if>   
+      <if test="khfl != null">
+        KHFL = #{khfl,jdbcType=VARCHAR},
+      </if>   
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>   
+      <if test="yb != null">
+        YB = #{yb,jdbcType=VARCHAR},
+      </if>   
+      <if test="khjc != null">
+        KHJC = #{khjc,jdbcType=VARCHAR},
+      </if>   
+     </set>
+     where ID = #{id,jdbcType=VARCHAR}
+   </update>
+   
+   <select id="getCustomerById" parameterType="com.eray.thjw.baseinfo.po.Customer" resultMap="baseReuslt">
+      SELECT <include refid="common_column"></include>
+      FROM D_019 t
+      where t.ZT = 1 AND ID = #{id, jdbcType=VARCHAR}
+   </select>
+   
+     <select id="selectByDprtcode" parameterType="com.eray.thjw.baseinfo.po.Customer" resultMap="baseReuslt">
+      SELECT <include refid="common_column"></include>
+      FROM D_019 t
+      where zt = 1 and DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+   </select>
+   
+   <select id="checkCustomer" parameterType="com.eray.thjw.baseinfo.po.Customer" resultMap="baseReuslt">
+       SELECT <include refid="common_column"></include>
+       FROM D_019 t
+       where zt = 1 AND DPRTCODE = #{dprtcode, jdbcType=VARCHAR} AND KHBM = #{khbm,jdbcType=VARCHAR}
+   </select>
+    <select id="selectByDprt" parameterType="String" resultMap="baseReuslt">
+      SELECT <include refid="common_column"></include>
+      FROM D_019 t
+      where zt = 1 and DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+   </select>
+   <select id="selectByCustomer" parameterType="com.eray.thjw.baseinfo.po.Customer" resultMap="baseReuslt">
+      SELECT <include refid="common_column"></include>
+      FROM D_019 t
+      where zt = 1 and DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+      <if test="keyword !=null and keyword !='' ">
+      	and (
+	     (lower(khbm) like lower('%'||#{keyword}||'%'))
+	    or (lower(khmc) like lower('%'||#{keyword}||'%'))
+	    )
+      </if>
+   </select>
+</mapper>

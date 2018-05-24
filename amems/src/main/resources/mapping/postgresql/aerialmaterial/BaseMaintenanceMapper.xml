@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.BaseMaintenanceMapper">
+	<resultMap id="BaseMaintenanceMap"
+		type="com.eray.thjw.aerialmaterial.po.BaseMaintenance">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="JDMS" property="jdms" jdbcType="VARCHAR" />
+		<result column="SSJGDM" property="ssjgdm" jdbcType="VARCHAR" />
+		<result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+		<result column="ZT" property="zt" jdbcType="DECIMAL" />
+		<result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+		<result column="KEYWORD" property="keyword" jdbcType="VARCHAR" />
+		<result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+		<association property="whr" javaType="com.eray.thjw.po.User">
+			<id column="whrid" property="id" />
+			<result column="whr_realname" property="realname" />
+			<result column="whr_username" property="username" />
+		</association>
+	</resultMap>
+	<insert id="insertBaseMaintenance" parameterType="com.eray.thjw.aerialmaterial.po.BaseMaintenance">
+		insert into
+		D_012 
+		(id,dprtcode,jdms,whsj,zt,whrid)
+		values
+		(#{id,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},#{jdms,jdbcType=VARCHAR},current_timestamp,1,#{whrid,jdbcType=VARCHAR})
+	</insert>
+	<sql id="BaseMaintenanceParam">
+		where
+		1=1 and d.zt=1
+		<if test="dprtcode != null and dprtcode != ''">
+			and d.dprtcode = #{dprtcode}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			and ( d.jdms like '%'||#{keyword}||'%'
+			or whr.USERNAME like
+			'%'||#{keyword}||'%'
+			or whr.REALNAME like '%'||#{keyword}||'%')
+		</if>
+		 <if test="id != null and id != '' " >   
+            and  d.id  = #{id,jdbcType=VARCHAR}
+           </if>
+	</sql>
+	<select id="selectBaseMaintenanceList" parameterType="com.eray.thjw.aerialmaterial.po.BaseMaintenance"
+		resultMap="BaseMaintenanceMap">
+		select d.id,d.jdms,d.whsj,
+			whr.username whr_username,
+			whr.realname whr_realname,
+			t.dprtname
+			from
+			 d_012 d
+			left join t_user whr on (d.whrid = whr.id)
+			left join t_department t on d.dprtcode=t.id
+			<include refid="BaseMaintenanceParam" />
+		  <choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		order by d.whsj desc 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>	
+	</select>
+
+	<select id="selectBaseMaintenanceById" parameterType="java.lang.String"
+	resultMap="BaseMaintenanceMap" >
+		select d.id,d.jdms,d.whsj,d.dprtcode,
+		whr.username whr_username,
+		whr.realname whr_realname
+		from
+		 d_012 d
+		left join t_user whr on (d.whrid = whr.id)
+		where d.id=#{id,jdbcType=VARCHAR}
+	</select>
+	<update id="updateBaseMaintenanceById">
+		update D_012  
+		set jdms=#{jdms,jdbcType=VARCHAR},
+		whrid=#{whrid,jdbcType=VARCHAR},
+		whsj=current_timestamp
+		where id=#{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteBaseMaintenanceById" parameterType="java.lang.String">
+		update d_012  set zt=0 where id=#{id,jdbcType=VARCHAR}
+	</delete>
+	<select id="selectByJdms" parameterType="com.eray.thjw.aerialmaterial.po.BaseMaintenance" resultType="java.lang.Integer">
+		select count(*) from d_012 where jdms=#{jdms,jdbcType=VARCHAR} and dprtcode=#{dprtcode,jdbcType=VARCHAR} and zt=1
+	</select>
+</mapper>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.project2.dao.InstructionsourceMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.Instructionsource">
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="PGDID" 	  jdbcType="VARCHAR" property="pgdid" />
+    <result column="PGDH"     jdbcType="VARCHAR" property="pgdh" />
+    <result column="BB"       jdbcType="DECIMAL" property="bb" />
+    <result column="ZLXL"     jdbcType="INTEGER" property="zlxl" />
+    <result column="ZLID"     jdbcType="VARCHAR" property="zlid" />
+    <result column="ZLBH"     jdbcType="VARCHAR" property="zlbh" />
+    <result column="ZLBB"     jdbcType="VARCHAR" property="zlbb" />
+    <result column="YWZT"     jdbcType="VARCHAR" property="ywzt" />
+    <result column="YWDJZT"     jdbcType="INTEGER" property="ywdjzt" />
+  </resultMap>
+  
+  <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.project2.po.Instructionsource">
+	   <!--t_user 指派人  -->
+	   <association property="zpr" javaType="com.eray.thjw.po.User">  
+	        <id column="ZPR_ID"           property="id"/>  
+	        <result column="ZPR_USERUSER" property="username"/>  
+	        <result column="ZPR_REALNAME" property="realname"/>  
+	   </association>  
+	   <!--b_g2_00100 技术评估单-附加信息  -->
+	   <association property="technicalAttached" javaType="com.eray.thjw.project2.po.TechnicalAttached">
+	    	<id column="ID" 		property="id"     jdbcType="VARCHAR" />
+		    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="WCLX"   property="wclx"   jdbcType="VARCHAR" />
+		    <result column="DJ"     property="dj" 	  jdbcType="VARCHAR" />
+		    <result column="JJCD"   property="jjcd"   jdbcType="VARCHAR" />
+		    <result column="SJGZ"   property="sjgz"   jdbcType="VARCHAR" />
+		    <result column="WJZY"   property="wjzy"   jdbcType="VARCHAR" />
+		    <result column="SYFW_YWJ" property="syfwYwj" jdbcType="VARCHAR" />
+		    <result column="SYX"      property="syx"     jdbcType="DECIMAL" />
+		    <result column="FSYYY"    property="fsyyy"   jdbcType="VARCHAR" />
+		    <result column="SYLB"     property="sylb"    jdbcType="DECIMAL" />
+		    <result column="SYFW_BDW" property="syfwBdw" jdbcType="VARCHAR" />
+		    <result column="YJBFZLSJ" property="yjbfzlsj" jdbcType="TIMESTAMP" />
+		    <result column="GBTJ"     property="gbtj"     jdbcType="VARCHAR" />
+		    <result column="IS_CFJC"  property="isCfjc"  jdbcType="DECIMAL" />
+		    <result column="IS_ZZCS"  property="isZzcs"  jdbcType="DECIMAL" />
+		    <result column="IS_MFHC"  property="isMfhc"  jdbcType="DECIMAL" />
+		    <result column="IS_ZBHC"  property="isZbhc"  jdbcType="DECIMAL" />
+		    <result column="IS_TSGJ"  property="isTsgj"  jdbcType="DECIMAL" />
+		    <result column="IS_YXZLPH" property="isYxzlph" jdbcType="DECIMAL" />
+		    <result column="YWJNR"     property="ywjnr"    jdbcType="VARCHAR" />
+		    <result column="BJ"        property="bj"       jdbcType="VARCHAR" />
+		    <result column="WJGXJX"    property="wjgxjx"   jdbcType="VARCHAR" />
+		    <result column="XGWJZXZTDC" property="xgwjzxztdc" jdbcType="VARCHAR" />
+		    <result column="GCPGJL"     property="gcpgjl"	  jdbcType="VARCHAR" />
+		    <result column="JLFJID"     property="jlfjid" 	  jdbcType="VARCHAR" />
+	   </association>
+	    <!--t_todo 待办事宜  -->
+	   <association property="todo" javaType="com.eray.thjw.project2.po.Todo">
+	    	<id column="ID" property="id" jdbcType="VARCHAR" />
+		    <result column="LYID" property="lyid" jdbcType="VARCHAR" />
+		    <result column="LYBH" property="lybh" jdbcType="VARCHAR" />
+		    <result column="BB" property="bb" jdbcType="DECIMAL" />
+		    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+		    <result column="DBGZLX" property="dbgzlx" jdbcType="INTEGER" />
+		    <result column="SM" property="sm" jdbcType="VARCHAR" />
+		    <result column="BLQX" property="blqx" jdbcType="TIMESTAMP" />
+		    <result column="BLRID" property="blrid" jdbcType="VARCHAR" />
+		    <result column="YXZT" property="yxzt" jdbcType="INTEGER" />
+		    <result column="TODO_ZT" property="zt" jdbcType="INTEGER" />
+		    <result column="FKYJ" property="fkyj" jdbcType="VARCHAR" />
+		    <result column="FKSJ" property="fksj" jdbcType="TIMESTAMP" />
+	   </association>
+	    <!-- 来源文件（适航性） -->
+	    <association property="lywj" javaType="com.eray.thjw.project2.po.Airworthiness">  
+		    <id column="LYWJ_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="LYWJ_JSWJBH" property="jswjbh" jdbcType="VARCHAR" />
+		    <result column="LYWJ_BB" property="bb" jdbcType="VARCHAR" />
+        </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+   DPRTCODE, PGDID, PGDH,  BB, ZLXL, ZLID, ZLBH,  ZLBB, YWZT,YWDJZT
+  </sql>
+  
+   <sql id="BG003_Column_List" >
+   		B.DPRTCODE, B.PGDID, B.PGDH,  B.BB, B.ZLXL, B.ZLID, B.ZLBH,  B.ZLBB, B.YWZT,B.YWDJZT
+   </sql> 
+  
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.Instructionsource">
+    insert into B_G_003 (DPRTCODE, PGDID, PGDH, 
+      BB, ZLXL, ZLID, ZLBH, 
+      ZLBB, YWZT,ywdjzt)
+    values (#{dprtcode,jdbcType=VARCHAR}, #{pgdid,jdbcType=VARCHAR}, #{pgdh,jdbcType=VARCHAR}, 
+      #{bb,jdbcType=DECIMAL}, #{zlxl,jdbcType=INTEGER}, #{zlid,jdbcType=VARCHAR}, #{zlbh,jdbcType=VARCHAR}, 
+      #{zlbb,jdbcType=VARCHAR}, #{ywzt,jdbcType=VARCHAR} ,#{ywdjzt,jdbcType=INTEGER})
+  </insert>
+  
+   <!-- 根据适评估单id查询下达指令来源表集合  -->
+  <select id="selectOrderList" resultMap="ResultMap" parameterType="com.eray.thjw.project2.po.Instructionsource" >
+ 	 SELECT 
+	 B1.DPRTCODE, B1.PGDID, B1.PGDH,  B1.BB, B1.ZLXL, B1.ZLID, B1.ZLBH,  B1.ZLBB, B1.YWZT ,B1.YWDJZT
+	 FROM B_G_003 B1
+     WHERE b1.PGDID = #{pgdid,jdbcType=VARCHAR}
+     order by B1.PGDH,B1.BB
+  </select>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.Instructionsource">
+    insert into B_G_003
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="pgdid != null">
+        PGDID,
+      </if>
+      <if test="pgdh != null">
+        PGDH,
+      </if>
+      <if test="bb != null">
+        BB,
+      </if>
+      <if test="zlxl != null">
+        ZLXL,
+      </if>
+      <if test="zlid != null">
+        ZLID,
+      </if>
+      <if test="zlbh != null">
+        ZLBH,
+      </if>
+      <if test="zlbb != null">
+        ZLBB,
+      </if>
+      <if test="ywzt != null">
+        YWZT,
+      </if>
+      <if test="ywdjzt != null">
+        YWDJZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdid != null">
+        #{pgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdh != null">
+        #{pgdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null">
+        #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="zlxl != null">
+        #{zlxl,jdbcType=INTEGER},
+      </if>
+      <if test="zlid != null">
+        #{zlid,jdbcType=VARCHAR},
+      </if>
+      <if test="zlbh != null">
+        #{zlbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zlbb != null">
+        #{zlbb,jdbcType=VARCHAR},
+      </if>
+      <if test="ywzt != null">
+        #{ywzt,jdbcType=VARCHAR},
+      </if>
+      <if test="ywdjzt != null">
+        #{ywdjzt,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="getListByZlidList" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+    from B_G_003
+    where zlid in 
+    	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		 </foreach>
+    </select>
+    <delete id="deleteInstructionSourceByZlid" parameterType="java.lang.String" >
+     delete from B_G_003
+       where zlid = #{zlid}
+  </delete>
+  <!-- 插入下达指令来源信息 -->
+  <insert id="insertInstructionSource" parameterType="java.util.List" >
+     insert all
+     <foreach collection="list" item="item" index="index" >
+     into B_G_003
+	     <trim prefix="(" suffix=")" suffixOverrides=",">
+	      <if test="item.dprtcode != null">
+	        DPRTCODE,
+	      </if>
+	      <if test="item.pgdid != null">
+	        PGDID,
+	      </if>
+	      <if test="item.pgdh != null">
+	        PGDH,
+	      </if>
+	      <if test="item.bb != null">
+	        BB,
+	      </if>
+	      <if test="item.zlxl != null">
+	        ZLXL,
+	      </if>
+	      <if test="item.zlid != null">
+	        ZLID,
+	      </if>
+	      <if test="item.zlbh != null">
+	        ZLBH,
+	      </if>
+	      <if test="item.zlbb != null">
+	        ZLBB,
+	      </if>
+	      <if test="item.ywzt != null">
+	        YWZT,
+	      </if>
+	      <if test="item.ywdjzt != null">
+	        YWDJZT,
+	      </if>
+	     </trim>
+	     <trim prefix="values (" suffix=")" suffixOverrides=",">
+	      <if test="item.dprtcode != null">
+	        #{item.dprtcode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.pgdid != null">
+	        #{item.pgdid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.pgdh != null">
+	        #{item.pgdh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.bb != null">
+	        #{item.bb,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.zlxl != null">
+	        #{item.zlxl,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.zlid != null">
+	        #{item.zlid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.zlbh != null">
+	        #{item.zlbh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.zlbb != null">
+	        #{item.zlbb,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.ywzt != null">
+	        #{item.ywzt,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.ywdjzt != null">
+	        #{item.ywdjzt,jdbcType=INTEGER},
+	      </if>
+	    </trim>
+    </foreach>
+    select 1 from dual 
+  </insert>
+  
+   <!--  根据指令ID,获取指令及关联的来源文件 -->
+   <select id="getRIByZlidList" resultMap="ResultMap">
+	  	select 
+	  		<include refid="BG003_Column_List" />
+	  		, BG2000.ID AS LYWJ_ID
+	  		, BG2000.JSWJBH AS LYWJ_JSWJBH
+	  		, BG2000.BB AS LYWJ_BB
+	    from B_G_003 B
+		     LEFT JOIN B_G2_001 BG2001 ON B.PGDID = BG2001.ID
+			 LEFT JOIN B_G2_000 BG2000 ON BG2001.JSWJID = BG2000.ID
+	    where B.ZLID in 
+		   	 <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			 </foreach>
+		order by B.PGDID 
+    </select>
+    <update id="updateYwdjztByZlid" >
+  	update B_G_003 set ywdjzt = #{ywdjzt,jdbcType=INTEGER} where zlid = #{zlid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateYwdjztByZlidList" >
+ 	 update B_G_003 set ywdjzt = #{ywdjzt,jdbcType=INTEGER} where zlid in
+ 	 <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		 </foreach>
+  </update>
+</mapper>

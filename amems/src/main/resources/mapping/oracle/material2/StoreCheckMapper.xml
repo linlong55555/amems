@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.StoreCheckMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.StoreCheck" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="YKBS" property="ykbs" jdbcType="DECIMAL" />
+    <result column="YKSL" property="yksl" jdbcType="DECIMAL" />
+    <result column="YKCSL" property="ykcsl" jdbcType="DECIMAL" />
+    <result column="KCLLID" property="kcllid" jdbcType="VARCHAR" />
+    <result column="WLLX" property="wllx" jdbcType="DECIMAL" />
+    
+    <!-- 扩充字段 start -->
+    <result column="USERNAME" property="paramsMap.username" jdbcType="VARCHAR" /><!-- 用户名-->
+    <result column="REALNAME" property="paramsMap.realname" jdbcType="VARCHAR" /><!-- 真实名-->
+    <result column="ZDRSTR" property="paramsMap.zdrstr" jdbcType="VARCHAR" /><!-- 制单人人-->
+    <result column="DPRTNAME" property="paramsMap.dprtname" jdbcType="VARCHAR" /><!-- 机构代码-->
+    <result column="XLH" property="paramsMap.xlh" jdbcType="VARCHAR" /><!-- 序列号-->
+    <result column="PCH" property="paramsMap.pch" jdbcType="VARCHAR" /><!-- 批次号-->
+    <result column="WZ" property="paramsMap.wz" jdbcType="VARCHAR" /><!-- 位置 -->
+    <result column="ZYWMS" property="paramsMap.zywms" jdbcType="VARCHAR" /><!-- 名称 -->
+    <result column="BJH" property="paramsMap.bjh" jdbcType="VARCHAR" /><!-- 部件号-->
+    <result column="CQBH" property="paramsMap.cqbh" jdbcType="VARCHAR" /><!-- 产权编号-->
+    <result column="KCSL" property="paramsMap.kcsl" jdbcType="VARCHAR" /><!-- 库存数量-->
+    
+    <!-- 扩充字段 end -->
+    
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, ZDBMID, ZDRID, ZDSJ, ZT, BZ, YKBS, YKSL, YKCSL, KCLLID, WLLX
+  </sql>
+  
+  <sql id="B_Column_List" >
+    B.ID, B.DPRTCODE, B.ZDBMID, B.ZDRID, B.ZDSJ, B.ZT, B.BZ, B.YKBS, B.YKSL, B.YKCSL, B.KCLLID, B.WLLX
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_031
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryAllPageList" resultMap="BaseResultMap" parameterType="com.eray.thjw.material2.po.StoreCheck" >
+    select 
+    <include refid="B_Column_List" />
+    ,U.USERNAME||' '||U.REALNAME as ZDRSTR
+    ,T.DPRTNAME
+    ,B017.SN XLH
+    ,B017.PCH
+    ,B017.CKH||' '||B017.CKMC||' '||B017.KWH WZ
+    ,B017.YWMS||' '||B017.ZWMS ZYWMS
+    ,B017.BJH
+    ,B017.KCSL
+    ,D026.CQBH
+    from B_H_031 B
+    LEFT JOIN T_USER U ON B.ZDRID = U.ID
+    LEFT JOIN T_DEPARTMENT T ON T.ID = B.DPRTCODE
+    LEFT JOIN B_H_017 B017 ON B.KCLLID = B017.ID
+    LEFT JOIN D_026 D026 ON D026.ID = B017.CQID
+    
+    where 1 = 1
+        <include refid="Store_check_Param"></include>
+        <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by B.ZDSJ DESC
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_031
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.StoreCheck" >
+    insert into B_H_031 (ID, DPRTCODE, ZDBMID, 
+      ZDRID, ZDSJ, ZT, 
+      BZ, YKBS, YKSL, YKCSL, 
+      KCLLID, WLLX)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{zdbmid,jdbcType=VARCHAR}, 
+      #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{bz,jdbcType=VARCHAR}, #{ykbs,jdbcType=DECIMAL}, #{yksl,jdbcType=DECIMAL}, #{ykcsl,jdbcType=DECIMAL}, 
+      #{kcllid,jdbcType=VARCHAR}, #{wllx,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.StoreCheck" >
+    insert into B_H_031
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+        ZDSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="ykbs != null" >
+        YKBS,
+      </if>
+      <if test="yksl != null" >
+        YKSL,
+      </if>
+      <if test="ykcsl != null" >
+        YKCSL,
+      </if>
+      <if test="kcllid != null" >
+        KCLLID,
+      </if>
+      <if test="wllx != null" >
+        WLLX,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null" >
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="ykbs != null" >
+        #{ykbs,jdbcType=DECIMAL},
+      </if>
+      <if test="yksl != null" >
+        #{yksl,jdbcType=DECIMAL},
+      </if>
+      <if test="ykcsl != null" >
+        #{ykcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="kcllid != null" >
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="wllx != null" >
+        #{wllx,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.StoreCheck" >
+    update B_H_031
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+        ZDSJ = sysdate,
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="ykbs != null" >
+        YKBS = #{ykbs,jdbcType=DECIMAL},
+      </if>
+      <if test="yksl != null" >
+        YKSL = #{yksl,jdbcType=DECIMAL},
+      </if>
+      <if test="ykcsl != null" >
+        YKCSL = #{ykcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="kcllid != null" >
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="wllx != null" >
+        WLLX = #{wllx,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- ******************************************搜素条件区域 start********************************************************** -->
+  
+  	<!-- 盘点记录列表查询 start -->
+	<sql id="Store_check_Param">
+		<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (
+		    	   lower(B017.BJH) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B017.SN) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B017.PCH) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B017.YWMS) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B017.ZWMS) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B.BZ) like lower('%'||#{paramsMap.keyword}||'%')
+		    )
+		</if>
+		
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		</if>
+		<if test="bz != null">
+		    and lower(B.BZ) like lower('%'||#{bz,jdbcType=VARCHAR}||'%')
+		</if>
+		<if test="paramsMap != null and paramsMap.ckid != null and paramsMap.ckid != ''">
+		    and B017.CKID = #{paramsMap.ckid,jdbcType=VARCHAR} 
+		</if>
+		<if test="paramsMap != null and paramsMap.cqid != null and paramsMap.cqid != ''">
+		    and B017.CQID = #{paramsMap.cqid,jdbcType=VARCHAR} 
+		</if>
+		<if test="paramsMap != null and paramsMap.whrname != null and paramsMap.whrname != ''">
+		    and lower(U.USERNAME) = lower(#{paramsMap.whrname,jdbcType=VARCHAR}) 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqBegin != null and paramsMap.zdrqBegin != ''">
+		    and B.ZDSJ &gt;= to_date(#{paramsMap.zdrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.zdrqEnd != null and paramsMap.zdrqEnd != ''">
+		    and B.ZDSJ &lt;= to_date(#{paramsMap.zdrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B.ID = #{id,jdbcType=VARCHAR}
+		</if>
+		<!-- 状态集合 -->
+        <if test="paramsMap != null and paramsMap.wllxList != null and paramsMap.wllxList.size > 0">
+		    AND B.WLLX IN
+   			<foreach item="item" index="index" collection="paramsMap.wllxList" open="(" separator=", " close=")">  
+   				#{item,jdbcType=DECIMAL}
+   			</foreach>  
+        </if>
+        <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList.size > 0">
+		    AND B017.CKID IN
+   			<foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator=", " close=")">  
+   				#{item,jdbcType=DECIMAL}
+   			</foreach>  
+        </if>
+	</sql>
+	<!-- 盘点记录查询 end -->
+	
+	<!-- ******************************************搜素条件区域 end****************************************************** -->
+  	
+  
+</mapper>

@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.StockRecMapper" >
+	
+  <select id="queryList4Bh001" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+  SELECT t.* from (
+  		 SELECT  
+	       '1' "KCLY",
+	       B.XKZH AS "XKZH",
+	       B.ID AS "ID",
+	       B.DPRTCODE  AS "DPRTCODE",
+	       B.CKLB AS "CKLB",
+	       B.CKID AS "CKID",
+	       B.CKH AS "CKH",
+	       B.CKMC AS "CKMC",
+	       B.KWID AS "KWID",
+	       B.KWH AS "KWH",
+	       B.BJID AS "BJID",
+	       B.BJH AS "BJH",
+	       B.PCH AS "PCH",
+	       B.SN AS "SN",
+	       B.ZWMS AS "ZWMS",
+	       B.YWMS AS "YWMS",
+	       T2.JLDW AS "JLDW",
+	       B.KCSL AS "KCSL",
+	      
+	       B.CGHTID AS "CGHTID",
+	       B.HTBH_CG AS "HTBH_CG",
+	       B.SXHTID AS "SXHTID",
+	       B.HTBH_SX AS "HTBH_SX",
+	       B.TDDID AS "TDDID",
+	       B.TDDH AS "TDDH",
+	       B.RKSJ AS "RKSJ",
+	       B.RKBMID AS "RKBMID",
+	       (select userName||' '||realName from t_user where t_user.id=B.RKRID) "RKRID",
+	       B.SHZH AS "SHZH",
+	       B.SHZWZ AS "SHZWZ",
+	       B.ZT AS "ZT",
+	       B.BZ AS "BZ",
+	       B.JYDID AS "JYDID",
+	       B.HJSM AS "HJSM",
+	       B.SPQX AS "SPQX",
+	       B.SCRQ AS "SCRQ",
+	       (CASE WHEN T2.XINGH IS NULL THEN B.XH ELSE T2.XINGH END) "XH",
+	       (CASE WHEN T2.GG IS NULL THEN B.GG ELSE T2.GG END) "GG",
+	       B.ZZCS AS "ZZCS",
+	       B.TSN AS "TSN",
+	       B.TSO AS "TSO",
+	       B.HCLY AS "HCLY",
+	       B.CFYQ AS "CFYQ",
+	       t2.cjjh AS "CJJH",
+	       t2.hclx AS "HCLX",
+	       t2.gljb AS "GLJB",
+	       CEIL (to_date(to_char(B.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) AS "SYTS", 
+	       CEIL (to_date(to_char(B.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)  AS "SYTSS", 
+		  
+	       
+	       B.REC_XGLX AS "REC_XGLX",
+	       B.REC_CZRID AS "REC_CZRID",
+	       B.REC_CZSJ AS "REC_CZSJ",
+	       B.REC_IP AS "REC_IP",
+	      
+	       B.REC_CZLS AS "REC_CZLS",
+	       
+	       B.REC_XGYJ AS "REC_XGYJ",
+	       B.REC_YJID AS "REC_YJID",
+	       B.REC_YJBH AS "REC_YJBH",
+      
+    	  CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR",
+    	  
+    	  (
+    	  CASE 
+		     WHEN B.SN  is null and B.PCH  is not null
+		       THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' B/N :'||  B.PCH 
+		     WHEN B.PCH  is null and B.SN  is not null
+		     THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN   
+		    ELSE B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN ||' B/N :'||  B.PCH   END) AS "REC_HD"
+           
+           
+        FROM b_h_001_REC B 		         
+	    left join d_008 t2 on B.bjid = t2.id
+        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+        
+        WHERE 1=1
+        
+        <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+        	and (
+                   UPPER(B.BJH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(B.BJH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(B.PCH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(B.SN) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(t2.cjjh) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(T2.ZWMS) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(T2.YWMS) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+            )
+         </if>
+         
+      	  <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+         </if>
+       
+          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+         </if>
+          
+         
+           <if test='paramsMap.REC_YJLX !=null and paramsMap.REC_YJLX!=""'>
+        	and B.REC_YJLX = #{paramsMap.REC_YJLX,jdbcType=DECIMAL}
+         </if>
+           <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+         </if>
+         
+         union all 
+         
+         SELECT  
+	       '2' "KCLY",
+	       B.XKZH AS "XKZH",
+	       B.ID AS "ID",
+	       B.DPRTCODE  AS "DPRTCODE",
+	       B.CKLB AS "CKLB",
+	       B.CKID AS "CKID",
+	       B.CKH AS "CKH",
+	       B.CKMC AS "CKMC",
+	       B.KWID AS "KWID",
+	       B.KWH AS "KWH",
+	       B.BJID AS "BJID",
+	       B.BJH AS "BJH",
+	       B.PCH AS "PCH",
+	       B.SN AS "SN",
+	       B.ZWMS AS "ZWMS",
+	       B.YWMS AS "YWMS",
+	       T2.JLDW AS "JLDW",
+	       B.KCSL AS "KCSL",
+	      
+	       B.CGHTID AS "CGHTID",
+	       B.HTBH_CG AS "HTBH_CG",
+	       B.SXHTID AS "SXHTID",
+	       B.HTBH_SX AS "HTBH_SX",
+	       B.TDDID AS "TDDID",
+	       B.TDDH AS "TDDH",
+	       B.RKSJ AS "RKSJ",
+	       B.RKBMID AS "RKBMID",
+	       (select userName||' '||realName from t_user where t_user.id=B.RKRID) "RKRID",
+	       B.SHZH AS "SHZH",
+	       B.SHZWZ AS "SHZWZ",
+	       B.ZT AS "ZT",
+	       B.BZ AS "BZ",
+	       B.JYDID AS "JYDID",
+	       B.HJSM AS "HJSM",
+	       B.SPQX AS "SPQX",
+	       B.SCRQ AS "SCRQ",
+	       (CASE WHEN T2.XINGH IS NULL THEN B.XH ELSE T2.XINGH END) "XH",
+	       (CASE WHEN T2.GG IS NULL THEN B.GG ELSE T2.GG END) "GG",
+	       B.ZZCS AS "ZZCS",
+	       B.TSN AS "TSN",
+	       B.TSO AS "TSO",
+	       B.HCLY AS "HCLY",
+	       B.CFYQ AS "CFYQ",
+	       t2.cjjh AS "CJJH",
+	       t2.hclx AS "HCLX",
+	       t2.gljb AS "GLJB",
+	       CEIL (to_date(to_char(B.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) AS "SYTS", 
+	       CEIL (to_date(to_char(B.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)  AS "SYTSS", 
+		  
+	       
+	       B.REC_XGLX AS "REC_XGLX",
+	       B.REC_CZRID AS "REC_CZRID",
+	       B.REC_CZSJ AS "REC_CZSJ",
+	       B.REC_IP AS "REC_IP",
+	      
+	       B.REC_CZLS AS "REC_CZLS",
+	       
+	       B.REC_XGYJ AS "REC_XGYJ",
+	       B.REC_YJID AS "REC_YJID",
+	       B.REC_YJBH AS "REC_YJBH",
+      
+    	  CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR",
+    	  
+            (
+    	  CASE 
+		     WHEN B.SN  is null and B.PCH  is not null
+		       THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' B/N :'||  B.PCH 
+		     WHEN B.PCH  is null and B.SN  is not null
+		     THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN   
+		    ELSE B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN ||' B/N :'||  B.PCH   END) AS "REC_HD"
+        FROM b_h_003_REC B 		         
+	    left join d_008 t2 on B.bjid = t2.id
+        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+        
+        WHERE 1=1
+        <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+        	and (
+                    UPPER(B.BJH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(B.BJH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(B.PCH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(B.SN) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(t2.cjjh) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(T2.ZWMS) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+                 or UPPER(T2.YWMS) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+            )
+         </if>
+         
+      	  <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+         </if>
+       
+          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+         </if>
+          
+         
+           <if test='paramsMap.REC_YJLX !=null and paramsMap.REC_YJLX!=""'>
+        	and B.REC_YJLX = #{paramsMap.REC_YJLX,jdbcType=DECIMAL}
+         </if>
+           <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+         </if>
+   	
+   	) t
+    order by t."REC_CZSJ" DESC
+  </select>
+   
+   <select id="queryDiff4Bh001" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT  
+	       
+	       <choose>                                                                 
+		    	<when test='paramsMap.KCLY != null and paramsMap.KCLY == "1"'>                       
+		    		 '1' "KCLY",	
+		    	</when>
+		    	<otherwise>                       
+		    		'2' "KCLY", 	
+		    	</otherwise>
+	   		</choose>
+	       B.XKZH AS "XKZH",
+	       B.ID AS "ID",
+	       B.DPRTCODE  AS "DPRTCODE",
+	       B.CKLB AS "CKLB",
+	       B.CKID AS "CKID",
+	       B.CKH AS "CKH",
+	       B.CKMC AS "CKMC",
+	       B.KWID AS "KWID",
+	       B.KWH AS "KWH",
+	       B.BJID AS "BJID",
+	       B.BJH AS "BJH",
+	       B.PCH AS "PCH",
+	       B.SN AS "SN",
+	       B.ZWMS AS "ZWMS",
+	       B.YWMS AS "YWMS",
+	       T2.JLDW AS "JLDW",
+	       B.KCSL AS "KCSL",
+	      
+	       B.CGHTID AS "CGHTID",
+	       B.HTBH_CG AS "HTBH_CG",
+	       B.SXHTID AS "SXHTID",
+	       B.HTBH_SX AS "HTBH_SX",
+	       B.TDDID AS "TDDID",
+	       B.TDDH AS "TDDH",
+	       B.RKSJ AS "RKSJ",
+	       B.RKBMID AS "RKBMID",
+	       (select userName||' '||realName from t_user where t_user.id=B.RKRID) "RKRID",
+	       B.SHZH AS "SHZH",
+	       B.SHZWZ AS "SHZWZ",
+	       B.ZT AS "ZT",
+	       B.BZ AS "BZ",
+	       B.JYDID AS "JYDID",
+	       B.HJSM AS "HJSM",
+	       B.SPQX AS "SPQX",
+	       B.SCRQ AS "SCRQ",
+	       (CASE WHEN T2.XINGH IS NULL THEN B.XH ELSE T2.XINGH END) "XH",
+	       (CASE WHEN T2.GG IS NULL THEN B.GG ELSE T2.GG END) "GG",
+	       B.ZZCS AS "ZZCS",
+	       B.TSN AS "TSN",
+	       B.TSO AS "TSO",
+	       B.HCLY AS "HCLY",
+	       B.CFYQ AS "CFYQ",
+	       t2.cjjh AS "CJJH",
+	       t2.hclx AS "HCLX",
+	       t2.gljb AS "GLJB",
+	       CEIL (to_date(to_char(B.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) AS "SYTS", 
+	       CEIL (to_date(to_char(B.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)  AS "SYTSS", 
+		  
+	       
+	       B.REC_XGLX AS "REC_XGLX",
+	       B.REC_CZRID AS "REC_CZRID",
+	       B.REC_CZSJ AS "REC_CZSJ",
+	       B.REC_IP AS "REC_IP",
+	      
+	       B.REC_CZLS AS "REC_CZLS",
+	       
+	       B.REC_XGYJ AS "REC_XGYJ",
+	       B.REC_YJID AS "REC_YJID",
+	       B.REC_YJBH AS "REC_YJBH",
+      
+    	  CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR",
+         
+        (CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) AS "REC_XGLX_STR",
+		  'CURRENT' AS "DATA_VERSION" ,
+           (
+    	  CASE 
+		     WHEN B.SN  is null and B.PCH  is not null
+		       THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' B/N :'||  B.PCH 
+		     WHEN B.PCH  is null and B.SN  is not null
+		     THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN   
+		    ELSE B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN ||' B/N :'||  B.PCH   END) AS "REC_HD" ,
+          WHR.USERNAME ||' '|| WHR.REALNAME AS "WHR_STR",
+         B.WHSJ AS "WHSJ",
+         JG.DPRTNAME AS "DPRTCODE_STR"<!-- ,
+         f_getrec_kczt(B.ZT)  AS "ZT_STR",
+		 f_getrec_hcly(B.HCLY) AS "HCLY_STR",  
+		 f_getrec_hclx(t2.hclx)  AS "HCLX_STR",
+		 f_getrec_gljb(t2.gljb) AS "GLJB_STR" -->
+           
+        FROM   	
+        
+         		<choose>                                                                 
+				    	<when test='paramsMap.KCLY != null and paramsMap.KCLY == "1"'>                       
+				    		 b_h_001_REC B 	
+				    	</when>
+				    	<otherwise>                       
+				    		 b_h_003_REC B 	
+				    	</otherwise>
+			   	</choose>
+			   	         
+	    left join d_008 t2 on B.bjid = t2.id
+        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+        
+	   LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+	   LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+	   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+        
+	
+	 WHERE  B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	   
+	UNION ALL
+	
+	SELECT  
+		    <choose>                                                                 
+		    	<when test='paramsMap.KCLY != null and paramsMap.KCLY == "1"'>                       
+		    		 '1' "KCLY",	
+		    	</when>
+		    	<otherwise>                       
+		    		'2' "KCLY", 	
+		    	</otherwise>
+	   		</choose>
+	       B.XKZH AS "XKZH",
+	       B.ID AS "ID",
+	       B.DPRTCODE  AS "DPRTCODE",
+	       B.CKLB AS "CKLB",
+	       B.CKID AS "CKID",
+	       B.CKH AS "CKH",
+	       B.CKMC AS "CKMC",
+	       B.KWID AS "KWID",
+	       B.KWH AS "KWH",
+	       B.BJID AS "BJID",
+	       B.BJH AS "BJH",
+	       B.PCH AS "PCH",
+	       B.SN AS "SN",
+	       B.ZWMS AS "ZWMS",
+	       B.YWMS AS "YWMS",
+	       T2.JLDW AS "JLDW",
+	       B.KCSL AS "KCSL",
+	      
+	       B.CGHTID AS "CGHTID",
+	       B.HTBH_CG AS "HTBH_CG",
+	       B.SXHTID AS "SXHTID",
+	       B.HTBH_SX AS "HTBH_SX",
+	       B.TDDID AS "TDDID",
+	       B.TDDH AS "TDDH",
+	       B.RKSJ AS "RKSJ",
+	       B.RKBMID AS "RKBMID",
+	       (select userName||' '||realName from t_user where t_user.id=B.RKRID) "RKRID",
+	       B.SHZH AS "SHZH",
+	       B.SHZWZ AS "SHZWZ",
+	       B.ZT AS "ZT",
+	       B.BZ AS "BZ",
+	       B.JYDID AS "JYDID",
+	       B.HJSM AS "HJSM",
+	       B.SPQX AS "SPQX",
+	       B.SCRQ AS "SCRQ",
+	       (CASE WHEN T2.XINGH IS NULL THEN B.XH ELSE T2.XINGH END) "XH",
+	       (CASE WHEN T2.GG IS NULL THEN B.GG ELSE T2.GG END) "GG",
+	       B.ZZCS AS "ZZCS",
+	       B.TSN AS "TSN",
+	       B.TSO AS "TSO",
+	       B.HCLY AS "HCLY",
+	       B.CFYQ AS "CFYQ",
+	       t2.cjjh AS "CJJH",
+	       t2.hclx AS "HCLX",
+	       t2.gljb AS "GLJB",
+	       CEIL (to_date(to_char(B.hjsm,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) AS "SYTS", 
+	       CEIL (to_date(to_char(B.SPQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)  AS "SYTSS", 
+		  
+	       
+	       B.REC_XGLX AS "REC_XGLX",
+	       B.REC_CZRID AS "REC_CZRID",
+	       B.REC_CZSJ AS "REC_CZSJ",
+	       B.REC_IP AS "REC_IP",
+	      
+	       B.REC_CZLS AS "REC_CZLS",
+	       
+	       B.REC_XGYJ AS "REC_XGYJ",
+	       B.REC_YJID AS "REC_YJID",
+	       B.REC_YJBH AS "REC_YJBH",
+      
+    	  CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR",
+         
+        (CASE B.REC_XGLX WHEN  1 THEN '新增' 
+								        WHEN  2 THEN '修改' 
+								        WHEN  3 THEN '删除' 
+		        						ELSE ''
+		          END) AS "REC_XGLX_STR",
+		'LAST' AS "DATA_VERSION", 
+           (
+    	  CASE 
+		     WHEN B.SN  is null and B.PCH  is not null
+		       THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' B/N :'||  B.PCH 
+		     WHEN B.PCH  is null and B.SN  is not null
+		     THEN  B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN   
+		    ELSE B.REC_XGYJ ||' P/N :'|| B.BJH ||' SN :'|| B.SN ||' B/N :'||  B.PCH   END) AS "REC_HD" ,
+        WHR.USERNAME ||' '|| WHR.REALNAME AS "WHR_STR",
+        B.WHSJ AS "WHSJ",
+        JG.DPRTNAME AS "DPRTCODE_STR"<!-- ,
+        f_getrec_kczt(B.ZT)  AS "ZT_STR",
+	  	f_getrec_hcly(B.HCLY) AS "HCLY_STR",  
+	 	f_getrec_hclx(t2.hclx)  AS "HCLX_STR",
+		f_getrec_gljb(t2.gljb) AS "GLJB_STR" -->
+        FROM 
+			<choose>                                                                 
+				    	<when test='paramsMap.KCLY != null and paramsMap.KCLY == "1"'>                       
+				    		 b_h_001_REC B 	
+				    	</when>
+				    	<otherwise>                       
+				    		 b_h_003_REC B 	
+				    	</otherwise>
+			   	</choose>	         
+	    left join d_008 t2 on B.bjid = t2.id
+        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+
+	   LEFT JOIN T_USER REC_CZR ON REC_CZR.ID = B.REC_CZRID
+	   LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+	   LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+	   
+	 WHERE  B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM 
+	              	<choose>                                                                 
+					    	<when test='paramsMap.KCLY != null and paramsMap.KCLY == "1"'>                       
+					    		b_h_001_REC A
+					    	</when>
+					    	<otherwise>                       
+					    		b_h_003_REC A	
+					    	</otherwise>
+				   		</choose>
+				   		 WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM 
+		              	 <choose>                                                                 
+					    	<when test='paramsMap.KCLY != null and paramsMap.KCLY == "1"'>                       
+					    		b_h_001_REC C
+					    	</when>
+					    	<otherwise>                       
+					    		b_h_003_REC C	
+					    	</otherwise>
+				   		</choose>
+		              	 WHERE 
+		              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            )  T WHERE 1 = RNO                        
+            ) 
+      
+       
+       
+  </select>
+   
+  
+  
+</mapper>

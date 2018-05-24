@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MessageMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Message">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="LX" jdbcType="DECIMAL" property="lx" />
+    <result column="DJID" jdbcType="VARCHAR" property="djid" />
+    <result column="YSWJM" jdbcType="VARCHAR" property="yswjm" />
+    <result column="WBWJM" jdbcType="TIMESTAMP" property="wbwjm" />
+    <result column="NBWJM" jdbcType="VARCHAR" property="nbwjm" />
+    <result column="YXZT" jdbcType="DECIMAL" property="yxzt" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="JSRNAMES" jdbcType="VARCHAR" property="jsrnames" />
+  </resultMap>
+  
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.aerialmaterial.po.Message" id="MessageJoinMap" extends="BaseResultMap">  
+     	<association property="zdr" javaType="com.eray.thjw.po.User">
+			<id column="LZDRID" property="id"/>
+       	  	<result column="LZDRUSERNAME" property="username"/>
+       	  	<result column="LZDRREALNAME" property="realname"/>
+      	</association>
+      	
+      	<association property="reserveMain" javaType="com.eray.thjw.aerialmaterial.po.ReserveMain">
+			<id column="TDDJID" property="id"/>
+       	  	<result column="TDDJLX" property="djlx"/>
+       	  	<result column="TDSQDH" property="sqdh"/>
+      	</association>
+      	
+      	<collection property="messageRecipientsList" ofType="com.eray.thjw.aerialmaterial.po.MessageRecipients" >  
+            <id column="RID" property="id"/>
+       	  	<result column="RMAINID" property="mainid"/>
+       	  	<result column="RJSBMID" property="jsbmid"/>
+       	  	<result column="RJSRID" property="jsrid"/>
+       	  	<result column="RJSSJ" property="jssj"/>
+       	  	<result column="RZT" property="zt"/>
+       	  	<result column="JZDRUSERNAME" property="zdr.username"/>
+       	  	<result column="JZDRREALNAME" property="zdr.realname"/>
+       </collection>  
+      	
+   	</resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, LX, DJID, YSWJM, WBWJM, NBWJM, YXZT, DPRTCODE
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_005
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据单据id集合查询留言信息 -->
+  <select id="queryMessageListByDjIdList" resultMap="MessageJoinMap">
+    select 	B005.ID, B005.LX, B005.DJID, B005.YSWJM, B005.WBWJM, B005.NBWJM, B005.YXZT, B005.DPRTCODE,
+      		LZDR.ID AS LZDRID,LZDR.USERNAME AS LZDRUSERNAME,LZDR.REALNAME AS LZDRREALNAME,
+      		B002.SQDH AS TDSQDH,
+      		B005011.ID AS RID,
+      		B005011.MAINID AS RMAINID,
+      		B005011.JSBMID AS RJSBMID,
+      		B005011.JSRID AS RJSRID,
+      		B005011.JSSJ AS RJSSJ,
+      		B005011.ZT AS RZT,
+      		UZDR.USERNAME AS JZDRUSERNAME,
+      		UZDR.REALNAME AS JZDRREALNAME,
+      		B00501.JSRSTRS AS JSRNAMES
+       from B_H_005 B005
+       left join T_USER LZDR
+       on B005.YSWJM = LZDR.ID
+       left join B_H_002 B002
+       on B002.ID = B005.DJID
+       left join B_H_00501 B005011
+       on B005.ID = B005011.MAINID
+       left join T_USER UZDR
+       on B005011.JSRID = UZDR.ID
+       left join (select B.MAINID,WM_CONCAT(B.ZT||U.USERNAME||' '||U.REALNAME) AS JSRSTRS from B_H_00501 B,T_USER U WHERE B.JSRID = U.ID GROUP BY MAINID) B00501
+       on B005.ID = B00501.MAINID
+       where B005.YXZT = 1 and B005.DJID in
+       	 <foreach collection="list" item="djidList" index="index" open="(" close=")" separator=",">
+			#{djidList}
+		 </foreach>
+		order by B005.WBWJM DESC
+  </select>
+  
+	<!-- 根据条件查询留言信息 -->
+  <select id="queryMessageList" parameterType="com.eray.thjw.aerialmaterial.po.Message" resultMap="MessageJoinMap">
+    select 	B005.ID, B005.LX, B005.DJID, B005.YSWJM, B005.WBWJM, B005.NBWJM, B005.YXZT, B005.DPRTCODE,
+      		LZDR.ID AS LZDRID,LZDR.USERNAME AS LZDRUSERNAME,LZDR.REALNAME AS LZDRREALNAME,
+      		B005011.ID AS RID,
+      		B005011.MAINID AS RMAINID,
+      		B005011.JSBMID AS RJSBMID,
+      		B005011.JSRID AS RJSRID,
+      		B005011.JSSJ AS RJSSJ,
+      		B005011.ZT AS RZT,
+      		UZDR.USERNAME AS JZDRUSERNAME,
+      		UZDR.REALNAME AS JZDRREALNAME,
+      		B00501.JSRSTRS AS JSRNAMES
+       from B_H_005 B005
+       left join T_USER LZDR
+       on B005.YSWJM = LZDR.ID
+       left join B_H_00501 B005011
+       on B005.ID = B005011.MAINID
+       left join T_USER UZDR
+       on B005011.JSRID = UZDR.ID
+       left join (select B.MAINID,WM_CONCAT(B.ZT||U.USERNAME||' '||U.REALNAME) AS JSRSTRS from B_H_00501 B,T_USER U WHERE B.JSRID = U.ID GROUP BY MAINID) B00501
+       on B005.ID = B00501.MAINID
+       where B005.YXZT = 1
+    	<include refid="Message_Param"></include>
+		<include refid="Message_Join_Param"></include>
+		order by B005.WBWJM DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_005
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Message">
+    insert into B_H_005 (ID, LX, DJID, 
+      YSWJM, WBWJM, NBWJM, 
+      YXZT, DPRTCODE)
+    values (#{id,jdbcType=VARCHAR}, #{lx,jdbcType=DECIMAL}, #{djid,jdbcType=VARCHAR}, 
+      #{yswjm,jdbcType=VARCHAR}, #{wbwjm,jdbcType=TIMESTAMP}, #{nbwjm,jdbcType=VARCHAR}, 
+      #{yxzt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Message">
+    insert into B_H_005
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="lx != null">
+        LX,
+      </if>
+      <if test="djid != null">
+        DJID,
+      </if>
+      <if test="yswjm != null">
+        YSWJM,
+      </if>
+      <if test="yswjm != null">
+        WBWJM,
+      </if>
+      <if test="nbwjm != null">
+        NBWJM,
+      </if>
+      <if test="yxzt != null">
+        YXZT,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="lx != null">
+        #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="djid != null">
+        #{djid,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null">
+        #{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null">
+        sysdate,
+      </if>
+      <if test="nbwjm != null">
+        #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null">
+        #{yxzt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Message">
+    update B_H_005
+    <set>
+      <if test="lx != null">
+        LX = #{lx,jdbcType=DECIMAL},
+      </if>
+      <if test="djid != null">
+        DJID = #{djid,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null">
+        YSWJM = #{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null">
+        WBWJM = sysdate,
+      </if>
+      <if test="nbwjm != null">
+        NBWJM = #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null">
+        YXZT = #{yxzt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.Message">
+    update B_H_005
+    set LX = #{lx,jdbcType=DECIMAL},
+      DJID = #{djid,jdbcType=VARCHAR},
+      YSWJM = #{yswjm,jdbcType=VARCHAR},
+      WBWJM = #{wbwjm,jdbcType=TIMESTAMP},
+      NBWJM = #{nbwjm,jdbcType=VARCHAR},
+      YXZT = #{yxzt,jdbcType=DECIMAL}
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR} -->
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 搜索参数 -->
+	<sql id="Message_Param">
+		<if test="id != null and id != ''">
+		    and B005.ID = #{id}
+		</if>
+		<if test="lx != null and lx != ''">
+		    and B005.LX = #{lx}
+		</if>
+		<if test="djid != null and djid != ''">
+		    and B005.DJID = #{djid}
+		</if>
+		<if test="nbwjm != null and nbwjm != ''">
+		    and UPPER(B005.NBWJM) like UPPER('%'||#{nbwjm}||'%')
+		</if>
+		<if test="dprtcode != null and dprtcode != ''">
+		    and B005.DPRTCODE = #{dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.wbwjmqBegin != null and paramsMap.wbwjmqBegin != ''">
+		    and B005.WBWJM &gt;= to_date(#{paramsMap.wbwjmqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.wbwjmEnd != null and paramsMap.wbwjmEnd != ''">
+		    and B005.WBWJM &lt;= to_date(#{paramsMap.wbwjmEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+	</sql>
+	<sql id="Message_Join_Param">
+		<if test="paramsMap != null and paramsMap.zdrname != null and paramsMap.zdrname != ''">
+		    and (UPPER(LZDR.REALNAME) like UPPER('%'||#{paramsMap.zdrname}||'%')
+		    or UPPER(LZDR.USERNAME) like UPPER('%'||#{paramsMap.zdrname}||'%')
+		    )
+		</if>
+	</sql>
+  
+</mapper>

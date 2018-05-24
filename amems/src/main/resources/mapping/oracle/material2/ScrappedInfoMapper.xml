@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.ScrappedInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.ScrappedInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="SJLY" property="sjly" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="KCID" property="kcid" jdbcType="VARCHAR" />
+    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+    <result column="KCLLID" property="kcllid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, WHDWID, WHRID, WHSJ, SJLY, ZT, KCID, KCSL, KCLLID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_00901
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_00901
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.ScrappedInfo" >
+    insert into B_H2_00901 (ID, MAINID, WHDWID, 
+      WHRID, WHSJ, SJLY, 
+      ZT, KCID, KCSL, KCLLID
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{sjly,jdbcType=DECIMAL}, 
+      #{zt,jdbcType=DECIMAL}, #{kcid,jdbcType=VARCHAR}, #{kcsl,jdbcType=DECIMAL}, #{kcllid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.ScrappedInfo" >
+    insert into B_H2_00901
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="sjly != null" >
+        SJLY,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="kcid != null" >
+        KCID,
+      </if>
+      <if test="kcsl != null" >
+        KCSL,
+      </if>
+      <if test="kcllid != null" >
+        KCLLID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sjly != null" >
+        #{sjly,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="kcid != null" >
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null" >
+        #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="kcllid != null" >
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.ScrappedInfo" >
+    update B_H2_00901
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sjly != null" >
+        SJLY = #{sjly,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="kcid != null" >
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null" >
+        KCSL = #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="kcllid != null" >
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.ScrappedInfo" >
+    update B_H2_00901
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      SJLY = #{sjly,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      KCSL = #{kcsl,jdbcType=DECIMAL},
+      KCLLID = #{kcllid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <insert id="insertBachInfo" parameterType="list">
+  	insert all
+	<foreach collection="list" item="item" index="index" >
+	 into B_H2_00901 (ID, MAINID, WHDWID, 
+      WHRID, WHSJ, SJLY, 
+      ZT, KCID, KCSL, KCLLID
+      )
+    values (#{item.id,jdbcType=VARCHAR}, #{item.mainid,jdbcType=VARCHAR}, #{item.whdwid,jdbcType=VARCHAR}, 
+      #{item.whrid,jdbcType=VARCHAR}, sysdate, #{item.sjly,jdbcType=DECIMAL}, 
+      #{item.zt,jdbcType=DECIMAL}, #{item.kcid,jdbcType=VARCHAR}, #{item.kcsl,jdbcType=DECIMAL}, #{item.kcllid,jdbcType=VARCHAR}
+      )
+       </foreach>
+		select 1 from dual
+  </insert>
+  <delete id="deleteByMainid" parameterType="String">
+   delete from B_H2_00901
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  <select id="doValidation4Close" parameterType="string" resultType="int">
+  	select count(1)
+	  from b_h2_00901 h200901
+	  join b_h2_021 h2021
+	    on h2021.zt = 1
+	   and h200901.zt = 1
+	   and h200901.id = h2021.bfmxid
+	   and h200901.mainid = #{mainid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_00901
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </select>
+  <select id="getListByIdList" parameterType="list" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from B_H2_00901
+    where id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+	  		#{item}  
+	 </foreach>  	
+  </select>
+</mapper>

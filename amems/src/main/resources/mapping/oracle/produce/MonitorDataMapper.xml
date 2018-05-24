@@ -1,0 +1,1150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.produce.dao.MonitorDataMapper">
+  
+  <!-- 查询时控时寿项目需要监控的数据 -->
+  <select id="selectControlMPNeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+  	select G2012.DPRTCODE,
+	       G2012.ID LYID,
+	       G2012.RWH LYBH,
+	       D007.FJZCH,
+	       D007.XLH FJXLH,
+	       S2004.ID ZJQDID,
+	       S2004.BJH,
+	       S2004.XLH,
+	       G2012.WZ,
+	       G2012.IS_HDWZ HDWZ,
+	       G2012.JSGS
+	  from B_G2_01102 G201102
+	  join B_G2_012 G2012 on G201102.WXXMID = G2012.ID
+	                     and G2012.YXBS = 1
+	                     and G2012.WXXMLX IN (2, 3)
+	                     and G201102.MAINID = #{wxfaid, jdbcType=VARCHAR}
+	  left join B_G2_01203 G2_01203 on G2_01203.MAINID = G2012.ID
+	  join D_007 D007 on D007.ZT = 1
+	                 and D007.DPRTCODE = G2012.DPRTCODE
+	                 and ((D007.FJZCH = G2_01203.FJZCH) or
+	                     (G2012.SYX = '00000' and D007.FJJX = G2012.JX))
+	  join B_G2_01204 G201204 on G201204.MAINID = G2012.ID
+	  join B_S2_004 S2004 on S2004.DPRTCODE = D007.DPRTCODE
+	                     and S2004.FJZCH = D007.FJZCH
+	                     and S2004.ZJZT = 1
+	                     and S2004.YXBS = 1
+	                     and S2004.BJH = G201204.BJH
+  </select>
+  
+  <!-- 查询维修项目/定检包需要监控的数据 -->
+  <select id="selectCommonMPNeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+  	select G2012.DPRTCODE,
+	       G2012.ID LYID,
+	       G2012.RWH LYBH,
+	       D007.FJZCH,
+	       D007.XLH FJXLH,
+	       G2012.WZ,
+	       G2012.IS_HDWZ HDWZ,
+	       G2012.JSGS
+	  from B_G2_01102 G201102
+	  join B_G2_012 G2012 on G201102.WXXMID = G2012.ID
+	                     and G2012.YXBS = 1
+	                     and G2012.WXXMLX IN (1, 4)
+	                     and G201102.MAINID = #{wxfaid, jdbcType=VARCHAR}
+	  left join B_G2_01203 G2_01203 on G2_01203.MAINID = G2012.ID
+	  join D_007 D007 on D007.ZT = 1
+	                 and D007.DPRTCODE = G2012.DPRTCODE
+	                 and ((D007.FJZCH = G2_01203.FJZCH) or
+	                     (G2012.SYX = '00000' and D007.FJJX = G2012.JX))
+  </select>
+  
+  <!-- 批量从监控数据同步到当前监控数据中 -->
+  <insert id="insertCurrMonitor4BatchSync" parameterType="java.util.List" >
+  	insert into B_S2_902 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, LYLX, 
+      LYID, LYBH, WXFAID, 
+      WXFABH, EOXC, FJZCH, 
+      FJXLH, ZJQDID, BJH, 
+      XLH, JSSJ, BYXJKSJID, 
+      WZ,HDWZ,JSGS)
+    select ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, LYLX, 
+      LYID, LYBH, WXFAID, 
+      WXFABH, EOXC, FJZCH, 
+      FJXLH, ZJQDID, BJH, 
+      XLH, JSSJ, BYXJKSJID, 
+      WZ,HDWZ,JSGS
+  	from B_S2_901 where id in 
+     	<foreach collection="list" item="item" index="index" open="(" close=")" separator=","> 
+     		#{item.id, jdbcType=VARCHAR}
+   		</foreach>
+  </insert>
+  <!-- 按机型查询飞机和飞机序列号件的初始化日期 -->
+  <select id="selectAllCalInitByFjjx" resultType="java.util.Map">
+  	select D_00701.FJZCH ID, D_00701.CSZ
+	  from D_00701
+	  join D_007 on D_007.ZT = 1
+	            and D_007.DPRTCODE = D_00701.DPRTCODE
+	            and D_007.FJZCH = D_00701.FJZCH
+	 where D_00701.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   and D_007.FJJX = #{fjjx, jdbcType=VARCHAR}
+	   and D_00701.WZ = 11
+	   and D_00701.JKLBH = '1_10'
+	union all
+	select B_S2_004.ID, B_S2_00401.ZSSYY CSZ
+	  from B_S2_00401
+	  join B_S2_004 on B_S2_004.ID = B_S2_00401.MAINID
+	               and B_S2_004.YXBS = 1
+	               and XLH IS NOT NULL
+	               and B_S2_004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	               and B_S2_00401.JKLBH = '1_10'
+	               and B_S2_004.JX = #{fjjx, jdbcType=VARCHAR}
+	               and B_S2_004.ZJZT = 1
+	               
+  </select>
+  <!-- 根据EOID查询需要进行监控的对飞机监控数据 -->
+  <select id="selectEOPlaneNeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+      select G2010.DPRTCODE,
+	       G2010.ID LYID,
+	       G2010.EOBH LYBH,
+	       B1.XC EOXC,
+	       D007.FJZCH,
+	       D007.XLH FJXLH,
+	       G2010.HDWZ,
+	       G2010.JSGS
+	  from B_G2_010 G2010
+	  join B_G2_01001 G201001 on G2010.ID = G201001.MAINID
+	                         and G201001.ZT = 1
+	                         and G2010.ID = #{id, jdbcType=VARCHAR}
+	  join D_007 D007 on G2010.DPRTCODE = D007.DPRTCODE
+	                 and G201001.BH = D007.FJZCH
+	                 and D007.ZT = 1
+	  join (select G201002.MAINID, G201002.XC
+	          from B_G2_01002 G201002
+	         where G201002.ZT = 1
+	         group by G201002.MAINID, G201002.XC) B1 on B1.MAINID = G2010.ID
+  </select>
+  <!-- 根据EO查询需要进行监控的对部件监控数据 -->
+  <select id="selectEOPartNeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+      select G2010.DPRTCODE,
+	       G2010.ID LYID,
+	       G2010.EOBH LYBH,
+	       B1.XC EOXC,
+	       B2.FJZCH,
+	       B2.FJXLH,
+	       B2.ZJQDID,
+	       B2.BJH,
+	       B2.XLH,
+	       G2010.HDWZ,
+	       G2010.JSGS
+	  from B_G2_010 G2010
+	  join B_G2_01001 G201001 on G2010.ID = G201001.MAINID
+	                         and G201001.ZT = 1
+	                         and G2010.ID = #{id, jdbcType=VARCHAR}
+	  join (select G201002.MAINID, G201002.XC
+	          from B_G2_01002 G201002
+	         where G201002.ZT = 1
+	         group by G201002.MAINID, G201002.XC) B1 on B1.MAINID = G2010.ID
+	  join (select S2004.BJH,
+	               S2004.XLH,
+	               S2004.FJZCH,
+	               1 WZBS,
+	               S2004.ID ZJQDID,
+	               D007.XLH FJXLH
+	          from B_S2_004 S2004
+	          join D_007 D007 on S2004.DPRTCODE = D007.DPRTCODE
+	                         and S2004.FJZCH = D007.FJZCH
+	                         and D007.ZT = 1
+	         where S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	           and S2004.JX = #{fjjx, jdbcType=VARCHAR}
+	           and S2004.YXBS = 1
+	           and S2004.XLH IS NOT NULL
+	           and S2004.ZJZT = 1
+	        union all
+	        select H001.BJH, H001.SN XLH, '' FJZCH, 2 WZBS, '' ZJQDID, '' FJXLH
+	          from B_H_001 H001
+	         where H001.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	        union all
+	        select H003.BJH, H003.SN XLH, '' FJZCH, 2 WZBS, '' ZJQDID, '' FJXLH
+	          from B_H_003 H003
+	         where H003.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}) B2 on B2.BJH = G201001.BH
+	                                                  AND B2.XLH = G201001.XLH
+  </select>
+  
+  <!-- 查询单个飞机所需要的监控的维修项目和EO  -->
+  <select id="selectPlaneNeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+  	SELECT G2010.DPRTCODE,
+	       2 LYLX,
+	       G2010.ID LYID,
+	       G2010.EOBH LYBH,
+	       NULL WZ,
+	       '' WXFAID,
+	       '' WXFABH,
+	       G201002.XC EOXC,
+	       #{fjzch, jdbcType=VARCHAR} FJZCH,
+	       SYS_GUID() ID,
+	       G2010.HDWZ,
+	       G2010.JSGS
+	  FROM B_G2_010 G2010
+	  JOIN (SELECT G201002.MAINID, G201002.XC
+	          FROM B_G2_01002 G201002
+	         WHERE G201002.ZT = 1
+	         GROUP BY G201002.MAINID, G201002.XC) G201002 ON G201002.MAINID = G2010.ID
+	  LEFT JOIN B_G2_01001 G201001 ON G201001.MAINID = G2010.ID
+	                              AND G201001.ZT = 1
+	                              AND G201001.BH = #{fjzch, jdbcType=VARCHAR}
+	 WHERE G2010.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND G2010.ZT = 7
+	   AND G2010.IS_XFSC = 1
+	   AND G2010.JX = #{fjjx, jdbcType=VARCHAR}
+	   AND ((G201001.ID IS NULL AND G2010.FJZCH = '00000') OR G201001.GBZT = 1)
+	   AND G2010.SYLB = 1
+	   AND (G2010.zxfs =2 or NOT EXISTS (SELECT 1 FROM B_S2_901 S901 WHERE S901.ZT=1 AND S901.JSSj IS NOT NULL AND S901.EOXC=G201002.XC AND S901.LYID=G2010.ID AND S901.FJZCH=#{fjzch, jdbcType=VARCHAR} AND S901.ZJQDID IS NULL))                    
+	UNION ALL
+	SELECT G2011.DPRTCODE,
+	       1 LYLX,
+	       G2012.ID LYID,
+	       G2012.RWH LYBH,
+	       G2012.WZ WZ,
+	       G2011.ID WXFAID,
+	       G2011.WXFABH,
+	       NULL EOXC,
+	       #{fjzch, jdbcType=VARCHAR} FJZCH,
+	       SYS_GUID() ID,
+	       G2012.IS_HDWZ HDWZ,
+	       G2012.JSGS
+	  FROM B_G2_01102 G201102
+	  JOIN B_G2_011 G2011 ON G201102.MAINID = G2011.ID
+	                     AND G2011.ZXBS = 2
+	                     AND G2011.JX = #{fjjx, jdbcType=VARCHAR}
+	                     AND G2011.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	  JOIN B_G2_012 G2012 ON G2012.YXBS = 1
+	                     AND G201102.WXXMID = G2012.ID
+	                     AND ((G2012.WXXMLX = 1 AND (G2012.SYX = '00000' OR EXISTS
+	                          (SELECT 1
+	                             FROM B_G2_01203 G201203
+	                            WHERE G201203.MAINID = G2012.ID
+	                              AND G201203.FJZCH = #{fjzch, jdbcType=VARCHAR}))) OR
+	                         G2012.WXXMLX = 4)
+	  UNION ALL 
+		  SELECT G2014.DPRTCODE,
+		       3 LYLX,
+		       G2014.ID LYID,
+		       G2014.ZLBH LYBH,
+		       G2014.WZ WZ,
+		       NULL WXFAID,
+		       NULL WXFABH,
+		       NULL EOXC,
+		       #{fjzch, jdbcType=VARCHAR} FJZCH,
+		       SYS_GUID() ID,
+		       G2014.IS_HDWZ HDWZ,
+		       G2014.JSGS                     
+		  FROM B_G2_014 G2014     
+	    WHERE G2014.dprtcode = #{dprtcode, jdbcType=VARCHAR}     
+	          AND (G2014.SYX = '00000' OR exists
+	               (SELECT 1
+	                  FROM B_G2_01402 G201402
+	                 WHERE G201402.MAINID = G2014.ID
+	                   AND G201402.FJZCH = #{fjzch, jdbcType=VARCHAR}))   
+	          AND G2014.ZT = 7
+	          AND G2014.ZXBS = 2                        
+	          AND G2014.JX = #{fjjx, jdbcType=VARCHAR}                  
+  </select>
+  <!-- 查询装机件需要监控的数据 -->
+  <select id="selectInstallComponentNeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+  	SELECT G2010.DPRTCODE,
+	       2 LYLX,
+	       G2010.ID LYID,
+	       G2010.EOBH LYBH,
+	       NULL WZ,
+	       '' WXFAID,
+	       '' WXFABH,
+	       G201002.XC EOXC,
+	       #{fjzch, jdbcType=VARCHAR} FJZCH,
+	       SYS_GUID() ID,
+	       G2010.HDWZ,
+	       G2010.JSGS
+	  FROM B_G2_010 G2010
+	  JOIN (SELECT G201002.MAINID, G201002.XC
+	          FROM B_G2_01002 G201002
+	         WHERE G201002.ZT = 1
+	         GROUP BY G201002.MAINID, G201002.XC) G201002 ON G201002.MAINID =
+	                                                         G2010.ID
+	 WHERE G2010.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND G2010.ZT = 7
+	   AND G2010.JX = #{fjjx, jdbcType=VARCHAR}
+	   AND G2010.SYLB IN (2, 3, 99)
+	   AND G2010.IS_XFSC = 1
+	   AND EXISTS (SELECT 1
+	          FROM B_G2_01001 G201001
+	         WHERE G201001.ZT = 1
+	           AND G201001.GBZT = 1
+	           AND G201001.MAINID = G2010.ID
+	           AND G201001.BH = #{bjh, jdbcType=VARCHAR} 
+	           AND G201001.XLH = #{xlh, jdbcType=VARCHAR} )
+	UNION ALL
+	SELECT G2011.DPRTCODE,
+	       1 LYLX,
+	       G2012.ID LYID,
+	       G2012.RWH LYBH,
+	       G2012.WZ,
+	       G2011.ID WXFAID,
+	       G2011.WXFABH,
+	       NULL EOXC,
+	       #{fjzch, jdbcType=VARCHAR} FJZCH,
+	       SYS_GUID() ID,
+	       G2012.IS_HDWZ HDWZ,
+	       G2012.JSGS
+	  FROM B_G2_01102 G201102
+	  JOIN B_G2_011 G2011 ON G201102.MAINID = G2011.ID
+	                     AND G2011.ZXBS = 2
+	                     AND G2011.JX = #{fjjx, jdbcType=VARCHAR}
+	                     AND G2011.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	  JOIN B_G2_012 G2012 ON G2012.YXBS = 1
+	                     AND G201102.WXXMID = G2012.ID
+	                     AND G2012.WXXMLX IN (2, 3)
+	                     AND (G2012.SYX = '00000' OR EXISTS
+	                          (SELECT 1
+	                             FROM B_G2_01203 G201203
+	                            WHERE G201203.MAINID = G2012.ID
+	                              AND G201203.FJZCH = #{fjzch, jdbcType=VARCHAR}))
+	  JOIN B_G2_01204 G201204 ON G201204.MAINID = G2012.ID
+	                         AND G201204.BJH = #{bjh, jdbcType=VARCHAR} 
+  </select>
+  
+  <!-- 生成对部件的初始值及累计值，写入到临时表-需要在装机清单编辑区同步到生效区前完成 -->
+  <insert id="insertTemp4Component">
+  	INSERT INTO B_S2_904_TEMP
+  		(S2901ID, S2904ID, CSZ, SJZ, PCBH)
+  	SELECT S2901.ID S2901ID,
+	       S2904.ID S2904ID,
+	       S200101.CSZ,       
+	       CASE
+	         WHEN S2904.JKLBH = '2_10_FH' THEN
+	          S2901.FXSJ_FZ
+	         WHEN S2904.JKLBH = '2_20_AH' THEN
+	          S2901.APU_SJ_FZ
+	         WHEN S2904.JKLBH = '2_30_EH' THEN         
+	          CASE
+	            WHEN S2901.WZ = 21 THEN
+	             S2901.F1_SJ_FZ
+	            WHEN S2901.WZ = 22 THEN
+	             S2901.F2_SJ_FZ
+	            WHEN S2901.WZ = 23 THEN
+	             S2901.F3_SJ_FZ
+	            WHEN S2901.WZ = 24 THEN
+	             S2901.F4_SJ_FZ
+	            ELSE
+	             NULL
+	          END       
+	         WHEN S2904.JKLBH = '3_10_FC' THEN
+	          S2901.FXXH
+	         WHEN S2904.JKLBH = '3_20_AC' THEN
+	          S2901.APU_XH
+	         WHEN S2904.JKLBH = '3_30_EC' THEN
+	          CASE
+	            WHEN S2901.WZ = 21 THEN
+	             S2901.F1_XH
+	            WHEN S2901.WZ = 22 THEN
+	             S2901.F2_XH
+	            WHEN S2901.WZ = 23 THEN
+	             S2901.F3_XH
+	            WHEN S2901.WZ = 24 THEN
+	             S2901.F4_XH
+	            ELSE
+	             NULL
+	          END
+	         ELSE
+	          NULL
+	       END SJZ,
+	       #{pcbh, jdbcType=VARCHAR} PCBH
+	  FROM B_S2_904 S2904
+	  JOIN (SELECT S2901.ID,
+	               S2901.ZJQDID,
+	               S2001.WZ,
+	               SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+	               SUM(S200601.FXXH) FXXH,
+	               SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	               SUM(S200601.F1_XH) F1_XH,
+	               SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	               SUM(S200601.F2_XH) F2_XH,
+	               SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	               SUM(S200601.F3_XH) F3_XH,
+	               SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	               SUM(S200601.F4_XH) F4_XH,
+	               SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	               SUM(S200601.APU_XH) APU_XH
+	          FROM B_S2_901 S2901
+	          JOIN B_S2_001 S2001
+	            ON S2001.ID = S2901.ZJQDID
+	           AND S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	           AND S2001.TBBS = 1
+	           AND S2901.JSSJ IS NOT NULL and S2901.ZJQDID is not null
+	           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	          LEFT JOIN (SELECT S200601.FXSJ_FZ, S200601.FXXH, S200601.F1_SJ_FZ, S200601.F1_XH, S200601.F2_SJ_FZ, S200601.F2_XH, S200601.F3_SJ_FZ, S200601.F3_XH, S200601.F4_SJ_FZ, S200601.F4_XH, S200601.APU_SJ_FZ, S200601.APU_XH, S200601.KCSJ
+	          FROM B_S2_00601 S200601
+	          JOIN B_S2_006 S2006
+	            ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	           AND S200601.ZT = 1
+	           AND S200601.MAINID = S2006.ID
+	           AND S2006.ZT IN (2, 12)
+	           AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR} ) S200601 ON
+	         S200601.KCSJ &gt;=
+	               NVL(S2001.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	           AND S200601.KCSJ &lt; (CASE
+	                 WHEN COALESCE(S2901.JSSJ,
+	                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &lt;
+	                      COALESCE(S2001.CCSJ,
+	                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) THEN
+	                  COALESCE(S2901.JSSJ,
+	                           TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	                 ELSE
+	                  COALESCE(S2001.CCSJ,
+	                           TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	               END)
+	         GROUP BY S2901.ID, S2901.ZJQDID, S2001.WZ) S2901
+	    ON S2904.JKSJID = S2901.ID
+	   AND S2904.ZT = 1
+	   AND S2904.JKLBH != '1_10'
+	  LEFT JOIN B_S2_00101 S200101
+	    ON S200101.MAINID = S2901.ZJQDID
+	   AND S200101.JKLBH = S2904.JKLBH
+	 WHERE 1 = 1
+  </insert>
+  
+  <!-- 生成对飞机的发动机监控项的初始值及累计值，写入到临时表-需要在装机清单编辑区同步到生效区前完成 -->
+  <insert id="insertTemp4PlaneEngine">
+  	INSERT INTO B_S2_904_TEMP
+	  		(S2901ID, S2904ID, CSZ, SJZ, PCBH)
+	SELECT S2901.ID S2901ID,
+	       S2904.ID,
+	       S200401.ZSSYY CSZ,
+	       CAST((CASE
+	              WHEN S2904.JKLBH = '2_30_EH' THEN
+	               CASE
+	                 WHEN S2901.WZ = 21 THEN
+	                  S2901.F1_SJ_FZ
+	                 WHEN S2901.WZ = 22 THEN
+	                  S2901.F2_SJ_FZ
+	                 WHEN S2901.WZ = 23 THEN
+	                  S2901.F3_SJ_FZ
+	                 WHEN S2901.WZ = 24 THEN
+	                  S2901.F4_SJ_FZ
+	                 ELSE
+	                  NULL
+	               END
+	              WHEN S2904.JKLBH = '3_30_EC' THEN
+	               CASE
+	                 WHEN S2901.WZ = 21 THEN
+	                  S2901.F1_XH
+	                 WHEN S2901.WZ = 22 THEN
+	                  S2901.F2_XH
+	                 WHEN S2901.WZ = 23 THEN
+	                  S2901.F3_XH
+	                 WHEN S2901.WZ = 24 THEN
+	                  S2901.F4_XH
+	                 ELSE
+	                  NULL
+	               END
+	              ELSE
+	               NULL
+	            END) AS VARCHAR2(20)) LJZ,
+	            #{pcbh, jdbcType=VARCHAR} PCBH
+	  FROM (SELECT S2901.ID,
+	               S200601.ZJQDID,
+	               S200601.WZ,
+	               SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	               SUM(S200601.F1_XH) F1_XH,
+	               SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	               SUM(S200601.F2_XH) F2_XH,
+	               SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	               SUM(S200601.F3_XH) F3_XH,
+	               SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	               SUM(S200601.F4_XH) F4_XH
+	          FROM B_S2_901 S2901
+	          JOIN (SELECT S200601.F1_SJ_FZ,
+	                           S200601.F1_XH,
+	                           S200601.F2_SJ_FZ,
+	                           S200601.F2_XH,
+	                           S200601.F3_SJ_FZ,
+	                           S200601.F3_XH,
+	                           S200601.F4_SJ_FZ,
+	                           S200601.F4_XH,
+	                           S200601.KCSJ,
+	                           S2004.ID         ZJQDID,
+	                           S2004.WZ,
+	                           S2004.AZSJ,
+	                           S2004.CCSJ
+	                      FROM B_S2_00601 S200601
+	                      JOIN B_S2_006 S2006
+	                        ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	                       AND S200601.ZT = 1
+	                       AND S200601.MAINID = S2006.ID
+	                       AND S2006.ZT IN (2, 12)
+	                       AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	                      JOIN B_S2_004 S2004
+	                        ON S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	                       AND S2004.YXBS = 1
+	                       AND S200601.KCSJ &gt;=
+	                           NVL(S2004.AZSJ,
+	                               TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	                       AND S200601.KCSJ &lt;
+	                           NVL(S2004.CCSJ,
+	                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	                       AND S2004.WZ IN (21, 22, 23, 24, 31)
+	                       AND S2004.CJ = 1
+	                       AND S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}) S200601
+	            ON S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	           AND S2901.JSSJ &gt;= COALESCE(S200601.AZSJ,TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	           AND S2901.JSSJ &lt;= COALESCE(S200601.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	           AND S2901.JSSJ &gt;= S200601.KCSJ
+	           AND S2901.JSSJ IS NOT NULL
+	           AND S2901.ZJQDID IS NULL
+	           AND S2901.WZ = S200601.WZ
+	           AND EXISTS
+	         (SELECT 1
+	                  FROM B_S2_904 S2904
+	                 WHERE S2901.ID = S2904.JKSJID
+	                   AND S2904.ZT = 1
+	                   AND S2904.JKLBH IN ('2_30_EH', '3_30_EC'))
+	         WHERE 1 = 1
+	         GROUP BY S2901.ID, S200601.ZJQDID, S200601.WZ) S2901
+	  JOIN B_S2_904 S2904
+	    ON S2904.JKSJID = S2901.ID
+	   AND S2904.ZT = 1
+	   AND S2904.JKLBH IN ('2_30_EH', '3_30_EC')
+	  LEFT JOIN B_S2_00401 S200401
+	    ON S200401.MAINID = S2901.ZJQDID
+	   AND S200401.JKLBH = S2904.JKLBH
+  </insert>
+   <!-- 生成对飞机的APU监控项的初始值及累计值，写入到临时表-需要在装机清单编辑区同步到生效区前完成 -->
+  <insert id="insertTemp4PlaneAPU">
+  	INSERT INTO B_S2_904_TEMP
+	  		(S2901ID, S2904ID, CSZ, SJZ, PCBH)
+	SELECT S2901.ID S2901ID,
+	       S2904_APU.ID ID,
+	       S200401_APU.ZSSYY CSZ,
+	       CAST((CASE
+	              WHEN S2904_APU.JKLBH = '2_20_AH' THEN
+	               S2901.APU_SJ_FZ
+	              WHEN S2904_APU.JKLBH = '3_20_AC' THEN
+	               S2901.APU_XH
+	              ELSE
+	               NULL
+	            END) AS VARCHAR2(20)) SJZ,
+	       #{pcbh, jdbcType=VARCHAR} PCBH    
+	  FROM (SELECT S2901.ID,
+	               S200601.ZJQDID,
+	               S200601.WZ,
+	               SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+	               SUM(S200601.F1_XH) F1_XH,
+	               SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+	               SUM(S200601.F2_XH) F2_XH,
+	               SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+	               SUM(S200601.F3_XH) F3_XH,
+	               SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+	               SUM(S200601.F4_XH) F4_XH,
+	               SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+	               SUM(S200601.APU_XH) APU_XH
+	          FROM B_S2_901 S2901
+	          JOIN (SELECT S200601.F1_SJ_FZ,
+	                           S200601.F1_XH,
+	                           S200601.F2_SJ_FZ,
+	                           S200601.F2_XH,
+	                           S200601.F3_SJ_FZ,
+	                           S200601.F3_XH,
+	                           S200601.F4_SJ_FZ,
+	                           S200601.F4_XH,
+	                           S200601.APU_SJ_FZ,
+	                           S200601.APU_XH,
+	                           S200601.KCSJ,
+	                           S2004.ID          ZJQDID,
+	                           S2004.WZ,
+	                           S2004.AZSJ,
+	                           S2004.CCSJ
+	                      FROM B_S2_00601 S200601
+	                      JOIN B_S2_006 S2006
+	                        ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	                       AND S200601.ZT = 1
+	                       AND S200601.MAINID = S2006.ID
+	                       AND S2006.ZT IN (2, 12)
+	                       AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	                      JOIN B_S2_004 S2004
+	                        ON S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	                       AND S2004.YXBS = 1
+	                       AND S200601.KCSJ &gt;=
+	                           NVL(S2004.AZSJ,
+	                               TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	                       AND S200601.KCSJ &lt;
+	                           NVL(S2004.CCSJ,
+	                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	                       AND S2004.WZ = 31
+	                       AND S2004.CJ = 1
+	                       AND S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}) S200601
+	            ON S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	           AND S2901.JSSJ &gt;= COALESCE(S200601.AZSJ,TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+	           AND S2901.JSSJ &lt;= COALESCE(S200601.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+	           AND S2901.JSSJ &gt;= S200601.KCSJ
+	           AND S2901.JSSJ IS NOT NULL
+	           AND S2901.ZJQDID IS NULL
+	           AND EXISTS
+	         (SELECT 1
+	                  FROM B_S2_904 S2904
+	                 WHERE S2901.ID = S2904.JKSJID
+	                   AND S2904.ZT = 1
+	                   AND S2904.JKLBH IN ('2_20_AH', '3_20_AC'))
+	         WHERE 1 = 1
+	         GROUP BY S2901.ID, S200601.ZJQDID, S200601.WZ) S2901
+	  JOIN B_S2_904 S2904_APU
+	    ON S2904_APU.JKSJID = S2901.ID
+	   AND S2904_APU.ZT = 1
+	   AND S2904_APU.JKLBH IN ('2_20_AH', '3_20_AC')
+	  LEFT JOIN B_S2_00401 S200401_APU
+	    ON S200401_APU.MAINID = S2901.ZJQDID
+	   AND S200401_APU.JKLBH = S2904_APU.JKLBH
+  </insert>
+  
+  <!-- 从临时区更新计划执行数据 -->
+  <update id="update904FromTemp">
+  	UPDATE B_S2_904 T
+	  SET (SJZ, CSZ) = (SELECT COALESCE(SJZ,'0'), COALESCE(CSZ,'0') FROM B_S2_904_TEMP WHERE T.ID = B_S2_904_TEMP.S2904ID AND PCBH = #{pcbh, jdbcType=VARCHAR})
+	WHERE EXISTS (SELECT 1 FROM B_S2_904_TEMP WHERE S2904ID = T.ID AND PCBH = #{pcbh, jdbcType=VARCHAR})  
+  </update>
+  
+  <!-- 从临时区更新已执行数据 -->
+  <update id="update903FromTemp">
+  	UPDATE B_S2_903 T
+	  SET SCSJZ = (SELECT COALESCE(SJZ,'0')+COALESCE(CSZ,'0') FROM B_S2_904_TEMP WHERE T.ID = B_S2_904_TEMP.S2904ID AND PCBH = #{pcbh, jdbcType=VARCHAR})
+	WHERE EXISTS (SELECT 1 FROM B_S2_904_TEMP WHERE S2904ID = T.ID AND PCBH = #{pcbh, jdbcType=VARCHAR})   
+  </update>
+    <!-- 清除临时表数据 -->
+  <delete id="deleteTempByPcbh">
+  	DELETE from B_S2_904_TEMP T
+	WHERE PCBH = #{pcbh, jdbcType=VARCHAR}   
+  </delete>
+  
+  <!-- 修改b_s2_904 监控数据-(计划)执行数据存在飞行时间/飞行循环监控项目的初始化值 -->
+  <update id="update904Init4Plane">
+  	UPDATE B_S2_904 S2904
+	   SET CSZ = #{csz, jdbcType=VARCHAR}
+	 WHERE S2904.ZT = 1
+	   AND S2904.JKLBH = #{jklbh, jdbcType=VARCHAR}
+	   AND EXISTS (SELECT 1
+	          FROM B_S2_901 S2901
+	         WHERE S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	           AND S2901.ID = S2904.JKSJID
+			   AND S2901.ZJQDID IS NULL
+			   AND S2901.JSSJ IS NOT NULL
+	           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR})
+  </update>
+  
+  <!-- 修改b_s2_903 监控数据-上次执行数据飞行时间/飞行循环监控项目的上次实际值 -->
+  <update id="update903sjz4Plane">
+  	UPDATE B_S2_903 S2903
+	   SET SCSJZ =
+	       (SELECT CAST(S2904.SJZ AS INTEGER) + CAST(S2904.CSZ AS INTEGER)
+	          FROM B_S2_904 S2904
+	         WHERE S2904.ID = S2903.ID)
+	 WHERE S2903.JKLBH = #{jklbh, jdbcType=VARCHAR}
+	   AND EXISTS (SELECT 1
+	          FROM B_S2_904 S2904
+	         WHERE S2904.ZT = 1
+	           AND S2904.JKLBH = #{jklbh, jdbcType=VARCHAR}
+	           AND EXISTS (SELECT 1
+	                  FROM B_S2_901 S2901
+	                 WHERE S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	                   AND S2901.ID = S2904.JKSJID
+					   AND S2901.ZJQDID IS NULL
+	                   AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR})
+	           AND S2904.ID = S2903.ID)
+  </update>
+  
+   <!-- 生成对飞机的FH/FC累计值到临时表（包含本飞行记录本会影响的所有已执行任务）-->
+  <insert id="insertTemp4FJByFLB">
+  	INSERT INTO B_S2_904_TEMP
+	  		(S2901ID, S2904ID, SJZ, PCBH)
+		SELECT S2901.ID S2901ID,
+		       S2904.ID,
+		       CASE
+		         WHEN S2904.JKLBH = '2_10_FH' THEN
+		          S2901.FXSJ      
+		         WHEN S2904.JKLBH = '3_10_FC' THEN
+		          S2901.FXXH		      
+		         ELSE
+		          NULL
+		       END SJLJZ,
+			   #{pcbh, jdbcType=VARCHAR}
+		  FROM B_S2_904 S2904
+		  JOIN (SELECT S2901.ID,
+		               SUM(S200601.FXSJ_FZ) FXSJ,
+                   	   SUM(S200601.FXXH) FXXH
+		          FROM B_S2_901 S2901	          		           
+		          LEFT JOIN (SELECT S200601.FXSJ_FZ, S200601.FXXH, S200601.KCSJ
+		                    FROM B_S2_00601 S200601
+        		          JOIN B_S2_006 S2006
+        		            ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+        		           AND S200601.ZT = 1
+        		           AND S200601.MAINID = S2006.ID
+        		           AND S2006.ZT IN (2, 12)
+        		           AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR} ) S200601 
+        		           ON  S200601.KCSJ &lt; S2901.JSSJ
+		         WHERE S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}	  
+                   AND S2901.ZJQDID IS NULL       
+		           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR}
+				   AND S2901.JSSJ &gt;= #{minKcsj, jdbcType=TIMESTAMP}
+		         GROUP BY S2901.ID) S2901
+		    ON S2904.JKSJID = S2901.ID
+		   AND S2904.ZT = 1
+		   AND S2904.JKLBH in ('2_10_FH', '3_10_FC')
+  </insert>
+  
+ <!-- 生成对部件的累计值到临时表（包含本飞行记录本会影响的所有已执行任务）-->
+  <insert id="insertTemp4ComponentByFLB">
+  	INSERT INTO B_S2_904_TEMP
+	  		(S2901ID, S2904ID, SJZ, PCBH)
+		SELECT S2901.ID S2901ID,
+		       S2904.ID,
+		       CASE
+		         WHEN S2904.JKLBH = '2_10_FH' THEN
+		          S2901.FXSJ_FZ
+		         WHEN S2904.JKLBH = '2_20_AH' THEN
+		          S2901.APU_SJ_FZ
+		         WHEN S2904.JKLBH = '2_30_EH' THEN         
+		          CASE
+		            WHEN S2901.WZ = 21 THEN
+		             S2901.F1_SJ_FZ
+		            WHEN S2901.WZ = 22 THEN
+		             S2901.F2_SJ_FZ
+		            WHEN S2901.WZ = 23 THEN
+		             S2901.F3_SJ_FZ
+		            WHEN S2901.WZ = 24 THEN
+		             S2901.F4_SJ_FZ
+		            ELSE
+		             NULL
+		          END       
+		         WHEN S2904.JKLBH = '3_10_FC' THEN
+		          S2901.FXXH
+		         WHEN S2904.JKLBH = '3_20_AC' THEN
+		          S2901.APU_XH
+		         WHEN S2904.JKLBH = '3_30_EC' THEN
+		          CASE
+		            WHEN S2901.WZ = 21 THEN
+		             S2901.F1_XH
+		            WHEN S2901.WZ = 22 THEN
+		             S2901.F2_XH
+		            WHEN S2901.WZ = 23 THEN
+		             S2901.F3_XH
+		            WHEN S2901.WZ = 24 THEN
+		             S2901.F4_XH
+		            ELSE
+		             NULL
+		          END
+		         ELSE
+		          NULL
+		       END SJLJZ,
+			   #{pcbh, jdbcType=VARCHAR}
+		  FROM B_S2_904 S2904
+		  JOIN (SELECT S2901.ID,
+		               S2901.ZJQDID,
+		               S2004.WZ,
+		               SUM(S200601.FXSJ_FZ) FXSJ_FZ,
+		               SUM(S200601.FXXH) FXXH,
+		               SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+		               SUM(S200601.F1_XH) F1_XH,
+		               SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+		               SUM(S200601.F2_XH) F2_XH,
+		               SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+		               SUM(S200601.F3_XH) F3_XH,
+		               SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+		               SUM(S200601.F4_XH) F4_XH,
+		               SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+		               SUM(S200601.APU_XH) APU_XH
+		          FROM B_S2_901 S2901
+		          JOIN B_S2_004 S2004
+		            ON S2004.ID = S2901.ZJQDID
+		           AND S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		           AND S2004.YXBS = 1
+		           AND S2901.ZJQDID IS NOT NULL
+		           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR}
+				   AND S2901.JSSJ &gt;= #{minKcsj, jdbcType=TIMESTAMP}
+		          LEFT JOIN （SELECT S200601.FXSJ_FZ, S200601.FXXH, S200601.F1_SJ_FZ, S200601.F1_XH, S200601.F2_SJ_FZ, S200601.F2_XH, S200601.F3_SJ_FZ, S200601.F3_XH, S200601.F4_SJ_FZ, S200601.F4_XH, S200601.APU_SJ_FZ, S200601.APU_XH, S200601.KCSJ
+		          FROM B_S2_00601 S200601
+		          JOIN B_S2_006 S2006
+		            ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		           AND S200601.ZT = 1
+		           AND S200601.MAINID = S2006.ID
+		           AND S2006.ZT IN (2, 12)
+		           AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR} ) S200601 ON
+		         S200601.KCSJ &gt;=
+		               COALESCE(S2004.AZSJ, TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+		           AND S200601.KCSJ &lt; (CASE
+		                 WHEN COALESCE(S2901.JSSJ,
+		                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) &lt;
+		                      COALESCE(S2004.CCSJ,
+		                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS')) THEN
+		                  COALESCE(S2901.JSSJ,
+		                           TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+		                 ELSE
+		                  COALESCE(S2004.CCSJ,
+		                           TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+		               END)
+		         WHERE 1 = 1
+		         GROUP BY S2901.ID, S2901.ZJQDID, S2004.WZ) S2901
+		    ON S2904.JKSJID = S2901.ID
+		   AND S2904.ZT = 1
+		   AND S2904.JKLBH != '1_10'
+		 WHERE 1 = 1 
+  </insert>
+   
+  <!-- 生成对飞机的发动机监控项的累计值，写入到临时表 （包含本飞行记录本会影响的所有已执行任务）-->
+  <insert id="insertTemp4PlaneEngineByFLB">
+  	INSERT INTO B_S2_904_TEMP
+	  		(S2901ID, S2904ID, SJZ, PCBH)
+		SELECT S2901.ID S2901ID,
+		       S2904.ID,
+		       CAST((CASE
+		              WHEN S2904.JKLBH = '2_30_EH' THEN
+		               CASE
+		                 WHEN S2901.WZ = 21 THEN
+		                  S2901.F1_SJ_FZ
+		                 WHEN S2901.WZ = 22 THEN
+		                  S2901.F2_SJ_FZ
+		                 WHEN S2901.WZ = 23 THEN
+		                  S2901.F3_SJ_FZ
+		                 WHEN S2901.WZ = 24 THEN
+		                  S2901.F4_SJ_FZ
+		                 ELSE
+		                  NULL
+		               END
+		              WHEN S2904.JKLBH = '3_30_EC' THEN
+		               CASE
+		                 WHEN S2901.WZ = 21 THEN
+		                  S2901.F1_XH
+		                 WHEN S2901.WZ = 22 THEN
+		                  S2901.F2_XH
+		                 WHEN S2901.WZ = 23 THEN
+		                  S2901.F3_XH
+		                 WHEN S2901.WZ = 24 THEN
+		                  S2901.F4_XH
+		                 ELSE
+		                  NULL
+		               END
+		              ELSE
+		               NULL
+		            END) AS VARCHAR2(20)) SJLJZ,
+		            #{pcbh, jdbcType=VARCHAR}
+		  FROM (SELECT S2901.ID,
+		               S200601.ZJQDID,
+		               S200601.WZ,
+		               SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+		               SUM(S200601.F1_XH) F1_XH,
+		               SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+		               SUM(S200601.F2_XH) F2_XH,
+		               SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+		               SUM(S200601.F3_XH) F3_XH,
+		               SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+		               SUM(S200601.F4_XH) F4_XH
+		          FROM B_S2_901 S2901
+		          JOIN (SELECT S200601.F1_SJ_FZ,
+		                           S200601.F1_XH,
+		                           S200601.F2_SJ_FZ,
+		                           S200601.F2_XH,
+		                           S200601.F3_SJ_FZ,
+		                           S200601.F3_XH,
+		                           S200601.F4_SJ_FZ,
+		                           S200601.F4_XH,
+		                           S200601.KCSJ,
+		                           S2004.ID         ZJQDID,
+		                           S2004.WZ,
+		                           S2004.AZSJ,
+		                           S2004.CCSJ
+		                      FROM B_S2_00601 S200601
+		                      JOIN B_S2_006 S2006
+		                        ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		                       AND S200601.ZT = 1
+		                       AND S200601.MAINID = S2006.ID
+		                       AND S2006.ZT IN (2, 12)
+		                       AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR}
+		                      JOIN B_S2_004 S2004
+		                        ON S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		                       AND S2004.YXBS = 1
+		                       AND S200601.KCSJ &gt;=
+		                           NVL(S2004.AZSJ,
+		                               TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+		                       AND S200601.KCSJ &lt;
+		                           NVL(S2004.CCSJ,
+		                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+		                       AND S2004.WZ IN (21, 22, 23, 24, 31)
+		                       AND S2004.CJ = 1
+		                       AND S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}) S200601
+		            ON S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR}
+		           AND S2901.JSSJ &gt;= COALESCE(S200601.AZSJ,TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+		           AND S2901.JSSJ &lt;= COALESCE(S200601.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+		           AND S2901.JSSJ &gt;= S200601.KCSJ
+				   AND S2901.JSSJ &gt;= #{minKcsj, jdbcType=TIMESTAMP}
+		           AND S2901.ZJQDID IS NULL
+		           and s2901.WZ = S200601.WZ
+		           AND EXISTS
+		         (SELECT 1
+		                  FROM B_S2_904 S2904
+		                 WHERE S2901.ID = S2904.JKSJID
+		                   AND S2904.ZT = 1
+		                   AND S2904.JKLBH IN ('2_30_EH', '3_30_EC'))
+		         WHERE 1 = 1
+		         GROUP BY S2901.ID, S200601.ZJQDID, S200601.WZ) S2901
+		  JOIN B_S2_904 S2904
+		    ON S2904.JKSJID = S2901.ID
+		   AND S2904.ZT = 1
+		   AND S2904.JKLBH IN ('2_30_EH', '3_30_EC')
+  </insert>
+  
+  <!-- 生成对飞机的APU监控项的累计值，写入到临时表（包含本飞行记录本会影响的所有已执行任务） -->
+  <insert id="insertTemp4PlaneAPUByFLB">
+  	INSERT INTO B_S2_904_TEMP
+	  		(S2901ID, S2904ID, SJZ, PCBH)
+		SELECT S2901.ID S2901ID,
+		       S2904_APU.ID ID,
+		       CAST((CASE
+		              WHEN S2904_APU.JKLBH = '2_20_AH' THEN
+		               S2901.APU_SJ_FZ
+		              WHEN S2904_APU.JKLBH = '3_20_AC' THEN
+		               S2901.APU_XH
+		              ELSE
+		               NULL
+		            END) AS VARCHAR2(20)) SJLJZ,
+		            #{pcbh, jdbcType=VARCHAR}
+		  FROM (SELECT S2901.ID,
+		               S200601.ZJQDID,
+		               S200601.WZ,
+		               SUM(S200601.F1_SJ_FZ) F1_SJ_FZ,
+		               SUM(S200601.F1_XH) F1_XH,
+		               SUM(S200601.F2_SJ_FZ) F2_SJ_FZ,
+		               SUM(S200601.F2_XH) F2_XH,
+		               SUM(S200601.F3_SJ_FZ) F3_SJ_FZ,
+		               SUM(S200601.F3_XH) F3_XH,
+		               SUM(S200601.F4_SJ_FZ) F4_SJ_FZ,
+		               SUM(S200601.F4_XH) F4_XH,
+		               SUM(S200601.APU_SJ_FZ) APU_SJ_FZ,
+		               SUM(S200601.APU_XH) APU_XH
+		          FROM B_S2_901 S2901
+		          JOIN (SELECT S200601.F1_SJ_FZ,
+		                           S200601.F1_XH,
+		                           S200601.F2_SJ_FZ,
+		                           S200601.F2_XH,
+		                           S200601.F3_SJ_FZ,
+		                           S200601.F3_XH,
+		                           S200601.F4_SJ_FZ,
+		                           S200601.F4_XH,
+		                           S200601.APU_SJ_FZ,
+		                           S200601.APU_XH,
+		                           S200601.KCSJ,
+		                           S2004.ID          ZJQDID,
+		                           S2004.WZ,
+		                           S2004.AZSJ,
+		                           S2004.CCSJ
+		                      FROM B_S2_00601 S200601
+		                      JOIN B_S2_006 S2006
+		                        ON S2006.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		                       AND S200601.ZT = 1
+		                       AND S200601.MAINID = S2006.ID
+		                       AND S2006.ZT IN (2, 12)
+		                       AND S2006.FJZCH = #{fjzch, jdbcType=VARCHAR}
+		                      JOIN B_S2_004 S2004
+		                        ON S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		                       AND S2004.YXBS = 1
+		                       AND S200601.KCSJ &gt;=
+		                           COALESCE(S2004.AZSJ,
+		                               TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+		                       AND S200601.KCSJ &lt;
+		                           COALESCE(S2004.CCSJ,
+		                               TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+		                       AND S2004.WZ = 31
+		                       AND S2004.CJ = 1
+		                       AND S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}) S200601
+		            ON S2901.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+		           AND S2901.FJZCH = #{fjzch, jdbcType=VARCHAR}
+				   AND S2901.JSSJ &gt;= COALESCE(S200601.AZSJ,TO_DATE('17900101000000', 'YYYYMMDDHH24MISS'))
+		           AND S2901.JSSJ &lt;= COALESCE(S200601.CCSJ, TO_DATE('89991231235900', 'YYYYMMDDHH24MISS'))
+		           AND S2901.JSSJ &gt;= S200601.KCSJ
+				   AND S2901.JSSJ &gt; #{minKcsj, jdbcType=TIMESTAMP}
+		           AND S2901.ZJQDID IS NULL
+		           AND EXISTS
+		         (SELECT 1
+		                  FROM B_S2_904 S2904
+		                 WHERE S2901.ID = S2904.JKSJID
+		                   AND S2904.ZT = 1
+		                   AND S2904.JKLBH IN ('2_20_AH', '3_20_AC'))
+		         WHERE 1 = 1
+		         GROUP BY S2901.ID, S200601.ZJQDID, S200601.WZ) S2901
+		  JOIN B_S2_904 S2904_APU
+		    ON S2904_APU.JKSJID = S2901.ID
+		   AND S2904_APU.ZT = 1
+		   AND S2904_APU.JKLBH IN ('2_20_AH', '3_20_AC')
+		  
+  </insert>
+   <!-- 从临时区更新计划执行数据实际值 -->
+  <update id="update904SJZFromTemp">
+  	UPDATE B_S2_904 T
+	  SET SJZ = (SELECT COALESCE(SJZ,'0') FROM B_S2_904_TEMP WHERE T.ID = B_S2_904_TEMP.S2904ID AND B_S2_904_TEMP.PCBH = #{pcbh, jdbcType=VARCHAR})
+	WHERE EXISTS (SELECT 1 FROM B_S2_904_TEMP WHERE S2904ID = T.ID AND PCBH = #{pcbh, jdbcType=VARCHAR})  
+  </update>
+  
+  <!-- 从临时区和904更新已执行数据 -->
+  <update id="update903FromTempAnd904">
+  	UPDATE B_S2_903 T
+	  SET SCSJZ = (SELECT COALESCE(BS904T.SJZ,'0')+COALESCE(BS904.CSZ,'0') FROM B_S2_904_TEMP BS904T
+	  				JOIN B_S2_904 BS904 ON BS904T.S2904ID = BS904.ID 
+	  	 	WHERE T.ID = BS904T.S2904ID AND BS904T.PCBH = #{pcbh, jdbcType=VARCHAR})
+	WHERE EXISTS (SELECT 1 FROM B_S2_904_TEMP WHERE S2904ID = T.ID AND PCBH = #{pcbh, jdbcType=VARCHAR})   
+  </update>
+  <!-- 从临时区更新计划起算点和计划值 -->
+  <update id="update904JHFromTemp">
+  	update b_s2_904 t
+	   set (jhqsz, jhz) = (select case s2901.jsgs
+	                                when 2 then
+	                                 s2903.scsjz
+	                                else
+	                                 (case
+	                                when to_number(s2903.scjhz) &lt; to_number(s2903.scsjz) then
+	                                 COALESCE(s2903.scjhz, '0')
+	                                else
+	                                 COALESCE(s2903.scsjz, '0')
+	                              end) end as jhqsz_,       
+                                CAST(case when s2901.jsgs =2
+                                      then
+                                         COALESCE(s2903.scsjz, '0') + s2904.zqz
+                                      else
+                                          (case when to_number(s2903.scjhz) &lt; to_number(s2903.scsjz)
+                                                then COALESCE(s2903.scjhz, '0') + COALESCE(s2904.zqz, '0')
+                                                else  COALESCE(s2903.scsjz, '0') + COALESCE(s2904.zqz, '0')
+                                                end)
+                                 end AS VARCHAR2(20))      	                       
+	                         from b_s2_904 s2904
+	                         join b_s2_903 s2903 on s2904.zt=1 and s2903.zt=1 and s2904.jklbh = s2903.jklbh and s2903.jksjid = s2904.jksjid
+	                         join b_s2_901 s2901 on s2901.id = s2903.jksjid	                                           
+	                        where t.id = s2904.id)
+	 where exists (select 1
+	          from b_s2_904_temp s2904t
+	          join b_s2_903 s2903 on s2903.id = s2904t.s2904id
+	          join b_s2_901 s2901 on s2901.id = s2903.jksjid
+	                             and s2901.jssj is null
+	                             and coalesce(s2901.jsgs, 1) in (1, 2)
+	          join b_s2_904 s2904 on s2904.zt=1 and s2904.jhz is not null
+	                             and s2904.jklbh = s2903.jklbh
+	                             and s2904.jksjid = s2903.jksjid
+	         where t.id = s2904.id AND s2904t.PCBH = #{pcbh, jdbcType=VARCHAR})
+  
+  </update>
+  
+  
+  <!-- 查询飞机装机清单要监控的维修项目 -->
+  <select id="selectInstallNeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+  	select SYS_GUID() ID, G2012.DPRTCODE,
+  			1 LYLX,
+	       G2012.ID LYID,
+	       G2012.RWH LYBH,
+	       S2004.ID ZJQDID,
+	       S2004.BJH,
+	       S2004.XLH,
+	       G2012.WZ,
+	       G2011.id WXFAID,
+	       G2011.WXFABH,
+	       NULL EOXC,
+	       G2012.IS_HDWZ HDWZ,
+	       G2012.JSGS
+	  from B_G2_01102 G201102
+	  join B_G2_011 G2011 on G201102.mainid=G2011.id
+	  					 and G2011.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	  					 and G2011.jx = #{fjjx, jdbcType=VARCHAR}
+	  					 and G2011.zxbs = 2
+	  join B_G2_012 G2012 on G201102.WXXMID = G2012.ID
+	                     and G2012.YXBS = 1
+	                     and G2012.WXXMLX IN (2, 3)
+	                     and G201102.MAINID = G2011.ID
+	  left join B_G2_01203 G2_01203 on G2_01203.MAINID = G2012.ID
+	  join B_G2_01204 G201204 on G201204.MAINID = G2012.ID
+	  join B_S2_004 S2004 on S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	                     and S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	                     and S2004.ZJZT = 1
+	                     and S2004.YXBS = 1
+	                     and S2004.XLH IS NOT NULL
+	                     and S2004.BJH = G201204.BJH
+	UNION ALL                     	
+	SELECT SYS_GUID() ID, 
+		G2010.DPRTCODE,
+	       2 LYLX,
+	       G2010.ID LYID,
+	       G2010.EOBH LYBH,
+	       S2004.ID ZJQDID,
+	       S2004.BJH,
+	       S2004.XLH,
+	       NULL WZ,
+	       '' WXFAID,
+	       '' WXFABH,
+	       G201002.XC EOXC,
+	       G2010.HDWZ,
+	       G2010.JSGS
+	  FROM B_G2_010 G2010
+	  JOIN (SELECT G201002.MAINID, G201002.XC
+	          FROM B_G2_01002 G201002
+	         WHERE G201002.ZT = 1
+	         GROUP BY G201002.MAINID, G201002.XC) G201002 ON G201002.MAINID = G2010.ID
+	  join B_G2_01001 G201001 on G2010.ID = G201001.MAINID and G201001.ZT = 1 
+	  join B_S2_004 S2004 on S2004.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	  					 and S2004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	  					 and S2004.YXBS = 1
+				           and S2004.XLH IS NOT NULL
+				           and S2004.ZJZT = 1
+				           and S2004.BJH = G201001.bh
+				           and S2004.XLH = G201001.XLH
+	 WHERE G2010.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   AND G2010.ZT = 7
+	   AND G2010.IS_XFSC = 1
+	   AND G2010.JX = #{fjjx, jdbcType=VARCHAR}
+	   AND G201001.GBZT = 1
+	   AND G2010.SYLB in (2, 3, 99)
+	   AND (G2010.zxfs =2 or NOT EXISTS (SELECT 1 FROM B_S2_901 S901 WHERE S901.ZT=1 AND S901.JSSJ IS NOT NULL AND S901.EOXC=G201002.XC AND S901.LYID=G2010.ID AND S901.ZJQDID=S2004.ID))                    
+	                     
+  </select>
+   <!-- 查询飞机和飞机序列号件的初始化日期 -->
+  <select id="selectAllCalInitByFjzch" resultType="java.util.Map">
+  	select D_00701.FJZCH ID, D_00701.CSZ
+	  from D_00701
+	  join D_007 on D_007.ZT = 1
+	            and D_007.DPRTCODE = D_00701.DPRTCODE
+	            and D_007.FJZCH = D_00701.FJZCH
+	 where D_00701.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	   and D_007.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	   and D_00701.WZ = 11
+	   and D_00701.JKLBH = '1_10'
+	union all
+	select B_S2_004.ID, B_S2_00401.ZSSYY CSZ
+	  from B_S2_00401
+	  join B_S2_004 on B_S2_004.ID = B_S2_00401.MAINID
+	               and B_S2_004.YXBS = 1
+	               and XLH IS NOT NULL
+	               and B_S2_004.DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+	               and B_S2_00401.JKLBH = '1_10'
+	               and B_S2_004.FJZCH = #{fjzch, jdbcType=VARCHAR}
+	               and B_S2_004.ZJZT = 1
+  </select>
+  
+  <!-- 查询生产指令需要监控的数据 -->
+  <select id="selectPONeedMonitorDataList" resultType="com.eray.thjw.produce.po.MonitoringObject">
+	  	SELECT G2014.DPRTCODE,
+	       G2014.ID LYID,
+	       G2014.ZLBH LYBH,
+	       D007.FJZCH,
+	       D007.XLH FJXLH,
+	       G2014.WZ,
+	       G2014.IS_HDWZ HDWZ,
+	       G2014.JSGS
+	  from B_G2_014 G2014
+	  left join B_G2_01402 G201402 on G201402.MAINID = G2014.ID
+	  join D_007 D007 on D007.ZT = 1
+	                 and D007.DPRTCODE = G2014.DPRTCODE
+	                 and ((D007.FJZCH = G201402.FJZCH) or
+	                     (G2014.SYX = '00000' and D007.FJJX = G2014.JX))
+	 where G2014.ID = #{id, jdbcType = VARCHAR}
+  </select>
+</mapper>

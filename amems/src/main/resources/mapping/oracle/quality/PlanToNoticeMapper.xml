@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.PlanToNoticeMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.PlanToNotice" >
+    <result column="NDSHJHID" property="ndshjhid" jdbcType="VARCHAR" />
+    <result column="SHTZDID" property="shtzdid" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.PlanToNotice" >
+    insert into B_Z_008 (NDSHJHID, SHTZDID)
+    values (#{ndshjhid,jdbcType=VARCHAR}, #{shtzdid,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.PlanToNotice" >
+    insert into B_Z_008
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ndshjhid != null" >
+        NDSHJHID,
+      </if>
+      <if test="shtzdid != null" >
+        SHTZDID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ndshjhid != null" >
+        #{ndshjhid,jdbcType=VARCHAR},
+      </if>
+      <if test="shtzdid != null" >
+        #{shtzdid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+   <delete id="delete"  parameterType="java.lang.String" >
+  	delete from  B_Z_008 where 
+     shtzdid = #{shtzdid,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByNdshjhid"  parameterType="java.lang.String" >
+  	delete from  B_Z_008 where 
+     NDSHJHID = #{ndshjhid,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 复制年度审核计划与审核通知单关系 -->
+  <insert id="insert4Copy"  parameterType="java.lang.String">
+ 	 INSERT INTO B_Z_008(NDSHJHID, SHTZDID) 
+    SELECT #{newndshjhid,jdbcType=VARCHAR}, SHTZDID
+    	FROM B_Z_008 
+	    WHERE NDSHJHID = #{ndshjhid,jdbcType=VARCHAR}
+  </insert>
+  
+</mapper>

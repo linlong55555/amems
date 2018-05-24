@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionmessage.dao.CrewScheduleObjectMapper">
+	<resultMap id="CrewScheduleObjectMap"
+		type="com.eray.thjw.productionmessage.po.CrewScheduleObject">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		<result column="DXLX" property="dxlx" jdbcType="INTEGER" />
+		<result column="DXID" property="dxid" jdbcType="VARCHAR" />
+		<result column="ZT" property="zt" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="selectIdByMainid"
+		parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject"
+		resultType="java.lang.String">
+		select id from b_s_01001 where mainid=#{mainid}
+	</select>
+	<delete id="deleteByMainid"
+		parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject">
+		delete from b_s_01001 where mainid=#{mainid}
+	</delete>
+	<insert id="updatecrewshecduleObject"
+		parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject">
+		insert into b_s_01001 (id,mainid,dxlx,dxid,zt)
+		values(#{id},#{mainid},#{dxlx},#{dxid},#{zt})
+	</insert>
+	<update id="updateZtByMainid"
+		parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject">
+		delete from b_s_01001  where mainid=#{mainid}
+	</update>
+	
+	<!-- 保存飞机排班数据 -->
+	<insert id="savePlaneScheduling"
+		parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject">
+		insert into b_s_01001 (id, mainid, dxlx, 
+	      dxid, zt)
+	    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{dxlx,jdbcType=DECIMAL}, 
+	      #{dxid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL})
+	</insert>
+	
+	<!-- 取消飞机排班数据 -->
+	<delete id="cancelPlaneScheduling" parameterType="java.lang.String">
+		delete from b_s_01001 b1
+		 where b1.id in
+		   <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+	</delete>
+	
+	<!-- 获取取消飞机排班数据 -->
+	<select id="getCancelPlaneScheduling" parameterType="com.eray.thjw.productionmessage.po.CrewSchedule"
+		 resultType="java.lang.String">
+		select b1.id from b_s_01001 b1
+		 where b1.zt = 1
+		   and b1.dxlx = 10
+		   and b1.dxid = #{crewScheduleObject.dxid,jdbcType=VARCHAR}
+		   and exists (select 1
+		          from b_s_010 b2
+		         where b1.mainid = b2.id
+		           and b2.pbrq = #{pbrq,jdbcType=TIMESTAMP})
+	</select>
+	<select id="getIdByMainid" parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject"  
+		resultType="java.lang.Integer">
+		select count(1) from b_s_01001 b1 where b1.zt=1 and b1.dxlx=#{dxlx} and b1.mainid=#{mainid} 
+		and  b1.dxid=#{dxid}
+	</select>
+	<select id="getIdByZt" parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject"  resultType="java.lang.String" >
+		select id from b_s_01001 where zt=1 and dxlx=#{dxlx} and mainid=#{mainid} 
+	</select>
+	<update id="updateZtByCrewScheduleObject" parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject" >
+		update b_s_01001 set zt=0 where mainid=#{mainid} and dxlx=#{dxlx} and dxid=#{dxid}
+	</update>
+	
+	<delete id="deleteByZt" parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject">
+		delete from b_s_01001 where zt=1 and dxlx=#{dxlx} and mainid=#{mainid}
+	</delete>
+	<update id="updateZt" parameterType="com.eray.thjw.productionmessage.po.CrewScheduleObject">
+		update b_s_01001 set zt=1 where mainid=#{mainid} and dxlx=#{dxlx} 
+	</update>
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from b_s_01001 where id=#{id,jdbcType=VARCHAR}
+	</delete>
+</mapper>

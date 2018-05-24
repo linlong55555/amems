@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.PersonnelReceiptMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.PersonnelReceipt" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YWLX" property="ywlx" jdbcType="INTEGER" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="JSBMID" property="jsbmid" jdbcType="VARCHAR" />
+    <result column="JSRID" property="jsrid" jdbcType="VARCHAR" />
+    <result column="JSSJ" property="jssj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, YWLX, YWID, JSBMID, JSRID, JSSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_994
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_994
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.PersonnelReceipt" >
+    insert into B_G2_994 (ID, DPRTCODE, YWLX, 
+      YWID, JSBMID, JSRID, 
+      JSSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{ywlx,jdbcType=INTEGER}, 
+      #{ywid,jdbcType=VARCHAR}, #{jsbmid,jdbcType=VARCHAR}, #{jsrid,jdbcType=VARCHAR}, 
+      #{jssj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.PersonnelReceipt" >
+    insert into B_G2_994
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="ywlx != null" >
+        YWLX,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="jsbmid != null" >
+        JSBMID,
+      </if>
+      <if test="jsrid != null" >
+        JSRID,
+      </if>
+      <if test="jssj != null" >
+        JSSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        #{ywlx,jdbcType=INTEGER},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbmid != null" >
+        #{jsbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null" >
+        #{jsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jssj != null" >
+        #{jssj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.PersonnelReceipt" >
+    update B_G2_994
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        YWLX = #{ywlx,jdbcType=INTEGER},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbmid != null" >
+        JSBMID = #{jsbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null" >
+        JSRID = #{jsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jssj != null" >
+        JSSJ = #{jssj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.PersonnelReceipt" >
+    update B_G2_994
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      YWLX = #{ywlx,jdbcType=INTEGER},
+      YWID = #{ywid,jdbcType=VARCHAR},
+      JSBMID = #{jsbmid,jdbcType=VARCHAR},
+      JSRID = #{jsrid,jdbcType=VARCHAR},
+      JSSJ = #{jssj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="getPersonnelReceipt4Validation" parameterType="String" resultMap="BaseResultMap">
+  	 select <include refid="Base_Column_List" /> from b_g2_994 where ywid=#{0} and jsrid=#{1} 
+  </select>
+</mapper>

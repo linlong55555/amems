@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.TakeStockDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.TakeStockDetail">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="KCLLID" jdbcType="VARCHAR" property="kcllid" />
+    <result column="KCSL" jdbcType="DECIMAL" property="kcsl" />
+    <result column="CKSL" jdbcType="DECIMAL" property="cksl" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.aerialmaterial.po.TakeStockDetail" id="TakeStockDetailJoinMap" extends="BaseResultMap">  
+     	<association property="stock" javaType="com.eray.thjw.aerialmaterial.po.Stock">
+			<id column="KCID" property="id"/>
+       	  	<result column="KCKWH" property="kwh"/>
+       	  	<result column="KCBJH" property="bjh"/>
+       	  	<result column="KCZWMS" property="zwms"/>
+       	  	<result column="KCYWMS" property="ywms"/>
+       	  	<result column="KCSN" property="sn"/>
+       	  	<result column="KCPCH" property="pch"/>
+       	  	<result column="KCKCSL" property="kcsl"/>
+      	</association>
+      	
+      	<association property="materialHistory" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+			<id column="LLID" property="id"/>
+			<result column="LLKCID" property="kcid"/>
+			<result column="LLKWH" property="kwh"/>
+       	  	<result column="LLKWID" property="kwid"/>
+       	  	<result column="LLBJH" property="bjh"/>
+       	  	<result column="LLZWMS" property="zwms"/>
+       	  	<result column="LLYWMS" property="ywms"/>
+       	  	<result column="LLSN" property="sn"/>
+       	  	<result column="LLPCH" property="pch"/>
+       	  	<result column="LLKCSL" property="kcsl"/>
+       	  	<result column="LLHCLY" property="hcly"/>
+       	  	<result column="LLXKZH" property="xkzh"/>
+       	  	<result column="LLHJSM" property="hjsm"/>
+       	  	<result column="LLSHZH" property="shzh"/>
+       	  	<result column="LLSHZWZ" property="shzwz"/>
+       	  	<result column="LLTSN" property="tsn"/>
+       	  	<result column="LLTSO" property="tso"/>
+       	  	<result column="LLCFYQ" property="cfyq"/>
+      	</association>
+      	
+      	<association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">
+			<id column="HCID" property="id"/>
+       	  	<result column="HCBJH" property="bjh"/>
+       	  	<result column="HCZWMS" property="zwms"/>
+       	  	<result column="HCYWMS" property="ywms"/>
+       	  	<result column="HCJLDW" property="jldw"/>
+       	  	<result column="HCCJJH" property="cjjh"/>
+       	  	<result column="HCZJH" property="zjh"/>
+       	  	<result column="HCHCJZ" property="hcjz"/>
+       	  	<result column="HCGLJB" property="gljb"/>
+      	</association>
+      	
+   	</resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, KCLLID, KCSL, CKSL, BZ, WHDWID, WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_01601
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据盘点id查询盘点差异及履历信息、库存信息 -->
+	<select id="queryByMainId" parameterType="java.lang.String" resultMap="TakeStockDetailJoinMap">
+	
+		select 
+           	B01601.ID, B01601.KCLLID,B01601.KCSL, B01601.CKSL, B01601.WHSJ,
+           	B017.ID AS LLID,B017.KCID AS LLKCID,B017.KCSL AS LLKCSL,
+           	B001.ID AS KCID
+           from B_H_01601 B01601
+           left join B_H_017 B017
+           on B01601.KCLLID = B017.ID
+           left join B_H_001 B001
+           on B017.KCID = B001.ID
+           where B01601.MAINID = #{mainid,jdbcType=VARCHAR}
+		
+	</select>
+  
+  <!-- 根据盘点差异id查询盘点差异及履历信息 -->
+	<select id="queryByDetailId" parameterType="java.lang.String" resultMap="TakeStockDetailJoinMap">
+	
+		select 
+           	B01601.ID, B01601.KCLLID,B01601.KCSL, B01601.CKSL, B01601.WHSJ,
+           	B017.ID AS LLID,B017.KWID AS LLKWID,B017.KWH AS LLKWH,B017.BJH AS LLBJH,
+           	(CASE WHEN D008.ZWMS IS NULL THEN B017.ZWMS ELSE D008.ZWMS END)     AS LLZWMS,
+           	(CASE WHEN D008.YWMS IS NULL THEN B017.YWMS ELSE D008.YWMS END)     AS LLYWMS,
+           	B017.SN AS LLSN,B017.PCH AS LLPCH,B017.HCLY AS LLHCLY,B017.XKZH AS LLXKZH,B017.HJSM AS LLHJSM,B017.SHZH AS LLSHZH,
+           	B017.SHZWZ AS LLSHZWZ,B017.CFYQ AS LLCFYQ,B017.TSN AS LLTSN,B017.TSO AS LLTSO,B017.KCSL AS LLKCSL,
+           	B001.KCSL AS KCKCSL,
+           	D008.BJH AS HCBJH,D008.ZWMS AS HCZWMS,D008.YWMS AS HCYWMS,D008.GLJB AS HCGLJB
+           from B_H_01601 B01601
+           left join B_H_017 B017
+           on B01601.KCLLID = B017.ID
+           left join B_H_001 B001
+           on B017.KCID = B001.ID
+           left join D_008 D008
+	       on B017.BJID = D008.ID
+           where B01601.ID = #{id,jdbcType=VARCHAR}
+		
+	</select>
+	
+  <!-- 根据查询条件分页查询盘点盈亏详情列表 -->
+	<select id="queryAllDetailPageList" parameterType="com.eray.thjw.aerialmaterial.po.TakeStockDetail" resultMap="TakeStockDetailJoinMap">
+	
+		select 
+           	B01601.ID, B01601.KCLLID,B01601.KCSL, B01601.CKSL, B01601.WHSJ,
+           	B001.ID AS KCID,B017.KWH AS KCKWH,B017.SN AS KCSN,B017.PCH AS KCPCH,B001.KCSL AS KCKCSL,
+           	B017.KCSL AS LLKCSL,
+           	D008.BJH AS HCBJH,D008.ZWMS AS HCZWMS,D008.YWMS AS HCYWMS,D008.GLJB AS HCGLJB
+           from B_H_01601 B01601
+           left join B_H_017 B017
+           on B01601.KCLLID = B017.ID
+           left join B_H_001 B001
+           on B017.KCID = B001.ID
+           left join D_008 D008
+           on B017.BJID = D008.ID
+           where 1=1
+           	<include refid="Take_Stock_Detail_Param"></include>
+           	<include refid="Take_Stock_Detail_Join_Param"></include>
+            <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+
+	</select>
+	
+	 <!-- 根据查询条件分页查询库存及盘点盈亏详情列表 -->
+	<select id="queryStockDetailPageList" parameterType="com.eray.thjw.aerialmaterial.po.TakeStockDetail" resultMap="TakeStockDetailJoinMap">
+	
+				SELECT * FROM (
+				
+					select 
+	        			B001.ID AS ID,'' AS KCLLID,0 AS KCSL, B001.KCSL AS CKSL,NULL AS WHSJ,
+	        			B001.ID AS KCID,B001.KWH AS KCKWH,B001.SN AS KCSN,B001.PCH AS KCPCH,B001.KCSL AS KCKCSL,
+	        			D008.BJH AS HCBJH,D008.ZWMS AS HCZWMS,D008.YWMS AS HCYWMS,D008.GLJB AS HCGLJB
+					from b_h_001 B001
+						left join D_008 D008
+		            	on B001.BJID = D008.ID	
+					where not exists (select 1 from 
+						(select t1.id t1_id, t2.id t2_id , t2.kcid t2_kcid from B_H_01601 t1 left join b_h_017 t2 on t1.kcllid = t2.id where t1.MAINID= #{mainid}) t3 
+						 where t3.t2_kcid = B001.id)
+	     			and  B001.CKID = (select CKID from B_H_016 where ID = #{mainid})
+	       			and (
+	       			(
+		       			exists (select 1 from B_H_01602 B01602 where B01602.ZT = 1 and B01602.PDLX = 3 and B01602.MAINID= #{mainid} and B01602.DXID = B001.BJID)
+		       			or 
+		       			not exists (select 1 from B_H_01602 B01602 where B01602.ZT = 1 and B01602.PDLX = 3 and B01602.MAINID= #{mainid})
+	       			)
+	       			and 
+	       			(
+		       			exists (select 1 from B_H_01602 B01602 where B01602.ZT = 1 and B01602.PDLX = 2 and B01602.MAINID= #{mainid} and B01602.DXID = B001.KWID)
+		       			or 
+		       			not exists (select 1 from B_H_01602 B01602 where B01602.ZT = 1 and B01602.PDLX = 2 and B01602.MAINID= #{mainid})
+	       			)
+       			)
+       			<if test="keyword != null and keyword != ''">
+				    and (B001.KWH like '%'||#{keyword}||'%'
+				    	OR D008.BJH like '%'||#{keyword}||'%'
+				    	OR D008.ZWMS like '%'||#{keyword}||'%'
+				    	OR D008.YWMS like '%'||#{keyword}||'%'
+				    	OR B001.SN like '%'||#{keyword}||'%'
+				    	OR B001.PCH like '%'||#{keyword}||'%'
+				    )
+				</if>
+				union all 
+				
+				select 
+	            	B01601.ID, B01601.KCLLID,B01601.KCSL, B01601.CKSL, B01601.WHSJ,
+	            	B001.ID AS KCID,B017.KWH AS KCKWH,B017.SN AS KCSN,B017.PCH AS KCPCH,B001.KCSL AS KCKCSL,
+	            	D008.BJH AS HCBJH,D008.ZWMS AS HCZWMS,D008.YWMS AS HCYWMS,D008.GLJB AS HCGLJB
+	            from B_H_01601 B01601
+	            left join B_H_017 B017
+	            on B01601.KCLLID = B017.ID
+	            left join B_H_001 B001
+	            on B017.KCID = B001.ID
+	            left join D_008 D008
+	            on B017.BJID = D008.ID
+	            where 1=1
+	            	<include refid="Take_Stock_Detail_Param"></include>
+	            	<include refid="Take_Stock_Detail_Join_Param"></include>
+	            	
+	            ) A	
+	           	
+	            <!-- order by ID asc -->
+			  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by WHSJ ASC nulls first
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+				</choose>
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_01601
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.TakeStockDetail">
+    insert into B_H_01601 (ID, MAINID, KCLLID, 
+      KCSL, CKSL, BZ, WHDWID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+      #{kcsl,jdbcType=DECIMAL}, #{cksl,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.TakeStockDetail">
+    insert into B_H_01601
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="kcllid != null">
+        KCLLID,
+      </if>
+      <if test="kcsl != null">
+        KCSL,
+      </if>
+      <if test="cksl != null">
+        CKSL,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whrid != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="cksl != null">
+        #{cksl,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        current_timestamp,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.TakeStockDetail">
+    update B_H_01601
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        KCSL = #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="cksl != null">
+        CKSL = #{cksl,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = current_timestamp,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.TakeStockDetail">
+    update B_H_01601
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCLLID = #{kcllid,jdbcType=VARCHAR},
+      KCSL = #{kcsl,jdbcType=DECIMAL},
+      CKSL = #{cksl,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 搜索参数 -->
+	<sql id="Take_Stock_Detail_Param">
+		<if test="id != null and id != ''">
+		    and B01601.ID = #{id}
+		</if>
+		<if test="mainid != null and mainid != ''">
+		    and B01601.MAINID = #{mainid}
+		</if>
+		<if test="paramsMap != null and paramsMap.condition != null and paramsMap.condition != 'all' and paramsMap.condition != 'more'">
+		    and B01601.KCSL &gt; B01601.CKSL 
+		</if>
+		<if test="paramsMap != null and paramsMap.condition != null and paramsMap.condition != 'all' and paramsMap.condition != 'lose'">
+		    and B01601.KCSL &lt; B01601.CKSL 
+		</if>
+	</sql>
+	<sql id="Take_Stock_Detail_Join_Param">
+		<if test="keyword != null and keyword != ''">
+		    and (B017.KWH like '%'||#{keyword}||'%'
+		    	OR B017.SN like '%'||#{keyword}||'%'
+		    	OR B017.PCH like '%'||#{keyword}||'%'
+		    	OR D008.BJH like '%'||#{keyword}||'%'
+		    	OR D008.ZWMS like '%'||#{keyword}||'%'
+		    	OR D008.YWMS like '%'||#{keyword}||'%'
+		    )
+		</if>
+		
+	</sql>
+  
+</mapper>

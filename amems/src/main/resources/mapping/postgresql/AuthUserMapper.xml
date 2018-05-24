@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.AuthUserMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.AuthUser" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="ORGID" property="orgid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, USERNAME, PASSWORD, ORGID
+  </sql>
+  
+  <sql id="conditions">
+     where 1 = 1
+    
+       <if test="username != null and username != ''">
+          and USERNAME = #{username}
+       </if>
+       
+        <if test="password != null and password != ''">
+          and PASSWORD = #{password}
+       </if>
+       <if test="orgid != null and orgid != ''">
+          and ORGID = #{orgid}
+       </if>
+       
+        <if test="topOrgId != null and topOrgId != ''">
+         AND ORGID IN (
+		   SELECT ID FROM CHILDREN_ORG
+		 )
+       </if>
+        
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_AUTH_USER
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryList" resultMap="BaseResultMap"  parameterType="com.eray.thjw.po.AuthUser" >
+  	WITH RECURSIVE CHILDREN_ORG AS
+	(
+		SELECT A.ID FROM T_AUTH_ORGANIZATION A WHERE A.ID = #{topOrgId}
+			UNION ALL 
+		SELECT Z.ID FROM T_AUTH_ORGANIZATION Z INNER JOIN CHILDREN_ORG F ON F.ID = Z.PID
+	)
+    select 
+    <include refid="Base_Column_List" />
+    from T_AUTH_USER
+     <include refid="conditions" />
+  </select>
+  
+  <select id="authUserCount" resultType="int" parameterType="com.eray.thjw.po.AuthUser" >
+  		WITH RECURSIVE CHILDREN_ORG AS
+		(
+			SELECT A.ID FROM T_AUTH_ORGANIZATION A WHERE A.ID = #{orgid,jdbcType=VARCHAR}
+				UNION ALL 
+			SELECT Z.ID FROM T_AUTH_ORGANIZATION Z INNER JOIN CHILDREN F ON F.ID = Z.PID
+		)
+	   SELECT COUNT(1) TOTAL 
+	   FROM T_AUTH_USER U 
+	   WHERE U.USERNAME= #{username,jdbcType=VARCHAR}
+	   AND U.PASSWORD= #{password,jdbcType=VARCHAR}
+	   AND U.ORGID IN (
+		   SELECT ID FROM CHILDREN_ORG
+		   )
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_AUTH_USER
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.AuthUser" >
+    insert into T_AUTH_USER (ID, USERNAME, PASSWORD, 
+      ORGID)
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{orgid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.AuthUser" >
+    insert into T_AUTH_USER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="username != null" >
+        USERNAME,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="orgid != null" >
+        ORGID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null" >
+        #{orgid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.AuthUser" >
+    update T_AUTH_USER
+    <set >
+      <if test="username != null" >
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="orgid != null" >
+        ORGID = #{orgid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.AuthUser" >
+    update T_AUTH_USER
+    set USERNAME = #{username,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      ORGID = #{orgid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

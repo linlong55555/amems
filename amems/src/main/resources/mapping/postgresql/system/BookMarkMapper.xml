@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.BookMarkMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.BookMark">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="JGDM" jdbcType="VARCHAR" property="jgdm" />
+    <result column="YHID" jdbcType="VARCHAR" property="yhid" />
+    <result column="MC" jdbcType="VARCHAR" property="mc" />
+    <result column="DZ" jdbcType="VARCHAR" property="dz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, JGDM, YHID, MC, DZ,ZT,WHSJ,WHRID
+  </sql>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.BookMark">
+    insert into T_BOOKMARK
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="jgdm != null">
+        JGDM,
+      </if>
+      <if test="yhid != null">
+        YHID,
+      </if>
+      <if test="mc != null">
+        MC,
+      </if>
+      <if test="dz != null">
+        DZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jgdm != null">
+        #{jgdm,jdbcType=VARCHAR},
+      </if>
+      <if test="yhid != null">
+        #{yhid,jdbcType=VARCHAR},
+      </if>
+      <if test="mc != null">
+        #{mc,jdbcType=VARCHAR},
+      </if>
+      <if test="dz != null">
+        #{dz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        current_timestamp,
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+   <select id="selectBookMarkByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+   T.ID,T.JGDM, T.YHID,T.MC,T.DZ,T.ZT,T.WHSJ,T.WHRID 
+    from T_BOOKMARK T
+    where ZT = 1  and YHID = #{userId,jdbcType=VARCHAR} and JGDM= #{jgdm,jdbcType=VARCHAR} 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_BOOKMARK
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+ <select id="selectBookMarkByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+   T.ID,T.JGDM, T.YHID,T.MC,T.DZ,T.ZT,T.WHSJ,T.WHRID 
+    from T_BOOKMARK T
+    where ZT = 1  and ID = #{id,jdbcType=VARCHAR} 
+  </select>
+   <update id="updateBookMark" parameterType="com.eray.thjw.system.po.BookMark">
+  	 update T_BOOKMARK
+     set MC = #{mc,jdbcType=VARCHAR},
+        DZ = #{dz,jdbcType=VARCHAR}
+     where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

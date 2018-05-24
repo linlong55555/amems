@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.produce.dao.PlaneFaultMonitoringMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.PlaneFaultMonitoring" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />   
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="GZXX" property="gzxx" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="GBZT" property="gbzt" jdbcType="INTEGER" />   
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBSJ" property="gbsj" jdbcType="TIMESTAMP" />   
+    <result column="GBYY" property="gbyy" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="gbrname" property="gbrname" jdbcType="VARCHAR" />
+    <result column="zdrname" property="zdrname" jdbcType="VARCHAR" />  
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+    <result column="zjhms" property="paramsMap.zjhms" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    B.ID,  B.DPRTCODE, B.FJZCH, B.GZXX, B.BZ, B.GBZT, B.whdwid, B.whrid, B.whsj, B.GBRID, B.GBSJ, B.GBYY,B.ZJH
+  </sql>
+  <sql id="baseParam">
+		where
+		1=1 
+		<!-- 机构id -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and b.dprtcode = #{dprtcode}
+		</if>
+		<if test="zjh != null and zjh != ''">
+			and b.zjh = #{zjh}
+		</if>
+		<if test="fjzch != null and fjzch != ''">
+			and b.fjzch = #{fjzch}
+		</if>
+		<if test="keyword != null and keyword != ''" >
+			and ( UPPER(b.fjzch) like UPPER('%'||#{keyword}||'%')
+			or UPPER(b.gzxx) like UPPER('%'||#{keyword}||'%')
+			)
+		</if>
+  		 <if test="id != null and id !='' ">
+		    and b.ID = #{id}
+		</if> 
+	       <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    		b.fjzch = FJZCH
+	    		AND b.dprtcode = DPRTCODE
+	    		AND zt = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userId!=null and paramsMap.userId != "" '>                       
+	    		 AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    		b.fjzch= FJZCH
+	    		AND b.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    	</when>
+	   	</choose>
+	</sql>
+  	<select id="getList" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoring" resultMap="BaseResultMap">
+  		select B.ID,  B.DPRTCODE, B.FJZCH, B.GZXX, B.BZ, B.GBZT, B.whdwid, B.whrid, B.whsj, B.GBRID, B.GBSJ, B.GBYY,B.ZJH,B1.zjh||' '||B1.ywms||' '||B1.ZWMS zjhms,D011.ATTACHCOUNT,
+  		t.username||' '||t.realname zdrname,D.GZCS,D.ZJFSRQ
+  		 from b_s_019 b 
+  		 LEFT JOIN  t_user t on b.whrid=t.id 
+  		 LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011 ON D011.MAINID=b.id
+  		 LEFT JOIN ( select count(0) AS gzcs,max(hbrq)AS zjfsrq,MAINID  from b_s_01901 where zt=1 group by mainid) D ON D.MAINID = B.ID
+  		 LEFT JOIN d_005 b1 on b.zjh=b1.zjh and b.dprtcode=b1.dprtcode
+  		 <include refid="baseParam"/>
+  		<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by whsj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+  	</select>
+  	  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from b_s_019
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  	
+  	<insert id="insertPlaneFaultMonitoring" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoring">
+  		insert into b_s_019
+  		 <trim prefix="(" suffix=")" suffixOverrides="," >
+  		<if test="id != null" >
+       		 ID,
+     	</if>
+  		<if test="dprtcode != null" >
+       		 DPRTCODE,
+     	</if>
+  		<if test="fjzch != null" >
+       		 FJZCH,
+     	</if>
+  		<if test="gzxx != null" >
+       		 GZXX,
+     	</if>
+  		<if test="bz != null" >
+       		 BZ,
+     	</if>
+  		<if test="gbzt != null" >
+       		 GBZT,
+     	</if>
+  		<if test="whdwid != null" >
+       		 whdwid,
+     	</if>
+  		<if test="whrid != null" >
+       		 whrid,
+     	</if>
+  		<if test="whrid != null" >
+       		 whsj,
+     	</if>
+  		<if test="gbrid != null" >
+       		 GBRID,
+     	</if>
+  		<if test="gbrid != null" >
+       		 GBSJ,
+     	</if>
+  		<if test="gbyy != null" >
+       		 GBYY,
+     	</if>
+     	<if test="zjh != null" >
+       		 ZJH,
+     	</if>
+     	</trim>
+     	<trim prefix="values (" suffix=")" suffixOverrides="," >
+     	<if test="id != null" >
+        	#{id,jdbcType=VARCHAR},
+      	</if>
+     	<if test="dprtcode != null" >
+        	#{dprtcode,jdbcType=VARCHAR},
+      	</if>
+     	<if test="fjzch != null" >
+        	#{fjzch,jdbcType=VARCHAR},
+      	</if>
+     	<if test="gzxx != null" >
+        	#{gzxx,jdbcType=VARCHAR},
+      	</if>
+     	<if test="bz != null" >
+        	#{bz,jdbcType=VARCHAR},
+      	</if>
+     	<if test="gbzt != null" >
+        	#{gbzt,jdbcType=INTEGER},
+      	</if>
+     	<if test="whdwid != null" >
+        	#{whdwid,jdbcType=VARCHAR},
+      	</if>
+     	<if test="whrid != null" >
+        	#{whrid,jdbcType=VARCHAR},
+      	</if>
+     	<if test="whrid != null" >
+        	sysdate,
+      	</if>
+     	<if test="gbrid != null" >
+        	#{gbrid,jdbcType=VARCHAR},
+      	</if>
+     	<if test="gbrid != null" >
+        	sysdate,
+      	</if>
+     	<if test="gbyy != null" >
+        	#{gbyy,jdbcType=VARCHAR},
+      	</if>
+      	<if test="zjh != null" >
+        	#{zjh,jdbcType=VARCHAR},
+      	</if>
+  		</trim>
+  	</insert>
+   	<select id="getGbyy" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoring" resultMap="BaseResultMap">
+   		select gbrid,gbsj,gbyy,t.username ||' ' ||t.realname  gbrname
+   		from b_s_019 b left join t_user t on b.gbrid=t.id where b.id=#{id,jdbcType=VARCHAR}
+   	</select>
+   	<insert id="insertGbyy" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoring">
+   		update b_s_019 set gbzt=1, gbrid=#{gbrid,jdbcType=VARCHAR},gbsj =sysdate,gbyy=#{gbyy,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+   	</insert>
+  	<select id="getPlaneFaultMonitoringById" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select B.ID,  B.DPRTCODE, B.FJZCH, B.GZXX, B.BZ, B.GBZT, B.whdwid, B.whrid, B.whsj, B.GBRID, B.GBSJ, B.GBYY,b1.ZJH || ' ' || b1.ywms || ' ' ||b1.zwms as zjhms,b1.zjh,D011.ATTACHCOUNT,
+  		t.username||' '||t.realname zdrname,D.GZCS,D.ZJFSRQ
+  		 from b_s_019 b 
+  		 LEFT JOIN  t_user t on b.whrid=t.id 
+  		 LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011 ON D011.MAINID=b.id
+  		 LEFT JOIN ( select count(0) AS gzcs,max(hbrq)AS zjfsrq,MAINID  from b_s_01901 where zt=1 group by mainid) D ON D.MAINID = B.ID
+       left join d_005 b1 on b.zjh=b1.zjh and b.dprtcode=b1.dprtcode
+  		where b.id=#{id,jdbcType=VARCHAR}
+  	</select>
+  	<update id="updatePlaneFaultMonitoringById" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoring" >
+  		update b_s_019 set gzxx=#{gzxx,jdbcType=VARCHAR},bz=#{bz,jdbcType=VARCHAR},whdwid=#{whdwid,jdbcType=VARCHAR},whrid=#{whrid,jdbcType=VARCHAR},
+  		whsj=sysdate,zjh=#{zjh,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+  	</update>
+  	<update id="updatePlaneFault" parameterType="com.eray.thjw.produce.po.PlaneFaultMonitoring" >
+  		update b_s_019 set whdwid=#{whdwid,jdbcType=VARCHAR},whrid=#{whrid,jdbcType=VARCHAR},
+  		whsj=sysdate where id=#{id,jdbcType=VARCHAR}
+  	</update>
+</mapper>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.TaskInfoMapper">
+	<resultMap id="BaseResultMap" type="com.eray.thjw.po.TaskInfo">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		<result column="ZT" property="zt" jdbcType="DECIMAL" />
+		<result column="RWLX" property="rwlx" jdbcType="DECIMAL" />
+		<result column="rwbm" property="rwbm" jdbcType="VARCHAR" />
+		<result column="rwms" property="rwms" jdbcType="VARCHAR" />
+		<result column="sqrid" property="sqrid" jdbcType="VARCHAR" />
+		<result column="sqsj" property="sqsj" jdbcType="TIMESTAMP" />
+		<result column="fksm" property="fksm" jdbcType="VARCHAR" />
+		<result column="fksj" property="fksj" jdbcType="TIMESTAMP" />
+		<result column="nbsbm" property="nbsbm" jdbcType="VARCHAR" />
+		<result column="wjdz" property="wjdz" jdbcType="VARCHAR" />
+		<result column="rwdxid" property="rwdxid" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap type="com.eray.thjw.po.TaskInfo" id="ResultMap" extends="BaseResultMap">
+		<association property="sqr" javaType="com.eray.thjw.po.User">
+			<id column="sqrid" property="id" />
+			<result column="sqr_realname" property="realname" />
+			<result column="sqr_username" property="username" />
+		</association>
+		<association property="todo" javaType="com.eray.thjw.project2.po.Todo">
+			<id column="TODOID" property="id" />
+			<result column="LYID" property="lyid" jdbcType="VARCHAR" />
+		    <result column="LYBH" property="lybh" jdbcType="VARCHAR" />
+		    <result column="BB" property="bb" jdbcType="VARCHAR" />
+		    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+		    <result column="DBGZLX" property="dbgzlx" jdbcType="INTEGER" />
+		    <result column="SM"     property="sm" jdbcType="VARCHAR" />
+		    <result column="BLQX"   property="blqx" jdbcType="TIMESTAMP" />
+		    <result column="BLRID"  property="blrid" jdbcType="VARCHAR" />
+		    <result column="YXZT"   property="yxzt" jdbcType="INTEGER" />
+		    <result column="ZT"     property="zt" jdbcType="INTEGER" />
+		    <result column="FKYJ"   property="fkyj" jdbcType="VARCHAR" />
+		    <result column="FKSJ"   property="fksj" jdbcType="TIMESTAMP" />
+		    <result column="DPRTCODE"   property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="JD" property="jd" jdbcType="INTEGER" />
+		    <result column="GNBM" property="gnbm" jdbcType="VARCHAR" />
+		    <result column="DBYWID" property="dbywid" jdbcType="VARCHAR" />
+		    <collection property="userList" ofType="com.eray.thjw.po.User">  
+		        <id column="userid" property="id"/>  
+		        <result column="BLR_USERNAME" property="username" jdbcType="VARCHAR" />  
+		        <result column="BLR_REALNAME" property="realname" jdbcType="VARCHAR" />  
+		        <result column="BLR_EMAIL" property="email" jdbcType="VARCHAR" />  
+	  	 	</collection>  
+		</association>	
+	</resultMap>
+	<sql id="Base_Column_List">
+		TASK.ID,
+		TASK.DPRTCODE,
+		TASK.ZT,
+		TASK.RWLX,
+		TASK.RWBM,
+		TASK.RWMS,
+		TASK.SQRID,
+		TASK.SQSJ,
+		TASK.FKSM,
+		TASK.FKSJ,
+		TASK.NBSBM,
+		TASK.WJDZ,
+		TASK.RWDXID
+	</sql>
+
+	<!-- 根据id查询 -->
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM T_BATCHTASK TASK
+		WHERE TASK.ID = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 根据id修改 -->
+	<update id="updateTaskInfoByPrimaryKey" parameterType="com.eray.thjw.po.TaskInfo">
+		UPDATE T_BATCHTASK TASK
+		<set>
+			<if test="zt != null">
+				ZT = #{zt,jdbcType=DECIMAL},
+			</if>
+			<if test="fksm != null">
+				FKSM = #{fksm,jdbcType=VARCHAR},
+			</if>
+			<if test="wjdz != null">
+				WJDZ = #{wjdz,jdbcType=VARCHAR},
+			</if>
+			FKSJ = SYSDATE,
+		</set>
+		WHERE TASK.ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertSelective" parameterType="com.eray.thjw.po.TaskInfo">
+	insert into T_BATCHTASK
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="rwlx != null" >
+        RWLX,
+      </if>
+      <if test="rwbm != null" >
+        RWBM,
+      </if>
+      <if test="rwms != null" >
+        RWMS,
+      </if>
+      <if test="sqrid != null" >
+        SQRID,
+      </if>
+      <if test="sqsj != null" >
+        SQSJ,
+      </if>
+      <if test="fksm != null" >
+        FKSM,
+      </if>
+      <if test="fksj != null" >
+        FKSJ,
+      </if>
+      <if test="nbsbm != null" >
+        NBSBM,
+      </if>
+      <if test="wjdz != null" >
+        WJDZ,
+      </if>
+      <if test="rwdxid != null" >
+        RWDXID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="rwlx != null" >
+        #{rwlx,jdbcType=DECIMAL},
+      </if>
+      <if test="rwbm != null" >
+        #{rwbm,jdbcType=VARCHAR},
+      </if>
+      <if test="rwms != null" >
+        #{rwms,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsj != null" >
+        #{sqsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fksm != null" >
+        #{fksm,jdbcType=VARCHAR},
+      </if>
+      <if test="fksj != null" >
+        #{fksj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nbsbm != null" >
+        #{nbsbm,jdbcType=VARCHAR},
+      </if>
+      <if test="wjdz != null" >
+        #{wjdz,jdbcType=VARCHAR},
+      </if>
+      <if test="rwdxid != null" >
+        #{rwdxid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+	</insert>
+	<!-- 获取所有待处理的文档导出 -->
+	<select id="getAllTodoList" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM T_BATCHTASK TASK
+		WHERE zt = 1  and rwlx = 1
+	</select>
+	<!-- 获取所有的文档导出任务的列表 -->
+	<select id="getAllList" parameterType="com.eray.thjw.po.TaskInfo"  resultMap="ResultMap">
+		SELECT
+		<include refid="Base_Column_List" />,
+		sqr.username sqr_username,sqr.realname sqr_realname
+		FROM T_BATCHTASK TASK
+		left join t_user sqr on task.sqrid = sqr.id
+		where TASK.rwlx = 1 and  TASK.nbsbm = #{nbsbm,jdbcType=VARCHAR}
+		and TASK.dprtcode =  #{dprtcode,jdbcType=VARCHAR}
+		<choose>
+			<when test='pagination.sort == "auto"'>
+				order by sqsj desc
+			</when> 
+			<otherwise>
+				order by ${pagination.sort} ${pagination.order}
+			</otherwise>
+		</choose>
+	</select>
+	<update id="updateZt4Export" parameterType="java.lang.String" >
+		update T_BATCHTASK set zt = 1 where zt =2  and rwlx = 1
+	</update>
+	
+	<update id="updateZt4Email" parameterType="java.lang.String" >
+		update T_BATCHTASK set zt = 1 where zt =2  and rwlx = 2
+	</update>
+	<!-- 获取所有需要发送邮件任务的数据 -->
+	<select id="getAllTodoEmail" resultMap="ResultMap">
+	select bt.id, td.ID TODOID,td.LYID, td.LYBH, td.BB, td.FJJX, td.DBGZLX, td.SM, td.BLQX,
+       td.BLRID, td.YXZT, td.ZT, td.FKYJ, td.FKSJ,td.DPRTCODE, td.JD, 
+       td.GNBM, td.DBYWID, 
+	 u.id userid, u.username BLR_USERNAME, u.realname BLR_REALNAME, u.email BLR_EMAIL
+  	from t_batchtask bt
+  	join t_todo td on bt.rwdxid = td.id
+                and bt.rwlx = 2
+                and bt.zt = 1
+  	left join t_user u on td.BLRID = u.id
+  	and u.jgdm = bt.dprtcode
+                     or (EXISTS
+                         (SELECT 1
+                            FROM (SELECT RB.ROLE_ID, B.BUTTONCODE GNCODE
+                                    FROM T_BUTTON B
+                                    JOIN T_ROLE2BTN RB ON B.ID = RB.BUTTON_ID
+                                  UNION ALL
+                                  SELECT RM.ROLE_ID, M.MENUCODE GNCODE
+                                    FROM T_MENU M
+                                    JOIN T_ROLE2MENU RM ON M.ID = RM.MENU_ID) MB
+                            JOIN T_USER2ROLE UR ON UR.ROLE_ID = MB.ROLE_ID
+                           WHERE MB.GNCODE = td.GNBM
+                             and UR.USER_ID = u.id) and td.blrid is null
+                             AND U .jgdm = bt.dprtcode
+                             )               
+	order by sqsj  
+	</select>
+	<select id="getTaskInfoById" parameterType="String" resultMap="ResultMap">
+	select bt.id, td.ID TODOID,td.LYID, td.LYBH, td.BB, td.FJJX, td.DBGZLX, td.SM, td.BLQX,
+       td.BLRID, td.YXZT, td.ZT, td.FKYJ, td.FKSJ,td.DPRTCODE, td.JD, 
+       td.GNBM, td.DBYWID, 
+	 u.id userid, u.username BLR_USERNAME, u.realname BLR_REALNAME, u.email BLR_EMAIL
+  	from t_batchtask bt
+  	join t_todo td on bt.rwdxid = td.id
+                and bt.rwlx = 2
+                and bt.zt = 2
+  	left join t_user u on td.BLRID = u.id
+  	and u.jgdm = bt.dprtcode
+                     or (EXISTS
+                         (SELECT 1
+                            FROM (SELECT RB.ROLE_ID, B.BUTTONCODE GNCODE
+                                    FROM T_BUTTON B
+                                    JOIN T_ROLE2BTN RB ON B.ID = RB.BUTTON_ID
+                                  UNION ALL
+                                  SELECT RM.ROLE_ID, M.MENUCODE GNCODE
+                                    FROM T_MENU M
+                                    JOIN T_ROLE2MENU RM ON M.ID = RM.MENU_ID) MB
+                            JOIN T_USER2ROLE UR ON UR.ROLE_ID = MB.ROLE_ID
+                           WHERE MB.GNCODE = td.GNBM
+                             and UR.USER_ID = u.id) and td.blrid is null
+                             AND U .jgdm = bt.dprtcode
+                             )               
+	where bt.id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteById" parameterType="String">
+		delete from t_batchtask where id = #{id,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ComponentCertificateMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.ComponentCertificate" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="PCH" property="pch" jdbcType="VARCHAR" />
+    <result column="ZSBH" property="zsbh" jdbcType="VARCHAR" />
+    <result column="ZSCFWZ" property="zscfwz" jdbcType="VARCHAR" />
+    <result column="ZJLX" property="zjlx" jdbcType="VARCHAR" />
+    <result column="QSRQ" property="qsrq" jdbcType="TIMESTAMP" />
+    <result column="attachcount" property="paramsMap.attachcount" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.aerialmaterial.po.ComponentCertificate" id="DetailResultMap" extends="BaseResultMap">
+  	<collection property="attachments" ofType="com.eray.thjw.flightdata.po.Attachment">
+    	<id column="D1ID" property="id" jdbcType="VARCHAR" />
+	    <result column="D1MAINID" property="mainid" jdbcType="VARCHAR" />
+	    <result column="D1DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+	    <result column="D1YSWJM" property="yswjm" jdbcType="VARCHAR" />
+	    <result column="D1WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+	    <result column="D1NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+	    <result column="D1WJDX" property="wjdx" jdbcType="DECIMAL" />
+	    <result column="D1HZM" property="hzm" jdbcType="VARCHAR" />
+	    <result column="D1SM" property="sm" jdbcType="VARCHAR" />
+	    <result column="D1CFLJ" property="cflj" jdbcType="VARCHAR" />
+	    <result column="D1YXZT" property="yxzt" jdbcType="DECIMAL" />
+	    <result column="D1CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+	    <result column="D1CZBMID" property="czbmid" jdbcType="VARCHAR" />
+	    <result column="D1CZRID" property="czrid" jdbcType="VARCHAR" />
+	    <result column="D1CZRNAME" property="czrname" jdbcType="VARCHAR" />
+	    <result column="D1REALNAME" property="realname" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    B_H2_024.ID,  B_H2_024.DPRTCODE,  B_H2_024.WHBMID,  B_H2_024.WHRID,  B_H2_024.WHSJ, 
+    B_H2_024.ZT,  B_H2_024.JH,  B_H2_024.XLH,  B_H2_024.PCH,  B_H2_024.ZSBH,  B_H2_024.ZSCFWZ, 
+    B_H2_024.ZJLX,  B_H2_024.QSRQ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_024
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_024
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.ComponentCertificate" >
+    insert into B_H2_024 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, ZT, 
+      JH, XLH, PCH, ZSBH, 
+      ZSCFWZ, ZJLX, QSRQ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{pch,jdbcType=VARCHAR}, #{zsbh,jdbcType=VARCHAR}, 
+      #{zscfwz,jdbcType=VARCHAR}, #{zjlx,jdbcType=VARCHAR}, #{qsrq,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.ComponentCertificate" >
+    insert into B_H2_024
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="jh != null" >
+        JH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="pch != null" >
+        PCH,
+      </if>
+      <if test="zsbh != null" >
+        ZSBH,
+      </if>
+      <if test="zscfwz != null" >
+        ZSCFWZ,
+      </if>
+      <if test="zjlx != null" >
+        ZJLX,
+      </if>
+      <if test="qsrq != null" >
+        QSRQ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null" >
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null" >
+        #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="zsbh != null" >
+        #{zsbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zscfwz != null" >
+        #{zscfwz,jdbcType=VARCHAR},
+      </if>
+      <if test="zjlx != null" >
+        #{zjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="qsrq != null" >
+        #{qsrq,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.ComponentCertificate" >
+    update B_H2_024
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null" >
+        PCH = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="zsbh != null" >
+        ZSBH = #{zsbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zscfwz != null" >
+        ZSCFWZ = #{zscfwz,jdbcType=VARCHAR},
+      </if>
+      <if test="zjlx != null" >
+        ZJLX = #{zjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="qsrq != null" >
+        QSRQ = #{qsrq,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.ComponentCertificate" >
+    update B_H2_024
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      JH = #{jh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      PCH = #{pch,jdbcType=VARCHAR},
+      ZSBH = #{zsbh,jdbcType=VARCHAR},
+      ZSCFWZ = #{zscfwz,jdbcType=VARCHAR},
+      ZJLX = #{zjlx,jdbcType=VARCHAR},
+      QSRQ = #{qsrq,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询部件证书集合 -->
+  <select id="queryList" resultMap="DetailResultMap" parameterType="com.eray.thjw.aerialmaterial.po.ComponentCertificate" >
+    SELECT 
+    B1.ID, B1.DPRTCODE, B1.WHBMID, B1.WHRID, B1.WHSJ, B1.ZT, B1.JH, B1.XLH, 
+    B1.PCH, B1.ZSBH, B1.ZSCFWZ, B1.ZJLX, B1.QSRQ,
+    D1.ID AS D1ID, D1.MAINID AS D1MAINID, D1.DPRTCODE AS D1DPRTCODE, D1.YSWJM AS D1YSWJM, 
+    D1.WBWJM AS D1WBWJM, D1.NBWJM AS D1NBWJM, D1.WJDX AS D1WJDX, 
+    D1.HZM AS D1HZM, D1.SM AS D1SM, D1.CFLJ AS D1CFLJ, D1.YXZT AS D1YXZT, D1.CZSJ AS D1CZSJ, 
+    D1.CZBMID AS D1CZBMID, CASE WHEN T1.USERNAME IS NULL THEN NULL ELSE T1.USERNAME || ' ' ||T1.REALNAME END D1CZRNAME
+    FROM B_H2_024 B1 
+    LEFT JOIN D_011 D1 ON B1.ID = D1.MAINID AND D1.YXZT = 1
+    LEFT JOIN T_USER T1 ON D1.CZRID = T1.ID 
+    WHERE B1.JH = #{jh,jdbcType=VARCHAR}
+         <if test="xlh != null and xlh != '' " >   
+       	 AND B1.XLH = #{xlh,jdbcType=VARCHAR}
+        </if>
+         <if test="xlh == null or xlh == '' " >   
+		 AND B1.XLH = '-'
+		</if>
+         <if test="pch != null and pch != '' " >   
+            AND B1.PCH = #{pch,jdbcType=VARCHAR}
+        </if>
+         <if test="pch == null or pch == '' " >   
+            AND B1.PCH = '-'
+        </if>
+        
+        AND B1.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+        AND B1.ZT = 1
+  </select>
+  
+  <!-- 根据业务主键删除对应证书 -->
+  <delete id="deleteByKey" parameterType="com.eray.thjw.produce.po.InstallationListEditable" >
+    delete from B_H2_024
+    where jh = #{bjh,jdbcType=VARCHAR}
+    	and xlh = #{xlh,jdbcType=VARCHAR}
+    	and pch = #{pch,jdbcType=VARCHAR}
+    	and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 根据业务主键查询 -->
+  <select id="selectByKey" resultType="java.lang.String" parameterType="com.eray.thjw.produce.po.InstallationListEditable" >
+    SELECT 
+    ID
+    FROM B_H2_024
+    WHERE JH = #{bjh,jdbcType=VARCHAR}
+        AND XLH = #{xlh,jdbcType=VARCHAR}
+        AND PCH = #{pch,jdbcType=VARCHAR} 
+        AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByParams" resultMap="DetailResultMap" parameterType="com.eray.thjw.aerialmaterial.po.ComponentCertificate" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    ,att.ATTACHCOUNT attachcount
+    FROM B_H2_024
+    	LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) att
+    		on B_H2_024.id = att.mainid
+    WHERE B_H2_024.JH = #{jh,jdbcType=VARCHAR}
+        AND B_H2_024.XLH = #{xlh,jdbcType=VARCHAR}
+        AND B_H2_024.PCH = #{pch,jdbcType=VARCHAR} 
+         AND B_H2_024.zt = #{zt,jdbcType=VARCHAR}
+        AND B_H2_024.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

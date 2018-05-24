@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.User" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DRZHID" property="drzhid" jdbcType="VARCHAR" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+    <result column="CELLPHONE" property="cellphone" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="DECIMAL" />
+    <result column="STATE" property="state" jdbcType="DECIMAL" />
+    <result column="LASTVISIT" property="lastvisit" jdbcType="TIMESTAMP" />
+    <result column="LASTIP" property="lastip" jdbcType="VARCHAR" />
+    <result column="BMDM" property="bmdm" jdbcType="VARCHAR" />
+    <result column="JGDM" property="jgdm" jdbcType="VARCHAR" />
+    <result column="JDDM" property="jddm" jdbcType="VARCHAR" />
+    <result column="DEPARTMENTNAME" property="departmentName" jdbcType="VARCHAR" />
+    <result column="INSTITUTIONSNAME" property="institutionsName" jdbcType="VARCHAR" />
+    <result column="FJJX" property="jx" jdbcType="VARCHAR" />
+    <result column="attId" property="attId" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    
+    <result column="XM" property="xm" jdbcType="VARCHAR" />
+    <result column="LX" property="lx" jdbcType="VARCHAR" />
+    <result column="ORGCODE" property="orgcode" jdbcType="VARCHAR" />
+    <result column="dprtname" property="paramsMap.dprtname" jdbcType="VARCHAR" />
+    <result column="dprtbh" property="paramsMap.dprtcode" jdbcType="VARCHAR" />
+     <!-- 对应关系的组织机构-->
+    <association property="department" javaType="com.eray.thjw.po.Department">  
+        <result column="bmdm" property="id"/>  
+        <result column="aid" property="id"/>  
+        <result column="DPRTNAME" property="dprtname"/>  
+        <result column="DPRTCODE" property="dprtcode"/>  
+    </association>
+     <association property="dprt_bm" javaType="com.eray.thjw.po.Department">
+         <id column="bmdm" property="id"/>
+        <result column="bm_deptname" property="dprtname"/>
+     </association>
+      <association property="dprt_jg" javaType="com.eray.thjw.po.Department">
+         <id column="jgdm" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association> 
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, USERNAME, REALNAME, CELLPHONE, PHONE, SEX, STATE, 
+    BMDM,JGDM,JDDM,email
+  </sql>
+   <!-- 根据技术指令id，查询已圈阅的人员 -->
+  <select id="selectUserToSendYes" parameterType="java.lang.String" resultType="com.eray.thjw.po.User">
+    select 
+    	t.username,
+    	t.id,
+    	t.realname,
+    	t.bmdm
+    	from t_user t left join b_g_00201 b on t.id=b.jsrid where b.mainid=#{0} and t.jgdm=#{1} and t.username !='admin' 
+  </select>
+   <!-- 根据技术指令id，查询未圈阅的人员 -->
+  <select id="selectUserToSendNo" parameterType="java.lang.String" resultType="com.eray.thjw.po.User">
+       select 
+	    a.username,
+	    a.id,
+	    a.realname,
+	    a.bmdm
+	    from t_user a where a.id not in (
+       		select 
+    			t.id
+    		from t_user t left join b_g_00201 b on t.id=b.jsrid where b.mainid=#{0} ) and a.jgdm=#{1} and a.username !='admin'  
+  </select>
+  <!-- 条件查询所有 id+username+realname+bmdm-->
+  <select id="queryUserAll" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.User">
+  	select id,realname,username,bmdm from t_user where username != 'admin' and STATE = 1
+  	  <!--id-->
+	     <if test="jgdm != null and jgdm != ''">
+             and JGDM = #{jgdm}
+         </if>
+         <if test="id != null and id != ''">
+             and id = #{id}
+         </if>
+         <if test="username != null and username != ''">
+             and username = #{username}
+         </if>
+  </select>
+  
+   <!-- 条件查询所有 id+username+realname+bmdm-->
+  <select id="queryjgdm" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.User">
+  	select ID, USERNAME, REALNAME, CELLPHONE, PHONE, SEX, STATE, 
+    BMDM,JGDM,email from t_user where 1=1
+  	  <!--id-->
+	     <if test="jgdm != null and jgdm != ''">
+             and JGDM = #{jgdm}
+         </if>
+         <if test="username != null and username != ''">
+             and username = #{username}
+         </if>
+  </select>
+  
+   <select id="queryAllByjx" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.User">
+	 select distinct(v.user_id), t.username, t.realname,t.jgdm ,v.fjjx jx,t.id from v_role_jx v
+       left join t_user t on v.user_id = t.id
+ where v.dprtcode = #{jgdm,jdbcType=VARCHAR} and  t.JGDM = #{jgdm,jdbcType=VARCHAR} and v.fjjx = #{jx,jdbcType=VARCHAR} and t.state = 1
+ order by t.username
+  </select>
+  <!-- 条件查询所有 id+username+realname+bmdm-->
+  <select id="queryUserAllByDprtcode" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.User">
+  	select t_user.id,t_user.realname,t_user.username,t_user.bmdm,t_user.sex,t_user.email,Department.dprtname dprtname,Department.dprtcode dprtbh  from t_user left join t_department Department on (t_user.bmdm=Department.id) where username != 'admin' and STATE = 1
+  	  <!--id-->
+	     <if test="jgdm != null and jgdm != ''">
+             and t_user.JGDM = #{jgdm}
+         </if>
+         <if test="id != null and id != ''">
+             and t_user.id = #{id}
+         </if>
+          <if test="keyword != null and keyword != ''">
+		    and (  UPPER(USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(REALNAME) like UPPER('%'||#{keyword}||'%') )             <!-- 左右匹配 查询关键字 -->
+		</if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+ select t1.*,t2.id as aid,t2.dprtname,t2.dprtcode,t3.username accountName ,t4.id attId
+ 			from t_user t1 left join t_department t2 on t1.bmdm=t2.id 
+ 						   left join t_login t3 on t1.drzhid=t3.id
+ 						   left join D_011 t4 on t1.id=t4.mainid
+    where t1.id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="getByUserNameAndPassword" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select u.ID,
+    	   u.DRZHID, 
+           u.USERNAME, 
+           l.PASSWORD,
+           u.REALNAME, 
+           u.CELLPHONE, 
+           u.PHONE, 
+           u.SEX, 
+           u.email, 
+           (CASE WHEN u.STATE = 1 THEN (CASE WHEN l.STATE IS NULL THEN 0 ELSE l.STATE END) ELSE 0 END) STATE,
+           u.LASTVISIT,
+           u.LASTIP,
+           u.BMDM,
+           u.JGDM,
+           d.ID as AID,
+           d.DPRTNAME,
+           d1.DPRTCODE as ORGCODE,
+           d011.id attId
+    from T_USER u
+    left join T_LOGIN l on l.ID = u.DRZHID
+    left join T_DEPARTMENT d
+    on u.BMDM = d.id
+    left join d_011 d011 on u.id = d011.mainid
+    left join T_DEPARTMENT d1 on u.jgdm = d1.id
+    where l.USERNAME = #{username,jdbcType=VARCHAR} and l.PASSWORD = #{password,jdbcType=VARCHAR}
+  </select> 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_USER
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.User" >
+ 	
+    insert into T_USER (ID, DRZHID,USERNAME, PASSWORD, 
+      REALNAME, CELLPHONE, PHONE, 
+      SEX,email,STATE, LASTVISIT, 
+      LASTIP,BMDM,JGDM,JDDM)
+    values (#{id,jdbcType=VARCHAR}, #{drzhid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{realname,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=DECIMAL}, #{email,jdbcType=VARCHAR}, #{state,jdbcType=DECIMAL}, #{lastvisit,jdbcType=TIMESTAMP}, 
+      #{lastip,jdbcType=VARCHAR},#{bmdm,jdbcType=DECIMAL},#{jgdm,jdbcType=DECIMAL},#{jddm,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.User" >
+    insert into T_USER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="drzhid != null" >
+        DRZHID,
+      </if>
+      <if test="username != null" >
+        USERNAME,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="realname != null" >
+        REALNAME,
+      </if>
+      <if test="cellphone != null" >
+        CELLPHONE,
+      </if>
+      <if test="phone != null" >
+        PHONE,
+      </if>
+      <if test="sex != null" >
+        SEX,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="lastvisit != null" >
+        LASTVISIT,
+      </if>
+      <if test="lastip != null" >
+        LASTIP,
+      </if>
+      <if test="bmdm != null" >
+        BMDM,
+      </if>
+      <if test="jgdm != null" >
+        JGDM,
+      </if>
+      <if test="jddm != null" >
+        JDDM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="drzhid != null" >
+       	#{drzhid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null" >
+        #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=DECIMAL},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="lastvisit != null" >
+        #{lastvisit,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastip != null" >
+        #{lastip,jdbcType=VARCHAR},
+      </if>
+      <if test="bmdm != null" >
+        #{bmdm,jdbcType=DECIMAL},
+      </if>
+      <if test="jgdm != null" >
+        #{jgdm,jdbcType=DECIMAL},
+      </if>
+      <if test="jddm != null" >
+        #{jddm,jdbcType=DECIMAL},
+      </if>
+      
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.User" >
+    update T_USER
+    <set >
+    	<if test="drzhid != null" >
+        DRZHID = #{drzhid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        REALNAME = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null" >
+        CELLPHONE = #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        SEX = #{sex,jdbcType=DECIMAL},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="lastvisit != null" >
+        LASTVISIT = #{lastvisit,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastip != null" >
+        LASTIP = #{lastip,jdbcType=VARCHAR},
+      </if>
+      <if test="bmdm != null" >
+        BMDM = #{bmdm,jdbcType=DECIMAL},
+      </if>
+      <if test="jgdm != null" >
+        JGDM = #{jgdm,jdbcType=DECIMAL},
+      </if>
+      <if test="jddm != null" >
+        JDDM = #{jddm,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.User" >
+    update T_USER
+    set USERNAME = #{username,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      REALNAME = #{realname,jdbcType=VARCHAR},
+      CELLPHONE = #{cellphone,jdbcType=VARCHAR},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=DECIMAL},
+      email = #{email,jdbcType=VARCHAR},
+      STATE = #{state,jdbcType=DECIMAL},
+      LASTVISIT = #{lastvisit,jdbcType=TIMESTAMP},
+      LASTIP = #{lastip,jdbcType=VARCHAR},
+      DPRTID = #{dprtid,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 密码修改 -->
+  <update id="updateUserPassword" parameterType="com.eray.thjw.po.User">
+  	 update T_USER
+    set PASSWORD = #{password,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <!-- 用户信息修改 -->
+  <update id="updateUserInfo" parameterType="com.eray.thjw.po.User">
+  	 update T_USER
+    set PHONE = #{phone,jdbcType=VARCHAR},
+        REALNAME = #{realname,jdbcType=VARCHAR},
+        CELLPHONE = #{cellphone,jdbcType=VARCHAR},
+        SEX = #{sex,jdbcType=DECIMAL},
+        email = #{email,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 状态修改 -->
+  <update id="updateUserState" parameterType="com.eray.thjw.po.User">
+  	 update T_USER
+    set STATE = #{state,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询所有用户信息和所在组织机构 -->
+  <select id="queryUserFetchDepartment" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.User">
+	  		 select t.ID, t.USERNAME,t.PASSWORD, t.REALNAME, t.CELLPHONE, t.PHONE, t.SEX,t.email, t.STATE,  t.LASTVISIT,   t.LASTIP, t.DRZHID, 
+    t.BMDM,t.JGDM
+    , dprt_bm.dprtname bm_deptname, dprt_jg.dprtname jg_dprtname,bb.username  accountName
+  from t_user t
+  left join t_department dprt_bm
+    on (t.bmdm = dprt_bm.id)
+  left join t_department dprt_jg
+    on (t.jgdm = dprt_jg.id)
+    left join t_login bb on t.drzhid=bb.id
+	  					
+	  						
+	  	<include refid="userParam"></include>
+	  	<!-- order by t1.ID asc -->
+	  	<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by t.USERNAME asc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+  </select>
+  
+  
+  <!-- 根据机构代码查询条数 -->
+  <select id="queryCountByJgdm"  parameterType="java.lang.String" resultType="int">
+  	  select count(1) from t_user where jgdm=#{jgdm} 
+  </select>
+  
+   <!-- 查询所有用户信息和维修人员信息 -->
+  <select id="queryUserAndAttendantor" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.User">
+	select id,xm,lx,departmentname,jgdm from (
+	
+	select t1.id, (CASE WHEN t2.id IS null THEN t1.xm ELSE t2.username||' '||t2.realname END) xm, '1' lx,t3.dprtname departmentName ,t1.dprtcode jgdm from b_z_001 t1 
+    left join t_user t2 on t1.wxryid = t2.id left join t_department t3 on t1.wxrbmid=t3.id
+    where t1.zt = 1  and t1.dprtcode=#{jgdm}
+  
+    union all 
+  
+    select tt1.id, tt1.username||' '||tt1.realname xm, '2' lx,tt3.dprtname departmentName,tt1.jgdm from t_user tt1 left join t_department tt3 on tt1.bmdm=tt3.id
+    where tt1.state =1 and not exists(select 1 from b_z_001 tt2 where tt2.zt =1 and tt2.wxryid = tt1.id)  and tt1.jgdm=#{jgdm}
+  	) AS A
+  	<include refid="userAndAttendantorParam"></include>
+   	<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+   	<when test='pagination.sort == "auto"'>                       
+   		order by lx asc
+   	</when>
+   	<otherwise>
+	    order by ${pagination.sort} ${pagination.order}
+   	</otherwise>
+	 </choose>
+  	
+  </select>
+   <!-- 搜索条件 -->
+  <sql id="userAndAttendantorParam">
+   where 1=1 
+         <if test="keyword != null and keyword != ''">
+		    and (UPPER(xm) like UPPER('%'||#{keyword}||'%')
+		    	)              <!-- 左右匹配 查询关键字 -->
+		 </if>
+	</sql>
+  
+  <!-- 查询总条数 -->
+  <select id="queryCountByName" parameterType="com.eray.thjw.po.User" resultType="int">
+  		select count(*) FROM T_USER U
+	     where 1=1
+	     <!--id-->
+	     <if test="id != null and id != ''">
+             and ID = #{id}
+         </if>
+         <if test="username != null and username != ''">
+             and USERNAME = #{username}
+         </if>
+         <if test="password != null and password != ''">
+             and PASSWORD= #{password}
+         </if>
+  </select>
+  
+
+  <!-- 搜索条件 -->
+  <sql id="userParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="id != null and id != ''">
+             and t.id = #{id}
+         </if>
+	     <if test="bmdm != null and bmdm != ''">
+             and  t.BMDM = #{bmdm}
+         </if>
+	     <if test="accountName != null and accountName != ''">
+             and bb.USERNAME = #{accountName}
+         </if>
+         <if test="username != null and username != ''">
+             and (UPPER(t.USERNAME) like UPPER('%'||#{username}||'%')
+		    or UPPER(t.REALNAME) like UPPER('%'||#{username}||'%')
+		    )
+         </if>
+          <if test="realname != null and realname != ''">
+             and (UPPER(t.USERNAME) like UPPER('%'||#{realname}||'%')
+		    or UPPER(t.REALNAME) like UPPER('%'||#{realname}||'%')
+		    )
+         </if>
+          <if test="state != null ">
+             and t.STATE = #{state}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		    and (  UPPER(t.USERNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t.REALNAME) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t.PHONE) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(bb.USERNAME)  like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(t.CELLPHONE) like UPPER('%'||#{keyword}||'%'))              <!-- 左右匹配 查询关键字 -->
+		</if>
+		<if test="paramsMap.page != null and paramsMap.page == 'maintenancepersonnel'">
+		    AND NOT EXISTS(SELECT 1 FROM B_Z_001 WHERE B_Z_001.ZT = 1 AND B_Z_001.WXRYID = T.ID)             
+		</if>
+		<choose>
+			<when test="jgdm != null and jgdm != '' ">
+	        	and t.JGDM = #{jgdm}
+		    </when>
+		    <when test="paramsMap.userId != null ">
+	        	and exists (select rd.dprt_Id
+						      from t_user2role ur
+						      left join t_role2dprt rd
+						      on rd.role_id = ur.role_id
+							where t.JGDM = rd.dprt_Id and ur.user_id = #{paramsMap.userId,jdbcType=VARCHAR})
+		    </when>
+		</choose>
+	</sql>
+
+   <select id="checkUser" parameterType="com.eray.thjw.po.User" resultType="int">
+  		SELECT COUNT(*) FROM T_USER U 
+  		WHERE U.USERNAME = #{username,jdbcType=VARCHAR}
+  		AND PASSWORD = #{password,jdbcType=VARCHAR}
+  </select>
+  
+  <sql id="Base_Column_Sql" >
+    ID, USERNAME, PASSWORD, REALNAME, CELLPHONE, PHONE, SEX, STATE, LASTVISIT, LASTIP, BMDM, JGDM,email
+  </sql>
+  
+  <!-- 查询全部未选择组织机构的用户 -->
+  <select id="selectAllNotChooseDepartmentTheUser" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select
+     <include refid="Base_Column_Sql" />
+     from T_USER
+       where JGDM is null or JGDM = ''
+         <if test="realName != null and realName != ''">
+            and UPPER(REALNAME) like UPPER('%'||#{realName}||'%')
+         </if>
+  </select>
+  
+  <!-- 查询全部已选择组织机构的用户 -->
+  <select id="selectAllAlreadyChooseDepartmentTheUser" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+     select
+     <include refid="Base_Column_Sql" />
+     from T_USER
+       where JGDM = #{jgdm}
+         <if test="realName != null and realName != ''">
+            and UPPER(REALNAME) like UPPER('%'||#{realName}||'%')
+         </if>
+  </select>
+  
+  <!-- 根据用户主键id修改用户的组织机构 -->
+  <update id="updateUserTheDepartmentById" parameterType="java.util.HashMap">
+	 update T_USER 
+     set BMDM = #{bmdm},
+         JGDM = #{jgdm}
+     where ID in     
+     <foreach item="id" index="index" collection="id" open="(" separator="," close=")">    
+        #{id}
+     </foreach>
+  </update>
+  
+  <!-- 根据部门代码查询该组织机构下的用户的条数 -->
+  <select id="selectUserCountByBmdm" parameterType="java.lang.String" resultType="java.lang.Integer">
+     select count(1) from T_USER
+     where BMDM = #{bmdm}
+  </select>
+  
+  <!-- 根据原始的部门代码修改用户的组织机构 -->
+  <update id="updateUserTheDepartmentByOrgnBmdm" parameterType="java.util.HashMap">
+     update T_USER
+     set BMDM = #{bmdm},
+         JGDM = #{jgdm}
+     where BMDM = #{orgnBmdm}
+  </update>
+ 
+ <insert id="synAuthInfo" parameterType="map">
+ 	MERGE INTO T_Login U1
+	USING
+	(
+		 <foreach collection="authusers" item="item" index="index" separator="union all" > 
+		      select 
+		      #{item.id} ID
+		      ,#{item.username} USERNAME
+		      ,#{item.password} PASSWORD
+		      ,#{item.orgid} BMDM
+		      from dual 
+		 </foreach>
+	) U2
+	ON
+	(
+	  U1.ID = U2.ID 
+	)
+	WHEN MATCHED THEN
+	       UPDATE SET U1.PASSWORD = U2.PASSWORD 
+	        
+	WHEN NOT MATCHED THEN
+	        INSERT(ID,USERNAME,PASSWORD,STATE)
+	        VALUES(U2.ID ,U2.USERNAME ,U2.PASSWORD, 1)
+ </insert>
+ 
+ 	<!-- 根据登陆账号查询用户 -->
+	<select id="selectByDrzhid" parameterType="java.lang.String" resultType="com.eray.thjw.po.User">
+		select
+		t.id,
+		t.drzhid,
+		t.username,
+		t.realname,
+		t.bmdm
+		from t_user t where t.drzhid = #{drzhid}
+	</select>
+ 	<!-- 根据登陆账号查询用户 -->
+	<select id="selectByDrzhName" parameterType="java.lang.String" resultType="com.eray.thjw.po.User">
+	select
+    t.id,
+    t.drzhid,
+    t.username,
+    t.realname,
+    t.bmdm
+    from t_user t 
+    left join t_login b on t.drzhid=b.id
+    where  b.username = #{drzhid}
+	</select>
+
+  <select id="queryCount" parameterType="com.eray.thjw.po.User" resultType="int">
+	  SELECT COUNT(*)
+ 		 FROM T_USER <include refid="BaseResulParam3"></include>
+  </select>
+<sql id="BaseResulParam3">
+	   WHERE 1=1  
+         <if test="username != null and username != ''">
+             AND username = #{username}
+         </if>
+         <if test="jgdm != null and jgdm != ''">
+             and jgdm = #{jgdm}
+         </if>
+  </sql>
+  
+    <update id="updateByPrimaryKeySelectiveImport" parameterType="com.eray.thjw.po.User" >
+    update T_USER set
+        DRZHID = #{drzhid,jdbcType=VARCHAR},
+        REALNAME = #{realname,jdbcType=VARCHAR},
+        CELLPHONE = #{cellphone,jdbcType=VARCHAR},
+        PHONE = #{phone,jdbcType=VARCHAR},
+        SEX = #{sex,jdbcType=DECIMAL},
+        email = #{email,jdbcType=VARCHAR},
+        STATE = #{state,jdbcType=DECIMAL},
+        BMDM = #{bmdm,jdbcType=DECIMAL},
+        JDDM = #{jddm,jdbcType=DECIMAL}
+    where   username = #{username}  and jgdm = #{jgdm} 
+  </update>
+
+	<!-- 清除 登陆账号ID及账号 -->
+	<update id="updateUserUnboundAccount" parameterType="java.lang.String">
+		update T_USER
+		set DRZHID = null
+		where ID = #{id}
+	</update>
+	
+	<!-- 根据IP或MAC查询 是否允许，0表示限制，非0表示授权通过 -->
+	<select id="selectLimitByIpOrMac" resultType="int">
+	    select TT.c + TT1.c from (select count(1) c
+			from T_IPMAC_LIMIT t where t.VALUE1 = #{1} or t.VALUE1 = #{2}) TT
+	    left join (select (CASE WHEN count(1) = 0 THEN 1 ELSE 0 END) c from T_IPMAC_LIMIT t1 ) TT1 on 1=1
+	</select>
+	
+	 <!-- 根据组织机构查询所有 id+username+realname+bmdm-->
+  <select id="getByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select t_user.id,realname,username,bmdm,t_department.dprtname as dprtname from t_user 
+	left join t_department on  t_department.id=t_user.bmdm where STATE = 1 and JGDM = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+	 <!-- 根据组织机构查询所有 id+username+realname+bmdm-->
+  <select id="getByDprtcodetree" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select t_user.id,realname,username,sex,email,bmdm,t_department.dprtname as dprtname,t_department.dprtcode dprtbh from t_user 
+	left join t_department on  t_department.id=t_user.bmdm where STATE = 1 and JGDM = #{dprtcode,jdbcType=VARCHAR}
+	<if test="bmdm != null and bmdm != ''">
+        and t_user.bmdm = #{bmdm,jdbcType=VARCHAR}
+    </if>
+	  AND (UPPER(realname) LIKE UPPER('%'||#{str,jdbcType=VARCHAR}||'%')
+		     OR   UPPER(username) LIKE UPPER('%'||#{str,jdbcType=VARCHAR}||'%')
+		   
+		     	) <!-- 左右匹配 查询关键字 -->
+  </select>
+  
+  
+	
+</mapper>

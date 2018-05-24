@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.SaiBongGzMapper">
+  <resultMap id="BaseResultMap" type="com.eray.component.saibong.po.SaibongGz">
+    <id column="cfkey" jdbcType="VARCHAR" property="cfkey" />
+    <result column="dprtCode" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="g_gdwz" jdbcType="VARCHAR" property="ggdwz" />
+    <result column="g_cfzcsx" jdbcType="DECIMAL" property="gcfzcsx" />
+    <result column="t_rqgs" jdbcType="VARCHAR" property="trqgs" />
+    <result column="t_cfzcsx" jdbcType="DECIMAL" property="tcfzcsx" />
+    <result column="l_lshcd" jdbcType="DECIMAL" property="llshcd" />
+    <result column="l_tbgz" jdbcType="DECIMAL" property="ltbgz" />
+    <result column="l_cfzcsx" jdbcType="DECIMAL" property="lcfzcsx" />
+    <result column="fgf" jdbcType="VARCHAR" property="fgf" />
+    <result column="cfsm" jdbcType="VARCHAR" property="cfsm" />
+    <result column="dtwzwz" jdbcType="VARCHAR" property="dtwzwz" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    t.cfkey,t.dprtcode, t.g_gdwz, t.g_cfzcsx ,t.t_rqgs,t.t_cfzcsx,t.l_lshcd,t.l_tbgz,t.l_cfzcsx,t.fgf,t.cfsm,t.dtwzwz
+  </sql>
+  
+      <!-- 查询 start --> 
+  <select id="selectPreviewTime" parameterType="com.eray.component.saibong.po.SaibongGz" resultType="string">
+		select  to_char(CURRENT_TIMESTAMP, #{trqgs,jdbcType=VARCHAR})
+  </select>
+  
+  <!-- 查询 start --> 
+  <select id="queryAllList" parameterType="com.eray.component.saibong.po.SaibongGz" resultMap="BaseResultMap">
+			   
+
+				select <include refid="Base_Column_List"></include> from saibong_gz  t
+					where 1=1 and (t.dprtcode =#{dprtcode} 
+       					or
+      		 			( not EXISTS ( select 1 from saibong_gz where  cfkey=t.cfkey  and dprtcode = #{dprtcode}
+  				 		
+      		 			) and dprtcode = '-1' ))
+						<if test="paramsMap.keyword != null and paramsMap.keyword != '' ">
+					       	and (t.cfkey like '%'||#{paramsMap.keyword}||'%'
+					       		or t.cfsm like '%'||#{paramsMap.keyword}||'%'
+					        )
+  				 		</if>
+			    <choose>
+			    	<when test='paramsMap.sort == "auto"'>
+			    		 order by t.cfkey
+			    	</when>
+			    	<otherwise>
+					    order by ${paramsMap.sort} ${paramsMap.order}
+			    	</otherwise>
+			 	</choose>
+  </select>
+  
+  <sql id="condition">
+  	<if test="keyword != null and keyword != '' ">
+       	and (g_gdwz like '%'||#{keyword}||'%'
+        )
+   	</if>
+   	<if test="type != null and type != '' ">
+       	and type = #{type}
+   	</if>
+  </sql>
+  <!-- 查询采番 end -->
+  
+  <select id="queryKey"  resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="Base_Column_List"></include> from saibong_gz t  where t.cfkey=#{0,jdbcType=VARCHAR} and t.dprtcode=#{1,jdbcType=VARCHAR}
+  </select>
+  
+   <insert id="insertSelective" parameterType="com.eray.component.saibong.po.SaibongGz" >
+    insert into saibong_gz
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cfkey != null" >
+        cfkey,
+      </if>
+      <if test="dprtcode != null" >
+        dprtCode,
+      </if>
+      <if test="ggdwz != null" >
+        g_gdwz,
+      </if>
+      <if test="gcfzcsx != null" >
+        g_cfzcsx,
+      </if>
+      <if test="trqgs != null" >
+        t_rqgs,
+      </if>
+      <if test="tcfzcsx != null" >
+        t_cfzcsx,
+      </if>
+      <if test="llshcd != null" >
+        l_lshcd,
+      </if>
+      <if test="ltbgz != null" >
+        l_tbgz,
+      </if>
+      <if test="lcfzcsx != null" >
+        l_cfzcsx,
+      </if>
+      <if test="fgf != null" >
+        fgf,
+      </if>
+      <if test="cfsm != null" >
+        cfsm,
+      </if>
+       dtwzwz,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cfkey != null" >
+        #{cfkey,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ggdwz != null" >
+        #{ggdwz,jdbcType=VARCHAR},
+      </if>
+      <if test="gcfzcsx != null" >
+        #{gcfzcsx,jdbcType=DECIMAL},
+      </if>
+      <if test="trqgs != null" >
+        #{trqgs,jdbcType=VARCHAR},
+      </if>
+      <if test="tcfzcsx != null" >
+        #{tcfzcsx,jdbcType=DECIMAL},
+      </if>
+      <if test="llshcd != null" >
+        #{llshcd,jdbcType=DECIMAL},
+      </if>
+      <if test="ltbgz != null" >
+        #{ltbgz,jdbcType=DECIMAL},
+      </if>
+      <if test="lcfzcsx != null" >
+        #{lcfzcsx,jdbcType=DECIMAL},
+      </if>
+      <if test="fgf != null" >
+        #{fgf,jdbcType=VARCHAR},
+      </if>
+      <if test="cfsm != null" >
+        #{cfsm,jdbcType=VARCHAR},
+      </if>
+      #{dtwzwz,jdbcType=VARCHAR},
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.component.saibong.po.SaibongGz">
+    update saibong_gz
+    <set>
+      <if test="ggdwz != null">
+        g_gdwz = #{ggdwz,jdbcType=DECIMAL},
+      </if>
+      <if test="gcfzcsx != null">
+        g_cfzcsx = #{gcfzcsx,jdbcType=DECIMAL},
+      </if>
+      <if test="trqgs != null">
+        t_rqgs = #{trqgs,jdbcType=VARCHAR},
+      </if>
+      <if test="tcfzcsx != null">
+        t_cfzcsx = #{tcfzcsx,jdbcType=DECIMAL},
+      </if>
+      <if test="llshcd != null">
+        l_lshcd = #{llshcd,jdbcType=DECIMAL},
+      </if>
+      <if test="ltbgz != null">
+        l_tbgz = #{ltbgz,jdbcType=DECIMAL},
+      </if>
+      <if test="lcfzcsx != null">
+        l_cfzcsx = #{lcfzcsx,jdbcType=DECIMAL},
+      </if>
+      <if test="fgf != null">
+        fgf = #{fgf,jdbcType=VARCHAR},
+      </if>
+      <if test="cfsm != null">
+        cfsm = #{cfsm,jdbcType=VARCHAR},
+      </if>
+       
+        dtwzwz = #{dtwzwz,jdbcType=VARCHAR},
+    </set>
+    where cfkey=#{cfkey,jdbcType=VARCHAR} and dprtCode = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  
+  
+</mapper>

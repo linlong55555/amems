@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.PlaneDailyUsageMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlaneDailyUsage" >
+    <id column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="R_JSFXSJ" property="rJsfxsj" jdbcType="DECIMAL" />
+    <result column="R_SSDSJ" property="rSsdsj" jdbcType="DECIMAL" />
+    <result column="R_JCSJ" property="rJcsj" jdbcType="DECIMAL" />
+    <result column="R_QLJXH" property="rQljxh" jdbcType="DECIMAL" />
+    <result column="R_JCXH" property="rJcxh" jdbcType="DECIMAL" />
+    <result column="R_WDGXH" property="rWdgxh" jdbcType="DECIMAL" />
+    <result column="R_SSDXH" property="rSsdxh" jdbcType="DECIMAL" />
+    <result column="R_N1" property="rN1" jdbcType="DECIMAL" />
+    <result column="R_N2" property="rN2" jdbcType="DECIMAL" />
+    <result column="R_N3" property="rN3" jdbcType="DECIMAL" />
+    <result column="R_N4" property="rN4" jdbcType="DECIMAL" />
+    <result column="R_N5" property="rN5" jdbcType="DECIMAL" />
+    <result column="R_N6" property="rN6" jdbcType="DECIMAL" />
+    <result column="R_TSJK1" property="rTsjk1" jdbcType="DECIMAL" />
+    <result column="R_TSJK2" property="rTsjk2" jdbcType="DECIMAL" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    FJZCH,DPRTCODE, R_JSFXSJ, R_SSDSJ, R_JCSJ, R_QLJXH, R_JCXH, R_WDGXH, R_SSDXH, R_N1, R_N2, 
+    R_N3, R_N4, R_N5, R_N6, R_TSJK1, R_TSJK2, WHRID, WHSJ, DPRTCODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_00702
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.PlaneData" >
+    delete from D_00702
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.productionplan.po.PlaneDailyUsage" >
+    insert into D_00702 (FJZCH, R_JSFXSJ, R_SSDSJ, 
+      R_JCSJ, R_QLJXH, R_JCXH, 
+      R_WDGXH, R_SSDXH, R_N1, 
+      R_N2, R_N3, R_N4, R_N5, 
+      R_N6, R_TSJK1, R_TSJK2, 
+      WHRID, WHSJ, dprtcode)
+    values (#{fjzch,jdbcType=VARCHAR}, #{rJsfxsj,jdbcType=DECIMAL}, #{rSsdsj,jdbcType=DECIMAL}, 
+      #{rJcsj,jdbcType=DECIMAL}, #{rQljxh,jdbcType=DECIMAL}, #{rJcxh,jdbcType=DECIMAL}, 
+      #{rWdgxh,jdbcType=DECIMAL}, #{rSsdxh,jdbcType=DECIMAL}, #{rN1,jdbcType=DECIMAL}, 
+      #{rN2,jdbcType=DECIMAL}, #{rN3,jdbcType=DECIMAL}, #{rN4,jdbcType=DECIMAL}, #{rN5,jdbcType=DECIMAL}, 
+      #{rN6,jdbcType=DECIMAL}, #{rTsjk1,jdbcType=DECIMAL}, #{rTsjk2,jdbcType=DECIMAL}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.productionplan.po.PlaneDailyUsage" >
+    insert into D_00702
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="rJsfxsj != null" >
+        R_JSFXSJ,
+      </if>
+      <if test="rSsdsj != null" >
+        R_SSDSJ,
+      </if>
+      <if test="rJcsj != null" >
+        R_JCSJ,
+      </if>
+      <if test="rQljxh != null" >
+        R_QLJXH,
+      </if>
+      <if test="rJcxh != null" >
+        R_JCXH,
+      </if>
+      <if test="rWdgxh != null" >
+        R_WDGXH,
+      </if>
+      <if test="rSsdxh != null" >
+        R_SSDXH,
+      </if>
+      <if test="rN1 != null" >
+        R_N1,
+      </if>
+      <if test="rN2 != null" >
+        R_N2,
+      </if>
+      <if test="rN3 != null" >
+        R_N3,
+      </if>
+      <if test="rN4 != null" >
+        R_N4,
+      </if>
+      <if test="rN5 != null" >
+        R_N5,
+      </if>
+      <if test="rN6 != null" >
+        R_N6,
+      </if>
+      <if test="rTsjk1 != null" >
+        R_TSJK1,
+      </if>
+      <if test="rTsjk2 != null" >
+        R_TSJK2,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="rJsfxsj != null" >
+        #{rJsfxsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdsj != null" >
+        #{rSsdsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcsj != null" >
+        #{rJcsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rQljxh != null" >
+        #{rQljxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcxh != null" >
+        #{rJcxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rWdgxh != null" >
+        #{rWdgxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdxh != null" >
+        #{rSsdxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rN1 != null" >
+        #{rN1,jdbcType=DECIMAL},
+      </if>
+      <if test="rN2 != null" >
+        #{rN2,jdbcType=DECIMAL},
+      </if>
+      <if test="rN3 != null" >
+        #{rN3,jdbcType=DECIMAL},
+      </if>
+      <if test="rN4 != null" >
+        #{rN4,jdbcType=DECIMAL},
+      </if>
+      <if test="rN5 != null" >
+        #{rN5,jdbcType=DECIMAL},
+      </if>
+      <if test="rN6 != null" >
+        #{rN6,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk1 != null" >
+        #{rTsjk1,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk2 != null" >
+        #{rTsjk2,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.PlaneDailyUsage" >
+    update D_00702
+    <set >
+      <if test="rJsfxsj != null" >
+        R_JSFXSJ = #{rJsfxsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdsj != null" >
+        R_SSDSJ = #{rSsdsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcsj != null" >
+        R_JCSJ = #{rJcsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rQljxh != null" >
+        R_QLJXH = #{rQljxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcxh != null" >
+        R_JCXH = #{rJcxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rWdgxh != null" >
+        R_WDGXH = #{rWdgxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdxh != null" >
+        R_SSDXH = #{rSsdxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rN1 != null" >
+        R_N1 = #{rN1,jdbcType=DECIMAL},
+      </if>
+      <if test="rN2 != null" >
+        R_N2 = #{rN2,jdbcType=DECIMAL},
+      </if>
+      <if test="rN3 != null" >
+        R_N3 = #{rN3,jdbcType=DECIMAL},
+      </if>
+      <if test="rN4 != null" >
+        R_N4 = #{rN4,jdbcType=DECIMAL},
+      </if>
+      <if test="rN5 != null" >
+        R_N5 = #{rN5,jdbcType=DECIMAL},
+      </if>
+      <if test="rN6 != null" >
+        R_N6 = #{rN6,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk1 != null" >
+        R_TSJK1 = #{rTsjk1,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk2 != null" >
+        R_TSJK2 = #{rTsjk2,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.productionplan.po.PlaneDailyUsage" >
+    update D_00702
+    set R_JSFXSJ = #{rJsfxsj,jdbcType=DECIMAL},
+      R_SSDSJ = #{rSsdsj,jdbcType=DECIMAL},
+      R_JCSJ = #{rJcsj,jdbcType=DECIMAL},
+      R_QLJXH = #{rQljxh,jdbcType=DECIMAL},
+      R_JCXH = #{rJcxh,jdbcType=DECIMAL},
+      R_WDGXH = #{rWdgxh,jdbcType=DECIMAL},
+      R_SSDXH = #{rSsdxh,jdbcType=DECIMAL},
+      R_N1 = #{rN1,jdbcType=DECIMAL},
+      R_N2 = #{rN2,jdbcType=DECIMAL},
+      R_N3 = #{rN3,jdbcType=DECIMAL},
+      R_N4 = #{rN4,jdbcType=DECIMAL},
+      R_N5 = #{rN5,jdbcType=DECIMAL},
+      R_N6 = #{rN6,jdbcType=DECIMAL},
+      R_TSJK1 = #{rTsjk1,jdbcType=DECIMAL},
+      R_TSJK2 = #{rTsjk2,jdbcType=DECIMAL},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where FJZCH = #{fjzch,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+</mapper>

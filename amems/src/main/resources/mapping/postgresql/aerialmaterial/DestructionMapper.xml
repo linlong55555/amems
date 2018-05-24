@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.DestructionMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Destruction">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="dprtcode" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="xhdh" jdbcType="VARCHAR" property="xhdh" />
+    <result column="xhrid" jdbcType="VARCHAR" property="xhrid" />
+    <result column="xhrq" jdbcType="DATE" property="xhrq" />
+    <result column="zt" jdbcType="INTEGER" property="zt" />
+    <result column="bz" jdbcType="VARCHAR" property="bz" />
+    <result column="zdbmid" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="zdrid" jdbcType="VARCHAR" property="zdrid" />
+    <result column="zdsj" jdbcType="TIMESTAMP" property="zdsj" />
+      <association property="zdr_user" javaType="com.eray.thjw.po.User">
+         <id column="zdrid" property="id"/>
+         <result column="zdr_realname" property="realname"/>
+         <result column="zdr_username" property="username"/>
+     </association>
+     
+     <association property="xhr_user" javaType="com.eray.thjw.po.User">
+         <id column="xhrid" property="id"/>
+         <result column="xhr_realname" property="realname"/>
+         <result column="xhr_username" property="username"/>
+     </association>
+
+     <association property="bm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="zdbmid" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+     <association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="jg_dprtname" property="dprtname"/>
+     </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    b_h_021.id, b_h_021.dprtcode, b_h_021.xhdh, b_h_021.xhrid, b_h_021.xhrq, b_h_021.zt, b_h_021.bz, b_h_021.zdbmid, b_h_021.zdrid, b_h_021.zdsj
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />, xhr.realname xhr_realname, xhr.username xhr_username,zdr.realname zdr_realname,zdr.username zdr_username
+    from b_h_021 left join  t_user xhr on xhr.id=b_h_021.xhrid left join t_user zdr on zdr.id=b_h_021.zdrid
+    where b_h_021.id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from b_h_021
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Destruction">
+    insert into b_h_021 (id, dprtcode, xhdh, 
+      xhrid, xhrq, zt, bz, 
+      zdbmid, zdrid, zdsj
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{xhdh,jdbcType=VARCHAR}, 
+      #{xhrid,jdbcType=VARCHAR}, #{xhrq,jdbcType=DATE}, #{zt,jdbcType=INTEGER}, #{bz,jdbcType=VARCHAR}, 
+      #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Destruction">
+    insert into b_h_021
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dprtcode != null">
+        dprtcode,
+      </if>
+      <if test="xhdh != null">
+        xhdh,
+      </if>
+      <if test="xhrid != null">
+        xhrid,
+      </if>
+      <if test="xhrq != null">
+        xhrq,
+      </if>
+      <if test="zt != null">
+        zt,
+      </if>
+      <if test="bz != null">
+        bz,
+      </if>
+      <if test="zdbmid != null">
+        zdbmid,
+      </if>
+      <if test="zdrid != null">
+        zdrid,
+      </if>
+      <if test="zdsj != null">
+        zdsj,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="xhdh != null">
+        #{xhdh,jdbcType=VARCHAR},
+      </if>
+      <if test="xhrid != null">
+        #{xhrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xhrq != null">
+        #{xhrq,jdbcType=DATE},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null">
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Destruction">
+    update b_h_021
+    <set>
+      <if test="dprtcode != null">
+        dprtcode = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="xhdh != null">
+        xhdh = #{xhdh,jdbcType=VARCHAR},
+      </if>
+      <if test="xhrid != null">
+        xhrid = #{xhrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xhrq != null">
+        xhrq = #{xhrq,jdbcType=DATE},
+      </if>
+      <if test="zt != null">
+        zt = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="bz != null">
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null">
+        zdbmid = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null">
+        zdrid = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null">
+        zdsj = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.Destruction">
+    update b_h_021
+    set dprtcode = #{dprtcode,jdbcType=VARCHAR},
+      xhdh = #{xhdh,jdbcType=VARCHAR},
+      xhrid = #{xhrid,jdbcType=VARCHAR},
+      xhrq = #{xhrq,jdbcType=DATE},
+      zt = #{zt,jdbcType=INTEGER},
+      bz = #{bz,jdbcType=VARCHAR},
+      zdbmid = #{zdbmid,jdbcType=VARCHAR},
+      zdrid = #{zdrid,jdbcType=VARCHAR},
+      zdsj = #{zdsj,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+      <select id="queryDestructionList" parameterType="com.eray.thjw.aerialmaterial.po.Destruction" resultMap="BaseResultMap">
+				  select 
+				       b.id, 
+				       b.dprtcode, 
+				       b.xhdh, 
+				       b.xhrid, 
+				       b.xhrq, 
+				       b.zt, 
+				       b.bz, 
+				       b.zdbmid, 
+				       b.zdrid, 
+				       b.zdsj,
+	                   zdr.realname zdr_realname,
+	                   zdr.username zdr_username,
+	                   xhr.realname xhr_realname,
+	                   xhr.username xhr_username,
+	                   jg.dprtname jg_dprtname,
+					   bm.dprtname bm_dprtname
+	                   from b_h_021 b 
+	                     left join  t_user zdr on zdr.id=b.zdrid
+	                     left join  t_user xhr on xhr.id=b.xhrid
+	                     left join  t_department jg on jg.id=b.dprtcode
+	                     left join  t_department bm on bm.id=b.zdbmid
+	                     
+	          <include refid="DestructionParam"></include> and b.zt !=8
+	           <choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by b.ZDSJ desc
+			    	</when>
+			    	<otherwise>
+					    order by b.${pagination.sort} ${pagination.order}
+			    	</otherwise>
+			 </choose>
+							          
+  </select>
+   <!-- 查询技术指令参数 -->
+	<sql id="DestructionParam">
+	   where 
+	   1=1
+         <if test="keyword != null and keyword != ''">
+		    and (   b.xhdh like '%'||#{keyword}||'%'
+		    	or zdr.USERNAME like '%'||#{keyword}||'%'
+		    	or zdr.REALNAME like '%'||#{keyword}||'%'
+		    	or xhr.USERNAME like '%'||#{keyword}||'%'
+		    	or xhr.REALNAME like '%'||#{keyword}||'%'
+		    	or b.xhdh like '%'||#{keyword}||'%'
+		    	OR b.bz like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+          <!-- 组织机构 -->
+	     <if test="dprtcode != null and dprtcode != ''">
+         and  b.dprtcode = #{dprtcode}
+         </if>
+          <!-- 指令id-->
+	     <if test="id != null and id != ''">
+            and  b.id = #{id}
+         </if>
+	</sql>
+</mapper>

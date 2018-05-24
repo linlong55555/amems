@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.PortalBlockMapper">
+
+<select id="selectMsg" parameterType="java.lang.String" resultType="java.util.HashMap">
+	select b1.LX as "LX", <!-- 类型：1提订单、2送修单、3采购合同、4送修合同 -->
+	   (CASE 
+           WHEN B1.LX = 1 THEN '提订单'
+           WHEN B1.LX = 2 THEN '送修单'
+           WHEN B1.LX = 3 THEN '采购合同'
+           WHEN B1.LX = 4 THEN '送修合同'
+       END 
+ 	   ) as "LXM",
+	   B1.DJID as "DJID",
+	   BH002.SQDH as "SQDH",
+	   BH002.TDMC as "TDMC",
+	   BH004.HTH as "HTH",
+	   B3.USERNAME as "LYU", <!-- 留言人账号 -->
+       B3.REALNAME as "LYR", <!-- 留言人 -->
+       TO_CHAR(B1.WBWJM, 'yyyy-mm-dd hh24:mi') as "LYSJ", <!-- 留言时间 -->
+       B1.NBWJM as "LYNR" <!-- 留言内容 -->
+  FROM B_H_005 B1
+  JOIN B_H_00501 B2
+    ON B1.ID = B2.MAINID
+   AND B2.ZT = 0  <!-- 状态：0未接收、1已接收 -->
+   AND B1.YXZT = 1 <!-- 有效状态 0无效 1有效 -->
+   AND B2.JSRID = #{userId,jdbcType=VARCHAR}
+  LEFT JOIN T_USER B3
+    ON B1.YSWJM = B3.ID
+  LEFT JOIN B_H_002 BH002
+  ON BH002.ID = B1.DJID AND (B1.LX = 2 OR B1.LX = 1)
+  LEFT JOIN B_H_004 BH004
+  ON BH004.ID = B1.DJID AND (B1.LX = 3 OR B1.LX = 4)
+ ORDER BY B1.WBWJM DESC
+  </select>
+
+	<!--指派给我的技术评估单（未评估） -->
+  <select id="selectBlock1" parameterType="java.lang.String" resultType="java.util.HashMap">
+	select 
+		   B1.ID AS "ID",
+		   B1.PGDH AS "PGDH",  <!-- 评估单号 -->
+	       B1.LY AS "LY", <!-- 来源 -->
+	       B1.JX AS "JX", <!-- 机型 -->
+	       B1.WJLX AS "WJLX", <!-- 文件类型 -->
+	       TO_CHAR(B1.PGQX, 'YYYY-MM-DD') AS "PGQX", <!-- 评估期限 -->
+       	   ceil(to_date(to_char(b1.PGQX,'yyyymmdd'),'yyyymmdd') - CURRENT_DATE) AS "SY"  <!-- 剩余 -->
+	  from B_G_001 B1
+	 where B1.ZT in (0, 5, 6) <!-- 0未评估、5审核驳回、6审批驳回 -->
+	   and B1.PGRID = #{userId,jdbcType=VARCHAR}
+	 order by B1.PGQX asc
+  </select>
+	<!--指派给我的技术通告（未阅） -->
+  <select id="selectBlock2" parameterType="java.lang.String" resultType="java.util.HashMap">
+	SELECT B1.ID as "ID",
+		B1.JSTGH as "JSTGH", <!-- 通告编号 -->
+	       B1.ZHUT as "ZHUT", <!-- 主题 -->
+	       TO_CHAR(B1.TGQX, 'yyyy-mm-dd') as "TGQX", <!-- 通告期限 -->
+	       B1.ZT as "ZT", <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9指令结束、10完成 -->
+	       (SELECT B_G_001.JX
+	          FROM B_G_001
+	          JOIN B_G_003
+	            ON B_G_001.ID = B_G_003.PGDID
+	         WHERE B_G_003.ZLID = B1.ID
+	           LIMIT 1) as "JX", <!-- 机型 -->
+	      CEIL(TO_DATE(TO_CHAR(B1.TGQX,'yyyymmdd'),'yyyymmdd') - CURRENT_DATE) as "SY"  <!-- 剩余 -->
+	  FROM B_G_002 B1
+	  JOIN B_G_00201 B2
+	    ON B1.ID = B2.MAINID
+	   AND B1.ZT IN (1, 2, 3) <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+	   AND B2.ZT = 0  <!-- 状态：0未接收、1已接收 -->
+	   AND B2.JSRID = #{userId,jdbcType=VARCHAR}
+	 ORDER BY B1.TGQX ASC
+  </select>
+  
+  <!--指派给我的技术指令（未阅） -->
+  <select id="selectBlock3" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT B1.ID as "ID", B1.DPRTCODE as "DPRTCODE",
+			B1.JSZLH as "JSZLH", <!-- 技术指令号 -->
+	       B1.ZHUT as "ZHUT", <!-- 主题 -->
+	       B1.ZT as "ZT", <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+	       B1.JX as "JX" <!-- 机型 -->
+	  FROM B_G_004 B1
+	 WHERE B1.ZT IN (1, 2, 3) <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+	   AND B1.JSZT = 0 <!-- 状态：0未接收、1已接收 -->
+	   AND B1.JSRID = #{userId,jdbcType=VARCHAR}
+	 ORDER BY B1.ZDSJ DESC
+  </select>
+  
+   <!--指派给我的修订通知书（未阅） -->
+  <select id="selectBlock4" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT B1.ID as "ID",
+			B1.DPRTCODE as "DPRTCODE",
+			B1.JSZLH as "JSZLH", <!-- 修订通知书号 -->
+		       B1.XDZT as "XDZT", <!-- 修订主题 -->
+		       B1.ZT as "ZT", <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+		       B1.TZSLX as "TZSLX", <!-- 通知书类型 -->
+		       B1.JX as "JX", <!-- 机型 -->
+		       TO_CHAR(B1.XDQX, 'yyyy-mm-dd') as "XDQX", <!-- 修订期限 -->
+		       CEIL(TO_DATE(TO_CHAR(B1.XDQX,'yyyymmdd'),'yyyymmdd') - CURRENT_DATE) as "SY"  <!-- 剩余 -->
+		  FROM B_G_005 B1
+		 WHERE B1.ZT IN (1, 2, 3) <!-- 状态：0保存、1提交、2已审核、3已批准、4中止（关闭）、5审核驳回、6审批驳回、8作废、9关闭、10完成 -->
+		   AND B1.JSZT = 0 <!-- 状态：0未接收、1已接收 -->
+		   AND B1.XDRID = #{userId,jdbcType=VARCHAR}
+		 ORDER BY B1.XDQX ASC
+  </select>
+  
+  <!--指派给我培训计划 -->
+  <select id="selectBlock5" parameterType="java.lang.String" resultType="java.util.HashMap">
+			SELECT  ROW_NUMBER() OVER() id,state, kcmc , kcsj,pxdd,pxxs,zt,whsj,jsid
+      FROM(
+           select 1 state,t3.kcmc,to_char(t1.jh_ksrq, 'yyyy-mm-dd')||' '||t1.jh_kssj kcsj,t1.kcdd pxdd,t1.pxxs,t1.zt,t1.whsj,t4.wxryid as jsid
+            from  b_p_002 t1
+          join b_p_003 t3 on t1.kcid=t3.id and t3.zt=1
+          left join   b_p_00201 t2 on t1.id=t2.pxjhid and t2.zt=1 and t2.is_yc=1
+          left join b_z_001 t4 on t4.id=t2.wxrydaid
+          UNION  all
+            select  2 state,t3.kcmc,to_char(t1.jh_ksrq, 'yyyy-mm-dd')||' '||t1.jh_kssj kcsj,t1.kcdd pxdd,t1.pxxs,t1.zt,t1.whsj,t2.wxryid as jsid
+            from b_p_002 t1
+            left join b_z_001 t2 on t1.jsid=t2.wxryid
+            left join b_p_003 t3 on t1.kcid=t3.id and t3.zt=1
+      )as a
+         WHERE 1=1 and ZT=1 
+		   and jsid = #{userId,jdbcType=VARCHAR}
+		 order by  whsj asc
+  </select>
+  
+    <!--我的提订单-->
+  <select id="selectBlock6" parameterType="java.lang.String" resultType="java.util.HashMap">
+     select 
+	    B00201.ID as "ID", 
+	    B00201.MAINID as "MAINID", 
+	    B00201.BJID as "BJID", 
+	    B00201.BJH as "BJH", 
+	    B00201.SQSL as "SQSL", 
+	    B00201.SHSL as "SHSL", 
+	    B00201.SL as "SL", 
+	    B00201.YT as "YT", 
+	    B00201.ZT as "ZT", 
+	    B00201.BZ as "BZ", 
+	    cast (B00201.XJZT as numeric) as "XJZT", 
+	    B00201.XJDH as "XJDH", 
+	    B00201.WHDWID as "WHDWID", 
+	    B00201.WHRID as "WHRID",
+	    B00201.WHSJ as "WHSJ",
+	    D.ZWMS as "ZWMS",
+	    D.YWMS as "YWMS",
+	    D.CJJH as "CJJH",
+	    D.XH as "XH",
+	    D.ZJH as "ZJH",D.HCLX as "HCLX",D.JLDW as "JLDW",B002.SQDH as "SQDH",B002.TDMC as "TDMC",B002.YQQX as "YQQX",
+	    ceil(to_date(to_char(B002.YQQX,'yyyymmdd'),'yyyymmdd') - CURRENT_DATE) as "SYTS",  <!-- 剩余 -->
+	    cast (B002.ZT as numeric) AS "RESERVEZT",HT.HTH as "HTH",HT.DHSL as "DHSL",HT.RKSL as "RKSL",HT.HTSL as "HTSL",HT.HTDHRQ as "HTDHRQ"
+	    from B_H_00201 B00201
+	    left join D_008 D  on D.ID = B00201.BJID
+	    left join b_h_002 B002  on B00201.MAINID = B002.ID
+	    left join (select B004.HTH,B00401.TDDHCID,B00401.DHSL,B00401.RKSL,B00401.HT_SL AS HTSL,B00401.HT_DHRQ AS HTDHRQ from b_h_00401 B00401,b_h_004 B004 where B00401.MAINID = B004.ID AND B004.ZT NOT IN(8) AND B00401.ZT = 1) HT
+	    on HT.TDDHCID = B00201.ID
+	where B00201.ZT = 1  AND B002.ZT in(1, 2, 3, 4) AND B002.SQRID = #{userId,jdbcType=VARCHAR} 
+		AND (HT.HTSL is null or (HT.HTSL is not null and HT.RKSL &lt; HT.HTSL) )
+  </select>
+  <!--MCC工单预警（完工未关闭）-->
+  <select id="selectBlock7" parameterType="java.lang.String" resultType="java.util.HashMap">
+     SELECT 
+     	B_S_009.ID as "ID",
+     	B_S_009.XGGDID as "XGGDID",
+     	B_S_009.RWDH as "RWDH", --任务单号
+       B_S_009.RWLX as "RWLX", <!-- 任务类型：1定检执行任务、2非例行工单任务、3EO工单任务 -->
+       B_S_009.RWZLX as "RWZLX", <!-- 任务子类型：0无、1时控件工单、2附加工单、3排故工单 -->
+       B_S_009.DPRTCODE as "DPRTCODE", <!-- 组织机构 -->
+       B_S_009.RWXX as "RWXX", <!-- 任务信息 -->
+       B_S_009.FJZCH as "FJZCH", <!-- 飞机注册号 -->
+       B_S_009.BJH as "BJH", <!-- 部件号 -->
+       B_S_009.XLH as "XLH", <!-- 序列号 -->
+       B_S_009.BZ as "BZ" <!-- 备注 -->
+	  FROM B_S_009
+	 WHERE B_S_009.ZT IN (1, 2)
+	   AND B_S_009.XSZT = 3
+	   AND B_S_009.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	 ORDER BY B_S_009.FJZCH, B_S_009.RWLX
+  </select>
+  
+</mapper>

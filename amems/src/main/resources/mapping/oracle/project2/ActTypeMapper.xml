@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.ActTypeMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.ActType">
+    <id 	column="FJJX"  	   property="fjjx"      jdbcType="VARCHAR"/>  <!-- 飞机机型  -->
+    <result column="DPRTCODE"  property="dprtcode"  jdbcType="VARCHAR"/>  <!-- 组织机构  -->
+    <result column="BZ"        property="bz"        jdbcType="VARCHAR"/>  <!-- 备注  -->
+    <result column="ZT"        property="zt"        jdbcType="DECIMAL"/>  <!-- 状态  -->
+    <result column="BMID"      property="bmid"      jdbcType="VARCHAR"/>  <!-- 部门id  -->
+    <result column="CJRID"     property="cjrid"     jdbcType="VARCHAR"/>  <!-- 制单人id  -->
+    <result column="CJSJ"      property="cjsj"      jdbcType="TIMESTAMP"/><!-- 制单时间  -->
+  </resultMap>
+  
+  <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.project2.po.ActType">
+	<!-- whr 维护人 -->
+ 	<association property="whr" javaType="com.eray.thjw.po.User">  
+	   <id 	   column="WHR_ID"       property="id"/>  		<!-- 维修人id  -->
+	   <result column="WHR_USERUSER" property="username"/>  <!-- 维修人登陆名称 -->
+	   <result column="WHR_REALNAME" property="realname"/>  <!-- 维修人用户名称 -->
+    </association>  
+	<!-- dprt 机构代码  -->
+ 	<association property="dprt" javaType="com.eray.thjw.po.Department">
+	   <id       column="DPRT_DPRTCODE"  property="id"/>		<!-- 组织机构id  -->
+	   <result   column="DPRT_DPRTNAME"  property="dprtname"/>	<!-- 组织机构名称 -->
+    </association>  
+  </resultMap> 
+  
+  <sql id="Base_Column_List">
+    FJJX, DPRTCODE, BZ, ZT, BMID, CJRID, CJSJ
+  </sql>
+  
+  <!--机型分页查询 Start-->
+  <select id="queryAllPageList"  resultMap="ResultMap">
+	SELECT B1.FJJX, B1.BZ, B1.ZT, B1.CJSJ, B1.DPRTCODE,
+	       B2.USERNAME || ' ' || B2.REALNAME AS WHR_ID,
+	       B3.DPRTNAME AS DPRT_DPRTCODE
+	FROM   D_004 B1
+	LEFT   JOIN T_USER       B2 ON B1.CJRID=B2.ID
+	LEFT   JOIN T_DEPARTMENT B3 ON B1.DPRTCODE=B3.ID
+    <include refid="BaseResulParam"></include>   <!-- 搜索参数 -->
+    <choose>
+   	  <when test='pagination.sort == "auto"'>
+   		 ORDER BY B1.CJSJ desc 					 <!--制单时间倒序  -->
+   	  </when>
+      <otherwise>
+		 ORDER BY ${ pagination.sort } ${ pagination.order }
+      </otherwise>
+    </choose>
+  </select>
+  <!--机型分页查询 End-->
+  
+  <!-- queryAllPageList的搜索参数-->
+  <sql id="BaseResulParam">
+	  	WHERE 1 = 1
+      <if test="dprtcode != null and dprtcode != ''">
+        AND   B1.DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+      </if>
+      <if test="keyword != null and keyword != ''">
+		AND ( 
+			  UPPER(B1.FJJX) LIKE UPPER('%' || #{ keyword, jdbcType = VARCHAR } || '%')
+		OR    UPPER(B1.BZ)  LIKE UPPER('%' || #{ keyword, jdbcType = VARCHAR } || '%')
+		    )             
+	  </if>
+	  <if test="fjjx != null and fjjx != '' " >   
+        AND   B1.FJJX = #{ fjjx, jdbcType = VARCHAR }
+      </if>
+  </sql>
+  
+  <!-- 根据机型和组织机构查询机型对象 -->
+  <select id="selectByPrimaryKey" parameterType="com.eray.thjw.project2.po.ActType" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM D_004
+    WHERE FJJX     = #{ fjjx,     jdbcType = VARCHAR }
+  	AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </select>
+  
+   <!-- 根据机型和组织机构查询机型数量  -->
+  <select id="selectActTypeCount" parameterType="com.eray.thjw.project2.po.ActType" resultType="java.lang.Integer">
+    SELECT COUNT(1)
+    FROM D_004
+    WHERE FJJX     = #{ fjjx,     jdbcType = VARCHAR }
+  	AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </select>
+  
+   <!-- 根据机型和组织机构和状态查询机型数量  -->
+  <select id="selectActTypeStuts" parameterType="com.eray.thjw.project2.po.ActType" resultType="java.lang.Integer">
+    SELECT COUNT(1)
+    FROM D_004
+    WHERE FJJX     = #{ fjjx,     jdbcType = VARCHAR }
+  	AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </select>
+  
+  <!--根据机型和组织机构查询飞机注册号数量  -->
+  <select id="selectFjzchCount" parameterType="com.eray.thjw.project2.po.ActType" resultType="java.lang.Integer">
+  	SELECT COUNT(1)  
+  	FROM D_007 
+    WHERE FJJX     = #{ fjjx,     jdbcType = VARCHAR }
+    AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+    AND   ZT       = 1
+  </select>
+  
+  <!--根据机型和组织机构修改状态  -->
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.ActType">
+   	UPDATE D_004
+    SET ZT=#{ zt,	  jdbcType = DECIMAL }
+    WHERE FJJX     = #{ fjjx,	  jdbcType = VARCHAR }
+    AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </update>
+ 
+  <!-- 新增机型  -->
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.ActType">
+    INSERT INTO D_004
+    <trim prefix = "(" suffix = ")" suffixOverrides = ",">
+      <if test="fjjx != null">
+        FJJX,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bmid != null">
+        BMID,
+      </if>
+      <if test="cjrid != null">
+        CJRID,
+        CJSJ,
+      </if>
+    </trim>
+    <trim prefix = "values (" suffix = ")" suffixOverrides = ",">
+      <if test = "fjjx != null">
+        #{ fjjx, jdbcType = VARCHAR },
+      </if>
+      <if test = "dprtcode != null">
+        #{ dprtcode, jdbcType = VARCHAR },
+      </if>
+      <if test = "bz != null">
+        #{ bz, jdbcType = VARCHAR },
+      </if>
+      <if test = "zt != null">
+        #{ zt, jdbcType = DECIMAL },
+      </if>
+      <if test = "bmid != null">
+        #{ bmid, jdbcType = VARCHAR },
+      </if>
+      <if test = "cjrid != null">
+        #{ cjrid, jdbcType = VARCHAR },
+       	   SYSDATE,
+      </if>
+    </trim>
+  </insert>
+  
+  <!--修改机型  -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.ActType">
+    UPDATE D_004
+    <set>
+      <if test = "bz != null">
+        BZ = #{ bz, jdbcType = VARCHAR },
+      </if>
+      <if test = "zt != null">
+        ZT = #{ zt, jdbcType = DECIMAL },
+      </if>
+      <if test = "bmid != null">
+        BMID = #{ bmid, jdbcType = VARCHAR },
+      </if>
+      <if test = "cjrid != null">
+        CJRID = #{ cjrid, jdbcType = VARCHAR },
+      </if>
+        CJSJ = SYSDATE,
+    </set>
+    WHERE FJJX     = #{ fjjx, 	  jdbcType = VARCHAR }
+    AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </update> 
+  <!-- 根据组织机构查询 -->
+	<select id="findByDprtcode"  parameterType="java.lang.String" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include> from d_004
+		where dprtcode = #{dprtcode,jdbcType=VARCHAR} and zt=1
+	</select>
+	
+   <select id="findAllPlaneModelData" resultMap="BaseResultMap">
+	select <include refid="Base_Column_List"></include>  from D_004 b1
+	where zt = 1 and  DPRTCODE = #{dprtcode,jdbcType=VARCHAR} 	
+	
+	    <choose>                                                                 
+    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+    		 AND exists 
+    		( SELECT 1 from D_007 where 
+    			B1.fjjx = FJJX
+    		AND B1.dprtcode = DPRTCODE
+    		AND zt = 1
+    		)
+    	</when>
+    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+    		 AND exists 
+    		( SELECT 1 from V_ROLE_JX where 
+    			B1.fjjx= FJJX
+    		AND B1.dprtcode = DPRTCODE
+    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+    		)
+    	</when>
+   	</choose>
+	</select>
+	
+  <!-- 导入专用 -->
+  <select id="selectByParam"  parameterType="com.eray.thjw.project2.po.ActType"  resultMap="BaseResultMap">
+		select 
+			<include refid="Base_Column_List"></include>  
+		from d_004
+		where dprtcode = #{dprtcode,jdbcType=VARCHAR} and zt = #{zt, jdbcType = DECIMAL }
+  </select>
+ 	
+</mapper>

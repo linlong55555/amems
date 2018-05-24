@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.AircraftinfoRecMapper" >
+   
+  <!-- 飞机列表 开始 -->
+  <select id="queryList4D007" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT B.*       
+		        ,CJR.USERNAME ||' '|| CJR.REALNAME CJR_REALNAME
+		        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME
+		        ,DPRT.DPRTNAME DPRT_DRPTNAME
+		        ,BM.DPRTNAME BM_DRPTNAME
+		        ,B.FJZCH ID
+		        , '飞机注册号:'||B.FJZCH AS REC_HD
+		        FROM d_007_REC B 
+		        LEFT JOIN T_USER CJR ON CJR.ID = B.whRID
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		        LEFT JOIN T_DEPARTMENT DPRT ON DPRT.ID = B.DPRTCODE
+		        LEFT JOIN T_DEPARTMENT BM ON BM.ID = B.WHBMID
+		        WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS != null and paramsMap.REC_CZLS != ""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID != null and paramsMap.ID != ""'>
+		        	and B.FJZCH = #{paramsMap.FJZCH,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	       			and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and (
+		                UPPER(B.FJZCH) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+		           )
+		         </if>
+		         <!-- 日志 机型，飞机注册号授权过滤。-->
+		       <!--  <choose>
+		        	<when test='paramsMap.LOGINED_USERTYPE != null and paramsMap.LOGINED_USERTYPE == "admin"'>
+		        		AND exists 
+			    		( SELECT 1 from D_007 D where 
+			    		B.FJZCH = D.FJZCH
+			    		AND B.DPRTCODE = D.DPRTCODE
+			    		AND D.zt = 1
+			    		)
+		        	</when>
+		        	<otherwise>
+		        		AND exists 
+			    		( SELECT 1 from V_ROLE_JX D where 
+			    		B.FJJX = D.FJJX
+			    		AND B.DPRTCODE = D.DPRTCODE
+			    		AND D.USER_ID = #{paramsMap.LOGINED_USERID,jdbcType=VARCHAR}
+			    		)
+		        	</otherwise>
+		        </choose> -->
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff4D007" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) RNO,
+	   		    TO_CHAR(B.SCRQ,'YYYY-MM-DD') SCRQ,TO_CHAR(B.GMRQ,'YYYY-MM-DD') GMRQ,
+	   		    (CASE 
+		         WHEN B.ZT = 0 THEN
+		          '注销'
+		         WHEN B.ZT = 1 THEN
+		          '启用' 
+		        END) NEW_ZT, 
+                B.FJZCH,B.DPRTCODE,B.XLH,B.FJJX,B.BZM,B.JD,D3.DPRTNAME JDMS,B.JSGZJL,
+                B.BZ,B.WHBMID,B.WHRID,B.WHSJ,B.GJDJZH,B.SHZH,B.WXDTXKZH,B.ZT,
+                B.REC_XGLX,B.REC_CZRID,B.REC_CZSJ,B.REC_IP,B.REC_CZSM,B.REC_CZLS,B.REC_ZBID,
+                TO_CHAR(B.CCRQ,'YYYY-MM-DD') CCRQ,TO_CHAR(B.DTZZJKRQ,'YYYY-MM-DD') DTZZJKRQ
+		        ,CJR.USERNAME ||' '|| CJR.REALNAME CJR_REALNAME
+		        ,CZR.USERNAME ||' '|| CZR.REALNAME CZR_REALNAME
+		        ,DPRT.DPRTNAME DPRT_DRPTNAME
+		        ,BM.DPRTNAME BM_DRPTNAME
+		        ,B.FJZCH ID
+		        , '飞机注册号:'||B.FJZCH AS REC_HD,
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) DATA_VERSION
+               
+          FROM d_007_REC B 
+          		LEFT JOIN T_DEPARTMENT D3 ON B.JD = D3.ID
+		        LEFT JOIN T_USER CJR ON CJR.ID = B.WHRID
+		        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+		        LEFT JOIN T_DEPARTMENT DPRT ON DPRT.ID = B.DPRTCODE
+		        LEFT JOIN T_DEPARTMENT BM ON BM.ID = B.WHBMID
+         WHERE B.fjzch = #{paramsMap.ID,jdbcType=VARCHAR} and B.dprtcode = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from d_007_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and fjzch = #{paramsMap.ID,jdbcType=VARCHAR}
+                   and dprtcode = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) WHERE 2 >=RNO
+       
+  </select>	
+  
+  <select id="queryDiff4D00701" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT B.*, 
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	(CASE 
+        WHEN B.CSZ is null  THEN
+         B.CSZ
+          WHEN  B.JKFLBH = '1D'  THEN
+         B.CSZ
+          WHEN  B.JKFLBH = '3C' THEN
+         B.CSZ
+         WHEN  B.JKFLBH = '2T' and B.CSZ &lt; 60  THEN
+         '0:'||B.CSZ
+         WHEN  B.JKFLBH = '2T' and floor( B.CSZ -floor(B.CSZ/60)*60) = 0  THEN
+         floor(B.CSZ/60)||''
+         WHEN B.JKFLBH = '2T' THEN
+         (floor(B.CSZ/60)||':'||floor( B.CSZ -floor(B.CSZ/60)*60))
+        
+      END) CSZ_NEW,
+	 (CASE 
+         WHEN B.WZ = 11 THEN
+          '机身'
+         WHEN B.WZ = 21 THEN
+          '1#发动机'
+         WHEN B.WZ = 22 THEN
+          '2#发动机'
+          WHEN B.WZ = 23 THEN
+          '3#发动机'
+          WHEN B.WZ = 24 THEN
+          '4#发动机'
+          WHEN B.WZ = 31 THEN
+          'APU'
+      END) WZ_NEW,
+	 (CASE 
+         WHEN B.JKLBH = '1_10' THEN
+          '初始化日期'
+         WHEN B.JKLBH = '2_10_FH' THEN
+          '初始化小时'
+         WHEN B.JKLBH = '2_20_AH' THEN
+          '初始化小时'
+          WHEN B.JKLBH = '2_30_EH' THEN
+          '初始化小时'
+          WHEN B.JKLBH = '3_10_FC' THEN
+          '初始化循环'
+          WHEN B.JKLBH = '3_20_AC' THEN
+          '初始化循环'
+          WHEN B.JKLBH = '3_30_EC' THEN
+          '初始化循环'
+      END) JKLX_NEW,
+	'CURRENT' DATA_VERSION , 
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT
+	  FROM D_00701_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	UNION ALL
+	
+	SELECT B.*, 
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	(CASE 
+        WHEN B.CSZ is null  THEN
+         B.CSZ
+          WHEN  B.JKFLBH = '1D'  THEN
+         B.CSZ
+          WHEN  B.JKFLBH = '3C' THEN
+         B.CSZ
+         WHEN  B.JKFLBH = '2T' and B.CSZ &lt; 60  THEN
+         '0:'||B.CSZ
+         WHEN  B.JKFLBH = '2T' and floor( B.CSZ -floor(B.CSZ/60)*60) = 0  THEN
+         floor(B.CSZ/60)||''
+         WHEN B.JKFLBH = '2T' THEN
+         (floor(B.CSZ/60)||':'||floor( B.CSZ -floor(B.CSZ/60)*60))
+        
+      END) CSZ_NEW,
+	 (CASE 
+         WHEN B.WZ = 11 THEN
+          '机身'
+         WHEN B.WZ = 21 THEN
+          '1#发动机'
+         WHEN B.WZ = 22 THEN
+          '2#发动机'
+          WHEN B.WZ = 23 THEN
+          '3#发动机'
+          WHEN B.WZ = 24 THEN
+          '4#发动机'
+          WHEN B.WZ = 31 THEN
+          'APU'
+      END) WZ_NEW,
+	 (CASE 
+         WHEN B.JKLBH = '1_10' THEN
+          '初始化日期'
+         WHEN B.JKLBH = '2_10_FH' THEN
+          '初始化小时'
+         WHEN B.JKLBH = '2_20_AH' THEN
+          '初始化小时'
+          WHEN B.JKLBH = '2_30_EH' THEN
+          '初始化小时'
+          WHEN B.JKLBH = '3_10_FC' THEN
+          '初始化循环'
+          WHEN B.JKLBH = '3_20_AC' THEN
+          '初始化循环'
+          WHEN B.JKLBH = '3_30_EC' THEN
+          '初始化循环'
+      END) JKLX_NEW,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT 
+	  FROM D_00701_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.FJZCH,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	 
+	          AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM D_007_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM D_007_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )   
+  </select> 
+  
+   <select id="queryDiff4D00702" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT B.*, 
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	(CASE 
+        WHEN B.RSYL is null  THEN
+         B.RSYL
+          WHEN  B.JKFLBH = '1D'  THEN
+         B.RSYL
+          WHEN  B.JKFLBH = '3C' THEN
+         B.RSYL
+         WHEN  B.JKFLBH = '2T' and B.RSYL &lt; 60  THEN
+         '0:'||B.RSYL
+         WHEN  B.JKFLBH = '2T' and floor( B.RSYL -floor(B.RSYL/60)*60) = 0  THEN
+         floor(B.RSYL/60)||''
+         WHEN B.JKFLBH = '2T' THEN
+         (floor(B.RSYL/60)||':'||floor( B.RSYL -floor(B.RSYL/60)*60))
+        
+      END) CSZ_NEW,
+	 (CASE 
+         WHEN B.JKLBH = '2_10_FH' THEN
+          '飞行时间'
+         WHEN B.JKLBH = '2_20_AH' THEN
+          'APU时间'
+          WHEN B.JKLBH = '2_30_EH' THEN
+          '发动机时间'
+          WHEN B.JKLBH = '3_10_FC' THEN
+          '飞行循环'
+          WHEN B.JKLBH = '3_20_AC' THEN
+          'APU循环'
+          WHEN B.JKLBH = '3_30_EC' THEN
+          '发动机循环'
+      END) JKLX_NEW,
+	'CURRENT' DATA_VERSION , 
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT
+	  FROM D_00702_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	UNION ALL
+	
+	SELECT B.*, 
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	(CASE 
+        WHEN B.RSYL is null  THEN
+         B.RSYL
+          WHEN  B.JKFLBH = '1D'  THEN
+         B.RSYL
+          WHEN  B.JKFLBH = '3C' THEN
+         B.RSYL
+         WHEN  B.JKFLBH = '2T' and B.RSYL &lt; 60  THEN
+         '0:'||B.RSYL
+         WHEN  B.JKFLBH = '2T' and floor( B.RSYL -floor(B.RSYL/60)*60) = 0  THEN
+         floor(B.RSYL/60)||''
+         WHEN B.JKFLBH = '2T' THEN
+         (floor(B.RSYL/60)||':'||floor( B.RSYL -floor(B.RSYL/60)*60))
+        
+      END) CSZ_NEW,
+	 (CASE 
+         WHEN B.JKLBH = '2_10_FH' THEN
+          '飞行时间'
+         WHEN B.JKLBH = '2_20_AH' THEN
+          'APU时间'
+          WHEN B.JKLBH = '2_30_EH' THEN
+          '发动机时间'
+          WHEN B.JKLBH = '3_10_FC' THEN
+          '飞行循环'
+          WHEN B.JKLBH = '3_20_AC' THEN
+          'APU循环'
+          WHEN B.JKLBH = '3_30_EC' THEN
+          '发动机循环'
+      END) JKLX_NEW,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT 
+	  FROM D_00702_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.FJZCH,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	 
+	          AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM D_007_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM D_007_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )   
+  </select> 
+  
+  <select id="queryDiff4D011" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	SELECT B.*, 
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'CURRENT' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT
+	  FROM D_011_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	   AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	UNION ALL
+	
+	SELECT B.*, 
+	CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_NAME,
+	'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.REC_XGLX = 1 THEN
+          '新增'
+         WHEN B.REC_XGLX = 2 THEN
+          '修改'
+         WHEN B.REC_XGLX = 3 THEN
+          '删除'
+      END) REC_XGLX_TEXT 
+	  FROM D_011_REC B
+	   LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+	 WHERE B.REC_ZBID = #{paramsMap.FJZCH,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	 
+	          AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM D_007_REC A WHERE 
+	             	A.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT MIN(C.REC_CZSJ) FROM D_007_REC C WHERE 
+		              	C.REC_ZBID= #{paramsMap.ID,jdbcType=VARCHAR}||','||#{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) WHERE 1 = RNO                        
+            )   
+  </select>
+   
+</mapper>

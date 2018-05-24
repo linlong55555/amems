@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.airportensure.dao.ContactpersonRecMapper" >
+   
+  <!-- 联系人日志列表 开始 -->
+  
+  <select id="queryList4D016" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		 SELECT   
+	       		 B.ID ,
+       B.LXR ,
+       B.ZW ,
+       B.SJ,
+       B.ZJ ,
+       B.CZ ,
+       B.YXDZ ,
+       B.QQ ,
+       B.WX,
+       B.BZ ,
+       B.DPRTCODE ,
+       B.WHRID ,
+       B.WHSJ ,
+       B.REC_XGLX ,
+       B.REC_CZRID ,
+       B.REC_CZSJ ,
+       B.REC_IP,
+       B.REC_CZSM ,
+       B.REC_CZLS ,
+       B.REC_ZBID
+            ,CZR.USERNAME ||' '|| CZR.REALNAME  REC_CZR_NAME,
+            '联系人:'||B.lxr||' '||(
+            F_GETREC_HD(B.REC_CZSM))  REC_HD
+            FROM D_016_REC B 
+            LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+            LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.whrid
+                 LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+            LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+            WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+	        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	        </if>
+	        <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+	        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	         </if>
+	         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	         </if>
+	         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+	        	and (
+	                 UPPER(B.lxr) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+	            )
+	         </if>
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff4D016" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+               
+             	       		       		 B.ID ,
+       B.LXR ,
+       B.ZW ,
+       B.SJ,
+       B.ZJ ,
+       B.CZ ,
+       B.YXDZ ,
+       B.QQ ,
+       B.WX,
+       B.BZ ,
+       B.DPRTCODE ,
+       B.WHRID ,
+       B.WHSJ ,
+       B.REC_XGLX ,
+       B.REC_CZRID ,
+       B.REC_CZSJ ,
+       B.REC_IP,
+       B.REC_CZSM ,
+       B.REC_CZLS ,
+       B.REC_ZBID
+       ,JG.DPRTNAME DPRTNAME
+        ,CZR.USERNAME ||' '|| CZR.REALNAME  REC_CZR_NAME,
+            '联系人:'||B.lxr||' '||(
+            F_GETREC_HD(B.REC_CZSM))  REC_HD
+                          FROM D_016_REC B 
+  LEFT JOIN T_USER WHR
+            ON WHR.ID = B.WHRID
+         
+          LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID
+            
+          LEFT JOIN T_DEPARTMENT WHDW
+            ON WHDW.ID = B.WHRID
+             LEFT JOIN T_DEPARTMENT JG ON JG.ID = B.DPRTCODE
+         WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from D_016_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+                   
+       ) WHERE 2 >=RNO 
+       
+  </select>
+
+  
+</mapper>

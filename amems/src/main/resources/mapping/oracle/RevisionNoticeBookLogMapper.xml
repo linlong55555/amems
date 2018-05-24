@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.RevisionNoticeBookLogMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.RevisionNoticeBookLog" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="JSZLH" property="jszlh" jdbcType="VARCHAR" />
+    <result column="TZSLX" property="tzslx" jdbcType="INTEGER" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="CKZL" property="ckzl" jdbcType="VARCHAR" />
+    <result column="XDZT" property="xdzt" jdbcType="VARCHAR" />
+    <result column="XDNR" property="xdnr" jdbcType="VARCHAR" />
+    <result column="XDRID" property="xdrid" jdbcType="VARCHAR" />
+    <result column="XDQX" property="xdqx" jdbcType="TIMESTAMP" />
+    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="DYZT" property="dyzt" jdbcType="INTEGER" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="REC_XGLX" property="recXglx" jdbcType="INTEGER" />
+    <result column="REC_CZRID" property="recCzrid" jdbcType="VARCHAR" />
+    <result column="REC_CZSJ" property="recCzsj" jdbcType="TIMESTAMP" />
+    <result column="ZDJSRID" property="zdjsrid" jdbcType="VARCHAR" />
+    <result column="ZDJSRQ" property="zdjsrq" jdbcType="TIMESTAMP" />
+    <result column="ZDJSYY" property="zdjsyy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, JSZLH, CKZL, XDZT, XDNR, XDRID, XDQX, ZDBMID, ZDRID, ZDSJ, ZT, DYZT, DPRTCODE, 
+    REC_XGLX, REC_CZRID, REC_CZSJ, ZDJSRID, ZDJSRQ, ZDJSYY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G_005_REC
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_005_REC
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.RevisionNoticeBookLog" >
+    insert into B_G_005_REC (ID, JSZLH, CKZL, 
+      XDZT, XDNR, XDRID, 
+      XDQX, ZDBMID, ZDRID, 
+      ZDSJ, ZT, DYZT, DPRTCODE, 
+      REC_XGLX, REC_CZRID, REC_CZSJ,
+      ZDJSRID, ZDJSRQ, ZDJSYY
+      )
+    values (#{id,jdbcType=VARCHAR}, #{jszlh,jdbcType=VARCHAR}, #{ckzl,jdbcType=VARCHAR}, 
+      #{xdzt,jdbcType=VARCHAR}, #{xdnr,jdbcType=VARCHAR}, #{xdrid,jdbcType=VARCHAR}, 
+      #{xdqx,jdbcType=TIMESTAMP}, #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      #{zdsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=INTEGER}, #{dyzt,jdbcType=INTEGER}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{recXglx,jdbcType=INTEGER}, #{recCzrid,jdbcType=VARCHAR}, #{recCzsj,jdbcType=TIMESTAMP},
+      #{zdjsrid,jdbcType=VARCHAR}, #{zdjsrq,jdbcType=TIMESTAMP}, #{zdjsyy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.RevisionNoticeBookLog" >
+    insert into B_G_005_REC
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null and id != ''" >
+        ID,
+      </if>
+      <if test="jszlh != null and jszlh != ''" >
+        JSZLH,
+      </if>
+      <if test="tzslx != null and tzslx != ''" >
+        TZSLX,
+      </if>
+      <if test="jx != null and jx != ''" >
+        JX,
+      </if>
+      <if test="ckzl != null and ckzl != ''" >
+        CKZL,
+      </if>
+      <if test="xdzt != null and xdzt != ''" >
+        XDZT,
+      </if>
+      <if test="xdnr != null and xdnr != ''" >
+        XDNR,
+      </if>
+      <if test="xdrid != null and xdrid != ''" >
+        XDRID,
+      </if>
+      <if test="xdqx != null and xdqx != ''" >
+        XDQX,
+      </if>
+      <if test="zdbmid != null and zdbmid != ''" >
+        ZDBMID,
+      </if>
+      <if test="zdrid != null and zdrid != ''" >
+        ZDRID,
+      </if>
+      <if test="zdsj != null and zdsj != ''" >
+        ZDSJ,
+      </if>
+      <if test="zt != null and zt != ''" >
+        ZT,
+      </if>
+      <if test="dyzt != null" >
+        DYZT,
+      </if>
+      <if test="dprtcode != null and dprtcode != ''" >
+        DPRTCODE,
+      </if>
+      <if test="recXglx != null and recXglx != ''" >
+        REC_XGLX,
+      </if>
+      <if test="recCzrid != null and recCzrid != ''" >
+        REC_CZRID,
+      </if>
+      <if test="recCzsj != null and recCzsj != ''" >
+        REC_CZSJ,
+      </if>
+      <if test="zdjsrid != null and zdjsrid != ''" >
+        ZDJSRID,
+      </if>
+      <if test="zdjsrq != null and zdjsrq != ''" >
+        ZDJSRQ,
+      </if>
+      <if test="zdjsyy != null and zdjsyy != ''" >
+        ZDJSYY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null and id != ''" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jszlh != null and jszlh != ''" >
+        #{jszlh,jdbcType=VARCHAR},
+      </if>
+      <if test="tzslx != null and tzslx != ''" >
+        #{tzslx,jdbcType=DECIMAL},
+      </if>
+      <if test="jx != null and jx != ''" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="ckzl != null and ckzl != ''" >
+        #{ckzl,jdbcType=VARCHAR},
+      </if>
+      <if test="xdzt != null and xdzt != ''" >
+        #{xdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="xdnr != null and xdnr != ''" >
+        #{xdnr,jdbcType=VARCHAR},
+      </if>
+      <if test="xdrid != null and xdrid != ''" >
+        #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdqx != null and xdqx != ''" >
+        #{xdqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdbmid != null and zdbmid != ''" >
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null and zdrid != ''" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null and zdsj != ''" >
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null and zt != ''" >
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="dyzt != null" >
+        #{dyzt,jdbcType=INTEGER},
+      </if>
+      <if test="dprtcode != null and dprtcode != ''" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="recXglx != null and recXglx != ''" >
+        #{recXglx,jdbcType=INTEGER},
+      </if>
+      <if test="recCzrid != null and recCzrid != ''" >
+        #{recCzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="recCzsj != null and recCzsj != ''" >
+        #{recCzsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsrid != null and zdjsrid != ''" >
+        #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null and zdjsrq != ''" >
+        #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null and zdjsyy != ''" >
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.RevisionNoticeBookLog" >
+    update B_G_005_REC
+    <set >
+      <if test="jszlh != null and jszlh != ''" >
+        #{jszlh,jdbcType=VARCHAR},
+      </if>
+      <if test="tzslx != null and tzslx != ''" >
+        TZSLX = #{tzslx,jdbcType=DECIMAL},
+      </if>
+      <if test="jx != null and jx != ''" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="ckzl != null and ckzl != ''" >
+        #{ckzl,jdbcType=VARCHAR},
+      </if>
+      <if test="xdzt != null and xdzt != ''" >
+        #{xdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="xdnr != null and xdnr != ''" >
+        #{xdnr,jdbcType=VARCHAR},
+      </if>
+      <if test="xdrid != null and xdrid != ''" >
+        #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdqx != null and xdqx != ''" >
+        #{xdqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdbmid != null and zdbmid != ''" >
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null and zdrid != ''" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null and zdsj != ''" >
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null and zt != ''" >
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="dyzt != null" >
+        #{dyzt,jdbcType=INTEGER},
+      </if>
+<!--       <if test="dprtcode != null and dprtcode != ''" > -->
+<!--         #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="recXglx != null and recXglx != ''" >
+        #{recXglx,jdbcType=INTEGER},
+      </if>
+      <if test="recCzrid != null and recCzrid != ''" >
+        #{recCzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="recCzsj != null and recCzsj != ''" >
+        #{recCzsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsrid != null and zdjsrid != ''" >
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null and zdjsrq != ''" >
+        ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null and zdjsyy != ''" >
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.RevisionNoticeBookLog" >
+    update B_G_005_REC
+    set JSZLH = #{jszlh,jdbcType=VARCHAR},
+      TZSLX = #{tzslx,jdbcType=DECIMAL},
+      JX = #{jx,jdbcType=VARCHAR},
+      CKZL = #{ckzl,jdbcType=VARCHAR},
+      XDZT = #{xdzt,jdbcType=VARCHAR},
+      XDNR = #{xdnr,jdbcType=VARCHAR},
+      XDRID = #{xdrid,jdbcType=VARCHAR},
+      XDQX = #{xdqx,jdbcType=TIMESTAMP},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=INTEGER},
+      DYZT = #{dyzt,jdbcType=INTEGER},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      REC_XGLX = #{recXglx,jdbcType=INTEGER},
+      REC_CZRID = #{recCzrid,jdbcType=VARCHAR},
+      REC_CZSJ = #{recCzsj,jdbcType=TIMESTAMP},
+      ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      ZDJSYY = #{zdjsyy,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

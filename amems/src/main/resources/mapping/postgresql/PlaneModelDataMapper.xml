@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.PlaneModelDataMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.PlaneModelData" >
+    <id column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <id column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="R_JSFXSJ" property="rJsfxsj" jdbcType="DECIMAL" />
+    <result column="R_SSDSJ" property="rSsdsj" jdbcType="DECIMAL" />
+    <result column="R_JCSJ" property="rJcsj" jdbcType="DECIMAL" />
+    <result column="R_QLJXH" property="rQljxh" jdbcType="DECIMAL" />
+    <result column="R_JCXH" property="rJcxh" jdbcType="DECIMAL" />
+    <result column="R_WDGXH" property="rWdgxh" jdbcType="DECIMAL" />
+    <result column="R_SSDXH" property="rSsdxh" jdbcType="DECIMAL" />
+    <result column="R_N1" property="rN1" jdbcType="DECIMAL" />
+    <result column="R_N2" property="rN2" jdbcType="DECIMAL" />
+    <result column="R_N3" property="rN3" jdbcType="DECIMAL" />
+    <result column="R_N4" property="rN4" jdbcType="DECIMAL" />
+    <result column="R_N5" property="rN5" jdbcType="DECIMAL" />
+    <result column="R_N6" property="rN6" jdbcType="DECIMAL" />
+    <result column="R_TSJK1" property="rTsjk1" jdbcType="DECIMAL" />
+    <result column="R_TSJK2" property="rTsjk2" jdbcType="DECIMAL" />
+    <result column="BMID" property="bmid" jdbcType="VARCHAR" />
+    <result column="CJRID" property="cjrid" jdbcType="VARCHAR" />
+    <result column="CJSJ" property="cjsj" jdbcType="TIMESTAMP" />
+    <result column="GS_DJJH" property="gsDjjh" jdbcType="DECIMAL" />
+    <result column="IS_TSQK" property="isTsqk" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    <result column="DISPLAYNAME" property="displayname" jdbcType="VARCHAR" />
+    <result column="fjzch" property="fjzch" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="resultMapWithPlane" extends="BaseResultMap" type="com.eray.thjw.po.PlaneModelData" >
+	<collection property="planeDataList" ofType="com.eray.thjw.productionplan.po.PlaneData">
+		<id column="D_FJZCH" property="fjzch" jdbcType="VARCHAR" />
+	    <id column="D_DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+	</collection>
+  </resultMap>
+   
+   
+  
+  <sql id="Base_Column_List" >
+    FJJX, DPRTCODE, R_JSFXSJ, R_SSDSJ, R_JCSJ, R_QLJXH, R_JCXH, R_WDGXH, R_SSDXH, R_N1, 
+    R_N2, R_N3, R_N4, R_N5, R_N6, R_TSJK1, R_TSJK2, BMID, CJRID, CJSJ, GS_DJJH,IS_TSQK,
+    ZT
+  </sql>
+  
+    <!-- 飞机机型参数 -->
+	<sql id="PlaneModelDataParam">
+	   where 
+	   1=1
+	     <if test="keyword != null and keyword != ''">
+		    and (FJJX like '%'||#{keyword}||'%'
+		        or DISPLAYNAME like '%'||#{keyword}||'%')
+		</if>
+		 <if test="dprtcode != null and dprtcode != ''">
+		    and dprtCode = #{dprtcode,jdbcType=VARCHAR}
+		</if>
+		<if test="gsDjjh != null">
+		    and gs_Djjh = #{gsDjjh,jdbcType=DECIMAL}
+		</if>
+		<if test="isTsqk != null">
+		    and is_Tsqk = #{isTsqk,jdbcType=DECIMAL}
+		</if>
+		 <if test="fjjx != null and fjjx != ''">
+		    and fjjx = #{fjjx,jdbcType=VARCHAR}
+		</if>
+	</sql>
+  <select id="selectPlaneModelDataList" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.PlaneModelData">
+	select  <include refid="Base_Column_List" />,displayname,dprtname from (  
+	     select a.FJJX, a.DPRTCODE, a.R_JSFXSJ, a.R_SSDSJ, a.R_JCSJ, a.R_QLJXH, a.R_JCXH, a.R_WDGXH, 
+	     a.R_SSDXH, a.R_N1,a.R_N2, a.R_N3, a.R_N4, a.R_N5, a.R_N6, a.R_TSJK1, a.R_TSJK2, a.BMID, 
+	     a.CJRID, a.CJSJ, a.GS_DJJH,a.IS_TSQK, a.ZT,b.username||' '||b.realname displayname,c.dprtname 
+	     from d_004 a left join t_user b on  a.cjrid=b.id 
+	     left join t_department c on a.dprtcode=c.id
+    ) b
+	<include refid="PlaneModelDataParam"></include>
+	<choose>
+		<when test='pagination.sort == "auto"'>
+			order by CJSJ DESC
+		</when>
+		<otherwise>
+			order by ${pagination.sort} ${pagination.order}
+		</otherwise>
+	</choose>
+  </select>
+  
+     <select id="findAllPlaneModelData" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include>  from D_004
+		where zt = 1 and  DPRTCODE = #{dprtcode,jdbcType=VARCHAR} 	<include refid="role_jx_param" />
+	</select>
+	
+ <sql id="role_jx_param">
+  	<if test="paramsMap.userId != null and paramsMap.userId != ''">
+	   and exists
+      		(select 1 from v_role_jx a 
+     			where a.dprtcode = dprtcode 
+     			and a.user_id = #{paramsMap.userId, jdbcType=VARCHAR})
+    </if>
+  	</sql>
+	
+    <select id="selectUserACTypeLists" resultMap="BaseResultMap">
+		select t.FJJX, t.DPRTCODE  from D_004 t left join t_department d on t.DPRTCODE=d.id
+		 <include refid="PlaneModelDataParams"></include> 
+		 order by d.pxh,t.FJJX
+	</select>
+  
+      <!-- 飞机机型参数 -->
+	<sql id="PlaneModelDataParams">
+	   where  
+	   zt=1
+	          <choose>                                                                 
+		    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>   
+		    	</when>
+		    	<when test='paramsMap.userType != "admin" and paramsMap.userId != null and paramsMap.userId !=""'>                       
+    			and exists (select 1 from t_user2role ur
+		       join t_role2dprt rd on ur.role_id = rd.role_id      
+		       where ur.user_id = #{paramsMap.userId}
+             	and rd.dprt_id = t.DPRTCODE)
+		    	</when>
+	   		</choose>
+		
+	</sql>
+ 	 
+ 	<!-- 根据条件分页查询机型列表 -->
+	<select id="queryAllPageList" parameterType="com.eray.thjw.po.PlaneModelData" resultMap="BaseResultMap">
+	 	select 
+		    <include refid="Base_Column_List" />
+		from D_004
+		where ZT = 1
+           <include refid="Plane_Model_Param"></include>
+            	<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		order by CJSJ DESC 
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+ 		</choose>	
+	</select>
+	
+ 	  <select id="selectCount"  parameterType="com.eray.thjw.po.PlaneModelData" resultType="int">
+		select count(1) FROM D_004 where fjjx =#{fjjx,jdbcType=VARCHAR} and dprtcode=#{dprtcode,jdbcType=VARCHAR} and zt=1
+ 	 </select>
+ 	
+	<select id="findType" resultMap="BaseResultMap" >
+		select <include refid="Base_Column_List"></include> from D_004 where ZT = 1 and DPRTCODE = #{dprtcode} order by FJJX asc
+	</select>
+	<!-- 查询所有有效机型 -->
+	<select id="findAllType" resultType="String" parameterType="java.lang.String">
+		select FJJX from D_004 where ZT = 1 and DPRTCODE = #{dprtcode} order by FJJX asc  
+	</select>
+ 	 
+ 	 
+ 	 
+  <insert id="insert" parameterType="com.eray.thjw.po.PlaneModelData" >
+    insert into D_004
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="rJsfxsj != null" >
+        R_JSFXSJ,
+      </if>
+      <if test="rSsdsj != null" >
+        R_SSDSJ,
+      </if>
+      <if test="rJcsj != null" >
+        R_JCSJ,
+      </if>
+      <if test="rQljxh != null" >
+        R_QLJXH,
+      </if>
+      <if test="rJcxh != null" >
+        R_JCXH,
+      </if>
+      <if test="rWdgxh != null" >
+        R_WDGXH,
+      </if>
+      <if test="rSsdxh != null" >
+        R_SSDXH,
+      </if>
+      <if test="rN1 != null" >
+        R_N1,
+      </if>
+      <if test="rN2 != null" >
+        R_N2,
+      </if>
+      <if test="rN3 != null" >
+        R_N3,
+      </if>
+      <if test="rN4 != null" >
+        R_N4,
+      </if>
+      <if test="rN5 != null" >
+        R_N5,
+      </if>
+      <if test="rN6 != null" >
+        R_N6,
+      </if>
+      <if test="rTsjk1 != null" >
+        R_TSJK1,
+      </if>
+      <if test="rTsjk2 != null" >
+        R_TSJK2,
+      </if>
+      <if test="bmid != null" >
+        BMID,
+      </if>
+        CJSJ,
+      <if test="cjrid != null" >
+        CJRID,
+      </if>
+        <if test="gsDjjh != null" >
+        GS_Djjh,
+      </if>
+       <if test="isTsqk != null" >
+        IS_TSQK,
+      </if>
+        ZT,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="rJsfxsj != null" >
+        #{rJsfxsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdsj != null" >
+        #{rSsdsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcsj != null" >
+        #{rJcsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rQljxh != null" >
+        #{rQljxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcxh != null" >
+        #{rJcxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rWdgxh != null" >
+        #{rWdgxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdxh != null" >
+        #{rSsdxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rN1 != null" >
+        #{rN1,jdbcType=DECIMAL},
+      </if>
+      <if test="rN2 != null" >
+        #{rN2,jdbcType=DECIMAL},
+      </if>
+      <if test="rN3 != null" >
+        #{rN3,jdbcType=DECIMAL},
+      </if>
+      <if test="rN4 != null" >
+        #{rN4,jdbcType=DECIMAL},
+      </if>
+      <if test="rN5 != null" >
+        #{rN5,jdbcType=DECIMAL},
+      </if>
+      <if test="rN6 != null" >
+        #{rN6,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk1 != null" >
+        #{rTsjk1,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk2 != null" >
+        #{rTsjk2,jdbcType=DECIMAL},
+      </if>
+      <if test="bmid != null" >
+        #{bmid,jdbcType=VARCHAR},
+      </if>
+         current_timestamp,
+         
+      <if test="cjrid != null" >
+        #{cjrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gsDjjh != null" >
+        #{gsDjjh,jdbcType=DECIMAL},
+      </if>
+      <if test="isTsqk != null" >
+        #{isTsqk,jdbcType=DECIMAL},
+      </if>
+          1
+    </trim>
+  </insert>
+  
+  <select id="selectPlaneModelData"  parameterType="com.eray.thjw.po.PlaneModelData"  resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include>  from D_004
+		where fjjx = #{fjjx,jdbcType=VARCHAR} and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectPlane"  parameterType="java.lang.String" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include> from d_004 d
+		where EXISTS
+		(select 1 from d_007 where d.fjjx = fjjx  and fjzch=#{fjzch,jdbcType=VARCHAR})
+	</select>
+	
+	
+	  <sql id="Base_Column_Lists" >
+    b1.FJJX, b1.DPRTCODE, b1.R_JSFXSJ,b1.R_SSDSJ, b1.R_JCSJ, b1.R_QLJXH, b1.R_JCXH, b1.R_WDGXH, b1.R_SSDXH, b1.R_N1, 
+    b1.R_N2, b1.R_N3, b1.R_N4, b1.R_N5, b1.R_N6, b1.R_TSJK1, b1.R_TSJK2, b1.BMID, b1.CJRID, b1.CJSJ, b1.GS_DJJH,b1.IS_TSQK,
+   b1.ZT,b2.fjzch as fjzch
+  </sql>
+  
+	
+	<select id="selectPlanes"  resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="Base_Column_Lists"></include> from d_004 b1 inner join d_007 b2 on b1.fjjx=b2.fjjx and b1.dprtcode = b2.dprtcode  where b2.fjzch=#{0,jdbcType=VARCHAR} and b2.dprtcode=#{1,jdbcType=VARCHAR}
+	</select>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.PlaneModelData" >
+    update D_004
+    <set >
+      <if test="rJsfxsj != null" >
+        R_JSFXSJ = #{rJsfxsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdsj != null" >
+        R_SSDSJ = #{rSsdsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcsj != null" >
+        R_JCSJ = #{rJcsj,jdbcType=DECIMAL},
+      </if>
+      <if test="rQljxh != null" >
+        R_QLJXH = #{rQljxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rJcxh != null" >
+        R_JCXH = #{rJcxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rWdgxh != null" >
+        R_WDGXH = #{rWdgxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rSsdxh != null" >
+        R_SSDXH = #{rSsdxh,jdbcType=DECIMAL},
+      </if>
+      <if test="rN1 != null" >
+        R_N1 = #{rN1,jdbcType=DECIMAL},
+      </if>
+      <if test="rN2 != null" >
+        R_N2 = #{rN2,jdbcType=DECIMAL},
+      </if>
+      <if test="rN3 != null" >
+        R_N3 = #{rN3,jdbcType=DECIMAL},
+      </if>
+      <if test="rN4 != null" >
+        R_N4 = #{rN4,jdbcType=DECIMAL},
+      </if>
+      <if test="rN5 != null" >
+        R_N5 = #{rN5,jdbcType=DECIMAL},
+      </if>
+      <if test="rN6 != null" >
+        R_N6 = #{rN6,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk1 != null" >
+        R_TSJK1 = #{rTsjk1,jdbcType=DECIMAL},
+      </if>
+      <if test="rTsjk2 != null" >
+        R_TSJK2 = #{rTsjk2,jdbcType=DECIMAL},
+      </if>
+       <if test="gsDjjh != null" >
+        GS_Djjh = #{gsDjjh,jdbcType=DECIMAL},
+      </if>
+      <if test="isTsqk != null" >
+        IS_TSQK = #{isTsqk,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where FJJX = #{fjjx,jdbcType=VARCHAR} and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 飞机机型参数 -->
+	<sql id="Plane_Model_Param">
+	     <if test="keyword != null and keyword != ''">
+		    and (
+		       UPPER(FJJX) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.jxList != null and paramsMap.jxList != ''">
+		    and FJJX not in
+     			 <foreach item="item" index="index" collection="paramsMap.jxList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		 <if test="dprtcode != null">
+		    and DPRTCODE = #{dprtcode}
+		</if>
+	</sql>
+	<select id="selectByFjjxAndDprtcode" parameterType="com.eray.thjw.po.PlaneModelData" resultType="java.lang.Integer">
+	select count(1) from D_004 where fjjx=#{fjjx,jdbcType=VARCHAR} and dprtcode=#{dprtcode,jdbcType=VARCHAR} and zt=1
+	</select>
+	
+	
+	<!-- 根据组织机构查询 -->
+	<select id="findByDprtcode"  parameterType="java.lang.String" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include> from d_004
+		where dprtcode = #{dprtcode,jdbcType=VARCHAR} and zt=1
+	</select>
+	
+	<!-- 
+	授权机型和飞机注册号
+	管理员查全部数据，用户查用户下所有角色的机型和飞机注册号 
+	-->
+	<select id="selectAircraftData" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		  <choose>                                                                 
+			    	<when test='paramsMap.usertype!=null and paramsMap.usertype == "admin"'>                       
+			    		 select DPRTCODE AS "DPRTCODE",FJJX AS "FJJX",FJZCH AS "FJZCH" 
+			    		 		from D_007 where ZT=1
+			    	</when>
+			    	<otherwise>
+					      SELECT DPRTCODE AS "DPRTCODE",FJJX AS "FJJX",FJZCH AS "FJZCH" 
+					      		from V_ROLE_JX where USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+			    	</otherwise>
+		   </choose>
+  </select>
+  
+  <!-- 查询用户授权组织机构的所有 机型 和 飞机注册号 -->
+  <select id="selectAircraftByAuthOrg" resultMap="resultMapWithPlane" parameterType="com.eray.thjw.po.BaseEntity">
+	  <choose>                                                                 
+	    	<when test='paramsMap.usertype!=null and paramsMap.usertype == "admin"'>                       
+	    		 SELECT D004.DPRTCODE, D004.FJJX, D007.FJZCH AS D_FJZCH, D007.DPRTCODE AS D_DPRTCODE ,
+	    		 		T.DPRTNAME 
+	    		 FROM D_004 D004
+	    		 	LEFT JOIN D_007 D007 ON D004.FJJX = D007.FJJX AND D004.DPRTCODE = D007.DPRTCODE AND D007.ZT = 1
+	    		 	LEFT JOIN T_DEPARTMENT T ON  D004.DPRTCODE = T.ID
+          		 WHERE D004.ZT = 1
+          		 ORDER BY T.PXH, T.DPRTNAME, D004.FJJX, D007.FJZCH
+	    	</when>
+	    	<otherwise>
+	    		SELECT D004.DPRTCODE, D004.FJJX, D007.FJZCH AS D_FJZCH, D007.DPRTCODE AS D_DPRTCODE ,
+	    			T.DPRTNAME 
+	    		FROM D_004 D004
+	    		 	LEFT JOIN D_007 D007 ON D004.FJJX = D007.FJJX AND D004.DPRTCODE = D007.DPRTCODE AND D007.ZT = 1
+	    		 	LEFT JOIN T_DEPARTMENT T ON  D004.DPRTCODE = T.ID
+          		WHERE D004.ZT = 1 AND EXISTS (SELECT 1 FROM T_USER2ROLE UR
+							       JOIN T_ROLE2DPRT RD ON UR.ROLE_ID = RD.ROLE_ID      
+							       WHERE UR.USER_ID = #{paramsMap.userId}
+							             AND RD.DPRT_ID = D004.DPRTCODE)
+				ORDER BY T.PXH, T.DPRTNAME, D004.FJJX, D007.FJZCH			             
+	    	</otherwise>
+	   </choose>
+  </select>
+  
+  <select id="selectAircraft" resultMap="resultMapWithPlane" parameterType="com.eray.thjw.po.BaseEntity">
+	  SELECT count(1)
+   		FROM V_ROLE_JX UR
+   		where UR.USER_ID = #{paramsMap.userId}
+			AND UR.DPRTCODE = #{paramsMap.dprtcode}
+             <if test='paramsMap.jx !=null'>
+			    AND UR.FJJX in 
+	            <foreach collection="paramsMap.jx" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+		   		</foreach>
+			</if>
+			<if test='paramsMap.fjzch !=null'>
+			    AND UR.FJZCH  in
+			    <foreach collection="paramsMap.fjzch" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+		   		</foreach>
+			</if>
+  </select>
+  
+</mapper>

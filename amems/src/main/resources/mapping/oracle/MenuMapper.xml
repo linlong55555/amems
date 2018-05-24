@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.MenuMapper">
+
+  <resultMap id="menuMap" type="com.eray.thjw.po.Menu" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MENUCODE" property="menuCode" jdbcType="VARCHAR" />
+    <result column="MENUNAME" property="menuName" jdbcType="VARCHAR" />
+    <result column="MENUFNAME" property="menuFname" jdbcType="VARCHAR" />
+    <result column="MENUTYPE" property="menuType" jdbcType="DECIMAL" />
+    <result column="PARENTID" property="parentId" jdbcType="VARCHAR" />
+    <result column="MENUORDER" property="menuOrder" jdbcType="DECIMAL" />
+    <result column="PATH" property="path" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="FULLORDER" property="fullOrder" jdbcType="VARCHAR" />
+    <result column="ICONPATH" property="iconPath" jdbcType="VARCHAR" />
+    <result column="xtlx" property="xtlx" jdbcType="VARCHAR" />
+  </resultMap>
+  
+
+
+     <sql id="menufields">
+          id,menuCode,menuName,menuFname,menuType,parentId,menuOrder,path,remark,fullOrder,iconPath,xtlx
+     </sql>
+	
+	<!-- 增加一个菜单 -->
+
+ <insert id="addMenu" parameterType="com.eray.thjw.po.Menu">
+   
+    insert into t_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+          id,
+      <if test="menuCode != null" >
+        menuCode,
+      </if>
+      <if test="menuName != null" >
+        menuName,
+      </if>
+      <if test="menuFname != null" >
+        menuFname,
+      </if>
+      <if test="menuType != null" >
+        menuType,
+      </if>
+      <if test="parentId != null" >
+        parentId,
+      </if>
+      <if test="menuOrder != null" >
+        menuOrder,
+      </if>
+      <if test="path != null" >
+        path,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="fullOrder != null" >
+        fullOrder,
+      </if>
+      <if test="iconPath != null" >
+        iconPath,
+      </if>
+      <if test="xtlx != null" >
+        xtlx,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+        #{id,jdbcType=VARCHAR},
+      <if test="menuCode != null" >
+        #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuFname != null" >
+        #{menuFname,jdbcType=VARCHAR},
+      </if>
+      <if test="menuType != null" >
+        #{menuType,jdbcType=DECIMAL},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuOrder != null" >
+        #{menuOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="path != null" >
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="fullOrder != null" >
+        #{fullOrder,jdbcType=VARCHAR},
+      </if>
+       <if test="iconPath != null" >
+        #{iconPath,jdbcType=VARCHAR},
+      </if>
+       <if test="xtlx != null" >
+        #{xtlx,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+    	<!-- 修改菜单信息 -->
+	<update  id="updateMenu" parameterType="com.eray.thjw.po.Menu" >
+	update t_menu 
+	 <set >
+       <if test="menuCode != null" >
+       menuCode = #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        menuName=#{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuFname != null" >
+        menuFname=#{menuFname,jdbcType=VARCHAR},
+      </if>
+      <if test="menuType != null" >
+        menuType=#{menuType,jdbcType=DECIMAL},
+      </if>
+      <if test="parentId != null" >
+        parentId=#{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuOrder != null" >
+        menuOrder=#{menuOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="path != null" >
+        path=#{path,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark=#{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="fullOrder != null" >
+        fullOrder=#{fullOrder,jdbcType=VARCHAR},
+      </if>
+       <if test="iconPath != null" >
+       iconPath= #{iconPath,jdbcType=VARCHAR},
+      </if>
+       <if test="xtlx != null" >
+       xtlx= #{xtlx,jdbcType=VARCHAR},
+      </if>
+    </set>
+		  where id = #{id,jdbcType=VARCHAR}
+	</update> 
+    
+    
+    <!-- 查询菜单参数 -->
+	<sql id="menuParam">
+	   where 
+	   1=1
+          <if test="keyword != null and keyword != ''">
+		    and (UPPER(t1.menuCode) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.menuName) like UPPER('%'||#{keyword}||'%') 
+		    	or UPPER(t1.menuFname) like UPPER('%'||#{keyword}||'%') )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	     <if test="xtlx != null and xtlx != ''">
+            and  t1.xtlx = #{xtlx,jdbcType=VARCHAR}
+         </if>
+	     <!-- 菜单id-->
+	     <if test="id != null and id != ''">
+            and  t1.id = #{id,jdbcType=VARCHAR}
+         </if>
+	</sql>
+	
+    <!-- 根据条件查询菜单信息 -->
+	<select id="selectMenuList"  parameterType="com.eray.thjw.po.Menu"  resultMap="menuMap">
+	      select t1.id,t1.menuCode,t1.menuName,t1.menuFname,t1.menuType,t1.parentId,
+          t1.menuOrder,t1.path,t1.remark,t1.fullOrder,t1.iconPath,t1.xtlx,t2.menuName parentName 
+		  from t_menu t1 
+          left join t_menu t2 on t2.id=t1.parentId <include refid="menuParam"></include>
+          <choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		order by t1.menuType asc , t1.menuOrder asc
+	    	</when>
+	    	<otherwise>
+			    order by t1.${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		 </choose>	
+	</select>
+   
+   
+   <select id="queryCount" parameterType="com.eray.thjw.po.Menu" resultType="int">
+		select count(1) FROM t_menu <include refid="menuParam2"></include>
+ 	 </select>
+	
+	<select id="selectMenu"  parameterType="com.eray.thjw.po.Menu"  resultMap="menuMap">
+		select <include refid="menufields"></include>  from t_menu
+		<include refid="menuParam2"></include>
+	</select>
+	
+ 	  <select id="getCount"  resultType="int">
+		select count(1) FROM  t_menu where parentId=#{id,jdbcType=VARCHAR}
+ 	 </select>
+ 	 
+ 	 
+ 	 
+ 	    <!-- 查询菜单参数 -->
+	<sql id="menuParam2">
+	   where 
+	   1=1
+           <if test="keyword != null and keyword != ''">
+		    and (UPPER(menuCode) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(menuName) like UPPER('%'||#{keyword}||'%') 
+		    	or UPPER(menuFname) like UPPER('%'||#{keyword}||'%') )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+         <if test="parentId != null">
+            and  PARENTID =#{parentId,jdbcType=VARCHAR}
+         </if>
+        <if test="menuCode != null">
+            and  menuCode =#{menuCode,jdbcType=VARCHAR}               <!-- 用于增加菜单是两个判断重复 -->
+         </if>
+         <if test="xtlx != null">
+            and  xtlx =#{xtlx,jdbcType=VARCHAR}
+         </if>
+         <if test="menuCode != null">
+            or  menuName =#{menuName,jdbcType=VARCHAR}
+         </if>
+	     <if test="id != null">
+            and  id =#{id,jdbcType=VARCHAR}
+         </if>
+	</sql>
+ 	 
+ 	 
+ 	 <select id="findAll" resultType="INTEGER" resultMap="menuMap">
+		select <include refid="menufields"></include> FROM t_menu   <!-- <include refid="menusParam"></include> -->
+ 	 </select>
+ 	 <select id="findAlls" resultType="INTEGER" resultMap="menuMap">
+		select <include refid="menufields"></include> FROM t_menu    <include refid="menuParam2"></include>
+ 	 </select>
+
+ 	 
+ 	  <select id="findAllparentId" resultType="java.lang.String" resultMap="menuMap">
+		select <include refid="menufields"></include> FROM t_menu where PARENTID =#{parentId,jdbcType=VARCHAR}
+ 	 </select>
+ 	 
+ 	 <!-- 获取用户拥有的权限菜单 -->
+ 	 <select id="findMenuByUserId" resultType="java.lang.String" resultMap="menuMap">
+		SELECT
+			M.ID,
+			M.menucode,
+			M.menuname,
+			M.menutype,
+			M.menufname,
+			M.parentid,
+			M.menuorder,
+			M.PATH,
+			M.fullorder,
+			M.fullorder,
+			M.iconpath,
+			M.xtlx
+		FROM
+			t_menu M
+		JOIN (
+				SELECT DISTINCT rm.menu_id
+				FROM
+					t_user2role ur
+				JOIN t_role2menu rm ON rm.role_id = ur.role_id AND ur.user_id = #{0,jdbcType=VARCHAR}
+			) T ON M . ID = t.menu_id
+ 	 </select>
+ 	 
+ 	 <!-- 获取用户拥有的权限菜单 -->
+ 	 <select id="findMenuByUserId4Login" resultType="java.lang.String" resultMap="menuMap">
+		SELECT
+			M.ID,
+			M.menucode,
+			M.menuname,
+			M.menutype,
+			M.menufname,
+			M.parentid,
+			M.menuorder,
+			M.PATH,
+			M.fullorder,
+			M.fullorder,
+			M.iconpath
+		FROM
+			t_menu M
+		JOIN (
+				SELECT DISTINCT rm.menu_id
+				FROM
+					t_user2role ur
+				JOIN t_role2menu rm ON rm.role_id = ur.role_id AND ur.user_id = #{0,jdbcType=VARCHAR}
+			) T ON M . ID = t.menu_id AND M.xtlx = #{1,jdbcType=VARCHAR}
+ 	 </select>
+ 	 
+ 	 <!-- 获取所有的菜单 -->
+ 	 <select id="findAllMenuList4Login" resultMap="menuMap">
+		select m.id,m.menucode,m.menuname,m.menufname,m.menutype,m.parentid,m.menuorder,m.path,m.fullorder,m.fullorder,m.iconpath 
+			from t_menu m
+			where m.xtlx  = #{0,jdbcType=VARCHAR}
+ 	 </select>
+	
+	    <!-- 删除菜单信息 -->
+	<delete id="deleteMenuByPrimaryKey" parameterType="java.lang.String" >
+       delete from t_menu
+      where id = #{id,jdbcType=VARCHAR}
+  </delete>
+	
+</mapper>

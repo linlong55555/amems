@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.DepartmentMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.Department" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    <result column="PARENTID" property="parentid" jdbcType="VARCHAR" />
+    <result column="DPRTTYPE" property="dprttype" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+     <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+     <association property="deptInfo" javaType="com.eray.thjw.po.DeptInfo">
+			<id column="id" property="id" />
+			<result column="YXQKS" property="yxqks" jdbcType="TIMESTAMP" />
+			<result column="YXQJS" property="yxqjs" jdbcType="TIMESTAMP" />
+			<result column="ZCFJ_MAX" property="zcfj_max" jdbcType="INTEGER" />
+			<result column="ZCZH_MAX" property="zczh_max" jdbcType="INTEGER" />
+	</association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, DPRTNAME, PARENTID, DPRTTYPE, REMARK,PXH
+  </sql>
+  
+  
+      <!-- 查询组织机构参数 -->
+	<sql id="departmentParam">
+	   where 
+	   1=1  
+	      <if test="id != null and id != ''">
+            and  b.id = #{id}
+         </if>
+	    <if test="keyword != null and keyword != ''">
+		    and (b.dprtcode like '%'||#{keyword}||'%'
+		    	or b.dprtname like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+<!--  		<if test="paramsMap.userId!=null and paramsMap.userId != '' ">
+			and	exists (select 1 from t_user2role ur
+       						join t_role2dprt rd on ur.role_id = rd.role_id      
+       					where ur.user_id = #{paramsMap.userId}
+             		and rd.dprt_id = b.id)	
+		</if>-->
+	  </sql>
+  	
+    <!-- 查询组织机构列表并且分页 -->
+  <select id="selectDepartmentListByPage" parameterType="com.eray.thjw.po.Department" resultMap="BaseResultMap">
+		select * from (
+		select  b.id,b.dprtcode,b.dprtname,b.parentid,b.dprttype,b.pxh,b.remark ,m.zcfj_max,m.zczh_max,m.yxqks,m.yxqjs  from t_department b  
+		
+		left join t_deptinfo m  on b.id = m.id  <include refid="departmentParam"></include> 
+		and b.dprtType = '1') as c
+		<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by pxh, DPRTCODE asc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+	
+  </select>
+    <!-- 查询组织机构参数 -->
+	<sql id="departmentParam2">
+	   where 
+	   1=1  
+	     <!-- 按钮id-->
+	      <if test="id != null and id != ''">
+            and  id = #{id}
+         </if>
+	     <if test="dprtcode != null and dprtcode != ''">
+            and  dprtcode = #{dprtcode}
+         </if>
+         <if test="dprttype != null and dprttype != ''">
+            and  dprttype = #{dprttype}
+         </if>
+         <if test="dprtname != null and dprtname != ''">
+            and  dprtname = #{dprtname}
+         </if>
+	    <if test="keyword != null and keyword != ''">
+		    and (dprtcode like '%'||#{keyword}||'%'
+		    	or dprtname like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+	  </sql>
+  
+  <!-- 查询组织机构总记录数 -->
+  <select id="selectCount" parameterType="com.eray.thjw.po.Department" resultType="int">
+  	 select count(*) from T_DEPARTMENT 
+  	 <include refid="departmentParam2" />
+  </select>
+  
+   <select id="findAlls"  resultMap="BaseResultMap">
+		select id,DPRTCODE,DPRTNAME,PARENTID,pxh FROM t_department   
+ 	</select>
+ 	
+    <select id="queryOrg"  resultMap="BaseResultMap">
+		select id,DPRTCODE,DPRTNAME,PARENTID FROM t_department    where dprtType='1' order by pxh
+ 	</select>
+ 	
+    <select id="findAllff"  resultMap="BaseResultMap">
+		select id,DPRTCODE,DPRTNAME,PARENTID FROM t_department   where dprtType='2'
+ 	</select>
+ 	<!--  新增组织机构 -->
+   <insert id="insertSelective" parameterType="com.eray.thjw.po.Department" >
+    insert into T_DEPARTMENT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="dprtname != null" >
+        DPRTNAME,
+      </if>
+      <if test="parentid != null" >
+        PARENTID,
+      </if>
+      <if test="dprttype != null" >
+        DPRTTYPE,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="pxh != null" >
+        PXH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtname != null" >
+        #{dprtname,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprttype != null" >
+        #{dprttype,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="pxh != null" >
+        #{pxh,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="selectByDepartment"  parameterType="com.eray.thjw.po.Department"  resultMap="BaseResultMap">
+		
+		select  b.* ,m.dprtName   parentName  from t_department b  
+		
+		left join t_department m  on b.parentid = m.id  <include refid="departmentParam"></include>
+	</select>
+	<!-- 执行组织机构更新操作 -->
+    <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Department" >
+    update T_DEPARTMENT
+    <set >
+      <if test="parentid != null" >
+        PARENTID = #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprttype != null" >
+        DPRTTYPE = #{dprttype,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="pxh != null" >
+        pxh = #{pxh,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_DEPARTMENT
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据id查询最上级根节点 -->
+  <select id="findByTopNode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  
+  	WITH RECURSIVE PARENT_ORG AS
+	(
+		SELECT A.ID, A.parentid FROM t_department A WHERE A.ID = #{0}
+			UNION ALL 
+		SELECT Z.ID, Z.parentid FROM t_department Z INNER JOIN PARENT_ORG F ON F.parentid = Z.id
+	)
+    SELECT 
+	  <include refid="Base_Column_List" />
+	  FROM PARENT_ORG
+	  where t_department.parentid = #{1}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_DEPARTMENT
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.Department" >
+    insert into T_DEPARTMENT (ID, DPRTCODE, DPRTNAME, 
+      PARENTID, DPRTTYPE, REMARK
+      )
+
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{dprtname,jdbcType=VARCHAR}, 
+      #{parentid,jdbcType=VARCHAR}, #{dprttype,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.Department" >
+    update T_DEPARTMENT
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set DPRTNAME = #{dprtname,jdbcType=VARCHAR},
+      PARENTID = #{parentid,jdbcType=VARCHAR},
+      DPRTTYPE = #{dprttype,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      PXH=#{pxh,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <select id="findAll" resultType="String" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include> FROM T_DEPARTMENT where PARENTID =#{parentId,jdbcType=VARCHAR}  <!-- <include refid="menusParam"></include> -->
+ 	</select>
+  
+  <!-- 组织机构查询条件 -->
+  <sql id="departmentQueryConditions">
+	 where 1 = 1
+	    <!-- 组织机构代码 -->
+        <if test="dprtcode != null and dprtcode != ''">
+           and department.DPRTCODE like '%'||#{dprtcode}||'%'
+        </if>
+	  
+	    <!-- 组织机构名称 -->
+	    <if test="dprtname != null and dprtname != ''">
+           and department.DPRTNAME like '%'||#{dprtname}||'%'
+        </if>
+        
+        <!-- 组织机构类型 -->
+        <if test="dprttype != null and dprttype != ''">
+           and department.DPRTTYPE like '%'||#{dprttype}||'%'
+        </if>
+  </sql>
+  
+  
+  
+  
+  <!-- 查询父组织机构列表 -->
+  <select id="selectParentDepartmentList" parameterType="com.eray.thjw.po.Department" resultMap="BaseResultMap">
+     select
+     <include refid="Base_Column_List" />
+     from T_DEPARTMENT
+       where 1 = 1
+        <!-- 组织机构主键id -->
+       	<if test="id != null and id != ''">
+           and ID != #{id}
+           and PARENTID != #{id}
+        </if>
+        
+        <!-- 组织机构名称 -->
+	    <if test="dprtname != null and dprtname != ''">
+           and DPRTNAME like '%'||#{dprtname}||'%'
+        </if>
+  </select>
+  
+  <!-- 查询该父组织机构下的子组织机构的条数 -->
+  <select id="selectChildDepartmentCountByParentId" parameterType="java.lang.String" resultType="java.lang.Integer">
+     select count(1) from T_DEPARTMENT
+     where PARENTID = #{parentId}
+  </select>
+  
+  <!-- 查询组织机构信息 -->
+  <select id="selectDepartmentByDprtCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+	 select
+	 <include refid="Base_Column_List" />
+	 from T_DEPARTMENT
+	 where DPRTCODE = #{dprtCode}
+       limit 1
+  </select>
+  
+  <!-- 根据用户查询组织机构信息 -->
+  <select id="findDepartmentByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select distinct d.id,d.dprtcode,d.dprtname,d.parentid,d.dprttype,d.pxh
+		      from t_user2role ur
+		      left join t_role2dprt rd
+		      on rd.role_id = ur.role_id
+		      left join t_department d
+		      on d.id = rd.dprt_id
+		where ur.user_id = #{userId,jdbcType=VARCHAR} and d.id is not null
+		order by pxh
+  </select>
+  
+  
+ <insert id="synAuthInfo" parameterType="map">
+		 <foreach collection="authOrganizations" item="item" index="index" separator="union all" > 
+		      select fn_t_department_synauthinfo(
+		      #{item.id} 
+		      ,#{item.id} 
+		      ,#{item.deptname} 
+		      ,#{item.pid} )
+		 </foreach>
+ </insert>
+ <select id="getCountsByDepartment" parameterType="com.eray.thjw.po.Department" resultType="int">
+ 	 select count(*) from T_DEPARTMENT  b
+  	 <include refid="departmentParam2" />
+ </select>
+<select id="getParentDepartmentByChildId" parameterType="java.lang.String" resultType="com.eray.thjw.po.Department">
+	select <include refid="Base_Column_List" /> FROM T_DEPARTMENT where id in(select parentid from T_DEPARTMENT where id =#{id})
+</select>
+ <update id="updateById" parameterType="com.eray.thjw.po.Department" >
+    update T_DEPARTMENT
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set DPRTNAME = #{dprtname,jdbcType=VARCHAR},
+      DPRTTYPE = #{dprttype,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      PXH=#{pxh,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="getChildDepartment" parameterType="java.lang.String" resultType="java.lang.Integer" >
+  	select count(*) from T_DEPARTMENT where parentId=#{parentId}
+  </select>
+  
+  <sql id="departmentParam3">
+	   where 
+	   1=1  
+	      <if test="parentid != null and parentid != ''">
+            and  parentid = #{id}
+         </if>
+	    <if test="keyword != null and keyword != ''">
+		    and ( dprtcode like '%'||#{keyword}||'%'
+		    	or dprtname like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+	  </sql>
+  <select id="selectChildBm" parameterType="com.eray.thjw.po.Department" resultType="com.eray.thjw.po.Department">
+  		select <include refid="Base_Column_List"></include> from t_department <include refid="departmentParam3"></include>
+  </select>
+  <select id="getChildBm"  resultType="int">
+  	WITH RECURSIVE CHILDREN_ORG AS
+	(
+		SELECT A.ID, A.parentid, A.dprtcode, A.dprtname FROM t_department A WHERE A.ID = #{0}
+			UNION ALL 
+		SELECT Z.ID, Z.parentid, Z.dprtcode, Z.dprtname FROM t_department Z INNER JOIN CHILDREN_ORG F ON F.ID = Z.PARENTID
+	)
+  	select count(1) from CHILDREN_ORG 
+	where dprtcode = #{1} or dprtname = #{2}
+  </select>
+  <select id="selectExistCount" parameterType="com.eray.thjw.po.Department" resultType="int">
+  	 select count(*) from T_DEPARTMENT where 1=1  and dprttype='1'
+  	  	<if test="dprtcode != null and dprtcode != ''">
+            and  dprtcode = #{dprtcode}
+         </if>
+         <if test="dprtname != null and dprtname != ''">
+            or (dprttype='1' and dprtname = #{dprtname})
+         </if>
+  </select>
+  <sql id="departmentParam4">
+	   where 
+	   1=1  
+	      <if test="parentid != null and parentid != ''">
+            and  parentid = #{id}
+         </if>
+	    <if test="keyword != null and keyword != ''">
+		    and ( dprtname like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+	  </sql>
+    <select id="selectChild" parameterType="com.eray.thjw.po.Department" resultType="com.eray.thjw.po.Department">
+  		select <include refid="Base_Column_List"></include> from t_department  <include refid="departmentParam4"></include>
+  </select>
+  <select id="getChildrentList" parameterType="String" resultType="com.eray.thjw.po.Department">
+  		WITH RECURSIVE z AS ( 
+       SELECT ID, parentid, dprtcode, dprtname FROM t_department  WHERE id =  #{id}
+     union   ALL 
+       SELECT t_department.ID, t_department.parentid, t_department.dprtcode, t_department.dprtname FROM t_department, z where t_department.PARENTID = z.id
+     ) 
+	SELECT * FROM z ORDER BY id 
+  </select>
+</mapper>

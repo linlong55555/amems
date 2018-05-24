@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.LegacyTroubleMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.flightdata.po.LegacyTrouble" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="GZBLDH" property="gzbldh" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="FXJLDH" property="fxjldh" jdbcType="VARCHAR" />
+    <result column="JLBYM" property="jlbym" jdbcType="VARCHAR" />
+    <result column="IS_M" property="isM" jdbcType="DECIMAL" />
+    <result column="MEL" property="mel" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="SC_BLRID" property="scBlrid" jdbcType="VARCHAR" />
+    <result column="SC_ZZH" property="scZzh" jdbcType="VARCHAR" />
+    <result column="SC_SQRQ" property="scSqrq" jdbcType="TIMESTAMP" />
+    <result column="SC_DQRQ" property="scDqrq" jdbcType="TIMESTAMP" />
+    <result column="SC_PZRID" property="scPzrid" jdbcType="VARCHAR" />
+    <result column="SC_NR" property="scNr" jdbcType="VARCHAR" />
+    <result column="ZC_BLRID" property="zcBlrid" jdbcType="VARCHAR" />
+    <result column="ZC_ZZH" property="zcZzh" jdbcType="VARCHAR" />
+    <result column="ZC_SQRQ" property="zcSqrq" jdbcType="TIMESTAMP" />
+    <result column="ZC_DQRQ" property="zcDqrq" jdbcType="TIMESTAMP" />
+    <result column="ZC_PZRID" property="zcPzrid" jdbcType="VARCHAR" />
+    <result column="ZC_NR" property="zcNr" jdbcType="VARCHAR" />
+    <result column="DQRQ" property="dqrq" jdbcType="TIMESTAMP" />
+    <result column="GZMS" property="gzms" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBRQ" property="gbrq" jdbcType="TIMESTAMP" />
+    <result column="GBSM" property="gbsm" jdbcType="VARCHAR" />
+    
+    
+    <result column="GBRXX" property="gbrxx" jdbcType="VARCHAR" />
+    <result column="SC_BLRXX" property="scBlrxx" jdbcType="VARCHAR" />
+    <result column="SC_PZRXX" property="scPzrxx" jdbcType="VARCHAR" />
+    <result column="ZC_BLRXX" property="zcBlrxx" jdbcType="VARCHAR" />
+    <result column="ZC_PZRXX" property="zcPzrxx" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtName" jdbcType="VARCHAR" />
+    <result column="ZJZWMS" property="zjhName" jdbcType="VARCHAR" />
+    <result column="GDXX" property="gdxx" jdbcType="VARCHAR" />
+    <result column="BLYJ" property="blyj" jdbcType="VARCHAR" />
+    <result column="ZTSTR" property="ztStr" jdbcType="VARCHAR" />
+    
+    
+    <association property="whr" javaType="com.eray.thjw.po.User">  
+        <id column="WHR_ID" property="id"/>  
+        <result column="USERNAME" property="username"/>  
+        <result column="REALNAME" property="realname"/>  
+    </association> 
+  </resultMap>
+  
+  <resultMap id="AttachmentBaseResultMap" type="com.eray.thjw.flightdata.po.Attachment" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+    <result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+    <result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+    <result column="WJDX" property="wjdx" jdbcType="DECIMAL" />
+    <result column="HZM" property="hzm" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+    <result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+    <result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+    <result column="CZRNAME" property="czrname" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    a.BLYJ,a.ID, a. GZBLDH, a. FJZCH, a. FXJLDH, a. JLBYM, a. IS_M, a. MEL, a. ZJH, a. SC_BLRID, a. SC_ZZH, a. SC_SQRQ, a. SC_DQRQ, a. 
+    SC_PZRID, a. SC_NR, a. ZC_BLRID, a. ZC_ZZH, a. ZC_SQRQ, a. ZC_DQRQ, a. ZC_PZRID, a. ZC_NR, a. DQRQ, a. GZMS, a. 
+    BZ, a. ZT, a. WHDWID, a. WHRID, a. WHSJ, a. DPRTCODE, a. GBRID, a. GBRQ, a. GBSM,
+    b.ZWMS ZJZWMS,
+    case a.zt when  1 then '保存'
+     when 2 then '提交'
+     when  8 then '作废'
+     when  9 then '关闭'
+     when  10 then '完成'
+    else ''
+    end ZTSTR 
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,u.realname,u.username,u.id WHR_ID,
+    (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = a.sc_blrid) SC_BLRXX, <!-- 首次保留申请人信息 -->
+			 
+	(select t_user.username || ' ' || t_user.realname
+		          from t_user
+		         where t_user.id = a.sc_pzrid) SC_PZRXX, <!-- 首次保留批准人信息 -->
+	(select t_user.username || ' ' || t_user.realname
+		          from t_user
+		         where t_user.id = a.zc_blrid) ZC_BLRXX,<!--  再次保留申请人信息 -->
+	(select t_user.username || ' ' || t_user.realname
+		          from t_user
+		         where t_user.id = a.zc_pzrid) ZC_PZRXX <!--  再次保留批准人信息 -->	
+    from B_S_013 a 
+    left join d_005 b on a.zjh = b.zjh AND A.DPRTCODE = B.DPRTCODE
+    left join t_user u on u.id = a.WHRID 
+    where a.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  <select id="queryListCount" resultType="java.lang.Integer"  parameterType="com.eray.thjw.flightdata.po.LegacyTrouble" >
+  select count(1) total from (
+    select * from (
+  	select b1.id, <!-- uuid --> 
+	       b1.gzbldh, <!-- 故障保留单号  -->
+	       b1.fjzch, <!-- 飞机注册号  -->
+	       b1.fxjldh, <!-- 飞行记录单号 --> 
+	       b1.jlbym, <!-- 记录本页码 --> 
+	       
+	       b1.is_m, <!-- 执行m程序：0否、1是  -->
+	       b1.mel, <!-- mel类型：A/B/C/S/NA  -->
+	       b1.zjh, <!-- 章节号 --> 
+	       b1.sc_blrid, <!-- 首次保留申请人id。关联user表  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.sc_blrid) sc_blrxx, <!-- 首次保留申请人信息 -->
+	       b1.sc_zzh, <!-- 首次保留申请人执照号  -->
+	       b1.sc_sqrq, <!-- 首次保留申请日期。yyyymmdd  -->
+	       b1.sc_dqrq, <!-- 首次保留到期日期。yyyymmdd  -->
+	       b1.sc_pzrid, <!-- 首次保留批准人id。关联user表  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.sc_pzrid) sc_pzrxx, <!-- 首次保留批准人信息 -->
+	       b1.zc_blrid, <!-- 再次保留申请人id  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.zc_blrid) zc_blrxx,<!--  再次保留申请人信息 -->
+	       b1.zc_zzh, <!-- 再次保留申请人执照号  -->
+	       b1.zc_sqrq, <!-- 再次保留申请日期  -->
+	       b1.zc_dqrq, <!-- 再次保留到期日期  -->
+	       b1.zc_pzrid, <!-- 再次保留批准人id  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.zc_pzrid) zc_pzrxx,<!--  再次保留批准人信息 -->
+	        
+	       b1.gzms, <!-- 故障描述  -->
+	       b1.bz, <!-- 备注 --> 
+	       b1.zt, <!-- 状态：1保存、2提交、8作废、9关闭、10完成  -->
+	       b1.whdwid, <!-- 维护单位id。关联组织结构表  -->
+	       b1.whrid, <!-- 维护人id。关联用户表  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.whrid) whrxx, <!-- 维护人信息 -->
+	       whr.realname,whr.username,whr.id WHR_ID,
+    
+	       b1.whsj, <!-- 维护时间。yyyymmddhh24miss  -->
+	       b1.dprtcode, <!-- 机构代码 --> 
+	        (select dprtname from t_department where id = b1.dprtcode ) dprtname,
+	       b1.gbrid, <!-- 关闭人id  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.gbrid) gbrxx, <!-- 关闭人信息 -->
+	       b1.gbrq, <!-- 关闭日期  -->
+	       b1.gbsm, <!-- 关闭说明 -->
+	       b2.gdxx <!-- 工单信息。格式：类型 子类型 工单编号 工单状态，...  中间用‘ ’空格分开  每一个工单用‘，’逗号分开 -->
+	  from b_s_013 b1
+	  left join t_user whr on whr.id = b1.WHRID 
+	  left join (select c.mainid,
+	                    string_agg(
+	                     
+	                       c.gdlx || ' ' || c.gdzlx || ' ' || c.gdbh || ' ' || c.zt  ,','
+	                    ) gdxx
+	               from (select a1.mainid, a1.gdlx, a2.gdlx gdzlx, a2.gdbh, a2.zt
+	                       from b_s_01301 a1
+	                       join b_g_007 a2
+	                         on a1.xggdid = a2.id
+	                        and a1.gdlx = 2
+	                        and a1.zt = 1
+	                     union all
+	                     select a1.mainid, a1.gdlx, 0 gdzlx, a2.gdbh, a2.zt
+	                       from b_s_01301 a1
+	                       join b_g_010 a2
+	                         on a1.xggdid = a2.id
+	                        and a1.gdlx = 3
+	                        and a1.zt = 1) c
+	              group by mainid) b2
+	    on b2.mainid = b1.id
+	   
+	 where b1.zt in (1, 2, 9, 10)
+	  <if test="keyword != null and keyword != ''">
+	        and (
+	                 b1.gzbldh like '%'||#{keyword}||'%'
+		          or (b1.fjzch like '%'||#{keyword}||'%')
+		          or (b1.fxjldh like '%'||#{keyword}||'%')
+		          or (b1.jlbym like '%'||#{keyword}||'%')
+		          or (b1.gzms like '%'||#{keyword}||'%' )
+		          
+		          or (b1.sc_blrxx like '%'||#{keyword}||'%' )
+		          or (b1.zc_blrxx like '%'||#{keyword}||'%' )
+		          or (b1.gbrxx like '%'||#{keyword}||'%' )
+		          or (b1.dprtname like '%'||#{keyword}||'%' )
+		          or (b1.mel like '%'||#{keyword}||'%' )
+                  or (b1.zjh like '%'||#{keyword}||'%' )
+	          )
+       		</if> 
+	 		<if test="id != null and id != ''" >
+		       and b1.id = #{id,jdbcType=VARCHAR}
+		    </if>
+	 		<if test="dprtcode != null and dprtcode != ''" >
+		       and b1.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		    </if>
+		    <if test="gzbldh != null and gzbldh != ''" >
+		       and b1.gzbldh = #{gzbldh,jdbcType=VARCHAR}
+		    </if>
+		    
+		    <if test='paramsMap.idneq!=null and paramsMap.idneq != ""'>                       
+	    		 AND b1.id != #{paramsMap.idneq,jdbcType=VARCHAR}
+	    	</if>
+		    
+		    <if test="fjzch != null and fjzch != ''" >
+		       and b1.fjzch = #{fjzch,jdbcType=VARCHAR}
+		    </if>
+		    
+		    <if test="id == null or id == ''" >
+		        <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+			     <choose>                                                                 
+				    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+				    		 AND exists 
+				    		( SELECT 1 from D_007 where 
+				    		b1.fjzch = FJZCH
+				    		AND b1.dprtcode = DPRTCODE
+				    		AND zt = 1
+				    		)
+				    	</when>
+				    	<when test='paramsMap.userId!=null and paramsMap.userId != "" '>                       
+				    		 AND exists 
+				    		( SELECT 1 from V_ROLE_JX where 
+				    		b1.fjzch= FJZCH
+				    		AND b1.dprtcode = DPRTCODE
+				    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+				    		)
+				    	</when>
+			   	</choose>
+		    </if>
+		   
+		     <if test="mel != null and mel != ''" >
+		       and b1.mel = #{mel}
+		    </if>
+		    <if test="isM != null and isM != ''" >
+		       and b1.is_m = #{isM}
+		    </if>
+		    
+		     <if test="zt != null and zt != ''" >
+		       and b1.zt = #{zt}
+		    </if>
+		    
+		    <if test="sqrqStart != null and sqrqStart != ''" >
+		       and (b1.zc_sqrq >= #{sqrqStart} or b1.sc_sqrq >= #{sqrqStart})
+		    </if>
+		    
+		     <if test="sqrqEnd != null and sqrqEnd != ''" >
+		       and ( #{sqrqEnd} >=  b1.zc_sqrq   or  #{sqrqEnd} >= b1.sc_sqrq )
+		    </if>
+		    
+		    <if test="dqrqStart != null and dqrqStart != ''" >
+		       and (b1.zc_dqrq >= #{dqrqStart} or b1.sc_dqrq >= #{dqrqStart})
+		    </if>
+		    
+		    <if test="dqrqEnd != null and dqrqEnd != ''" >
+		       and ( #{dqrqEnd} >=  b1.zc_dqrq   or  #{dqrqEnd} >= b1.zc_dqrq )
+		    </if>
+		    
+		    <if test="gbrqStart != null and gbrqStart != ''" >
+		       and (b1.gbrq >= #{gbrqStart})
+		    </if>
+		    
+		    <if test="gbrqEnd != null and gbrqEnd != ''" >
+		       and ( #{gbrqEnd} >=  b1.zc_dqrq)
+		    </if>
+			   
+  			) b1 where 1=1 
+  			 
+	        
+    )a
+  </select>
+  
+  <select id="queryList" resultMap="BaseResultMap"  parameterType="com.eray.thjw.flightdata.po.LegacyTrouble" >
+	       select * from (
+	       select b1.id, <!-- uuid --> 
+	       b1.gzbldh, <!-- 故障保留单号  -->
+	       b1.fjzch, <!-- 飞机注册号  -->
+	       b1.fxjldh, <!-- 飞行记录单号 --> 
+	       b1.jlbym, <!-- 记录本页码 --> 
+	       b1.sc_nr,<!-- 首次保留内容 -->
+	       b1.zc_nr,<!-- 再次保留内容 -->
+	       b1.is_m, <!-- 执行m程序：0否、1是  -->
+	       b1.mel, <!-- mel类型：A/B/C/S/NA  -->
+	       b1.zjh||' '||e.zwms zjh, <!-- 章节号 --> 
+	       e.zwms  ZJZWMS,
+	       b1.sc_blrid, <!-- 首次保留申请人id。关联user表  -->
+	       <!-- (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.sc_blrid) sc_blrxx, --> <!-- 首次保留申请人信息 -->
+	         
+	         sc_blr.blrxx sc_blrxx,
+	       b1.sc_zzh, <!-- 首次保留申请人执照号  -->
+	       b1.sc_sqrq, <!-- 首次保留申请日期。yyyymmdd  -->
+	       b1.sc_dqrq, <!-- 首次保留到期日期。yyyymmdd  -->
+	       b1.dqrq,
+	       b1.sc_pzrid, <!-- 首次保留批准人id。关联user表  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.sc_pzrid) sc_pzrxx, <!-- 首次保留批准人信息 -->
+	       b1.zc_blrid, <!-- 再次保留申请人id  -->
+	       <!-- (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.zc_blrid) zc_blrxx, --><!--  再次保留申请人信息 -->
+	        zc_blr.blrxx zc_blrxx,
+	         
+	       b1.zc_zzh, <!-- 再次保留申请人执照号  -->
+	       b1.zc_sqrq, <!-- 再次保留申请日期  -->
+	       b1.zc_dqrq, <!-- 再次保留到期日期  -->
+	       b1.zc_pzrid, <!-- 再次保留批准人id  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.zc_pzrid) zc_pzrxx,<!--  再次保留批准人信息 -->
+	        
+	       b1.gzms, <!-- 故障描述  -->
+	       b1.bz, <!-- 备注 --> 
+	       b1.zt, <!-- 状态：1保存、2提交、8作废、9关闭、10完成  -->
+	       b1.whdwid, <!-- 维护单位id。关联组织结构表  -->
+	       b1.whrid, <!-- 维护人id。关联用户表  -->
+	       (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.whrid) whrxx, <!-- 维护人信息 -->
+	       b1.whsj, <!-- 维护时间。yyyymmddhh24miss  -->
+	       b1.dprtcode, <!-- 机构代码 --> 
+	        <!-- (select dprtname from t_department where id = b1.dprtcode ) dprtname, -->
+	        dept.dprtname dprtname,
+	       b1.gbrid, <!-- 关闭人id  -->
+	       <!-- (select t_user.username || ' ' || t_user.realname
+	          from t_user
+	         where t_user.id = b1.gbrid) gbrxx,  --><!-- 关闭人信息 -->
+	         gbr.gbrxx , 
+	         whr.realname,whr.username,whr.id WHR_ID,
+	       b1.gbrq, <!-- 关闭日期  -->
+	       b1.gbsm, <!-- 关闭说明 -->
+	       b2.gdxx <!-- 工单信息。格式：类型 子类型 工单编号 工单状态，...  中间用‘ ’空格分开  每一个工单用‘，’逗号分开 -->
+	  from b_s_013 b1  
+	  left join t_department dept on dept.id = b1.dprtcode
+	  left join (select username || ' ' || realname gbrxx,id from t_user) gbr on gbr.id = b1.gbrid
+	  left join (select username || ' ' || realname blrxx,id from t_user) zc_blr on zc_blr.id = b1.zc_blrid
+	  left join (select username || ' ' || realname blrxx,id from t_user) sc_blr on sc_blr.id = b1.sc_blrid
+	  
+	         
+	  left join d_005 e on e.zjh = b1.zjh  AND B1.DPRTCODE = E.DPRTCODE
+	  left join t_user whr on whr.id = b1.WHRID 
+	  left join (select c.mainid,
+	  				string_agg(c.gdlx || '##' || c.gdzlx || '##' || c.gdbh ||'##'||c.XGGDID|| '##' || c.zt,',') gdxx
+	               from (select a1.mainid, a1.gdlx, a2.gdlx gdzlx, a2.gdbh, a2.zt
+	                       ,a1.XGGDID
+	                       from b_s_01301 a1
+	                       join b_g_007 a2
+	                         on a1.xggdid = a2.id
+	                        and a1.gdlx = 2
+	                        and a1.zt = 1
+	                     union all
+	                     select a1.mainid, a1.gdlx, 0 gdzlx, a2.gdbh, a2.zt
+	                      ,a1.XGGDID
+	                       from b_s_01301 a1
+	                       join b_g_010 a2
+	                         on a1.xggdid = a2.id
+	                        and a1.gdlx = 3
+	                        and a1.zt = 1) c
+	              group by mainid) b2
+	    on b2.mainid = b1.id
+	    
+	 where 1 = 1 and b1.zt in (1, 2, 9, 10)
+	 		<if test="id != null and id != ''" >
+		       and b1.id = #{id,jdbcType=VARCHAR}
+		    </if>
+	 		<if test="dprtcode != null and dprtcode != ''" >
+		       and b1.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		    </if>
+		    <if test="fjzch != null and fjzch != ''" >
+		       and b1.fjzch = #{fjzch,jdbcType=VARCHAR}
+		    </if>
+		    <if test="id == null or id == ''" >
+		        <!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+			     <choose>                                                                 
+				    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+				    		 AND exists 
+				    		( SELECT 1 from D_007 where 
+				    		b1.fjzch = FJZCH
+				    		AND b1.dprtcode = DPRTCODE
+				    		AND zt = 1
+				    		)
+				    	</when>
+				    	<when test='paramsMap.userId!=null and paramsMap.userId != "" '>                       
+				    		 AND exists 
+				    		( SELECT 1 from V_ROLE_JX where 
+				    		b1.fjzch= FJZCH
+				    		AND b1.dprtcode = DPRTCODE
+				    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+				    		)
+				    	</when>
+			   	</choose>
+		    </if>
+	           
+	         
+	           
+		     <if test="mel != null and mel != ''" >
+		       and b1.mel = #{mel}
+		    </if>
+		    <if test="isM != null and isM != ''" >
+		       and b1.is_m = cast(#{isM} as NUMERIC)
+		    </if>
+		    
+		     <if test="zt != null and zt != ''" >
+		       and b1.zt = cast(#{zt} as NUMERIC)
+		    </if>
+		    
+		    
+		    <if test="paramsMap != null and paramsMap.sqrqStart != null and paramsMap.sqrqStart != ''">
+			    and b1.sc_sqrq &gt;= to_timestamp(#{paramsMap.sqrqStart, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+			</if>
+			<if test="paramsMap != null and paramsMap.sqrqEnd != null and paramsMap.sqrqEnd != ''">
+			    and b1.sc_sqrq &lt;= to_timestamp(#{paramsMap.sqrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+			</if>
+			
+			<if test="paramsMap != null and paramsMap.dqrqStart != null and paramsMap.dqrqStart != ''">
+			    and b1.dqrq &gt;= to_timestamp(#{paramsMap.dqrqStart, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+			</if>
+			<if test="paramsMap != null and paramsMap.dqrqEnd != null and paramsMap.dqrqEnd != ''">
+			    and b1.dqrq &lt;= to_timestamp(#{paramsMap.dqrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+			</if>
+			
+			 <if test="paramsMap != null and paramsMap.gbrqStart != null and paramsMap.gbrqStart != ''">
+			    and b1.gbrq &gt;= to_timestamp(#{paramsMap.gbrqStart, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+			</if>
+			<if test="paramsMap != null and paramsMap.gbrqEnd != null and paramsMap.gbrqEnd != ''">
+			    and b1.gbrq &lt;= to_timestamp(#{paramsMap.gbrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+			</if>
+	   	   
+	   	   <if test="keyword != null and keyword != ''">
+	        and (
+	             b1.gzbldh like '%'||#{keyword}||'%'
+		          or (b1.fjzch like '%'||#{keyword}||'%')
+		          or (b1.fxjldh like '%'||#{keyword}||'%')
+		          or (b1.jlbym like '%'||#{keyword}||'%')
+		          or (b1.gzms like '%'||#{keyword}||'%' )
+		          
+		          or (sc_blr.blrxx like '%'||#{keyword}||'%' )
+		          or (zc_blr.blrxx like '%'||#{keyword}||'%' )
+		          or (gbr.gbrxx like '%'||#{keyword}||'%' )
+		          or (dept.dprtname like '%'||#{keyword}||'%' )
+		          or (b1.mel like '%'||#{keyword}||'%' )
+                  or (b1.zjh like '%'||#{keyword}||'%' )
+                  or (e.zwms like '%'||#{keyword}||'%' )
+	          )
+       		</if> 
+       		<choose>                                                                 
+			    	<when test='pagination.sort == "auto"'>                       
+			    		 order by b1.zt asc,b1.dqrq asc
+			    	</when>
+			    	<otherwise>
+					    order by b1.${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		   </choose>
+		   ) b3 where 1=1
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_013
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.flightdata.po.LegacyTrouble" >
+    insert into B_S_013 (ID, GZBLDH, FJZCH, 
+      FXJLDH, JLBYM, IS_M, 
+      MEL, ZJH, SC_BLRID, 
+      SC_ZZH, SC_SQRQ, SC_DQRQ, 
+      SC_PZRID, SC_NR, ZC_BLRID, 
+      ZC_ZZH, ZC_SQRQ, ZC_DQRQ, 
+      ZC_PZRID, ZC_NR, DQRQ, 
+      GZMS, BZ, ZT, WHDWID, 
+      WHRID, WHSJ, DPRTCODE, 
+      GBRID, GBRQ, GBSM
+      )
+    values (#{id,jdbcType=VARCHAR}, #{gzbldh,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, 
+      #{fxjldh,jdbcType=VARCHAR}, #{jlbym,jdbcType=VARCHAR},
+      cast(#{isM,jdbcType=VARCHAR} as integer),#{mel,jdbcType=VARCHAR}, 
+      
+       #{zjh,jdbcType=VARCHAR}, #{scBlrid,jdbcType=VARCHAR}, 
+      #{scZzh,jdbcType=VARCHAR}, #{scSqrq,jdbcType=TIMESTAMP}, #{scDqrq,jdbcType=TIMESTAMP}, 
+      #{scPzrid,jdbcType=VARCHAR}, #{scNr,jdbcType=VARCHAR}, #{zcBlrid,jdbcType=VARCHAR}, 
+      #{zcZzh,jdbcType=TIMESTAMP}, #{zcSqrq,jdbcType=TIMESTAMP}, #{zcDqrq,jdbcType=TIMESTAMP}, 
+      #{zcPzrid,jdbcType=VARCHAR}, #{zcNr,jdbcType=VARCHAR}, #{dqrq,jdbcType=TIMESTAMP}, 
+      #{gzms,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, 
+      cast(#{zt,jdbcType=VARCHAR} as integer) , #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{gbrid,jdbcType=VARCHAR}, #{gbrq,jdbcType=TIMESTAMP}, #{gbsm,jdbcType=VARCHAR}
+      )
+  </insert>
+   
+   
+  <insert id="insertSelective" parameterType="com.eray.thjw.flightdata.po.LegacyTrouble" >
+    insert into B_S_013
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="gzbldh != null" >
+        GZBLDH,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="fxjldh != null" >
+        FXJLDH,
+      </if>
+      <if test="jlbym != null" >
+        JLBYM,
+      </if>
+      <if test="isM != null" >
+        IS_M,
+      </if>
+      <if test="mel != null" >
+        MEL,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="scBlrid != null" >
+        SC_BLRID,
+      </if>
+      <if test="scZzh != null" >
+        SC_ZZH,
+      </if>
+      <if test="scSqrq != null" >
+        SC_SQRQ,
+      </if>
+      <if test="scDqrq != null" >
+        SC_DQRQ,
+      </if>
+      <if test="scPzrid != null" >
+        SC_PZRID,
+      </if>
+      <if test="scNr != null" >
+        SC_NR,
+      </if>
+      <if test="zcBlrid != null" >
+        ZC_BLRID,
+      </if>
+      <if test="zcZzh != null" >
+        ZC_ZZH,
+      </if>
+      <if test="zcSqrq != null" >
+        ZC_SQRQ,
+      </if>
+      <if test="zcDqrq != null" >
+        ZC_DQRQ,
+      </if>
+      <if test="zcPzrid != null" >
+        ZC_PZRID,
+      </if>
+      <if test="zcNr != null" >
+        ZC_NR,
+      </if>
+      <if test="dqrq != null" >
+        DQRQ,
+      </if>
+      <if test="gzms != null" >
+        GZMS,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+       
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="gbrid != null" >
+        GBRID,
+      </if>
+      <if test="gbrq != null" >
+        GBRQ,
+      </if>
+      <if test="gbsm != null" >
+        GBSM,
+      </if>
+       <if test="blyj != null" >
+        BLYJ,
+      </if>
+      
+       WHSJ
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="gzbldh != null" >
+        #{gzbldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjldh != null" >
+        #{fxjldh,jdbcType=VARCHAR},
+      </if>
+      <if test="jlbym != null" >
+        #{jlbym,jdbcType=VARCHAR},
+      </if>
+      <if test="isM != null" >
+        cast(#{isM,jdbcType=VARCHAR} as integer),
+      </if>
+      <if test="mel != null" >
+        #{mel,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="scBlrid != null" >
+        #{scBlrid,jdbcType=VARCHAR},
+      </if>
+      <if test="scZzh != null" >
+        #{scZzh,jdbcType=VARCHAR},
+      </if>
+      <if test="scSqrq != null" >
+        #{scSqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scDqrq != null" >
+        #{scDqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scPzrid != null" >
+        #{scPzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="scNr != null" >
+        #{scNr,jdbcType=VARCHAR},
+      </if>
+      <if test="zcBlrid != null" >
+        #{zcBlrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zcZzh != null" >
+        #{zcZzh,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zcSqrq != null" >
+        #{zcSqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zcDqrq != null" >
+        #{zcDqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zcPzrid != null" >
+        #{zcPzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zcNr != null" >
+        #{zcNr,jdbcType=VARCHAR},
+      </if>
+      <if test="dqrq != null" >
+        #{dqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gzms != null" >
+        #{gzms,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+      cast(#{zt,jdbcType=VARCHAR} as integer),
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbsm != null" >
+        #{gbsm,jdbcType=VARCHAR},
+      </if>
+       <if test="blyj != null" >
+      	 #{blyj,jdbcType=VARCHAR},
+      </if>
+      current_timestamp
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.flightdata.po.LegacyTrouble" >
+    update B_S_013
+    <set >
+      <if test="gzbldh != null" >
+        GZBLDH = #{gzbldh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjldh != null" >
+        FXJLDH = #{fxjldh,jdbcType=VARCHAR},
+      </if>
+      <if test="jlbym != null" >
+        JLBYM = #{jlbym,jdbcType=VARCHAR},
+      </if>
+      <if test="isM != null" >
+        IS_M = cast(#{isM,jdbcType=VARCHAR} as integer),
+      </if>
+      <if test="mel != null" >
+        MEL = #{mel,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="scBlrid != null" >
+        SC_BLRID = #{scBlrid,jdbcType=VARCHAR},
+      </if>
+      <if test="scZzh != null" >
+        SC_ZZH = #{scZzh,jdbcType=VARCHAR},
+      </if>
+      <if test="scSqrq != null" >
+        SC_SQRQ = #{scSqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scDqrq != null" >
+        SC_DQRQ = #{scDqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scPzrid != null" >
+        SC_PZRID = #{scPzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="scNr != null" >
+        SC_NR = #{scNr,jdbcType=VARCHAR},
+      </if>
+      <if test="zcBlrid != null" >
+        ZC_BLRID = #{zcBlrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zcZzh != null" >
+        ZC_ZZH = #{zcZzh,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zcSqrq != null" >
+        ZC_SQRQ = #{zcSqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zcDqrq != null" >
+        ZC_DQRQ = #{zcDqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zcPzrid != null" >
+        ZC_PZRID = #{zcPzrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zcNr != null" >
+        ZC_NR = #{zcNr,jdbcType=VARCHAR},
+      </if>
+      <if test="dqrq != null" >
+        DQRQ = #{dqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gzms != null" >
+        GZMS = #{gzms,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT =  cast(#{zt,jdbcType=VARCHAR} as integer),
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbsm != null" >
+        GBSM = #{gbsm,jdbcType=VARCHAR},
+      </if>
+      <if test="blyj != null" >
+        BLYJ = #{blyj,jdbcType=VARCHAR},
+      </if>
+      WHSJ = current_timestamp
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="end" parameterType="com.eray.thjw.flightdata.po.LegacyTrouble" >
+    update B_S_013
+    set
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = current_timestamp,       
+      GBRID = #{gbrid,jdbcType=VARCHAR},
+      GBRQ = current_timestamp,
+      ZT = cast(#{zt,jdbcType=VARCHAR} as integer),
+      GBSM = #{gbsm,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.flightdata.po.LegacyTrouble" >
+    update B_S_013
+    set GZBLDH = #{gzbldh,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      FXJLDH = #{fxjldh,jdbcType=VARCHAR},
+      JLBYM = #{jlbym,jdbcType=VARCHAR},
+      IS_M = #{isM,jdbcType=DECIMAL},
+      MEL = #{mel,jdbcType=VARCHAR},
+      ZJH = #{zjh,jdbcType=VARCHAR},
+      SC_BLRID = #{scBlrid,jdbcType=VARCHAR},
+      SC_ZZH = #{scZzh,jdbcType=VARCHAR},
+      SC_SQRQ = #{scSqrq,jdbcType=TIMESTAMP},
+      SC_DQRQ = #{scDqrq,jdbcType=TIMESTAMP},
+      SC_PZRID = #{scPzrid,jdbcType=VARCHAR},
+      SC_NR = #{scNr,jdbcType=VARCHAR},
+      ZC_BLRID = #{zcBlrid,jdbcType=VARCHAR},
+      ZC_ZZH = #{zcZzh,jdbcType=TIMESTAMP},
+      ZC_SQRQ = #{zcSqrq,jdbcType=TIMESTAMP},
+      ZC_DQRQ = #{zcDqrq,jdbcType=TIMESTAMP},
+      ZC_PZRID = #{zcPzrid,jdbcType=VARCHAR},
+      ZC_NR = #{zcNr,jdbcType=VARCHAR},
+      DQRQ = #{dqrq,jdbcType=TIMESTAMP},
+      GZMS = #{gzms,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      GBRID = #{gbrid,jdbcType=VARCHAR},
+      GBRQ = #{gbrq,jdbcType=TIMESTAMP},
+      GBSM = #{gbsm,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据飞行记录单查询故障保留单 -->
+  <select id="queryListByFlightRecord" resultMap="BaseResultMap" parameterType="com.eray.thjw.flightdata.po.FlightRecordSheet" >
+	    select b1.id,
+	       b1.gzbldh,
+	       b1.fjzch,
+	       b1.fxjldh,
+	       b1.jlbym,
+	       b1.is_m,
+	       b1.mel,
+	       b1.zjh,
+	       b1.sc_blrid,
+	       b1.sc_zzh,
+	       b1.sc_sqrq,
+	       b1.sc_dqrq,
+	       b1.sc_pzrid,
+	       b1.sc_nr,
+	       b1.zc_blrid,
+	       b1.zc_zzh,
+	       b1.zc_sqrq,
+	       b1.zc_dqrq,
+	       b1.zc_pzrid,
+	       b1.zc_nr,
+	       b1.dqrq,
+	       b1.gzms,
+	       b1.bz,
+	       b1.zt,
+	       b1.whdwid,
+	       b1.whrid,
+	       b1.whsj,
+	       b1.dprtcode,
+	       b1.gbrid,
+	       b1.gbrq,
+	       b1.gbsm
+	  from b_s_013 b1
+	 inner join b_s_006 b2
+	    on b1.fxjldh = b2.fxjldh
+	 where b1.fjzch = #{fjzch,jdbcType=VARCHAR} and b1.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	   and ((b1.zt = 2 and #{fxrq,jdbcType=TIMESTAMP} &gt;= b2.fxrq and #{fxrq,jdbcType=TIMESTAMP} &lt;= b1.dqrq) or
+	       (b1.zt in (9, 10) and #{fxrq,jdbcType=TIMESTAMP} &gt;= b2.fxrq and #{fxrq,jdbcType=TIMESTAMP} &lt;= b1.gbrq))
+  </select>
+</mapper>

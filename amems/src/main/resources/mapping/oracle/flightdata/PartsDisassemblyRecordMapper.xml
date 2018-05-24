@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.PartsDisassemblyRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.flightdata.po.PartsDisassemblyRecord" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="FXJLDID" property="fxjldid" jdbcType="VARCHAR" />
+    <result column="AZ_JLD" property="azJld" jdbcType="VARCHAR" />
+    <result column="AZ_ZXRQ" property="azZxrq" jdbcType="TIMESTAMP" />
+    <result column="AZ_GZZID" property="azGzzid" jdbcType="VARCHAR" />
+    <result column="AZ_BZ" property="azBz" jdbcType="VARCHAR" />
+    <result column="CJ_JLD" property="cjJld" jdbcType="VARCHAR" />
+    <result column="CJ_ZXRQ" property="cjZxrq" jdbcType="TIMESTAMP" />
+    <result column="CJ_GZZID" property="cjGzzid" jdbcType="VARCHAR" />
+    <result column="CJ_BZ" property="cjBz" jdbcType="VARCHAR" />
+    <result column="CJ_ZSJJH" property="cjZsjjh" jdbcType="VARCHAR" />
+    <result column="CJ_ZSJXLH" property="cjZsjxlh" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="IS_CX" property="isCx" jdbcType="DECIMAL" />
+    <result column="AZ_SJ" property="azSj" jdbcType="TIMESTAMP" />
+    <result column="CJ_SJ" property="cjSj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="partsInfoMap" type="java.util.Map" >
+    <id column="ID" property="ID" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="DPRTCODE" jdbcType="VARCHAR" />
+    <result column="JH" property="JH" jdbcType="VARCHAR" />
+    <result column="XLH" property="XLH" jdbcType="VARCHAR" />
+    
+    <result column="ZWMS" property="ZWMS" jdbcType="DECIMAL" />
+    <result column="YWMS" property="YWMS" jdbcType="VARCHAR" />
+    <result column="ZJH" property="ZJH" jdbcType="VARCHAR" />
+    <result column="CJJH" property="CJJH" jdbcType="VARCHAR" />
+    
+    <result column="ZT" property="ZT" jdbcType="TIMESTAMP" />
+    <result column="FJZCH" property="FJZCH" jdbcType="VARCHAR" />
+    <result column="FJDJH" property="FJDJH" jdbcType="VARCHAR" />
+    
+    <result column="FJDXLH" property="FJDXLH" jdbcType="VARCHAR" />
+    <result column="FJDMC" property="FJDMC" jdbcType="TIMESTAMP" />
+    <result column="CJ" property="CJ" jdbcType="VARCHAR" />
+    <result column="WZ" property="WZ" jdbcType="VARCHAR" /> 
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, DPRTCODE, JH, XLH, ZT, FJZCH, FXJLDID, AZ_JLD, AZ_ZXRQ, AZ_GZZID, AZ_BZ, 
+    CJ_JLD, CJ_ZXRQ, CJ_GZZID, CJ_BZ, CJ_ZSJJH, CJ_ZSJXLH, WHSJ, IS_CX, AZ_SJ, CJ_SJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_01002
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- postgrel 待验证 -->
+  <select id="selectPartsInfoPage" parameterType="java.util.HashMap" resultType="java.util.HashMap"  >
+      with tempName as (
+      
+		  <!-- 列表sql -->
+		  select 
+		       d.dprtname dprtName,
+		       b1.dprtCode, <!-- 组织机构 -->
+		       b1.jh, <!-- 件号 -->
+		       b1.xlh, <!-- 序列号 -->
+		       b2.zwms, <!-- 中文描述 -->
+		       b2.ywms, <!-- 英文描述 -->
+		       b2.zjh, <!-- 章节号 -->
+		       z.zwms zjzwms,
+		       b2.cjjh, <!-- 厂家件号 -->
+		       case
+		         when b3.zt = 1 then
+		          '在机'
+		         else
+		          '未在机'
+		       end zt, <!-- 状态：在机/未在机 -->
+		       
+		       b3.id,
+		       b3.fjdid,
+		       
+		       b3.fjzch, <!-- 飞机注册号 -->
+		       b3.fjdjh, <!-- 父节点件号 -->
+		       b3.fjdxlh, <!-- 父节点序列号 -->
+		       b3.fjdmc, <!-- 父节点名称 -->
+		       b3.cj, <!-- 层级 -->
+		       b3.wz <!-- 位置 -->
+		  from b_h_010 b1
+		  left join t_department d on d.id = b1.dprtcode
+		  left join d_008 b2
+		    on b1.dprtcode = b2.dprtcode
+		   and b1.jh = b2.bjh
+		   and b2.zt = 1
+		  left join d_005 z on z.zjh = b2.zjh  AND B2.DPRTCODE = Z.DPRTCODE
+		  left join (select t1.dprtcode,
+		                    t1.fjzch,
+		                    t1.jh,
+		                    t1.xlh,
+		                    t2.jh fjdjh,
+		                    t2.xlh fjdxlh,
+		                    t2.nbsbm fjdnbsbm,
+		                    t2.ywmc || ' ' || (CASE WHEN t2.xlh IS NULL THEN t2.nbsbm ELSE t2.xlh END) fjdmc,
+		                    t1.cj,
+		                    
+		                    t1.id,
+                       		t1.fjdid,
+                       		
+		                    t1.wz,
+		                  	t1.zt
+		               from b_s_003 t1
+		               left join b_s_003 t2
+		                 on t1.fjdid = t2.id
+		              where <!-- t1.zt = 1
+		                and  -->t1.sxzt = 1
+				       
+		                ) b3
+		   on b1.dprtcode = b3.dprtcode
+		   and b1.jh = b3.jh
+		   and b1.xlh = b3.xlh
+		   
+		   left join 
+		   (select mainid,count(1) jls from  B_H_01002 where zt = 1 group by mainid ) cjjl on b1.id = cjjl.mainid
+		   where 1=1
+		      and cjjl.jls > 0 <!-- 只查有拆解记录的部件 -->
+		      <!-- and (b3.cj is null or b3.cj >0) -->
+		      <!-- and b3.cj >0 -->
+		       
+		     <if test="keyword != null and keyword != ''">
+	          and (
+		             lower(b1.jh) like lower('%'||#{keyword}||'%')
+		          or (lower(b1.xlh) like lower('%'||#{keyword}||'%'))
+		          or (lower(b2.zwms) like lower('%'||#{keyword}||'%'))
+		          or (lower(b2.ywms) like lower('%'||#{keyword}||'%'))
+		          or (lower(b2.cjjh) like lower('%'||#{keyword}||'%'))
+		          or (lower(b3.fjzch) like lower('%'||#{keyword}||'%'))
+	          )
+	       </if>
+	       
+	       <if test="dprtcode != null and dprtcode != ''">
+	          and b1.dprtcode = #{dprtcode}
+	       </if>
+	       
+	       <if test="dprtcodes != null">
+	           and b1.dprtcode in 
+	            <foreach collection="dprtcodes" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+		   		</foreach>
+	       </if>
+	       
+	        <if test="fjzch != null and fjzch != ''">
+	          and b3.fjzch = #{fjzch}
+	       </if>
+	       
+	        <if test="wz != null">
+	          and b3.wz = #{wz}
+	       </if>
+	              <if test="zt != null and zt == 1">
+	          and b3.zt = 1
+	       </if>
+	       <if test="zt != null and zt == 0">
+	          and b3.zt = 2
+	       </if>
+	        )
+  
+      select * from (
+	       select * from tempName t1
+			START WITH t1.cj = 1
+   			CONNECT BY PRIOR t1.ID = t1.FJDID ORDER SIBLINGS BY t1.id  
+   			)
+  		   union 
+  		   select * from tempName
+  		    
+	       union all 
+	       
+	       select * from (
+		  <!-- 列表sql -->
+		  select 
+		       d.dprtname dprtName,
+		       b1.dprtCode, <!-- 组织机构 -->
+		       b1.jh, <!-- 件号 -->
+		       b1.xlh, <!-- 序列号 -->
+		       b2.zwms, <!-- 中文描述 -->
+		       b2.ywms, <!-- 英文描述 -->
+		       b2.zjh, <!-- 章节号 -->
+		       z.zwms zjzwms,
+		       b2.cjjh, <!-- 厂家件号 -->
+		       case
+		         when b3.zt = 1 then
+		          '在机'
+		         else
+		          '未在机'
+		       end zt, <!-- 状态：在机/未在机 -->
+		       
+		       b3.id,
+		       b3.fjdid,
+		       
+		       b3.fjzch, <!-- 飞机注册号 -->
+		       b3.fjdjh, <!-- 父节点件号 -->
+		       b3.fjdxlh, <!-- 父节点序列号 -->
+		       b3.fjdmc, <!-- 父节点名称 -->
+		       b3.cj, <!-- 层级 -->
+		       b3.wz <!-- 位置 -->
+		  from b_h_010 b1
+		  left join t_department d on d.id = b1.dprtcode
+		  left join d_008 b2
+		    on b1.dprtcode = b2.dprtcode
+		   and b1.jh = b2.bjh
+		   and b2.zt = 1
+		  left join d_005 z on z.zjh = b2.zjh  AND B2.DPRTCODE = Z.DPRTCODE
+		  left join (select t1.dprtcode,
+		                    t1.fjzch,
+		                    t1.jh,
+		                    t1.xlh,
+		                    t2.jh fjdjh,
+		                    t2.xlh fjdxlh,
+		                    t2.nbsbm fjdnbsbm,
+		                    t2.ywmc || ' ' || (CASE WHEN t2.xlh IS NULL THEN t2.nbsbm ELSE t2.xlh END) fjdmc,
+		                    t1.cj,
+		                    
+		                    t1.id,
+                       		t1.fjdid,
+                       		
+		                    t1.wz,
+		                  	t1.zt
+		               from b_s_003 t1
+		               left join b_s_003 t2
+		                 on t1.fjdid = t2.id
+		              where <!-- t1.zt = 1
+		                and  -->t1.sxzt = 1
+				       
+		                ) b3
+		   on b1.dprtcode = b3.dprtcode
+		   and b1.jh = b3.jh
+		   and b1.xlh = b3.xlh
+		   
+		   left join 
+		   (select mainid,count(1) jls from  B_H_01002 where zt = 1 group by mainid ) cjjl on b1.id = cjjl.mainid
+		   where 1=1
+		      and cjjl.jls > 0 <!-- 只查有拆解记录的部件 -->
+		      <!-- and (b3.cj is null or b3.cj >0) -->
+		      and (b3.cj is null) 
+		       
+		     <if test="keyword != null and keyword != ''">
+	          and (
+		             lower(b1.jh) like lower('%'||#{keyword}||'%')
+		          or (lower(b1.xlh) like lower('%'||#{keyword}||'%'))
+		          or (lower(b2.zwms) like lower('%'||#{keyword}||'%'))
+		          or (lower(b2.ywms) like lower('%'||#{keyword}||'%'))
+		          or (lower(b2.cjjh) like lower('%'||#{keyword}||'%'))
+		          or (lower(b3.fjzch) like lower('%'||#{keyword}||'%'))
+	          )
+	       </if>
+	       
+	       <if test="dprtcode != null and dprtcode != ''">
+	          and b1.dprtcode = #{dprtcode}
+	       </if>
+	       
+	       <if test="dprtcodes != null">
+	           and b1.dprtcode in 
+	            <foreach collection="dprtcodes" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+		   		</foreach>
+	       </if>
+	       
+	        <if test="fjzch != null and fjzch != ''">
+	          and b3.fjzch = #{fjzch}
+	       </if>
+	       
+	        <if test="wz != null">
+	          and b3.wz = #{wz}
+	       </if>
+	        <if test="zt != null and zt == 1">
+	          and b3.zt = 1
+	       </if>
+	       <if test="zt != null and zt == 0">
+	          and b3.zt = 2
+	       </if>
+	       ) t1
+	      
+			
+	</select>
+  
+  
+  <select id="selectPartsInfo" resultType="map"   parameterType="map" >
+	select b1.dprtCode, <!-- 组织机构 -->
+	       b1.jh, <!-- 件号 -->
+	       b1.xlh, <!-- 序列号 -->
+	       b2.zwms, <!-- 中文描述 -->
+	       b2.ywms, <!-- 英文描述 -->
+	       b2.zjh||' '||e.zwms zjh, <!-- 章节号 -->
+	       b2.cjjh, <!-- 厂家件号 -->
+	       b2.bz bz,
+	       case
+	         when b3.zt = 1 then
+	          '在机'
+	         else
+	          '未在机'
+	       end zt, <!-- 状态：在机/未在机 -->
+	       b3.fjzch, <!-- 飞机注册号 -->
+	       b3.fjdjh, <!-- 父节点件号 -->
+	       b3.fjdxlh, <!-- 父节点序列号 -->
+	       b3.fjdmc, <!-- 父节点名称 -->
+	       b3.cj, <!-- 层级 -->
+	       b3.wz <!-- 位置 -->
+	  from b_h_010 b1
+	  left join d_008 b2
+	    on b1.dprtcode = b2.dprtcode
+	   and b1.jh = b2.bjh
+	   and b2.zt = 1
+	  left join (select t1.dprtcode,
+	                    t1.fjzch,
+	                    t1.jh,
+	                    t1.xlh,
+	                    t2.jh fjdjh,
+	                    t2.xlh fjdxlh,
+	                    t2.nbsbm fjdnbsbm,
+	                    t2.ywmc || ' ' || (CASE WHEN t2.xlh IS NULL THEN t2.nbsbm ELSE t2.xlh END) fjdmc,
+	                    t1.cj,
+	                    t1.zt,
+	                    t1.wz
+	               from b_s_003 t1
+	               left join b_s_003 t2
+	                 on t1.fjdid = t2.id
+	              where t1.zt = 1
+	                and t1.sxzt = 1
+	                   	<!-- 以下信息是查询明细是加上去的条件 start -->
+		                <if test="jh != null and jh !=''">
+				          and t1.jh = #{jh}
+				       </if>
+		                <if test="xlh != null and xlh !=''">
+				          and t1.xlh = #{xlh}
+				       </if>
+				       <if test="dprtcode != null and dprtcode !=''">
+				          and t1.dprtcode = #{dprtcode}
+				       </if>
+		               
+	                    <!--  end   -->
+	                and rownum = 1) b3
+	    on b1.dprtcode = b3.dprtcode
+	   and b1.jh = b3.jh
+	   and b1.xlh = b3.xlh
+	   left join d_005 e on b2.zjh=e.zjh AND E.DPRTCODE = B2.DPRTCODE
+	 where 1=1 
+				       
+	 <!-- 以下信息是查询明细是加上去的条件 start --> 
+	   <if test="jh != null and jh !=''">
+          and b1.jh = #{jh}
+       </if>
+       <if test="xlh != null and xlh !=''">
+          and b1.xlh = #{xlh}
+       </if>
+       <if test="dprtcode != null and dprtcode !=''">
+          and b1.dprtcode = #{dprtcode}
+       </if>
+       
+	 <!-- end --> 
+	</select>
+
+<!-- 装上/拆下信息 -->
+<select id="selectNotDisassemblyRecords" resultType="map" parameterType="map" >
+<!-- 装上/拆下信息（未拆下） -->
+select b1.id mainid, <!-- 与主表id对应，第一个sql和第二个sql的id是1对多的关系 -->
+  	   b1.AZ_JLD,
+	 <!--   b1.AZ_ZXRQ, -->
+	   ( select u.USERNAME||' '||u.realname from t_user u where u.id = b1.AZ_GZZID ) AZ_GZZXM,
+	   b1.AZ_BZ,
+       b2.jkflbh, <!-- 监控分类编码 -->
+       b2.jklbh, <!-- 监控项目编号 -->
+       case b2.jklbh
+         when 'calendar' then
+          b2.bjyc
+         else
+          b2.gdsx
+       end gdsx, <!-- 规定上限 -->
+       b2.gdsx_dw, <!-- 规定上限单位 -->
+       b2.bjyy, <!-- 装机前已用 -->
+       b2.bjyy_dw, <!-- 装机前已用单位 -->
+       (select (case b2.jklbh
+                     when 'calendar' then
+                      to_char((CASE WHEN b1.cj_zxrq IS NULL THEN b1.cj_sj ELSE b1.cj_zxrq END), 'yyyy-mm-dd')
+                     when 'fuselage_flight_time' then
+                      (CASE WHEN sum(b_h_01001.fxsj_xs) IS NULL THEN 0 ELSE sum(b_h_01001.fxsj_xs) END) || ':' ||
+                      (CASE WHEN sum(b_h_01001.fxsj_fz) IS NULL THEN 0 ELSE sum(b_h_01001.fxsj_fz) END)
+                     when 'search_light_time' then
+                      (CASE WHEN sum(b_h_01001.ssdsj_xs) IS NULL THEN 0 ELSE sum(b_h_01001.ssdsj_xs) END) || ':' ||
+                      (CASE WHEN sum(b_h_01001.ssdsj_fz) IS NULL THEN 0 ELSE sum(b_h_01001.ssdsj_fz) END)
+                     when 'winch_time' then
+                      (CASE WHEN sum(b_h_01001.jcsj_xs) IS NULL THEN 0 ELSE sum(b_h_01001.jcsj_xs) END) || ':' ||
+                      (CASE WHEN sum(b_h_01001.jcsj_fz) IS NULL THEN 0 ELSE sum(b_h_01001.jcsj_fz) END)
+                     when 'landing_gear_cycle' then
+                      sum(b_h_01001.qljxh) || ''
+                     when 'winch_cycle' then
+                      sum(b_h_01001.jcxh) || ''
+                     when 'ext_suspension_loop' then
+                      sum(b_h_01001.dgxh) || ''
+                     when 'special_first' then
+                      sum(b_h_01001.ts1) || ''
+                     when 'special_second' then
+                      sum(b_h_01001.ts2) || ''
+                     when 'N1' then
+                      sum(b_h_01001.fdj_n1) || ''
+                     when 'N2' then
+                      sum(b_h_01001.fdj_n2) || ''
+                     when 'N3' then
+                      sum(b_h_01001.fdj_n3) || ''
+                     when 'N4' then
+                      sum(b_h_01001.fdj_n4) || ''
+                     when 'N5' then
+                      sum(b_h_01001.fdj_n5) || ''
+                     when 'N6' then
+                      sum(b_h_01001.fdj_n6) || ''
+                     else
+                      '0'
+                   end)
+          from b_h_01001
+         where is_cyjs = 1
+           and zt = 1
+           and xdbs = 0
+           and csbj in (0, 2)
+           and jh = #{jh}
+           and xlh = #{xlh}
+           and dprtcode = b1.dprtcode
+           and fjzch = b1.fjzch
+           and b_h_01001.whsj >= b1.az_sj
+           and b_h_01001.whsj &lt;= (CASE WHEN b1.cj_sj IS NULL THEN sysdate ELSE b1.cj_sj END)) zjsy, <!-- 在机使用 -->
+       to_char((CASE WHEN b1.az_zxrq IS NULL THEN b1.az_sj ELSE b1.az_zxrq END), 'yyyy-mm-dd') AZ_ZXRQ, <!-- 安装日期 -->
+       to_char((CASE WHEN b1.cj_zxrq IS NULL THEN b1.cj_sj ELSE b1.cj_zxrq END), 'yyyy-mm-dd') CJ_ZXRQ, <!-- 拆解日期 -->
+       b2.bjyc, <!-- 部件预拆 -->
+       b2.bjyc_dw, <!-- 部件预拆单位 -->
+       b1.cj_fxjldid, <!-- 拆解-飞行记录单id -->
+       (CASE WHEN b1.fjzch IS NULL THEN '' ELSE b1.fjzch END) fjzch <!-- 飞行注册号 -->
+       
+  from b_h_01002 b1
+  left join (select b_s_00301.fjzch, <!-- 飞机注册号 -->
+                    b_s_003.dprtcode,<!-- 机构代码 -->
+                    b_s_003.jh, <!-- 件号 -->
+                    b_s_003.xlh, <!-- 序列号 -->
+                    b_s_00301.jkflbh, <!-- 监控分类编号 -->
+                    b_s_00301.jklbh, <!-- 监控项目编号 -->
+                    b_s_00301.gdsx, <!-- 规定上限 -->
+                    b_s_00301.gdsx_dw, <!-- 规定上限_单位 -->
+                    b_s_00301.bjyy, <!-- 部件已用 -->
+                    b_s_00301.bjyy_dw, <!-- 部件已用_单位 -->
+                    b_s_00301.bjyc, <!-- 部件预拆 -->
+                    b_s_00301.bjyc_dw <!-- 部件预拆_单位 -->
+               from b_s_003
+               join b_s_00301
+                 on b_s_003.id = b_s_00301.zjqdid
+                and b_s_003.dprtCode = #{dprtcode}
+                and b_s_003.jh = #{jh}
+                and b_s_003.xlh = #{xlh}
+                <!-- and b_s_00301.zt != 3 -->
+                
+                AND b_s_003.ZT != 3
+                AND b_s_00301.zt = 1
+                
+                ) b2
+    on b1.fjzch = b2.fjzch
+   and b1.jh = b2.jh
+   and b1.xlh = b2.xlh
+   and b1.dprtcode = b2.dprtcode
+ where b1.zt = 1
+   and b1.is_cx = 0 <!-- 未拆下 -->
+   and b1.dprtCode = #{dprtcode}
+   and b1.jh = #{jh}
+   and b1.xlh = #{xlh}
+</select>
+
+<select id="selectDisassemblyRecords" resultType="map" parameterType="map" >
+<!-- 装上/拆下信息（已拆下） -->
+select b1.id mainid, <!-- 与主表id对应，第一个sql和第二个sql的id是1对多的关系 -->
+	   b1.AZ_JLD,
+	 <!--   b1.AZ_ZXRQ, -->
+	   ( select u.USERNAME||' '||u.realname from t_user u where u.id = b1.AZ_GZZID ) AZ_GZZXM,
+	   b1.CJ_JLD,
+	 <!--   b1.CJ_ZXRQ, -->
+	   ( select u.USERNAME||' '||u.realname from t_user u where u.id = b1.CJ_GZZID ) CJ_GZZXM,  
+	   b1.CJ_ZSJJH,
+	   b1.CJ_ZSJXLH,
+	   b1.AZ_BZ,
+	   b1.CJ_BZ,
+	   
+       b2.jkflbh, <!-- 监控分类编码 -->
+       b2.jklbh, <!-- 监控项目编号 -->
+       case b2.jklbh
+         when 'calendar' then
+          b2.bjyc
+         else
+          b2.gdsx
+       end gdsx, <!-- 规定上限 -->
+       b2.gdsx_dw, <!-- 规定上限单位 -->
+       b2.bjyy, <!-- 装机前已用 -->
+       b2.bjyy_dw,<!--  装机前已用单位 -->
+       (select (case b2.jklbh
+                     when 'calendar' then
+                      to_char((CASE WHEN b1.cj_zxrq IS NULL THEN b1.cj_sj ELSE b1.cj_zxrq END), 'yyyy-mm-dd')
+                     when 'fuselage_flight_time' then
+                      (CASE WHEN sum(b_h_01001.fxsj_xs) IS NULL THEN 0 ELSE sum(b_h_01001.fxsj_xs) END) || ':' ||
+                      (CASE WHEN sum(b_h_01001.fxsj_fz) IS NULL THEN 0 ELSE sum(b_h_01001.fxsj_fz) END)
+                     when 'search_light_time' then
+                      (CASE WHEN sum(b_h_01001.ssdsj_xs) IS NULL THEN 0 ELSE sum(b_h_01001.ssdsj_xs) END) || ':' ||
+                      (CASE WHEN sum(b_h_01001.ssdsj_fz) IS NULL THEN 0 ELSE sum(b_h_01001.ssdsj_fz) END)
+                     when 'winch_time' then
+                      (CASE WHEN sum(b_h_01001.jcsj_xs) IS NULL THEN 0 ELSE sum(b_h_01001.jcsj_xs) END) || ':' ||
+                      (CASE WHEN sum(b_h_01001.jcsj_fz) IS NULL THEN 0 ELSE sum(b_h_01001.jcsj_fz) END)
+                     when 'landing_gear_cycle' then
+                      sum(b_h_01001.qljxh) || ''
+                     when 'winch_cycle' then
+                      sum(b_h_01001.jcxh) || ''
+                     when 'ext_suspension_loop' then
+                      sum(b_h_01001.dgxh) || ''
+                     when 'special_first' then
+                      sum(b_h_01001.ts1) || ''
+                     when 'special_second' then
+                      sum(b_h_01001.ts2) || ''
+                     when 'N1' then
+                      sum(b_h_01001.fdj_n1) || ''
+                     when 'N2' then
+                      sum(b_h_01001.fdj_n2) || ''
+                     when 'N3' then
+                      sum(b_h_01001.fdj_n3) || ''
+                     when 'N4' then
+                      sum(b_h_01001.fdj_n4) || ''
+                     when 'N5' then
+                      sum(b_h_01001.fdj_n5) || ''
+                     when 'N6' then
+                      sum(b_h_01001.fdj_n6) || ''
+                     else
+                      '0'
+                   end)
+          from b_h_01001
+         where is_cyjs = 1
+           and zt = 1
+           and xdbs = 0
+           and csbj in (0, 2)
+           and jh = #{jh}
+           and xlh = #{xlh}
+           and dprtcode = b1.dprtcode
+           and fjzch = b1.fjzch
+           and b_h_01001.whsj >= b1.az_sj
+           and b_h_01001.whsj &lt;= (CASE WHEN b1.cj_sj IS NULL THEN sysdate ELSE b1.cj_sj END)) zjsy, <!-- 在机使用 -->
+       to_char((CASE WHEN b1.az_zxrq IS NULL THEN b1.az_sj ELSE b1.az_zxrq END), 'yyyy-mm-dd') AZ_ZXRQ, <!-- 安装日期 -->
+       to_char((CASE WHEN b1.cj_zxrq IS NULL THEN b1.cj_sj ELSE b1.cj_zxrq END), 'yyyy-mm-dd') CJ_ZXRQ, <!-- 拆解日期 -->
+       b2.bjyc, <!-- 部件预拆 -->
+       b2.bjyc_dw, <!-- 部件预拆单位 -->
+       b1.cj_fxjldid, <!-- 拆解 飞行记录单id -->
+       (CASE WHEN b1.fjzch IS NULL THEN '' ELSE b1.fjzch END) fjzch <!-- 飞行注册号 -->
+        
+       
+  from b_h_01002 b1
+  left join b_h_0100201 b2
+    on b1.id = b2.mainid  and b2.zt =1
+ where b1.zt = 1
+   and b1.is_cx = 1 <!-- 拆下 -->
+   and b1.dprtCode = #{dprtcode}
+   and b1.jh = #{jh}
+   and b1.xlh = #{xlh}
+   <!-- and b2.zt =1 -->
+</select>
+	
+<select id="selectSubcomponents" resultType="map" parameterType="map" >	
+	select t1.zt, <!-- 状态：1装上、2拆下 -->
+	  case t1.zt
+          when 1 then '装上'
+          when 2 then '拆下'
+          else
+           ''
+      end zttext,
+      t1.cj, <!-- 层级 -->
+      <!-- 章节号 -->
+      (CASE WHEN t3.zjh IS NULL THEN t1.zjh ELSE t3.zjh END)||' '||t4.zwms zjh,
+      t1.jh, <!-- 件号 -->
+      t1.xlh, <!-- 序列号 -->
+      t1.nbsbm, <!-- 内部识别码 -->	
+      t1.pch AS "PCH", <!-- 批次号-->
+      (CASE WHEN t3.zwms IS NULL THEN t1.zwmc ELSE t3.zwms END) zwmc, <!-- 中文名称 -->
+      (CASE WHEN t3.ywms IS NULL THEN t1.ywmc ELSE t3.ywms END) ywmc, <!-- 英文名称 -->
+      (CASE WHEN t3.cjjh IS NULL THEN t1.cjjh ELSE t3.cjjh END) cjjh, <!-- 厂家件号 -->
+      t1.zjsl, <!-- 装机数量 -->
+      t1.wz, <!-- 位置：0机身、1.1#左发、2.2#左发、3绞车、4搜索灯、5外吊挂 -->
+      t1.scrq, <!-- 生产日期 -->
+      t1.azrq,<!-- 安装日期 -->
+      t2.fjzch,
+      t1.bz <!-- 备注 -->
+	  from b_s_003 t1
+	  join b_s_003 t2
+	  
+	    on t1.fjdid = t2.id
+        and t2.jh = #{jh}
+        and t2.xlh = #{xlh}
+        and t2.fjzch =  #{fjzch}
+        and t2.dprtcode =  #{dprtcode}
+	    and t1.zt in (1, 2)
+	    and t1.bjlx = 1
+	  left join d_008 t3
+    	on t1.dprtcode = t3.dprtcode
+   	    and t1.jh = t3.bjh
+   	    and t3.zt = 1
+   	  left join d_005 t4 on t4.zjh = t3.zjh and t3.dprtcode = t4.dprtcode
+	 order by t1.zt, t1.jh  
+	 
+ </select>
+	
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_01002
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.flightdata.po.PartsDisassemblyRecord" >
+    insert into B_H_01002 (ID, MAINID, DPRTCODE, 
+      JH, XLH, ZT, FJZCH, 
+      FXJLDID, AZ_JLD, AZ_ZXRQ, 
+      AZ_GZZID, AZ_BZ, CJ_JLD, 
+      CJ_ZXRQ, CJ_GZZID, CJ_BZ, 
+      CJ_ZSJJH, CJ_ZSJXLH, WHSJ, 
+      IS_CX, AZ_SJ, CJ_SJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{fjzch,jdbcType=VARCHAR}, 
+      #{fxjldid,jdbcType=VARCHAR}, #{azJld,jdbcType=VARCHAR}, #{azZxrq,jdbcType=TIMESTAMP}, 
+      #{azGzzid,jdbcType=VARCHAR}, #{azBz,jdbcType=VARCHAR}, #{cjJld,jdbcType=VARCHAR}, 
+      #{cjZxrq,jdbcType=TIMESTAMP}, #{cjGzzid,jdbcType=VARCHAR}, #{cjBz,jdbcType=VARCHAR}, 
+      #{cjZsjjh,jdbcType=VARCHAR}, #{cjZsjxlh,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{isCx,jdbcType=DECIMAL}, #{azSj,jdbcType=TIMESTAMP}, #{cjSj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.flightdata.po.PartsDisassemblyRecord" >
+    insert into B_H_01002
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="jh != null" >
+        JH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="fxjldid != null" >
+        FXJLDID,
+      </if>
+      <if test="azJld != null" >
+        AZ_JLD,
+      </if>
+      <if test="azZxrq != null" >
+        AZ_ZXRQ,
+      </if>
+      <if test="azGzzid != null" >
+        AZ_GZZID,
+      </if>
+      <if test="azBz != null" >
+        AZ_BZ,
+      </if>
+      <if test="cjJld != null" >
+        CJ_JLD,
+      </if>
+      <if test="cjZxrq != null" >
+        CJ_ZXRQ,
+      </if>
+      <if test="cjGzzid != null" >
+        CJ_GZZID,
+      </if>
+      <if test="cjBz != null" >
+        CJ_BZ,
+      </if>
+      <if test="cjZsjjh != null" >
+        CJ_ZSJJH,
+      </if>
+      <if test="cjZsjxlh != null" >
+        CJ_ZSJXLH,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="isCx != null" >
+        IS_CX,
+      </if>
+      <if test="azSj != null" >
+        AZ_SJ,
+      </if>
+      <if test="cjSj != null" >
+        CJ_SJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null" >
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjldid != null" >
+        #{fxjldid,jdbcType=VARCHAR},
+      </if>
+      <if test="azJld != null" >
+        #{azJld,jdbcType=VARCHAR},
+      </if>
+      <if test="azZxrq != null" >
+        #{azZxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="azGzzid != null" >
+        #{azGzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="azBz != null" >
+        #{azBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cjJld != null" >
+        #{cjJld,jdbcType=VARCHAR},
+      </if>
+      <if test="cjZxrq != null" >
+        #{cjZxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cjGzzid != null" >
+        #{cjGzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjBz != null" >
+        #{cjBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cjZsjjh != null" >
+        #{cjZsjjh,jdbcType=VARCHAR},
+      </if>
+      <if test="cjZsjxlh != null" >
+        #{cjZsjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isCx != null" >
+        #{isCx,jdbcType=DECIMAL},
+      </if>
+      <if test="azSj != null" >
+        #{azSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cjSj != null" >
+        #{cjSj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.flightdata.po.PartsDisassemblyRecord" >
+    update B_H_01002
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="fxjldid != null" >
+        FXJLDID = #{fxjldid,jdbcType=VARCHAR},
+      </if>
+      <if test="azJld != null" >
+        AZ_JLD = #{azJld,jdbcType=VARCHAR},
+      </if>
+      <if test="azZxrq != null" >
+        AZ_ZXRQ = #{azZxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="azGzzid != null" >
+        AZ_GZZID = #{azGzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="azBz != null" >
+        AZ_BZ = #{azBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cjJld != null" >
+        CJ_JLD = #{cjJld,jdbcType=VARCHAR},
+      </if>
+      <if test="cjZxrq != null" >
+        CJ_ZXRQ = #{cjZxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cjGzzid != null" >
+        CJ_GZZID = #{cjGzzid,jdbcType=VARCHAR},
+      </if>
+      <if test="cjBz != null" >
+        CJ_BZ = #{cjBz,jdbcType=VARCHAR},
+      </if>
+      <if test="cjZsjjh != null" >
+        CJ_ZSJJH = #{cjZsjjh,jdbcType=VARCHAR},
+      </if>
+      <if test="cjZsjxlh != null" >
+        CJ_ZSJXLH = #{cjZsjxlh,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isCx != null" >
+        IS_CX = #{isCx,jdbcType=DECIMAL},
+      </if>
+      <if test="azSj != null" >
+        AZ_SJ = #{azSj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cjSj != null" >
+        CJ_SJ = #{cjSj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.flightdata.po.PartsDisassemblyRecord" >
+    update B_H_01002
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      JH = #{jh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      FXJLDID = #{fxjldid,jdbcType=VARCHAR},
+      AZ_JLD = #{azJld,jdbcType=VARCHAR},
+      AZ_ZXRQ = #{azZxrq,jdbcType=TIMESTAMP},
+      AZ_GZZID = #{azGzzid,jdbcType=VARCHAR},
+      AZ_BZ = #{azBz,jdbcType=VARCHAR},
+      CJ_JLD = #{cjJld,jdbcType=VARCHAR},
+      CJ_ZXRQ = #{cjZxrq,jdbcType=TIMESTAMP},
+      CJ_GZZID = #{cjGzzid,jdbcType=VARCHAR},
+      CJ_BZ = #{cjBz,jdbcType=VARCHAR},
+      CJ_ZSJJH = #{cjZsjjh,jdbcType=VARCHAR},
+      CJ_ZSJXLH = #{cjZsjxlh,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      IS_CX = #{isCx,jdbcType=DECIMAL},
+      AZ_SJ = #{azSj,jdbcType=TIMESTAMP},
+      CJ_SJ = #{cjSj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

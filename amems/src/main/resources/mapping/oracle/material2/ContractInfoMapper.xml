@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.ContractInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.ContractInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="BJID" property="bjid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="SL" property="sl" jdbcType="DECIMAL" />
+    <result column="DW" property="dw" jdbcType="VARCHAR" />
+    <result column="WLZT" property="wlzt" jdbcType="VARCHAR" />
+    <result column="JHQ" property="jhq" jdbcType="VARCHAR" />
+    <result column="JHQDW" property="jhqdw" jdbcType="DECIMAL" />
+    <result column="DJ" property="dj" jdbcType="DECIMAL" />
+    <result column="SXYY" property="sxyy" jdbcType="VARCHAR" />
+    <result column="CQID" property="cqid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="wllb" property="wllb" jdbcType="DECIMAL" />
+
+    <!-- 扩充字段 start -->
+    <result column="ZYWMS" property="paramsMap.zywms" jdbcType="VARCHAR" /><!-- 部件中英文 -->
+    <result column="CQBH" property="paramsMap.cqbh" jdbcType="VARCHAR" /><!-- 产权编号 -->
+   
+    <result column="htid" property="paramsMap.htid" jdbcType="VARCHAR" />
+    <result column="HTH" property="paramsMap.hth" jdbcType="VARCHAR" />
+    <result column="BJMC" property="paramsMap.bjmc" jdbcType="VARCHAR" />
+    <result column="HCLX" property="paramsMap.hclx" jdbcType="VARCHAR" />
+    <result column="CJJH" property="paramsMap.cjjh" jdbcType="VARCHAR" />
+    <result column="XINGH" property="paramsMap.xingh" jdbcType="VARCHAR" />
+    <result column="GG" property="paramsMap.gg" jdbcType="VARCHAR" />
+    <result column="CQBH" property="paramsMap.cqbh" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="paramsMap.fjzch" jdbcType="VARCHAR" />
+    <result column="GSMC" property="paramsMap.gsmc" jdbcType="VARCHAR" />
+    <result column="XGFMS" property="paramsMap.xgfms" jdbcType="VARCHAR" />
+    <result column="rks" property="paramsMap.rks" jdbcType="VARCHAR" />
+    <result column="cks" property="paramsMap.cks" jdbcType="VARCHAR" />
+    <result column="HTLX" property="paramsMap.htlx" jdbcType="VARCHAR" />
+    <result column="JLDW" property="paramsMap.jldw" jdbcType="VARCHAR" />
+  	 <!-- 扩充字段 end -->
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, BJID, BJH, XLH, SL, DW, WLZT, JHQ, JHQDW, DJ, SXYY, CQID, ZT
+  </sql>
+  
+  <sql id="C_Column_List" >
+    B.ID, B.MAINID, B.BJID, B.BJH, B.XLH, B.SL, B.DW, B.WLZT, B.JHQ, B.JHQDW, B.DJ, B.SXYY, B.CQID, B.ZT
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_02201
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H2_02201
+    where ZT = 1 and MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryDetailByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+	    <include refid="C_Column_List" />
+	    ,D.YWMS ||''|| D.ZWMS ZYWMS
+	    ,D026.CQBH
+	    ,COALESCE( bh029.cksl, 0 ) cks
+	    ,COALESCE( bh027.shsl, 0 ) rks
+	from B_H2_02201 B
+	LEFT JOIN D_008 D
+	ON D.ID = B.BJID
+	LEFT JOIN D_026 D026
+	ON D026.ID = B.CQID
+	left join (
+		SELECT lymxid, sum( cksl ) cksl 
+	FROM
+	  b_h_029 bh029 
+	  join b_h2_023 bh2023 
+	  ON bh029.zt = 1 
+	  AND bh029.lylx = 2 
+	  AND bh2023.zt = 2 
+	  AND bh2023.id = bh029.ckdid 
+	GROUP BY bh029.lymxid ) bh029 
+	ON B.id = bh029.lymxid 
+	left join (
+		SELECT lymxid,sum( shsl ) shsl 
+	FROM
+	  b_h_027 bh027 join b_h2_020 bh2020 
+	  ON bh027.zt = 1 
+	  AND bh027.lylx = 2 
+	  AND bh2020.zt = 2 
+	  AND bh2020.id = bh027.shdid 
+	GROUP BY
+	  bh027.lymxid 
+	  ) bh027 
+	  ON B.id = bh027.lymxid
+    where B.ZT = 1 and B.MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryByXqqdIdList" resultMap="BaseResultMap" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+    select 
+    D.ID AS BJID, D.BJH, B.XLH, B.XQSL AS SL, D.JLDW AS DW, D.YWMS ||''|| D.ZWMS ZYWMS
+    from B_H_02801 B
+    join B_H_028 B28 on B.MAINID = B28.ID
+    JOIN D_008 D
+    ON D.ZT = 1 AND D.DPRTCODE = B28.DPRTCODE AND D.BJH = B.bjh 
+    where B.ID in
+    	<foreach collection="list" item="xqqdIdList" index="index" open="(" close=")" separator=",">
+			#{xqqdIdList, jdbcType=VARCHAR}
+	 	</foreach>
+  </select>
+  
+  <select id="queryAllList" resultMap="BaseResultMap" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+    select 
+    <include refid="C_Column_List" />
+    ,D.YWMS ||''|| D.ZWMS ZYWMS
+    ,D026.CQBH
+    from B_H2_02201 B
+    LEFT JOIN D_008 D
+    ON D.ID = B.BJID
+    LEFT JOIN D_026 D026
+    ON D026.ID = B.CQID
+    where B.ZT = 1 and B.MAINID = #{mainid,jdbcType=VARCHAR}
+    order by B.BJH
+  </select>
+  
+  <select id="queryWinAllPageList" resultMap="BaseResultMap" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+    select 
+    <include refid="C_Column_List" />
+    ,D.YWMS ||''|| D.ZWMS ZYWMS
+    ,D026.CQBH
+    from B_H2_02201 B
+    LEFT JOIN D_008 D
+    ON D.ID = B.BJID
+    LEFT JOIN D_026 D026
+    ON D026.ID = B.CQID
+    where B.ZT = 1 and B.MAINID = #{mainid,jdbcType=VARCHAR}
+    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+	    and (
+	    	lower(B.BJH) like lower('%'||#{paramsMap.keyword}||'%')
+	    )
+	</if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H2_02201
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from B_H2_02201
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_H2_02201
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+    insert into B_H2_02201 (ID, MAINID, BJID, 
+      BJH, XLH, SL, DW, 
+      WLZT, JHQ, JHQDW, DJ, 
+      SXYY, CQID, ZT)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, 
+      #{bjh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{sl,jdbcType=DECIMAL}, #{dw,jdbcType=VARCHAR}, 
+      #{wlzt,jdbcType=VARCHAR}, #{jhq,jdbcType=VARCHAR}, #{jhqdw,jdbcType=DECIMAL}, #{dj,jdbcType=DECIMAL}, 
+      #{sxyy,jdbcType=VARCHAR}, #{cqid,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+    insert into B_H2_02201
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="bjid != null" >
+        BJID,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="sl != null" >
+        SL,
+      </if>
+      <if test="dw != null" >
+        DW,
+      </if>
+      <if test="wlzt != null" >
+        WLZT,
+      </if>
+      <if test="jhq != null" >
+        JHQ,
+      </if>
+      <if test="jhqdw != null" >
+        JHQDW,
+      </if>
+      <if test="dj != null" >
+        DJ,
+      </if>
+      <if test="sxyy != null" >
+        SXYY,
+      </if>
+      <if test="cqid != null" >
+        CQID,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null" >
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        #{dw,jdbcType=VARCHAR},
+      </if>
+      <if test="wlzt != null" >
+        #{wlzt,jdbcType=VARCHAR},
+      </if>
+      <if test="jhq != null" >
+        #{jhq,jdbcType=VARCHAR},
+      </if>
+      <if test="jhqdw != null" >
+        #{jhqdw,jdbcType=DECIMAL},
+      </if>
+      <if test="dj != null" >
+        #{dj,jdbcType=DECIMAL},
+      </if>
+      <if test="sxyy != null" >
+        #{sxyy,jdbcType=VARCHAR},
+      </if>
+      <if test="cqid != null" >
+        #{cqid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 批量插入合同明细 -->
+  	<insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+			<include refid="insert_contract_info"></include>
+		</foreach>
+		select 1 from dual
+	</insert>
+	
+	
+	<!-- 插入合同明细 start -->
+	<sql id="insert_contract_info">
+		into B_H2_02201
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        ID,
+	      </if>
+	      <if test="item.mainid != null" >
+	        MAINID,
+	      </if>
+	      <if test="item.bjid != null" >
+	        BJID,
+	      </if>
+	      <if test="item.bjh != null" >
+	        BJH,
+	      </if>
+	      <if test="item.xlh != null" >
+	        XLH,
+	      </if>
+	      <if test="item.sl != null" >
+	        SL,
+	      </if>
+	      <if test="item.dw != null" >
+	        DW,
+	      </if>
+	      <if test="item.wlzt != null" >
+	        WLZT,
+	      </if>
+	      <if test="item.jhq != null" >
+	        JHQ,
+	      </if>
+	      <if test="item.jhqdw != null" >
+	        JHQDW,
+	      </if>
+	      <if test="item.dj != null" >
+	        DJ,
+	      </if>
+	      <if test="item.sxyy != null" >
+	        SXYY,
+	      </if>
+	      <if test="item.cqid != null" >
+	        CQID,
+	      </if>
+	      <if test="item.zt != null" >
+	        ZT,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        #{item.id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.mainid != null" >
+	        #{item.mainid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.bjid != null" >
+	        #{item.bjid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.bjh != null" >
+	        #{item.bjh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.xlh != null" >
+	        #{item.xlh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.sl != null" >
+	        #{item.sl,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.dw != null" >
+	        #{item.dw,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.wlzt != null" >
+	        #{item.wlzt,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.jhq != null" >
+	        #{item.jhq,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.jhqdw != null" >
+	        #{item.jhqdw,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.dj != null" >
+	        #{item.dj,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.sxyy != null" >
+	        #{item.sxyy,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.cqid != null" >
+	        #{item.cqid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.zt != null" >
+	        #{item.zt,jdbcType=DECIMAL},
+	      </if>
+	    </trim>
+	</sql>
+	<!-- 插入合同明细 end -->
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+    update B_H2_02201
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null" >
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        SL = #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        DW = #{dw,jdbcType=VARCHAR},
+      </if>
+      <if test="wlzt != null" >
+        WLZT = #{wlzt,jdbcType=VARCHAR},
+      </if>
+      <if test="jhq != null" >
+        JHQ = #{jhq,jdbcType=VARCHAR},
+      </if>
+      <if test="jhqdw != null" >
+        JHQDW = #{jhqdw,jdbcType=DECIMAL},
+      </if>
+      <if test="dj != null" >
+        DJ = #{dj,jdbcType=DECIMAL},
+      </if>
+      <if test="sxyy != null" >
+        SXYY = #{sxyy,jdbcType=VARCHAR},
+      </if>
+      <if test="cqid != null" >
+        CQID = #{cqid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+    update B_H2_02201
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      SL = #{sl,jdbcType=DECIMAL},
+      DW = #{dw,jdbcType=VARCHAR},
+      WLZT = #{wlzt,jdbcType=VARCHAR},
+      JHQ = #{jhq,jdbcType=VARCHAR},
+      JHQDW = #{jhqdw,jdbcType=DECIMAL},
+      DJ = #{dj,jdbcType=DECIMAL},
+      SXYY = #{sxyy,jdbcType=VARCHAR},
+      CQID = #{cqid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <update id="cancel4Batch" parameterType="java.lang.String" >
+	    update B_H2_02201
+	    set ZT = 0
+	    where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  </update>
+  
+  <select id="queryAll" resultMap="BaseResultMap" parameterType="com.eray.thjw.material2.po.ContractInfo" >
+   SELECT
+    bh202201.ID, 
+    bh202201.MAINID, 
+    bh202201.BJID, 
+    bh202201.BJH, 
+    bh202201.XLH, 
+    bh202201.SL, 
+    bh202201.DW, 
+    bh202201.WLZT, 
+    bh202201.JHQ, 
+    bh202201.JHQDW, 
+    bh202201.DJ, 
+    bh202201.SXYY, 
+    bh202201.CQID, 
+    bh202201.ZT,
+    bh2022.id htid,
+    bh2022.HTH,
+    bh2022.XGFMS,
+    bh2022.HTLX,
+    d008.YWMS,
+    d008.ZWMS,
+    d008.YWMS || '' || d008.ZWMS BJMC,
+    d008.HCLX, 
+    d008.XINGH, 
+    d008.CJJH, 
+    d008.GG,
+    d008.JLDW, 
+    d026.CQBH, 
+    d026.FJZCH, 
+    d026.GSMC, 
+	  COALESCE( bh029.cksl, 0 ) cks,
+	  COALESCE( bh027.shsl, 0 ) rks
+	FROM
+	  B_H2_02201 bh202201 join B_H2_022 bh2022 ON bh2022.zt IN ( 2 ,4, 12 ) and bh2022.htlx = 10
+	  AND bh202201.MAINID = bh2022.ID 
+	
+	 left join (
+	SELECT
+	  lymxid,
+	  sum( cksl ) cksl 
+	FROM
+	  b_h_029 bh029 join b_h2_023 bh2023 ON bh029.zt = 1 
+	  AND bh029.lylx = 2 
+	  AND bh2023.zt = 2 
+	  AND bh2023.id 
+	
+	 = bh029.ckdid 
+	GROUP BY
+	  bh029.lymxid 
+	  ) bh029 ON bh202201.id 
+	
+	 = bh029.lymxid left join (
+	SELECT
+	  lymxid,
+	  sum( shsl ) shsl 
+	FROM
+	  b_h_027 bh027 join b_h2_020 bh2020 ON bh027.zt = 1 
+	  AND bh027.lylx = 2 
+	  AND bh2020.zt = 2 
+	  AND bh2020.id 
+	
+	 = bh027.shdid 
+	GROUP BY
+	  bh027.lymxid 
+	  ) bh027 ON bh202201.id 
+	
+	 = bh027.lymxid
+	 
+	 left join d_008 d008 on d008.id =bh202201.bjid
+	 
+	 left join d_026 d026 on d026.id = bh202201.cqid
+      
+      where 1=1
+      <include refid="ContractInfoParam" />
+  </select>
+  
+   <sql id="ContractInfoParam" >
+   
+  		<if test="cqid != null and cqid != ''">
+            and bh202201.cqid =  #{cqid}
+       </if>
+        <if test="paramsMap != null and paramsMap.hclx != null and paramsMap.hclx != ''">
+            and d008.hclx in
+    			 <foreach item="item" index="index" collection="paramsMap.hclx" open="(" separator="," close=")">  
+         			#{item}  
+    			 </foreach>  
+      </if> 
+      
+        <if test="paramsMap != null and paramsMap.shsj != null and paramsMap.shsj != '' and paramsMap.shsj == 1 ">
+             and bh202201.sl &gt; COALESCE( shsl, 0 ) -  COALESCE( cksl, 0 )
+      </if> 
+      
+   	  <if test="paramsMap != null and paramsMap.htbh != null and paramsMap.htbh != ''">
+             and lower(bh2022.hth) like lower('%'||#{paramsMap.htbh}||'%')
+      </if>
+      <if test="paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+             and bh2022.dprtcode =  #{paramsMap.dprtcode}
+      </if>
+	  <if test="paramsMap != null and paramsMap.bj != null and paramsMap.bj != ''">
+             and (lower(d008.bjh) like lower('%'||#{paramsMap.bj}||'%')
+		    	or lower(d008.zwms) like lower('%'||#{paramsMap.bj}||'%')
+		    	or lower(d008.ywms) like lower('%'||#{paramsMap.bj}||'%')
+		     )         
+      </if>
+   	 <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+	     and (lower(d008.bjh) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(d008.zwms) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(d008.ywms) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(d008.xingh) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(d008.gg) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(bh2022.hth) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(d008.cjjh) like lower('%'||#{paramsMap.keyword}||'%')
+		     )
+	</if>
+  </sql>
+  
+  <select id="queryContractdetailsList" resultMap="BaseResultMap">
+   select   b1.ID, b1.MAINID, b1.BJID, b1.BJH, b1.XLH, b1.SL, b1.DW, b1.WLZT, b1.JHQ, b1.JHQDW, b1.DJ, b1.SXYY, b1.CQID, b1.ZT ,
+   d008.hclx wllb
+   from b_h2_02201 b1
+   LEFT JOIN b_h2_022 B2 ON B1.MAINID= B2.ID
+   LEFT JOIN D_008 D008 ON D008.ID=B1.BJID
+
+    WHERE 1=1
+    and b2.zt in (2,12)
+     <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+    and  B1.MAINID IN 
+   	<foreach collection="paramsMap.idList" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+     </if>
+    <if test="paramsMap == null || paramsMap.idList == null || paramsMap.idList == ''">
+    	and B1.MAINID IS NULL
+    </if>
+     <!-- 关键字-->
+    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+     	AND  (lower(b1.xlh) LIKE lower('%'||#{paramsMap.keyword}||'%') OR
+     		  lower(b1.bjh) LIKE lower('%'||#{paramsMap.keyword}||'%')
+       	)
+    </if>
+   </select>
+  
+</mapper>

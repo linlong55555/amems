@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.FileCatalogMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.FileCatalog" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MKDM" property="mkdm" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="MLMC" property="mlmc" jdbcType="VARCHAR" />
+    <result column="FMLID" property="fmlid" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+    <result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MKDM, DPRTCODE, MLMC, FMLID, SM, YXZT, CZSJ, CZBMID, CZRID
+  </sql>
+  
+  	 	<!-- 搜索参数 -->
+	<sql id="BaseResultParam1">
+	   where 1=1
+         <if test="id != null and id != ''">
+             and id = #{id}
+         </if>
+	</sql>
+  
+    <delete id="delete" parameterType="com.eray.thjw.po.FileCatalog" >
+    update D_014
+    set YXZT = 0
+  	 <include refid="BaseResultParam1"></include>
+ 	</delete>
+  
+  
+     <select id="findAlls"  resultMap="BaseResultMap">
+		select   <include refid="Base_Column_List" /> FROM D_014   where YXZT = 1 
+		<if test="dprtcode != null and dprtcode != ''">
+             and dprtcode = #{dprtcode}
+         </if>
+		<if test="mkdm != null and mkdm != ''">
+             and mkdm = #{mkdm}
+         </if>
+ 	 </select>
+ 	 
+ 	 	<!-- 搜索参数 -->
+	<sql id="BaseResultParam">
+	   where 1=1
+	    <if test="id != null and id != ''">
+             and FMLID = #{id}
+         </if>
+         <if test="yxzt != null and yxzt != ''">
+             and yxzt = #{yxzt}
+         </if>
+         <if test="mlmc != null and mlmc != ''">
+             and mlmc = #{mlmc}
+         </if>
+	</sql>
+ 	 
+   <select id="queryCount" parameterType="com.eray.thjw.po.FileCatalog" resultType="int">
+		select count(*) FROM D_014 <include refid="BaseResultParam"></include>
+ 	 </select>
+ 	 
+    <insert id="save" parameterType="com.eray.thjw.po.FileCatalog" >
+    insert into D_014  (<include refid="Base_Column_List" />)
+    values (#{id},#{mkdm},#{dprtcode},#{mlmc},#{fmlid},#{sm},#{yxzt}, current_timestamp, #{czbmid}, #{czrid} )
+  </insert>
+  
+  <update id="update" parameterType="com.eray.thjw.po.FileCatalog" >
+    update D_014
+    set MLMC = #{mlmc}
+    where ID = #{id}
+  </update>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_014
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.FileCatalog" >
+    insert into D_014
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mkdm != null" >
+        MKDM,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="mlmc != null" >
+        MLMC,
+      </if>
+      <if test="fmlid != null" >
+        FMLID,
+      </if>
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="yxzt != null" >
+        YXZT,
+      </if>
+      <if test="czsj != null" >
+        CZSJ,
+      </if>
+      <if test="czbmid != null" >
+        CZBMID,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mkdm != null" >
+        #{mkdm,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="mlmc != null" >
+        #{mlmc,jdbcType=VARCHAR},
+      </if>
+      <if test="fmlid != null" >
+        #{fmlid,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        #{yxzt,jdbcType=DECIMAL},
+      </if>
+      <if test="czsj != null" >
+        #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czbmid != null" >
+        #{czbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.FileCatalog" >
+    update D_014
+    <set >
+      <if test="mkdm != null" >
+        MKDM = #{mkdm,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="mlmc != null" >
+        MLMC = #{mlmc,jdbcType=VARCHAR},
+      </if>
+      <if test="fmlid != null" >
+        FMLID = #{fmlid,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        YXZT = #{yxzt,jdbcType=DECIMAL},
+      </if>
+      <if test="czsj != null" >
+        CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czbmid != null" >
+        CZBMID = #{czbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.FileCatalog" >
+    update D_014
+    set MKDM = #{mkdm,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      MLMC = #{mlmc,jdbcType=VARCHAR},
+      FMLID = #{fmlid,jdbcType=VARCHAR},
+      SM = #{sm,jdbcType=VARCHAR},
+      YXZT = #{yxzt,jdbcType=DECIMAL},
+      CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      CZBMID = #{czbmid,jdbcType=VARCHAR},
+      CZRID = #{czrid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

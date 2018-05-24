@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.PlaneFaultMonitoringMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlaneFaultMonitoring" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />   
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="GZXX" property="gzxx" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="GBZT" property="gbzt" jdbcType="INTEGER" />   
+    <result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="GBRID" property="gbrid" jdbcType="VARCHAR" />
+    <result column="GBSJ" property="gbsj" jdbcType="TIMESTAMP" />   
+    <result column="GBYY" property="gbyy" jdbcType="VARCHAR" />
+    <result column="gbrname" property="gbrname" jdbcType="VARCHAR" />
+    <result column="zdrname" property="zdrname" jdbcType="VARCHAR" />  
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    B.ID,  B.DPRTCODE, B.FJZCH, B.GZXX, B.BZ, B.GBZT, B.ZDDWID, B.ZDRID, B.ZDSJ, B.GBRID, B.GBSJ, B.GBYY
+  </sql>
+  <sql id="baseParam">
+		where
+		1=1 
+		<!-- 机构id -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and b.dprtcode = #{dprtcode}
+		</if>
+		<if test="fjzch != null and fjzch != ''">
+			and b.fjzch = #{fjzch}
+		</if>
+		<if test="keyword != null and keyword != ''" >
+			and ( b.gzxx like '%'||#{keyword}||'%'
+				or b.fjzch like '%'||#{keyword}||'%'
+			)
+		</if>
+  		 <if test="id != null and id !='' ">
+		    and b.ID = #{id}
+		</if> 
+	</sql>
+  	<select id="getList" parameterType="com.eray.thjw.productionplan.po.PlaneFaultMonitoring" resultMap="BaseResultMap">
+  		select B.ID,  B.DPRTCODE, B.FJZCH, B.GZXX, B.BZ, B.GBZT, B.ZDDWID, B.ZDRID, B.ZDSJ, B.GBRID, B.GBSJ, B.GBYY,
+  		t.username||' '||t.realname zdrname
+  		 from b_s_019 b left join  t_user t on b.zdrid=t.id <include refid="baseParam"/>
+  		<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by gbzt 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+  	</select>
+  	<insert id="insertPlaneFaultMonitoring" parameterType="com.eray.thjw.productionplan.po.PlaneFaultMonitoring">
+  		insert into b_s_019
+  		 <trim prefix="(" suffix=")" suffixOverrides="," >
+  		<if test="id != null" >
+       		 ID,
+     	</if>
+  		<if test="dprtcode != null" >
+       		 DPRTCODE,
+     	</if>
+  		<if test="fjzch != null" >
+       		 FJZCH,
+     	</if>
+  		<if test="gzxx != null" >
+       		 GZXX,
+     	</if>
+  		<if test="bz != null" >
+       		 BZ,
+     	</if>
+  		<if test="gbzt != null" >
+       		 GBZT,
+     	</if>
+  		<if test="zddwid != null" >
+       		 ZDDWID,
+     	</if>
+  		<if test="zdrid != null" >
+       		 ZDRID,
+     	</if>
+  		<if test="zdrid != null" >
+       		 ZDSJ,
+     	</if>
+  		<if test="gbrid != null" >
+       		 GBRID,
+     	</if>
+  		<if test="gbrid != null" >
+       		 GBSJ,
+     	</if>
+  		<if test="gbyy != null" >
+       		 GBYY,
+     	</if>
+     	</trim>
+     	<trim prefix="values (" suffix=")" suffixOverrides="," >
+     	<if test="id != null" >
+        	#{id,jdbcType=VARCHAR},
+      	</if>
+     	<if test="dprtcode != null" >
+        	#{dprtcode,jdbcType=VARCHAR},
+      	</if>
+     	<if test="fjzch != null" >
+        	#{fjzch,jdbcType=VARCHAR},
+      	</if>
+     	<if test="gzxx != null" >
+        	#{gzxx,jdbcType=VARCHAR},
+      	</if>
+     	<if test="bz != null" >
+        	#{bz,jdbcType=VARCHAR},
+      	</if>
+     	<if test="gbzt != null" >
+        	#{gbzt,jdbcType=INTEGER},
+      	</if>
+     	<if test="zddwid != null" >
+        	#{zddwid,jdbcType=VARCHAR},
+      	</if>
+     	<if test="zdrid != null" >
+        	#{zdrid,jdbcType=VARCHAR},
+      	</if>
+     	<if test="zdrid != null" >
+        	current_timestamp,
+      	</if>
+     	<if test="gbrid != null" >
+        	#{gbrid,jdbcType=VARCHAR},
+      	</if>
+     	<if test="gbrid != null" >
+        	current_timestamp,
+      	</if>
+     	<if test="gbyy != null" >
+        	#{gbyy,jdbcType=VARCHAR},
+      	</if>
+  		</trim>
+  	</insert>
+   	<select id="getGbyy" parameterType="com.eray.thjw.productionplan.po.PlaneFaultMonitoring" resultMap="BaseResultMap">
+   		select gbrid,gbsj,gbyy,t.username ||' ' ||t.realname  gbrname
+   		from b_s_019 b left join t_user t on b.gbrid=t.id where b.id=#{id,jdbcType=VARCHAR}
+   	</select>
+   	<insert id="insertGbyy" parameterType="com.eray.thjw.productionplan.po.PlaneFaultMonitoring">
+   		update b_s_019 set gbzt=1, gbrid=#{gbrid,jdbcType=VARCHAR},gbsj =current_timestamp,gbyy=#{gbyy,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+   	</insert>
+  	<select id="getPlaneFaultMonitoringById" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select <include refid="Base_Column_List" />, t.username||' '||t.realname zdrname from b_s_019 b left join t_user t on t.id=b.zdrid where b.id=#{id,jdbcType=VARCHAR}
+  	</select>
+  	<update id="updatePlaneFaultMonitoringById" parameterType="com.eray.thjw.productionplan.po.PlaneFaultMonitoring" >
+  		update b_s_019 set gzxx=#{gzxx,jdbcType=VARCHAR},bz=#{bz,jdbcType=VARCHAR},zddwid=#{zddwid,jdbcType=VARCHAR},zdrid=#{zdrid,jdbcType=VARCHAR},
+  		zdsj=current_timestamp where id=#{id,jdbcType=VARCHAR}
+  	</update>
+  	<update id="updatePlaneFault" parameterType="com.eray.thjw.productionplan.po.PlaneFaultMonitoring" >
+  		update b_s_019 set zddwid=#{zddwid,jdbcType=VARCHAR},zdrid=#{zdrid,jdbcType=VARCHAR},
+  		zdsj=current_timestamp where id=#{id,jdbcType=VARCHAR}
+  	</update>
+</mapper>

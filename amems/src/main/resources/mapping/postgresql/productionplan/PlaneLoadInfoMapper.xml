@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.PlaneLoadInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.PlaneLoadInfo" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZXRQ" property="zxrq" jdbcType="TIMESTAMP" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />    
+   	<result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="BJID" property="bjid" jdbcType="VARCHAR" />
+   	<result column="BJMC" property="bjmc" jdbcType="VARCHAR" />
+   	<result column="SXM" property="sxm" jdbcType="VARCHAR" />
+    <result column="ZDZ" property="zdz" jdbcType="DECIMAL" />
+   	<result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />  
+   	<result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+   	<result column="ZDRID" property="zdrid" jdbcType="DECIMAL" />  	
+   	<result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+   	
+   	 <association property="zdr" javaType="com.eray.thjw.po.User">
+			<id column="zdrid" property="id" />
+			<result column="zdr_realname" property="realname" />
+			<result column="zdr_username" property="username" />
+	</association>
+	<association property="zd_department" javaType="com.eray.thjw.po.Department">
+			<id column="zddwid" property="id" />
+			<result column="zd_dprtname" property="dprtname" />
+	</association>
+  </resultMap>
+ 	
+  <insert id="insertPlaneLoadInfo" parameterType="com.eray.thjw.productionplan.po.PlaneLoadInfo">
+		insert into
+		b_s_01801
+		(id,mainid,dprtcode,zxrq,fjzch,zjqdid,bjid,bjmc,sxm,zdz,bz,zt,zddwid,zdrid,zdsj)
+		values
+		(#{id,jdbcType=VARCHAR},#{mainid,jdbcType=VARCHAR},#{dprtcode,jdbcType=VARCHAR},
+		#{zxrq,jdbcType=TIMESTAMP},#{fjzch,jdbcType=VARCHAR},#{zjqdid,jdbcType=VARCHAR},	
+		#{bjid,jdbcType=VARCHAR},#{bjmc,jdbcType=VARCHAR},#{sxm,jdbcType=VARCHAR},
+		#{zdz,jdbcType=DECIMAL},#{bz,jdbcType=VARCHAR},#{zt,jdbcType=DECIMAL},
+		#{zddwid,jdbcType=VARCHAR},#{zdrid,jdbcType=VARCHAR},current_timestamp
+		)
+	</insert>
+	<select id="getInfoByMainid" parameterType="com.eray.thjw.productionplan.po.PlaneLoadInfo" resultMap="BaseResultMap">
+		select id,bjmc,sxm,zdz from b_s_01801 where mainid=#{mainid,jdbcType=VARCHAR} and zt=1	
+	</select>
+	
+		<!-- 批量删除-->
+	<delete id="deleteIds" parameterType="Map" >
+    	delete from b_s_01801
+			where ID in 
+		 <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</delete>
+
+<update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.productionplan.po.PlaneLoadInfo" >
+    update B_S_01801
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zxrq != null" >
+        ZXRQ = #{zxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null" >
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null" >
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjmc != null" >
+        BJMC = #{bjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="sxm != null" >
+        SXM = #{sxm,jdbcType=VARCHAR},
+      </if>
+      <if test="zdz != null" >
+        ZDZ = #{zdz,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+   <delete id="deleteByMainid" parameterType="java.lang.String" >
+    delete from B_S_01801
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </delete>
+  
+  	<select id="getInfoByids" resultMap="BaseResultMap" >
+		select 
+		 id,bjmc,sxm,zdz,mainid
+    	from B_S_01801
+    	where mainid in
+		<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+		 order by bjmc desc
+ 	</select>
+
+  
+  
+  
+</mapper>

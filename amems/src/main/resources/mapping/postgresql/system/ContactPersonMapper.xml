@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.ContactPersonMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.ContactPerson">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="CSID" jdbcType="VARCHAR" property="csid" />
+    <result column="GYSMC" jdbcType="VARCHAR" property="gysmc" />
+    <result column="LXR" jdbcType="VARCHAR" property="lxr" />
+    <result column="ZW" jdbcType="VARCHAR" property="zw" />
+    <result column="SJ" jdbcType="VARCHAR" property="sj" />
+    <result column="ZJ" jdbcType="VARCHAR" property="zj" />
+    <result column="CZ" jdbcType="VARCHAR" property="cz" />
+    <result column="YXDZ" jdbcType="VARCHAR" property="yxdz" />
+    <result column="QQ" jdbcType="VARCHAR" property="qq" />
+    <result column="WX" jdbcType="VARCHAR" property="wx" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.system.po.ContactPerson">
+   		<!--t_user 维护人信息  -->
+	    <association property="whr" javaType="com.eray.thjw.po.User">
+	      <id column="ID" property="id" jdbcType="VARCHAR" />
+		  <result column="DRZHID" property="drzhid" jdbcType="VARCHAR" />
+		  <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+	      <result column="accountName" property="accountName" jdbcType="VARCHAR" />
+	      <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+  		  <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+	    </association>
+	    <!--T_DEPARTMENT 组织机构信息  -->
+	    <association property="dprt" javaType="com.eray.thjw.po.Department">
+	       <id column="ID" property="id" jdbcType="VARCHAR" />
+		    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+		    <result column="PARENTID" property="parentid" jdbcType="VARCHAR" />
+		    <result column="DPRTTYPE" property="dprttype" jdbcType="VARCHAR" />
+		    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		     <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+	    </association>
+	    
+  </resultMap>  
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, CSID, GYSMC, LXR, ZW, SJ, ZJ, CZ, YXDZ, QQ, WX, BZ, ZT, WHRID, WHSJ
+  </sql>
+  
+   <select id="selectBaseMaintenanceList" resultMap="ResultMap">
+	select  t1.ID, t1.DPRTCODE, t1.CSID,t1.ZJ, t1.GYSMC, t1.LXR, t1.ZW, t1.SJ, t1.ZJ, t1.CZ, t1.YXDZ, t1.QQ, t1.WX, t1.BZ, t1.ZT, t1.WHRID, t1.WHSJ, (whr.username || ' ' || whr.realname) username,dprt.DPRTNAME
+	 from d_016 t1 left join d_015 t2 on t1.csid=t2.id
+LEFT JOIN t_user whr on t1.whrid=whr.id and whr.jgdm=t1.dprtcode
+left join T_DEPARTMENT dprt on t1.dprtcode=dprt.id
+		 <include refid="FlightRecordParam1"></include>
+	  	<choose>
+		    	<when test='pagination.sort == "auto"'>
+		    		 order by t1.whsj desc
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 	</choose>
+	 
+  </select>
+  
+  <!-- 搜索参数 -->
+	<sql id="FlightRecordParam1">
+	   where 1=1 and t1.zt=1
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode,jdbcType=VARCHAR}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.zw like '%'||#{keyword,jdbcType=VARCHAR}||'%'
+		       or  t1.lxr like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	     <if test="id != null and id != '' " >   
+            and  t1.id  = #{id,jdbcType=VARCHAR}
+         </if>
+	</sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from D_016
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+    <!-- 根据厂商id查询联系人信息 -->
+  	<select id="queryListByCsId" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from D_016
+	    where ZT = 1 and CSID = #{csid,jdbcType=VARCHAR}
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from D_016
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.ContactPerson">
+    insert into D_016 (ID, DPRTCODE, CSID, 
+      GYSMC, LXR, ZW, SJ, 
+      ZJ, CZ, YXDZ, QQ, 
+      WX, BZ, ZT, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{csid,jdbcType=VARCHAR}, 
+      #{gysmc,jdbcType=VARCHAR}, #{lxr,jdbcType=VARCHAR}, #{zw,jdbcType=VARCHAR}, #{sj,jdbcType=VARCHAR}, 
+      #{zj,jdbcType=VARCHAR}, #{cz,jdbcType=VARCHAR}, #{yxdz,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, 
+      #{wx,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.ContactPerson">
+    insert into D_016
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="csid != null">
+        CSID,
+      </if>
+      <if test="gysmc != null">
+        GYSMC,
+      </if>
+      <if test="lxr != null">
+        LXR,
+      </if>
+      <if test="zw != null">
+        ZW,
+      </if>
+      <if test="sj != null">
+        SJ,
+      </if>
+      <if test="zj != null">
+       ZJ,
+      </if>
+      <if test="cz != null">
+        CZ,
+      </if>
+      <if test="yxdz != null">
+        YXDZ,
+      </if>
+      <if test="qq != null">
+        QQ,
+      </if>
+      <if test="wx != null">
+        WX,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="csid != null">
+        #{csid,jdbcType=VARCHAR},
+      </if>
+      <if test="gysmc != null">
+        #{gysmc,jdbcType=VARCHAR},
+      </if>
+      <if test="lxr != null">
+        #{lxr,jdbcType=VARCHAR},
+      </if>
+      <if test="zw != null">
+        #{zw,jdbcType=VARCHAR},
+      </if>
+      <if test="sj != null">
+        #{sj,jdbcType=VARCHAR},
+      </if>
+      <if test="zj != null">
+        #{zj,jdbcType=VARCHAR},
+      </if>
+      <if test="cz != null">
+        #{cz,jdbcType=VARCHAR},
+      </if>
+      <if test="yxdz != null">
+        #{yxdz,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="wx != null">
+        #{wx,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+        current_timestamp,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.ContactPerson">
+    update D_016
+    <set>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="csid != null">
+        CSID = #{csid,jdbcType=VARCHAR},
+      </if>
+      <if test="gysmc != null">
+        GYSMC = #{gysmc,jdbcType=VARCHAR},
+      </if>
+      <if test="lxr != null">
+        LXR = #{lxr,jdbcType=VARCHAR},
+      </if>
+      <if test="zw != null">
+        ZW = #{zw,jdbcType=VARCHAR},
+      </if>
+      <if test="sj != null">
+        SJ = #{sj,jdbcType=VARCHAR},
+      </if>
+  
+      <if test="zj != null">
+        ZJ = #{zj,jdbcType=VARCHAR},
+      </if>
+      <if test="cz != null">
+        CZ = #{cz,jdbcType=VARCHAR},
+      </if>
+      <if test="yxdz != null">
+        YXDZ = #{yxdz,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        QQ = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="wx != null">
+        WX = #{wx,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ =current_timestamp,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.ContactPerson">
+    update D_016
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      CSID = #{csid,jdbcType=VARCHAR},
+      GYSMC = #{gysmc,jdbcType=VARCHAR},
+      LXR = #{lxr,jdbcType=VARCHAR},
+      ZW = #{zw,jdbcType=VARCHAR},
+      SJ = #{sj,jdbcType=VARCHAR},
+
+      ZJ = #{zj,jdbcType=VARCHAR},
+      CZ = #{cz,jdbcType=VARCHAR},
+      YXDZ = #{yxdz,jdbcType=VARCHAR},
+      QQ = #{qq,jdbcType=VARCHAR},
+      WX = #{wx,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <update id="cancel" parameterType="java.lang.String" >
+    update D_016
+    set 
+      ZT = 0,
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = current_timestamp
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据组织机构查询所有联系人 -->
+  <select id="queryByDprtcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM D_016
+    WHERE ZT = 1 AND DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 批量插入联系人 -->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into D_016 (ID, DPRTCODE, CSID, GYSMC, LXR, ZW, SJ, 
+      ZJ, CZ, YXDZ, QQ, WX, BZ, ZT, WHRID, WHSJ)
+     <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		select
+		  #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.csid,jdbcType=VARCHAR}, 
+	      #{item.gysmc,jdbcType=VARCHAR}, #{item.lxr,jdbcType=VARCHAR}, #{item.zw,jdbcType=VARCHAR}, #{item.sj,jdbcType=VARCHAR}, 
+	      #{item.zj,jdbcType=VARCHAR}, #{item.cz,jdbcType=VARCHAR}, #{item.yxdz,jdbcType=VARCHAR}, #{item.qq,jdbcType=VARCHAR}, 
+	      #{item.wx,jdbcType=VARCHAR}, #{item.bz,jdbcType=VARCHAR}, #{item.zt,jdbcType=DECIMAL}, #{item.whrid,jdbcType=VARCHAR}, 
+	      current_timestamp
+		from dual 
+	 </foreach> 
+  </insert>
+  
+  <!-- 批量修改联系人 -->
+  <update id="batchUpdate" parameterType="java.util.List" >
+  		<foreach collection="list" item="item" index="index" separator="" open="begin;" close="end;"> 
+            UPDATE D_016 
+            <set>       
+			      CSID = #{item.csid,jdbcType=VARCHAR},
+			      GYSMC = #{item.gysmc,jdbcType=VARCHAR},
+			      LXR = #{item.lxr,jdbcType=VARCHAR},
+			      ZW = #{item.zw,jdbcType=VARCHAR},
+			      SJ = #{item.sj,jdbcType=VARCHAR},
+			      ZJ = #{item.zj,jdbcType=VARCHAR},
+			      CZ = #{item.cz,jdbcType=VARCHAR},
+			      YXDZ = #{item.yxdz,jdbcType=VARCHAR},
+			      QQ = #{item.qq,jdbcType=VARCHAR},
+			      WX = #{item.wx,jdbcType=VARCHAR},
+			      BZ = #{item.bz,jdbcType=VARCHAR},
+			      ZT = #{item.zt,jdbcType=DECIMAL},
+			      WHRID = #{item.whrid,jdbcType=VARCHAR},
+			      WHSJ = current_timestamp
+            </set>
+            where ID = #{item.id,jdbcType=VARCHAR};
+        </foreach>
+  </update>
+</mapper>

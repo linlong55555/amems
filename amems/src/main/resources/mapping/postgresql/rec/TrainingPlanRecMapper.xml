@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.TrainingPlanRecMapper" >
+   
+	<!-- 培训计划日志列表 开始 -->
+  
+	<select id="queryList_BP002_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+				SELECT   
+					B.ID AS "ID", 
+					B.DPRTCODE AS "DPRTCODE", 
+					B.JHLX AS "JHLX", 
+					B.PXLB AS "PXLB", 
+					B.KCID AS "KCID", 
+					B.FXBS AS "FXBS", 
+					B.KS AS "KS", 
+					B.PXXS AS "PXXS", 
+					B.KSXS AS "KSXS", 
+					B.ZRR AS "ZRR", 
+					B.PXJG AS "PXJG", 
+					B.XT AS "XT", 
+					B.FJJX AS "FJJX", 
+					B.ZY AS "ZY",
+					B.JH_KSRQ AS "JH_KSRQ",
+					B.JH_KSSJ AS "JH_KSSJ",
+					B.JH_JSSJ AS "JH_JSSJ",
+					B.SJ_KSRQ AS "SJ_KSRQ",
+					B.SJ_KSSJ AS "SJ_KSSJ",
+					B.SJ_JSRQ AS "SJ_JSRQ",
+					B.SJ_JSSJ AS "SJ_JSSJ",
+					B.KCDD AS "KCDD",
+					B.KCNR AS "KCNR",
+					B.JSID AS "JSID",
+					B.JSXM AS "JSXM",
+					B.PXDX AS "PXDX",
+					B.PXYS AS "PXYS",
+					B.PXYS_BZ AS "PXYS_BZ",
+					B.JS_BZ AS "JS_BZ",
+					B.IS_JCFF AS "IS_JCFF",
+					B.SJKS AS "SJKS",
+					B.YCRS AS "YCRS",
+					B.SCRS AS "SCRS",
+					B.BZ AS "BZ",
+					B.ZT AS "ZT",
+					B.ZDJSRID AS "ZDJSRID",
+					B.ZDJSRQ AS "ZDJSRQ",
+					B.ZDJSYY AS "ZDJSYY",
+					B.WHBMID AS "WHBMID",
+					B.WHRID AS "WHRID",
+					B.WHSJ AS "WHSJ", 
+					B.REC_XGLX AS "REC_XGLX",
+			        B.REC_CZRID AS "REC_CZRID",
+			        B.REC_CZSJ AS "REC_CZSJ",
+			        B.REC_IP AS "REC_IP",
+			        B.REC_CZSM AS "REC_CZSM",
+			        B.REC_CZLS AS "REC_CZLS",
+			        B.REC_ZBID AS "REC_ZBID",
+		        	WHR.USERNAME||' '||WHR.REALNAME "WHR_REALNAME",
+		        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME "WHR_REC_REALNAME",
+		        	WHDW.DPRTNAME "WHDW_DRPTNAME",
+		        	(
+	         		CASE 
+	          			WHEN B.ZT = 0 THEN '保存'
+			          	WHEN B.ZT = 1 THEN '下发'
+			          	WHEN B.ZT = 8 THEN '作废'
+			          	WHEN B.ZT = 9 THEN '指定结束'
+			          	WHEN B.ZT = 10 THEN '完成'
+	         		END 
+	     	   		) "ZT_NAME",
+			        BP003.KCBH||' '||(
+			        F_GETREC_HD(B.REC_CZSM)
+            		) AS "REC_HD"
+				FROM B_P_002_REC B 
+				JOIN B_P_003 BP003
+           		ON B.KCID = BP003.ID
+	        	LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+	        	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	        	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.WHBMID
+		        WHERE 1 = 1
+				<if test='paramsMap!=null and paramsMap.REC_CZLS!=null and paramsMap.REC_CZLS!=""'>
+					and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	       	 	</if>
+	        	<if test='paramsMap!=null and paramsMap.ID!=null and paramsMap.ID!=""'>
+	        		and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	        	</if>
+	        	<if test='paramsMap!=null and paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		       		and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		        </if>
+		        <if test='paramsMap!=null and paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and (
+		                BP003.KCBH like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+		           	)
+		    	</if>
+				order by B.REC_CZSJ DESC
+	   
+	</select>
+  
+	<select id="queryDiff_BP002_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT * FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) "RNO",
+            	B.ID AS "ID", 
+				B.DPRTCODE AS "DPRTCODE", 
+				B.JHLX AS "JHLX", 
+				B.PXLB AS "PXLB", 
+				B.KCID AS "KCID", 
+				B.FXBS AS "FXBS", 
+				B.KS AS "KS", 
+				B.PXXS AS "PXXS", 
+				B.KSXS AS "KSXS", 
+				B.ZRR AS "ZRR", 
+				B.PXJG AS "PXJG", 
+				B.XT AS "XT", 
+				B.FJJX AS "FJJX", 
+				B.ZY AS "ZY",
+				B.JH_KSRQ AS "JH_KSRQ",
+				B.JH_KSSJ AS "JH_KSSJ",
+				B.JH_JSSJ AS "JH_JSSJ",
+				B.SJ_KSRQ AS "SJ_KSRQ",
+				B.SJ_KSSJ AS "SJ_KSSJ",
+				B.SJ_JSRQ AS "SJ_JSRQ",
+				B.SJ_JSSJ AS "SJ_JSSJ",
+				B.KCDD AS "KCDD",
+				B.KCNR AS "KCNR",
+				B.JSID AS "JSID",
+				B.JSXM AS "JSXM",
+				B.PXDX AS "PXDX",
+				B.PXYS AS "PXYS",
+				B.PXYS_BZ AS "PXYS_BZ",
+				B.JS_BZ AS "JS_BZ",
+				B.IS_JCFF AS "IS_JCFF",
+				B.SJKS AS "SJKS",
+				B.YCRS AS "YCRS",
+				B.SCRS AS "SCRS",
+				B.BZ AS "BZ",
+				B.ZT AS "ZT",
+				B.ZDJSRID AS "ZDJSRID",
+				B.ZDJSRQ AS "ZDJSRQ",
+				B.ZDJSYY AS "ZDJSYY",
+				B.WHBMID AS "WHBMID",
+				B.WHRID AS "WHRID",
+				B.WHSJ AS "WHSJ", 
+				B.REC_XGLX AS "REC_XGLX",
+		        B.REC_CZRID AS "REC_CZRID",
+		        B.REC_CZSJ AS "REC_CZSJ",
+		        B.REC_IP AS "REC_IP",
+		        B.REC_CZSM AS "REC_CZSM",
+		        B.REC_CZLS AS "REC_CZLS",
+		        B.REC_ZBID AS "REC_ZBID",
+            	WHR.USERNAME||' '||WHR.REALNAME "WHR_REALNAME",
+	        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME "WHR_REC_REALNAME",
+	        	WHDW.DPRTNAME "WHDW_DRPTNAME",
+	        	BP003.KCBH as "KCBH",
+	        	BP003.KCMC as "KCMC",
+	        	to_char(B.JH_KSRQ,'YYYY-MM-DD') "JHKSRQ",
+	        	to_char(B.JH_JSRQ,'YYYY-MM-DD') "JHJSRQ",
+	        	to_char(B.SJ_KSRQ,'YYYY-MM-DD') "SJKSRQ",
+	        	to_char(B.SJ_JSRQ,'YYYY-MM-DD') "SJJSRQ",
+            	(
+         		CASE 
+          			WHEN B.ZT = 0 THEN '保存'
+		          	WHEN B.ZT = 1 THEN '下发'
+		          	WHEN B.ZT = 8 THEN '作废'
+		          	WHEN B.ZT = 9 THEN '指定结束'
+		          	WHEN B.ZT = 10 THEN '完成'
+         		END 
+     	   		) "ZT_NAME",
+     	   		(
+         		CASE 
+          			WHEN B.JHLX = 1 THEN '年度培训计划'
+		          	WHEN B.JHLX = 2 THEN '临时培训计划'
+         		END 
+     	   		) "JHLX_VALUE",
+     	   		(
+         		CASE 
+          			WHEN B.FXBS = 1 THEN '初训'
+		          	WHEN B.FXBS = 2 THEN '复训'
+         		END 
+     	   		) "FXBS_VALUE",
+     	   		(
+         		CASE 
+          			WHEN B.JS_BZ = 1 THEN '是'
+		          	WHEN B.JS_BZ = 0 THEN '否'
+         		END 
+     	   		) "BZ_NAME",
+     	   		(
+         		CASE 
+          			WHEN B.IS_JCFF = 1 THEN '是'
+		          	WHEN B.IS_JCFF = 0 THEN '否'
+         		END 
+     	   		) "JCFF_NAME",
+     	   		BP003.ZQZ || (
+         		CASE 
+          			WHEN BP003.ZQDW = 1 THEN '天'
+		          	WHEN BP003.ZQDW = 2 THEN '月'
+		          	WHEN BP003.ZQDW = 3 THEN '年'
+         		END 
+     	   		) "FXJG",
+     	   		'课程代码:'||BP003.KCBH || ' ' || (
+            	F_GETREC_HD(B.REC_CZSM)
+            	) AS "REC_HD",
+            	(CASE 
+            		WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+            		ELSE 'LAST'
+            	END
+            	) "DATA_VERSION"
+               
+			FROM B_P_002_REC B
+			JOIN B_P_003 BP003
+            ON B.KCID = BP003.ID
+			LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+          	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+          	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.WHBMID
+         	WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           	AND (select rec_czsj from B_P_002_REC where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+	</select>
+	
+  	<select id="queryDiff_BP00201_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT 
+			B.ID AS "ID",
+      	 	B.DPRTCODE AS "DPRTCODE",
+       		B.PXJHID AS "PXJHID",
+       		B.WXRYDAID AS "WXRYDAID",
+       		B.XM AS "XM",
+       		B.GZDW AS "GZDW",
+       		B.KQ AS "KQ",
+       		B.CQL AS "CQL",
+       		B.ZS AS "ZS",
+       		B.CJ AS "CJ",
+       		B.KHJG AS "KHJG",
+       		B.XCPXRQ AS "XCPXRQ",
+       		B.KCID AS "KCID",
+       		B.KCBM AS "KCBM",
+       		B.KCNR AS "KCNR",
+       		B.PXGH AS "PXGH",
+       		B.BZ AS "BZ",
+       		B.IS_YC AS "IS_YC",
+       		B.IS_SC AS "IS_SC",
+       		B.CYBS AS "CYBS",
+       		B.PXLB AS "PXLB",
+       		B.FXBS AS "FXBS",
+       		B.PXXS AS "PXXS",
+       		B.KSXS AS "KSXS",
+       		B.KCDD AS "KCDD",
+       		B.JSXM AS "JSXM",
+       		B.SJ_KSRQ AS "SJ_KSRQ",
+       		B.SJ_KSSJ AS "SJ_KSSJ",
+       		B.SJ_JSRQ AS "SJ_JSRQ",
+       		B.SJ_JSSJ AS "SJ_JSSJ",
+       		B.SJKS AS "SJKS",
+       		B.ZT AS "ZT",
+       		B.JSZT AS "JSZT",
+       		B.WHBMID AS "WHBMID",
+       		B.WHRID AS "WHRID",
+       		B.WHSJ AS "WHSJ",
+       		B.REC_XGLX AS "REC_XGLX",
+       		B.REC_CZRID AS "REC_CZRID",
+       		B.REC_CZSJ AS "REC_CZSJ",
+       		B.REC_IP AS "REC_IP",
+       		B.REC_CZSM AS "REC_CZSM",
+       		B.REC_CZLS AS "REC_CZLS",
+       		B.REC_ZBID AS "REC_ZBID",
+			'CURRENT' AS "DATA_VERSION" ,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME "WHR_REC_REALNAME",
+			to_char(B.XCPXRQ,'YYYY-MM-DD') "XCPX_RQ",
+			to_char(B.SJ_KSRQ,'YYYY-MM-DD') "SJKSRQ",
+	        to_char(B.SJ_JSRQ,'YYYY-MM-DD') "SJJSRQ",
+   	   		(
+       		CASE 
+       			WHEN B.ZT = 0 THEN '无效'
+          		WHEN B.ZT = 1 THEN '有效'
+       		END 
+   	   		) "ZT_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.KQ = 0 THEN '未参加'
+          		WHEN B.KQ = 1 THEN '出勤'
+       		END 
+   	   		) "KQ_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.CQL is not null THEN B.CQL||'%'
+       		END 
+   	   		) "CQL_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.KHJG = 0 THEN '未通过'
+          		WHEN B.KHJG = 1 THEN '通过'
+       		END 
+   	   		) "KHJG_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.IS_YC = 0 THEN '否'
+          		WHEN B.IS_YC = 1 THEN '是'
+       		END 
+   	   		) "YC_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.IS_SC = 0 THEN '否'
+          		WHEN B.IS_SC = 1 THEN '是'
+       		END 
+   	   		) "SC_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.CYBS = 0 THEN '未查阅'
+          		WHEN B.CYBS = 1 THEN '已查阅'
+       		END 
+   	   		) "CYBS_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.FXBS = 0 THEN '初训'
+          		WHEN B.FXBS = 1 THEN '复训'
+       		END 
+   	   		) "FXBS_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.JSZT = 0 THEN '未接收'
+          		WHEN B.JSZT = 1 THEN '已接收'
+       		END 
+   	   		) "JSZT_NAME",
+			(CASE 
+	         	WHEN B.REC_XGLX = 1 THEN '新增'
+	         	WHEN B.REC_XGLX = 2 THEN '修改'
+	         	WHEN B.REC_XGLX = 3 THEN '删除'
+	      	END
+	      	) "REC_XGLX_TEXT" ,
+			F_GETREC_HD(B.REC_CZSM) AS "REC_HD"
+	  	FROM B_P_00201_REC B
+	  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	 	WHERE B.PXJHID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	 	
+		UNION ALL
+	
+		SELECT 
+			B.ID AS "ID",
+      	 	B.DPRTCODE AS "DPRTCODE",
+       		B.PXJHID AS "PXJHID",
+       		B.WXRYDAID AS "WXRYDAID",
+       		B.XM AS "XM",
+       		B.GZDW AS "GZDW",
+       		B.KQ AS "KQ",
+       		B.CQL AS "CQL",
+       		B.ZS AS "ZS",
+       		B.CJ AS "CJ",
+       		B.KHJG AS "KHJG",
+       		B.XCPXRQ AS "XCPXRQ",
+       		B.KCID AS "KCID",
+       		B.KCBM AS "KCBM",
+       		B.KCNR AS "KCNR",
+       		B.PXGH AS "PXGH",
+       		B.BZ AS "BZ",
+       		B.IS_YC AS "IS_YC",
+       		B.IS_SC AS "IS_SC",
+       		B.CYBS AS "CYBS",
+       		B.PXLB AS "PXLB",
+       		B.FXBS AS "FXBS",
+       		B.PXXS AS "PXXS",
+       		B.KSXS AS "KSXS",
+       		B.KCDD AS "KCDD",
+       		B.JSXM AS "JSXM",
+       		B.SJ_KSRQ AS "SJ_KSRQ",
+       		B.SJ_KSSJ AS "SJ_KSSJ",
+       		B.SJ_JSRQ AS "SJ_JSRQ",
+       		B.SJ_JSSJ AS "SJ_JSSJ",
+       		B.SJKS AS "SJKS",
+       		B.ZT AS "ZT",
+       		B.JSZT AS "JSZT",
+       		B.WHBMID AS "WHBMID",
+       		B.WHRID AS "WHRID",
+       		B.WHSJ AS "WHSJ",
+       		B.REC_XGLX AS "REC_XGLX",
+       		B.REC_CZRID AS "REC_CZRID",
+       		B.REC_CZSJ AS "REC_CZSJ",
+       		B.REC_IP AS "REC_IP",
+       		B.REC_CZSM AS "REC_CZSM",
+       		B.REC_CZLS AS "REC_CZLS",
+       		B.REC_ZBID AS "REC_ZBID", 
+			'LAST' AS "DATA_VERSION" ,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME "WHR_REC_REALNAME",
+			to_char(B.XCPXRQ,'YYYY-MM-DD') "XCPX_RQ",
+			to_char(B.SJ_KSRQ,'YYYY-MM-DD') "SJKSRQ",
+	        to_char(B.SJ_JSRQ,'YYYY-MM-DD') "SJJSRQ",
+   	   		(
+       		CASE 
+       			WHEN B.ZT = 0 THEN '无效'
+          		WHEN B.ZT = 1 THEN '有效'
+       		END 
+   	   		) "ZT_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.KQ = 0 THEN '未参加'
+          		WHEN B.KQ = 1 THEN '出勤'
+       		END 
+   	   		) "KQ_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.CQL is not null THEN B.CQL||'%'
+       		END 
+   	   		) "CQL_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.KHJG = 0 THEN '未通过'
+          		WHEN B.KHJG = 1 THEN '通过'
+       		END 
+   	   		) "KHJG_NAME",
+   	   		   	   		(
+       		CASE 
+       			WHEN B.IS_YC = 0 THEN '否'
+          		WHEN B.IS_YC = 1 THEN '是'
+       		END 
+   	   		) "YC_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.IS_SC = 0 THEN '否'
+          		WHEN B.IS_SC = 1 THEN '是'
+       		END 
+   	   		) "SC_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.CYBS = 0 THEN '未查阅'
+          		WHEN B.CYBS = 1 THEN '已查阅'
+       		END 
+   	   		) "CYBS_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.FXBS = 0 THEN '初训'
+          		WHEN B.FXBS = 1 THEN '复训'
+       		END 
+   	   		) "FXBS_NAME",
+   	   		(
+       		CASE 
+       			WHEN B.JSZT = 0 THEN '未接收'
+          		WHEN B.JSZT = 1 THEN '已接收'
+       		END 
+   	   		) "JSZT_NAME",
+			(CASE 
+         		WHEN B.REC_XGLX = 1 THEN '新增'
+         		WHEN B.REC_XGLX = 2 THEN '修改'
+         		WHEN B.REC_XGLX = 3 THEN '删除'
+      		END) "REC_XGLX_TEXT" ,
+			F_GETREC_HD(B.REC_CZSM) AS "REC_HD"
+		FROM B_P_00201_REC B
+		LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM B_P_002_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM B_P_002_REC C WHERE 
+		              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) AS T WHERE 1 = RNO                        
+            ) 
+  	</select>
+  	
+  	<!-- 培训计划日志 结束 -->
+
+</mapper>

@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.DemandSafeguardDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.DemandSafeguardDetail" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="WLLB" property="wllb" jdbcType="DECIMAL" />
+    <result column="BJID" property="bjid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="BJMC" property="bjmc" jdbcType="VARCHAR" />
+    <result column="XINGH" property="xingh" jdbcType="VARCHAR" />
+    <result column="GG" property="gg" jdbcType="VARCHAR" />
+    <result column="JHLY" property="jhly" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="BZJH" property="bzjh" jdbcType="VARCHAR" />
+    <result column="XQSL" property="xqsl" jdbcType="DECIMAL" />
+    <result column="DW" property="dw" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="THJ" property="thj" jdbcType="VARCHAR" />
+    <result column="BZZT" property="bzzt" jdbcType="DECIMAL" />
+    <result column="BZBZ" property="bzbz" jdbcType="VARCHAR" />
+    <result column="XQBS" property="xqbs" jdbcType="DECIMAL" />
+    <result column="QRBS" property="qrbs" jdbcType="DECIMAL" />
+    
+    <result column="ZYWMS" property="paramsMap.zywms" jdbcType="VARCHAR" /><!-- 部件中英文 -->
+    <result column="jg_dprtname" property="paramsMap.jg_dprtname" jdbcType="VARCHAR" />
+    <result column="whbm_dprtname" property="paramsMap.whbm_dprtname" jdbcType="VARCHAR" />
+    <result column="xqlb" property="paramsMap.xqlb" jdbcType="VARCHAR" />
+    <result column="fjzch" property="paramsMap.fjzch" jdbcType="VARCHAR" />
+    <result column="jhsyrq" property="paramsMap.jhsyrq" jdbcType="VARCHAR" />
+    <result column="gmjy" property="paramsMap.gmjy" jdbcType="VARCHAR" />
+    <result column="xqyy" property="paramsMap.xqyy" jdbcType="VARCHAR" />
+    <result column="jjcd" property="paramsMap.jjcd" jdbcType="VARCHAR" />
+    <result column="is_yxfx" property="paramsMap.is_yxfx" jdbcType="VARCHAR" />
+    <result column="is_fjhtc" property="paramsMap.is_fjhtc" jdbcType="VARCHAR" />
+    <result column="bh" property="paramsMap.bh" jdbcType="VARCHAR" />
+    <result column="kcsl" property="paramsMap.kcsl" jdbcType="VARCHAR" />
+    <result column="DJSL" property="paramsMap.djsl" jdbcType="VARCHAR" /><!-- 冻结数量-->
+    <result column="TDJXX" property="paramsMap.tdjxx" jdbcType="VARCHAR" /><!-- 替代件信息-->
+    <result column="IS_WARNING" property="paramsMap.isWarning" jdbcType="DECIMAL" /><!-- 预警-->
+    <result column="LYLX" property="paramsMap.lylx" jdbcType="DECIMAL" />
+    <result column="LYID" property="paramsMap.lyid" jdbcType="VARCHAR" />
+    <result column="LYBH" property="paramsMap.lybh" jdbcType="VARCHAR" />
+    <result column="BS145" property="paramsMap.bs145" jdbcType="DECIMAL" />
+    <result column="JLDW" property="paramsMap.jldw" jdbcType="VARCHAR" />
+    <result column="Dzwms" property="paramsMap.Dzwms" jdbcType="VARCHAR" />
+    <result column="Dywms" property="paramsMap.Dywms" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+   <resultMap id="DemandSafeguardDetailToAllMap" extends="BaseResultMap" type="com.eray.thjw.material2.po.DemandSafeguardDetail">
+	    <association property="whr" javaType="com.eray.thjw.po.User">  
+	        <id column="WHRID" property="id"/>  
+	        <result column="whr_username" property="username"/>  
+	        <result column="whr_realname" property="realname"/>  
+	    </association>  
+	    <association property="sqr" javaType="com.eray.thjw.po.User">  
+	        <id column="sqrid" property="id"/>  
+	        <result column="sqr_username" property="username"/>  
+	        <result column="sqr_realname" property="realname"/>  
+	    </association>  
+  </resultMap>
+  
+  <update id="updateBatch" parameterType="com.eray.thjw.material2.po.DemandSafeguardDetail"> 
+  	update B_H_02801
+    	set 
+    		 <if test="bzzt != null" >
+		        bzzt = #{bzzt,jdbcType=VARCHAR},
+		     </if>
+    		 <if test="bzbz != null" >
+		        bzbz = #{bzbz,jdbcType=VARCHAR},
+		     </if>
+    		 <if test="qrbs != null" >
+		        qrbs = #{qrbs,jdbcType=VARCHAR},
+		     </if>
+    		whrid = #{whrid,jdbcType=VARCHAR},
+    		whbmid = #{whbmid,jdbcType=VARCHAR},
+      		whsj = sysdate
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+  </update>
+  
+  <select id="queryAnalysisList" resultMap="BaseResultMap" parameterType="com.eray.thjw.material2.po.DemandSafeguardDetail" >
+    select 
+    B1.ID, B1.BJID, B1.BJH, B1.BJMC, B1.XQSL, B1.DW, B2.fjzch
+    ,nvl(H001.KCSL,0) KCSL
+    ,nvl(H001.DJSL,0) DJSL
+    ,D.YWMS ||''|| D.ZWMS ZYWMS
+    ,D017.TDJXX
+	,case
+        when COALESCE(B1.XQSL, 0) &gt; COALESCE(H001.kcsl, 0) then
+         1
+        else
+         0
+    end is_warning
+    from B_H_02801 B1
+    	 left join B_H_028 B2 on B1.MAINID=B2.ID
+    	 LEFT JOIN D_008 D ON D.ZT = 1 and B2.DPRTCODE = D.DPRTCODE and D.BJH = B1.BJH
+    	 --部件库存信息
+		  LEFT JOIN (SELECT H001.DPRTCODE,
+		                    H001.BJH,
+		                    SUM(H001.KCSL) KCSL,
+		                    SUM(H001.DJSL) DJSL
+		               FROM B_H_001 H001
+		              WHERE H001.DPRTCODE = #{paramsMap.dprtcode, jdbcType=VARCHAR}
+		                AND H001.ZT = 2
+		              GROUP BY H001.DPRTCODE, H001.BJH) H001
+		              ON H001.DPRTCODE = B2.DPRTCODE
+  					  AND H001.BJH = B1.BJH
+  	    <!-- 等效替代件库存信息 -->
+		  LEFT JOIN (SELECT D017.DPRTCODE,
+		                    D017.BJH,
+		                    WM_CONCAT(D017.TDJH || '#_#' || H001.TDJKCSL || '#_#' ||
+		                              H001.TDJDJSL || '#_#' || D017.TDJMS) TDJXX
+		               FROM (SELECT D_017.DPRTCODE,
+		                            D_017.BJH,
+		                            D_017.TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.ZT = 1
+		                     UNION
+		                     SELECT D_017.DPRTCODE,
+		                            D_017.TDJH     BJH,
+		                            D_017.BJH      TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.KNXBS = 2
+		                        AND D_017.ZT = 1) D017
+		               LEFT JOIN (SELECT H001.DPRTCODE,
+		                                H001.BJH,
+		                                SUM(H001.KCSL) TDJKCSL,
+		                                SUM(H001.DJSL) TDJDJSL
+		                           FROM B_H_001 H001
+		                          WHERE H001.DPRTCODE = #{paramsMap.dprtcode, jdbcType=VARCHAR}
+		                            AND H001.ZT = 2
+		                          GROUP BY H001.DPRTCODE, H001.BJH) H001
+		                 ON H001.DPRTCODE = D017.DPRTCODE
+		                AND H001.BJH = D017.TDJH
+		              GROUP BY D017.DPRTCODE, D017.BJH) D017
+		    ON D017.DPRTCODE = B2.DPRTCODE
+		   AND D017.BJH = B1.BJH
+    	 
+     where 
+	   1 = 1
+	   	 <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (  lower(B1.BJH) like lower('%'||#{paramsMap.keyword, jdbcType=VARCHAR}||'%')
+		    	or lower(D.YWMS) like lower('%'||#{paramsMap.keyword, jdbcType=VARCHAR}||'%')
+		    	or lower(D.ZWMS) like lower('%'||#{paramsMap.keyword, jdbcType=VARCHAR}||'%')
+		    	)
+		</if>
+	     <if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+            and  B2.dprtcode = #{paramsMap.dprtcode, jdbcType=VARCHAR}
+         </if>
+         <if test="paramsMap != null and paramsMap.fjzch != null and paramsMap.fjzch != ''">
+            and  B2.fjzch = #{paramsMap.fjzch, jdbcType=VARCHAR}
+         </if>
+         <if test="paramsMap != null and paramsMap.fjzch == ''">
+            and  (B2.fjzch = '-' or B2.fjzch is null)
+         </if>
+	     <if test="idList != null and idList != '' and idList.size > 0 ">
+		    and B1.ID in
+     			 <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">  
+          			#{item, jdbcType=VARCHAR}  
+     			 </foreach>  
+		</if>
+		<if test="paramsMap != null and paramsMap.isWarning == 1">
+			AND COALESCE(B1.XQSL, 0) &gt; COALESCE(H001.KCSL, 0)
+	   	</if>
+	   	<if test="paramsMap != null and paramsMap.isWarning == 0">
+		 	AND COALESCE(B1.XQSL, 0) &lt;= COALESCE(H001.KCSL, 0)
+	   	</if>
+		 order by case
+		            when COALESCE(B1.XQSL, 0) &gt; COALESCE(H001.kcsl, 0) then
+		             1
+		            else
+		             0
+		          end desc,
+		          B1.BJH
+  </select>
+  
+  <select id="queryAll" resultMap="DemandSafeguardDetailToAllMap" parameterType="com.eray.thjw.material2.po.DemandSafeguardDetail" >
+    select 
+    <include refid="Base_Column_List" />
+    ,B_H_028.xqlb
+    ,B_H_028.fjzch
+    ,B_H_028.jhsyrq
+    ,B_H_028.gmjy
+    ,B_H_028.jjcd
+    ,B_H_028.is_yxfx
+    ,B_H_028.is_fjhtc
+    ,B_H_028.bh
+    ,B_H_028.xqyy
+    ,B_H_028.sqrid
+    ,B_H_028.lylx
+    ,B_H_028.lyid
+    ,B_H_028.lybh
+    ,B_H_028.bs145
+    ,nvl(H001.KCSL,0) KCSL
+    ,H001.JLDW
+    ,whr.realname whr_realname, whr.username whr_username
+    ,sqr.realname sqr_realname, sqr.username sqr_username,
+    whbm.dprtname whbm_dprtname,
+    d008.zwms Dzwms,
+    d008.ywms Dywms,
+    jg.dprtname jg_dprtname
+    from B_H_02801
+    	 left join B_H_028  on (B_H_02801.MAINID=B_H_028.ID)
+    	 left join t_user whr on (B_H_02801.WHRID = whr.id)
+    	 left join t_department whbm on (B_H_02801.whbmid = whbm.id)
+    	 left join t_department jg on(B_H_028.dprtcode=jg.id)
+    	 left join t_user sqr on(B_H_028.sqrid=sqr.id)
+    	 left join d_008 d008 on d008.bjh = B_H_02801.bjh and d008.dprtcode = B_H_028.dprtcode
+    	 --部件库存信息
+		  LEFT JOIN (SELECT H001.DPRTCODE,
+		                    H001.BJH,
+		                    SUM(H001.KCSL) KCSL,
+		                    SUM(H001.DJSL) DJSL,
+		                    H001.JLDW
+		               FROM B_H_001 H001
+		              WHERE H001.DPRTCODE = #{paramsMap.dprtcode}
+		                AND H001.ZT = 2
+		              GROUP BY H001.DPRTCODE, H001.BJH,H001.JLDW) H001
+		              ON H001.DPRTCODE = B_H_028.DPRTCODE
+  					  AND H001.BJH = B_H_02801.BJH
+    	 
+     <include refid="DemandSafeguardDetailParam"></include> 
+    	<choose>                                                                                 
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by B_H_02801.whsj asc
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	  </choose> 
+  </select>
+  
+   <!-- 查询参数 -->
+	<sql id="DemandSafeguardDetailParam">
+	   where 
+	   1 = 1
+	    <if test="paramsMap != null and paramsMap.wllbList != null and paramsMap.wllbList != ''">
+		    and B_H_02801.wllb in
+     			 <foreach item="item" index="index" collection="paramsMap.wllbList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+	    <if test="paramsMap != null and paramsMap.xlh != null and paramsMap.xlh != ''">
+		    and (   lower(B_H_02801.xlh) like lower('%'||#{paramsMap.xlh}||'%')  )              <!-- 左右匹配 查询关键字 -->
+		</if>
+	   <if test="paramsMap != null and paramsMap.tbr != null and paramsMap.tbr != ''">
+		    and (   lower(sqr.realname) like lower('%'||#{paramsMap.tbr}||'%')
+		    	or lower(sqr.username) like lower('%'||#{paramsMap.tbr}||'%')
+		    	)              <!-- 左右匹配 查询关键字 -->
+		</if>
+	   <if test="paramsMap != null and paramsMap.bj != null and paramsMap.bj != ''">
+		    and (   lower(B_H_02801.bjh) like lower('%'||#{paramsMap.bj}||'%')
+		    	or lower(B_H_02801.bjmc) like lower('%'||#{paramsMap.bj}||'%')
+		    	or lower(B_H_02801.xingh) like lower('%'||#{paramsMap.bj}||'%')
+		    	or lower(B_H_02801.gg) like lower('%'||#{paramsMap.bj}||'%')
+		    	
+		    	)              <!-- 左右匹配 查询关键字 -->
+		</if>
+	   	 <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		    and (   lower(B_H_028.XQYY) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B_H_02801.BZBZ) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B_H_02801.zjh) like lower('%'||#{paramsMap.keyword}||'%')
+		    	or lower(B_H_028.bh) like lower('%'||#{paramsMap.keyword}||'%')
+		    	
+		    	)              <!-- 左右匹配 查询关键字 -->
+		</if>
+	     <if test="paramsMap != null and paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+            and  B_H_028.dprtcode = #{paramsMap.dprtcode}
+         </if>
+           <if test="paramsMap != null and paramsMap.fjzch != null and paramsMap.fjzch != '' and paramsMap.fjzch != '-'.toString() ">
+            and  B_H_028.fjzch = #{paramsMap.fjzch}
+         </if>
+          <if test="paramsMap != null and paramsMap.fjzch != null and paramsMap.fjzch != '' and paramsMap.fjzch == '-'.toString() ">
+            and  B_H_028.fjzch is null
+         </if>
+          <if test="paramsMap != null and paramsMap.xqlb != null and paramsMap.xqlb != ''">
+            and  B_H_028.xqlb = #{paramsMap.xqlb}
+         </if> 
+          <if test="paramsMap != null and paramsMap.isYxfx != null and paramsMap.isYxfx != ''">
+            and  B_H_028.is_yxfx = #{paramsMap.isYxfx}
+         </if>
+          <if test="paramsMap != null and paramsMap.isFjhtc != null and paramsMap.isFjhtc != ''">
+            and  B_H_028.is_fjhtc = #{paramsMap.isFjhtc}
+         </if>
+          <if test="paramsMap != null and paramsMap.jjcd != null and paramsMap.jjcd != ''">
+            and  B_H_028.jjcd = #{paramsMap.jjcd}
+         </if> 
+         <if test="qrbs != null and qrbs == 0 ">
+            and  B_H_02801.qrbs = 0
+         </if>
+         <if test="qrbs != null and qrbs == 1 ">
+            and  B_H_02801.qrbs in (0,1)
+         </if>
+	     <if test="paramsMap != null and paramsMap.bzztList != null and paramsMap.bzztList != ''">
+		    and B_H_02801.bzzt in
+     			 <foreach item="item" index="index" collection="paramsMap.bzztList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		<if test="paramsMap != null and paramsMap.jhsyrqBegin != null and paramsMap.jhsyrqBegin != ''">
+		    and B_H_028.jhsyrq &gt;= to_date(#{paramsMap.jhsyrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.jhsyrqEnd != null and paramsMap.jhsyrqEnd != ''">
+		    and B_H_028.jhsyrq &lt;= to_date(#{paramsMap.jhsyrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if> 
+	   
+	</sql>
+  
+  
+  <sql id="Base_Column_List" >
+    B_H_02801.ID, B_H_02801.MAINID, B_H_02801.WHBMID, B_H_02801.WHRID, B_H_02801.WHSJ, B_H_02801.WLLB, B_H_02801.BJID, 
+    B_H_02801.BJH, B_H_02801.BJMC, B_H_02801.XINGH, B_H_02801.GG, B_H_02801.JHLY, B_H_02801.ZJH, B_H_02801.BZJH, 
+    B_H_02801.XQSL, B_H_02801.DW, B_H_02801.XLH, B_H_02801.THJ, B_H_02801.BZZT, B_H_02801.BZBZ, B_H_02801.XQBS, B_H_02801.QRBS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_02801
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_02801
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.DemandSafeguardDetail" >
+    insert into B_H_02801 (ID, MAINID, WHBMID, 
+      WHRID, WHSJ, WLLB, 
+      BJID, BJH, BJMC, XINGH, 
+      GG, JHLY, ZJH, BZJH, 
+      XQSL, DW, XLH, THJ, 
+      BZZT, BZBZ, XQBS, QRBS
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{wllb,jdbcType=DECIMAL}, 
+      #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{bjmc,jdbcType=VARCHAR}, #{xingh,jdbcType=VARCHAR}, 
+      #{gg,jdbcType=VARCHAR}, #{jhly,jdbcType=VARCHAR}, #{zjh,jdbcType=VARCHAR}, #{bzjh,jdbcType=VARCHAR}, 
+      #{xqsl,jdbcType=DECIMAL}, #{dw,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{thj,jdbcType=VARCHAR}, 
+      #{bzzt,jdbcType=DECIMAL}, #{bzbz,jdbcType=VARCHAR}, #{xqbs,jdbcType=DECIMAL}, #{qrbs,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.DemandSafeguardDetail" >
+    insert into B_H_02801
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="wllb != null" >
+        WLLB,
+      </if>
+      <if test="bjid != null" >
+        BJID,
+      </if>
+      <if test="bjh != null" >
+        BJH,
+      </if>
+      <if test="bjmc != null" >
+        BJMC,
+      </if>
+      <if test="xingh != null" >
+        XINGH,
+      </if>
+      <if test="gg != null" >
+        GG,
+      </if>
+      <if test="jhly != null" >
+        JHLY,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="bzjh != null" >
+        BZJH,
+      </if>
+      <if test="xqsl != null" >
+        XQSL,
+      </if>
+      <if test="dw != null" >
+        DW,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="thj != null" >
+        THJ,
+      </if>
+      <if test="bzzt != null" >
+        BZZT,
+      </if>
+      <if test="bzbz != null" >
+        BZBZ,
+      </if>
+      <if test="xqbs != null" >
+        XQBS,
+      </if>
+      <if test="qrbs != null" >
+        QRBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wllb != null" >
+        #{wllb,jdbcType=DECIMAL},
+      </if>
+      <if test="bjid != null" >
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjmc != null" >
+        #{bjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="xingh != null" >
+        #{xingh,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null" >
+        #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="jhly != null" >
+        #{jhly,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bzjh != null" >
+        #{bzjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xqsl != null" >
+        #{xqsl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        #{dw,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="thj != null" >
+        #{thj,jdbcType=VARCHAR},
+      </if>
+      <if test="bzzt != null" >
+        #{bzzt,jdbcType=DECIMAL},
+      </if>
+      <if test="bzbz != null" >
+        #{bzbz,jdbcType=VARCHAR},
+      </if>
+      <if test="xqbs != null" >
+        #{xqbs,jdbcType=DECIMAL},
+      </if>
+      <if test="qrbs != null" >
+        #{qrbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.DemandSafeguardDetail" >
+    update B_H_02801
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wllb != null" >
+        WLLB = #{wllb,jdbcType=DECIMAL},
+      </if>
+      <if test="bjid != null" >
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null" >
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjmc != null" >
+        BJMC = #{bjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="xingh != null" >
+        XINGH = #{xingh,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null" >
+        GG = #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="jhly != null" >
+        JHLY = #{jhly,jdbcType=VARCHAR},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="bzjh != null" >
+        BZJH = #{bzjh,jdbcType=VARCHAR},
+      </if>
+      <if test="xqsl != null" >
+        XQSL = #{xqsl,jdbcType=DECIMAL},
+      </if>
+      <if test="dw != null" >
+        DW = #{dw,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="thj != null" >
+        THJ = #{thj,jdbcType=VARCHAR},
+      </if>
+      <if test="bzzt != null" >
+        BZZT = #{bzzt,jdbcType=DECIMAL},
+      </if>
+      <if test="bzbz != null" >
+        BZBZ = #{bzbz,jdbcType=VARCHAR},
+      </if>
+      <if test="xqbs != null" >
+        XQBS = #{xqbs,jdbcType=DECIMAL},
+      </if>
+      <if test="qrbs != null" >
+        QRBS = #{qrbs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.DemandSafeguardDetail" >
+    update B_H_02801
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      WLLB = #{wllb,jdbcType=DECIMAL},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      BJMC = #{bjmc,jdbcType=VARCHAR},
+      XINGH = #{xingh,jdbcType=VARCHAR},
+      GG = #{gg,jdbcType=VARCHAR},
+      JHLY = #{jhly,jdbcType=VARCHAR},
+      ZJH = #{zjh,jdbcType=VARCHAR},
+      BZJH = #{bzjh,jdbcType=VARCHAR},
+      XQSL = #{xqsl,jdbcType=DECIMAL},
+      DW = #{dw,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      THJ = #{thj,jdbcType=VARCHAR},
+      BZZT = #{bzzt,jdbcType=DECIMAL},
+      BZBZ = #{bzbz,jdbcType=VARCHAR},
+      XQBS = #{xqbs,jdbcType=DECIMAL},
+      QRBS = #{qrbs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

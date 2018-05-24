@@ -1,0 +1,274 @@
+<%@ page contentType="text/html; charset=utf-8" language="java" errorPage=""%>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title></title>
+	<%@ include file="/WEB-INF/views/common_new.jsp"%>
+	<script>
+	var pageParam = '${param.pageParam}';
+	</script>
+	<style type="text/css">
+	.multiselect{
+	height:34px;
+	overflow:hidden;
+	
+	}
+	</style>
+</head>
+<body>
+	<input type="hidden" id="rwxfabb" value="${erayFns:escapeStr(rwxfabb)}" />
+	<div class="page-content ">
+		<div class="panel panel-primary">
+			<div class="panel-heading" id="NavigationBar"></div>		
+		
+			<div class="panel-body">
+			
+				<form id="form">
+					<div class="panel-heading margin-left-16 padding-top-3 margin-bottom-10 " style="border-bottom: 1px solid #ccc;">
+						<div class="font-size-16 line-height-18">基本信息</div>
+						<div>Basic Information</div>
+					</div>
+					
+					<div class="col-lg-12 col-sm-12 col-xs-12 padding-left-0 padding-right-0 margin-bottom-10">
+					
+						<div class=" col-lg-3 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-4 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18">维修方案编号</div>
+								<div class="font-size-9 line-height-18">No.</div>
+							</label>
+							<div class="col-lg-8 col-sm-8 col-xs-8 padding-left-8 padding-right-0">
+								<input type="text" id="wxfabh" name="wxfabh" value="${erayFns:escapeStr(maintenance.wxfabh)}" class="form-control " readonly />
+							</div>
+						</div>
+						
+						<div class=" col-lg-3 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-4 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18">维修方案名称</div>
+								<div class="font-size-9 line-height-18">Name</div>
+							</label>
+							<div class="col-lg-8 col-sm-8 col-xs-8 padding-left-8 padding-right-0">
+								<input type="text" id="wxfamc" name="wxfamc" value="${erayFns:escapeStr(maintenance.zwms)}" class="form-control " readonly />
+							</div>
+						</div>
+					
+						<div class=" col-lg-3 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-4 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18">版本</div>
+								<div class="font-size-9 line-height-18">Revision</div>
+							</label>
+							<div class="col-lg-8 col-sm-8 col-xs-8 padding-left-8 padding-right-0">
+								<input type="text" id="bb" name="bb" class="form-control" value="${erayFns:escapeStr(maintenance.bb)}" placeholder='' onkeyup='vilidateBb(this)' maxlength="10" readonly />
+							</div>
+						</div>
+						
+						<div class=" col-lg-3 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-4 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18"><span style="color: red">*</span>定检名称</div>
+								<div class="font-size-9 line-height-18">Fixed Name</div>
+							</label>
+							<div class="col-lg-8 col-sm-8 col-xs-8 padding-left-8 padding-right-0">
+								<input type="text" id="zwms" name="zwms" class="form-control " maxlength="100" />
+							</div>
+						</div>
+						
+						<div class="clearfix"></div>
+					
+						<div class=" col-lg-3 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-4 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18"><span style="color: red">*</span>重要系数</div>
+								<div class="font-size-9 line-height-18">Coefficient</div>
+							</label>
+							<div class="col-lg-8 col-sm-8 col-xs-8 padding-left-8 padding-right-0">
+								<select class='form-control' id='zyxs' name="zyxs" >
+									<c:forEach items="${significantCoefficientEnum}" var="item">
+									  <option value="${item.id}" <c:if test="${1 == item.id }">selected="true"</c:if> >${item.name}</option>
+									</c:forEach>
+							    </select>
+							</div>
+						</div>
+						
+						<div class=" col-lg-3 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-4 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18"><span style="color: red">*</span>有效性</div>
+								<div class="font-size-9 line-height-18">Effectivity</div>
+							</label>
+							<div class="col-lg-8 col-sm-8 col-xs-8 padding-left-8 padding-right-0">
+								<select class='form-control' id='yxx' name="yxx" >
+									<c:forEach items="${effectiveEnum}" var="item">
+									  <option value="${item.id}" <c:if test="${1 == item.id }">selected="true"</c:if> >${item.name}</option>
+									</c:forEach>
+							    </select>
+							</div>
+						</div>
+						
+						<div class=" col-lg-3 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-4 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18"><span style="color: red">*</span>排序号</div>
+								<div class="font-size-9 line-height-18">Order No.</div>
+							</label>
+							<div class="col-lg-8 col-sm-8 col-xs-8 padding-left-8 padding-right-0">
+								<input type="text" id="pxh" name="pxh" class="form-control" value="${pxh}" placeholder='' onkeyup='clearNoNumber(this)' maxlength="10" />
+							</div>
+						</div>
+						
+						<div class=" col-lg-6 col-sm-6 col-xs-12  padding-left-0 padding-right-0 margin-bottom-10 form-group" >
+							<label  class="col-lg-2 col-sm-4 col-xs-4 text-right padding-left-0 padding-right-0">
+								<div class="font-size-12 line-height-18"><span style="color: red">*</span>标准工时</div>
+								<div class="font-size-9 line-height-18">MHRS</div>
+							</label>
+							
+							
+							
+							<div class=" col-lg-10 col-sm-8 col-xs-8 padding-left-8 padding-right-0 input-group form-group"  style='margin-bottom:0px;'>
+								<input type="text" maxlength="8" class="form-control " 
+									id="jhgsRs" value="${fixedCheckItem.jhgsRs}" onkeyup='clearNoNumber(this)'>
+								<span class='input-group-addon' style="padding-left:0px;border:0px;background:none;">人 ×</span>
+								<input maxlength="6" type="text" onkeyup='clearNoNumTwo(this)' class="form-control" id="jhgsXss" value="${fixedCheckItem.jhgsXss}" sonkeyup='clearNoNumTwo(this)'>
+								<span class='input-group-addon' style="padding-left:0px;padding-right:0px;border:0px;background:none;">时 ＝</span>
+									<input type="text" class="form-control " id="bzgs" readonly>
+							</div>
+							
+							
+							
+						</div>
+					
+						<div class="clearfix"></div>
+					
+					 	<div class="col-lg-12 col-sm-12 col-xs-12 padding-left-0 padding-right-0">
+							<label class="col-lg-1 col-sm-2 col-xs-4 text-right padding-left-0 padding-right-0 ">
+								<div class="font-size-12 line-height-18">备注</div>
+								<div class="font-size-9 line-height-18">Remark</div>
+							</label>
+							<div class="col-lg-11 col-sm-10 col-xs-8 padding-left-8 padding-right-0 ">
+								<textarea class="form-control" id="bz" maxlength="300" ></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</form>
+			
+				<div class="clearfix"></div>
+				
+				<div class="panel-heading margin-left-16 padding-top-3 margin-bottom-10 " style="border-bottom: 1px solid #ccc;">
+					<div class="font-size-16 line-height-18">工作内容</div>
+					<div>Contents</div>
+				</div>
+				<div class="panel-body padding-top-0 padding-bottom-0 margin-bottom-10 padding-right-0">
+					<small class="text-muted">双击可修改工作内容</small>
+	            	<div class="col-lg-12 col-xs-12 padding-left-0 padding-right-0">
+						<!-- start:table -->
+						<div style="overflow-x: auto;">
+							<table class="table table-bordered table-striped table-hover text-center change-line table-set" style="min-width: 2570px;">
+								<thead>
+							   		<tr>
+										<th class="colwidth-5">
+											<div class="text-center">
+												<button class="line6 " onclick="openWorkContentWinAdd('rotatable')">
+													<i class="icon-plus cursor-pointer color-blue cursor-pointer" ></i>
+												</button>
+											</div>
+										</th>
+										<th class="colwidth-3">
+											<div class="font-size-12 notwrap">序号</div>
+											<div class="font-size-9 notwrap">No.</div>
+										</th>
+										<th class="colwidth-15">
+											<div class="font-size-12 notwrap">ATA章节号</div>
+											<div class="font-size-9 notwrap">ATA</div>
+										</th>
+										<th class="colwidth-15">
+											<div class="font-size-12 notwrap">项目来源</div>
+											<div class="font-size-9 notwrap">Source</div>
+										</th>
+										<th class="colwidth-15">
+											<div class="font-size-12 notwrap">工作类型</div>
+											<div class="font-size-9 notwrap">Work Type</div>
+										</th>
+										<th class="colwidth-15">
+											<div class="font-size-12 notwrap">工作地点</div>
+											<div class="font-size-9 notwrap">Workplace</div>
+										</th>
+										<th class="colwidth-20">
+											<div class="font-size-12">中文描述</div>
+											<div class="font-size-9">CH.Name</div>
+										</th>
+										<th class="colwidth-25">
+											<div class="font-size-12">英文描述</div>
+											<div class="font-size-9">F.Name</div>
+										</th>
+										<th class="colwidth-7">
+											<div class="font-size-12 notwrap">检查类型</div>
+											<div class="font-size-9 notwrap">Check Type</div>
+										</th>
+										<th class="colwidth-30">
+											<div class="font-size-12 notwrap">适用性</div>
+											<div class="font-size-9 notwrap">Applicability</div>
+										</th>
+										<th class="colwidth-7">
+											<div class="font-size-12 notwrap">工作站位</div>
+											<div class="font-size-9 notwrap">Location</div>
+										</th>
+										<th class="colwidth-20">
+											<div class="font-size-12 notwrap">厂家手册及版本</div>
+											<div class="font-size-9 notwrap">Manual and Revision</div>
+										</th>
+										<th class="colwidth-20">
+											<div class="font-size-12 notwrap">厂家工卡及版本</div>
+											<div class="font-size-9 notwrap">W/C and Revision</div>
+										</th>
+										<th class="colwidth-15">
+											<div class="font-size-12 notwrap">关联定检工卡</div>
+											<div class="font-size-9 notwrap">Related Fixed Check W/C</div>
+										</th>
+										<th class="colwidth-5">
+											<div class="font-size-12 notwrap">必检</div>
+											<div class="font-size-9 notwrap">Check</div>
+										</th>
+										<th class="colwidth-3">
+											<div class="font-size-12 notwrap">MI</div>
+											<div class="font-size-9 notwrap">MI</div>
+										</th>
+										<th class="colwidth-30">
+											<div class="font-size-12 notwrap">备注</div>
+											<div class="font-size-9 notwrap">Remark</div>
+										</th>
+										<th class="colwidth-7">
+											<div class="font-size-12 notwrap">有效性</div>
+											<div class="font-size-9 notwrap">Effectivity</div>
+										</th>
+							 		 </tr>
+								</thead>
+								<tbody id="rotatable">
+								
+								</tbody>
+							</table>
+						</div>
+						<!-- end:table -->
+	                
+			     		<div class="clearfix"></div>
+				 	 </div>
+				 </div> 
+				 
+				 <%@ include file="/WEB-INF/views/monitor.jsp"%>
+				 <div class="clearfix"></div>
+				 
+				<div class="text-right margin-top-10 margin-right-10" style="margin-bottom:10px">
+                    <button class="btn btn-primary padding-top-1 padding-bottom-1" onclick="save()">
+                    	<div class="font-size-12">保存</div>
+						<div class="font-size-9">Save</div>
+					</button>
+               		<button class="btn btn-primary padding-top-1 padding-bottom-1" onclick="back()">
+               			<div class="font-size-12">返回</div>
+						<div class="font-size-9">Back</div>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 基本信息 End -->
+		
+</div>
+<script type="text/javascript" src="${ctx}/static/js/thjw/project/maintenance/fixedcheckitem_add.js"></script>
+<%@ include file="/WEB-INF/views/open_win/work_content.jsp"%><!-------工作内容对话框 -------->
+</body>
+</html>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.basic.dao.zoneStationRecMapper" >
+
+  <!--区域列表 开始 -->
+ 
+  <select id="queryList4D023ZONE" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+  
+  				select
+  				B.ID , B.DPRTCODE , JX , LX , SZ , MS , WHDWID , WHRID , WHSJ , REC_XGLX , REC_CZRID , REC_CZSJ , REC_IP , REC_CZSM , REC_CZLS , REC_ZBID , ZT
+  				,CZR.USERNAME ||' '|| CZR.REALNAME  DISPLAYNAME ,t2.DPRTNAME				
+  				,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+		        ,'区域:'||B.SZ||' ' REC_HD
+		       FROM D_023_REC B LEFT JOIN T_USER CZR ON CZR.ID=B.WHRID
+               LEFT JOIN  T_DEPARTMENT t2 ON B.DPRTCODE=t2.ID 
+		        WHERE 1 = 1
+		        <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+			        and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+			      </if>
+			      <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+			        and UPPER(B.sz) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%') 
+			      </if>
+			      and B.lx=1
+		         order by B.REC_CZSJ DESC
+		         <!--lx=1,区域 -->
+  </select>
+  
+   <select id="queryDiff4D023ZONE" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	select
+  	B.ID , B.DPRTCODE , JX , LX , SZ , MS , WHDWID , WHRID , WHSJ , REC_XGLX , REC_CZRID , REC_CZSJ , REC_IP , REC_CZSM , REC_CZLS , REC_ZBID , ZT
+	,CZR.USERNAME ||' '|| CZR.REALNAME   DISPLAYNAME ,t2.DPRTNAME, 'CURRENT' DATA_VERSION,
+	(CASE 
+         WHEN B.ZT = 0 THEN
+          '无效'
+         WHEN B.ZT = 1 THEN
+          '有效'
+      END) NEW_ZT ,
+      '区域:'||B.SZ||' ' REC_HD
+               ,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+	 FROM D_023_REC B LEFT JOIN T_USER CZR ON CZR.ID=B.WHRID
+     LEFT JOIN  T_DEPARTMENT t2 ON B.DPRTCODE=t2.ID 
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	 AND   B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	 
+	 UNION ALL
+	 
+	select
+  	B.ID , B.DPRTCODE , JX , LX , SZ , MS , WHDWID , WHRID , WHSJ , REC_XGLX , REC_CZRID , REC_CZSJ , REC_IP , REC_CZSM , REC_CZLS , REC_ZBID , ZT
+	,CZR.USERNAME ||' '|| CZR.REALNAME   DISPLAYNAME ,t2.DPRTNAME, 'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.ZT = 0 THEN
+          '无效'
+         WHEN B.ZT = 1 THEN
+          '有效'
+      END) NEW_ZT ,
+      '区域:'||B.SZ||' '  REC_HD
+     ,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+	 FROM D_023_REC B LEFT JOIN T_USER CZR ON CZR.ID=B.WHRID
+     LEFT JOIN  T_DEPARTMENT t2 ON B.DPRTCODE=t2.ID 
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	 AND B.REC_CZLS IN
+         (           
+            SELECT REC_CZLS FROM (
+            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+              	FROM (select id,rec_czsj,rec_czls from D_023_REC
+              	      ) A WHERE 
+             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+            	AND A.REC_CZSJ &lt;=
+            	(
+	              	SELECT MIN(C.REC_CZSJ) FROM (
+	              	   select id,rec_czsj,rec_czls from D_023_REC 
+              	      )C WHERE 
+	              	C.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	             )            
+             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+            ) WHERE 1 = RNO                        
+           )         
+  </select>
+<!--区域列表 结束 -->
+
+
+  <!--飞机站位列表 开始 -->
+ 
+  <select id="queryList4D023STATION" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+  
+  				select
+  				B.ID , B.DPRTCODE , JX , LX , SZ , MS , WHDWID , WHRID , WHSJ , REC_XGLX , REC_CZRID , REC_CZSJ , REC_IP , REC_CZSM , REC_CZLS , REC_ZBID , ZT
+  				,CZR.USERNAME ||' '|| CZR.REALNAME  DISPLAYNAME ,t2.DPRTNAME				
+  				,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+		        ,'飞机站位:'||B.SZ||' ' REC_HD
+		       FROM D_023_REC B LEFT JOIN T_USER CZR ON CZR.ID=B.WHRID
+               LEFT JOIN  T_DEPARTMENT t2 ON B.DPRTCODE=t2.ID 
+		        WHERE 1 = 1
+		        <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+			        and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+			      </if>
+			      <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+			        and UPPER(B.sz) like UPPER('%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%') 
+			      </if>
+			      and B.lx=2
+		         order by B.REC_CZSJ DESC
+		         <!--lx=2,飞机站位 -->
+  </select>
+  
+   <select id="queryDiff4D023STATION" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	select
+  	B.ID , B.DPRTCODE , JX , LX , SZ , MS , WHDWID , WHRID , WHSJ , REC_XGLX , REC_CZRID , REC_CZSJ , REC_IP , REC_CZSM , REC_CZLS , REC_ZBID , ZT
+	,CZR.USERNAME ||' '|| CZR.REALNAME   DISPLAYNAME ,t2.DPRTNAME, 'CURRENT' DATA_VERSION,
+	(CASE 
+         WHEN B.ZT = 0 THEN
+          '无效'
+         WHEN B.ZT = 1 THEN
+          '有效'
+      END) NEW_ZT ,
+      '飞机站位:'||B.SZ||' ' REC_HD
+     ,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+	 FROM D_023_REC B LEFT JOIN T_USER CZR ON CZR.ID=B.WHRID
+     LEFT JOIN  T_DEPARTMENT t2 ON B.DPRTCODE=t2.ID 
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	 AND   B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	 
+	  UNION ALL
+	 
+	select
+  	B.ID , B.DPRTCODE , JX , LX , SZ , MS , WHDWID , WHRID , WHSJ , REC_XGLX , REC_CZRID , REC_CZSJ , REC_IP , REC_CZSM , REC_CZLS , REC_ZBID , ZT
+	,CZR.USERNAME ||' '|| CZR.REALNAME   DISPLAYNAME ,t2.DPRTNAME, 'LAST' DATA_VERSION ,
+	(CASE 
+         WHEN B.ZT = 0 THEN
+          '无效'
+         WHEN B.ZT = 1 THEN
+          '有效'
+      END) NEW_ZT ,
+      '飞机站位:'||B.SZ||' ' REC_HD
+     ,CZR.USERNAME ||' '|| CZR.REALNAME REC_CZR_STR
+	 FROM D_023_REC B LEFT JOIN T_USER CZR ON CZR.ID=B.WHRID
+     LEFT JOIN  T_DEPARTMENT t2 ON B.DPRTCODE=t2.ID 
+	 WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	 AND B.REC_CZLS IN
+         (           
+            SELECT REC_CZLS FROM (
+            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+              	FROM (select id,rec_czsj,rec_czls from D_023_REC
+              	      ) A WHERE 
+             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+            	AND A.REC_CZSJ &lt;=
+            	(
+	              	SELECT MIN(C.REC_CZSJ) FROM (
+	              	   select id,rec_czsj,rec_czls from D_023_REC 
+              	      )C WHERE 
+	              	C.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	             )            
+             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+            ) WHERE 1 = RNO                        
+           )         
+  </select>
+<!--飞机站位列表 结束 -->
+</mapper>

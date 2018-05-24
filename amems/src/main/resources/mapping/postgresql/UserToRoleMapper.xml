@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.UserToRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.UserToRole" >
+    <id column="UR_ID" property="urId" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+     <result column="rolename" property="rolename" />
+     <!-- 对应关系的角色-->
+ <!--    <association property="role" javaType="Role"> 
+        <result column="ID" property="id"/>  
+        <result column="rolename" property="rolename"/>  
+    </association> -->
+    
+  </resultMap>
+  
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  <resultMap type="com.eray.thjw.po.UserToRole" id="userMap" extends="BaseResultMap">  
+       <collection property="userlist" ofType="com.eray.thjw.po.User">  
+           <id property="id" column="userId" />  
+         <result column="realname" property="realname"/>   
+       </collection>  
+   </resultMap> 
+   
+     <select id="getParentRegionAll" parameterType="com.eray.thjw.po.UserToRole" resultMap="BaseResultMap" >
+		SELECT	a.*,b.realname rolename FROM t_user2role a  left join t_user b on a.user_id=b.id where a.role_id=#{roleId}
+	</select>
+  
+  <sql id="Base_Column_List" >
+    UR_ID, USER_ID, ROLE_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_USER2ROLE
+    where UR_ID = #{urId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_USER2ROLE
+    where UR_ID = #{urId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.UserToRole" >
+    insert into T_USER2ROLE (UR_ID, USER_ID, ROLE_ID
+      )
+    values ( #{urId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.UserToRole" >
+    insert into T_USER2ROLE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="urId != null" >
+        UR_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="roleId != null" >
+        ROLE_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="urId != null" >
+        #{urId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.UserToRole" >
+    update T_USER2ROLE
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where UR_ID = #{urId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.UserToRole" >
+    update T_USER2ROLE
+    set USER_ID = #{userId,jdbcType=VARCHAR},
+      ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    where UR_ID = #{urId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据id获取角色信息 -->
+  <select id="queryRole" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.UserToRole">
+ 	 SELECT R.ID,R.ROLE_CODE,R.ROLE_NAME,R.ROLE_REMARK,R.DPRT_ID FROM (select ID, USERNAME, REALNAME, CELLPHONE, PHONE, SEX, STATE, 
+    BMDM,JGDM FROM t_user WHERE ID = #{userId,jdbcType=VARCHAR}) U , t_user2role UR,t_role R
+		WHERE U.ID = UR.USER_ID AND UR.ROLE_ID = R.ID 
+  </select>
+  
+  <!-- 查询除用户选择的角色以外的所有角色信息 -->
+  <select id="queryUserNotRole" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.UserToRole">
+	SELECT ID,ROLE_CODE,ROLE_NAME,ROLE_REMARK,DPRT_ID FROM t_role WHERE ID not IN (
+		SELECT R.id FROM (select ID, USERNAME, REALNAME, CELLPHONE, PHONE, SEX, STATE, 
+    BMDM,JGDM FROM t_user WHERE ID = #{userId,jdbcType=VARCHAR}) U , t_user2role UR,t_role R
+		WHERE U.ID = UR.USER_ID AND UR.ROLE_ID = R.ID
+	)
+
+  </select>
+  <!-- 搜索参数 -->
+	<sql id="userToRoleParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="userId != null and userId != ''">
+             and USER_ID = #{userId}
+         </if>
+         <if test="roleId != null and roleId != ''">
+             and ROLE_ID = #{roleId}
+         </if>
+	</sql>
+	<!-- 删除关系信息 -->
+	<delete id="delete" parameterType="com.eray.thjw.po.UserToRole" >
+		delete from T_USER2ROLE
+		<include refid="userToRoleParam"></include>
+	</delete>
+  
+
+  
+  
+</mapper>

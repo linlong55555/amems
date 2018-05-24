@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.AnnualPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.AnnualPlan" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="NF" property="nf" jdbcType="DECIMAL" />
+    <result column="BBH" property="bbh" jdbcType="DECIMAL" />
+    <result column="NDJHSM" property="ndjhsm" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="SHYJ" property="shyj" jdbcType="VARCHAR" />
+    <result column="SHRID" property="shrid" jdbcType="VARCHAR" />
+    <result column="SHSJ" property="shsj" jdbcType="TIMESTAMP" />
+    <result column="PFYJ" property="pfyj" jdbcType="VARCHAR" />
+    <result column="PFRID" property="pfrid" jdbcType="VARCHAR" />
+    <result column="PFSJ" property="pfsj" jdbcType="TIMESTAMP" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+    <result column="fjnum" property="paramsMap.fjnum" jdbcType="DECIMAL" />
+    <result column="maxbbh" property="paramsMap.maxbbh" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.quality.po.AnnualPlan" id="UserJoinMap" extends="BaseResultMap">  
+  	<association property="whr" javaType="com.eray.thjw.po.User">  
+        <id column="WHRID" property="id"/>  
+        <result column="WHRUSERNAME" property="username"/>  
+        <result column="WHRREALNAME" property="realname"/>  
+    </association>  
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, NF, BBH, NDJHSM, ZT, SHYJ, SHRID, SHSJ, PFYJ, PFRID, PFSJ, WHBMID, 
+    WHRID, WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getLatestVersionList" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	  SELECT 
+	  		Z006.ID, 
+	  		Z006.BBH, 
+	       	Z006.NDJHSM, 
+	       (SELECT COUNT(1) FROM D_011 D001 WHERE D001.MAINID = Z006.ID) FJNUM, 
+	       Z006.ZT, 
+	       (SELECT MAX(T.BBH) MAXBBH
+	          FROM B_Z_006 T
+	         WHERE T.DPRTCODE = Z006.DPRTCODE
+	           AND T.NF = Z006.NF) MAXBBH 
+	  FROM B_Z_006 Z006
+	 WHERE Z006.NF =  #{0,jdbcType=VARCHAR}
+	   AND Z006.DPRTCODE = #{1,jdbcType=VARCHAR} 
+	 ORDER BY Z006.BBH DESC
+  </select>
+  
+  <select id="getAnnualPlanById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	  SELECT 
+	  		Z006.ID, 
+	  		Z006.BBH, 
+	       	Z006.NDJHSM, 
+	        Z006.ZT, 
+	        Z006.NF,
+	        Z006.DPRTCODE, 
+	       (SELECT MAX(T.BBH) MAXBBH
+	          FROM B_Z_006 T
+	         WHERE T.DPRTCODE = Z006.DPRTCODE
+	           AND T.NF = Z006.NF) MAXBBH 
+	  FROM B_Z_006 Z006
+	 WHERE Z006.ID =  #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getLatestVersion" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	  SELECT 
+	  		Z006.ID, 
+	  		Z006.BBH, 
+	       	Z006.NDJHSM, 
+	       (SELECT COUNT(1) FROM D_011 D001 WHERE D001.MAINID = Z006.ID) FJNUM, 
+	       Z006.ZT, 
+	       (SELECT MAX(T.BBH) MAXBBH
+	          FROM B_Z_006 T
+	         WHERE T.DPRTCODE = Z006.DPRTCODE
+	           AND T.NF = Z006.NF) MAXBBH 
+	  FROM B_Z_006 Z006
+	 WHERE Z006.NF =  #{0,jdbcType=VARCHAR}
+	   AND Z006.DPRTCODE = #{1,jdbcType=VARCHAR} 
+	   AND Z006.BBH = #{2,jdbcType=DECIMAL} 
+	 ORDER BY Z006.BBH DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_Z_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.AnnualPlan" >
+    insert into B_Z_006 (ID, DPRTCODE, NF, 
+      BBH, NDJHSM, ZT, SHYJ, 
+      SHRID, SHSJ, PFYJ, 
+      PFRID, PFSJ, WHBMID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{nf,jdbcType=DECIMAL}, 
+      #{bbh,jdbcType=DECIMAL}, #{ndjhsm,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{shyj,jdbcType=VARCHAR}, 
+      #{shrid,jdbcType=VARCHAR}, #{shsj,jdbcType=TIMESTAMP}, #{pfyj,jdbcType=VARCHAR}, 
+      #{pfrid,jdbcType=VARCHAR}, #{pfsj,jdbcType=TIMESTAMP}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.AnnualPlan" >
+    insert into B_Z_006
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="nf != null" >
+        NF,
+      </if>
+      <if test="bbh != null" >
+        BBH,
+      </if>
+      <if test="ndjhsm != null" >
+        NDJHSM,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="shyj != null" >
+        SHYJ,
+      </if>
+      <if test="shrid != null" >
+        SHRID,
+      </if>
+      <if test="shsj != null" >
+        SHSJ,
+      </if>
+      <if test="pfyj != null" >
+        PFYJ,
+      </if>
+      <if test="pfrid != null" >
+        PFRID,
+      </if>
+      <if test="pfsj != null" >
+        PFSJ,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="nf != null" >
+        #{nf,jdbcType=DECIMAL},
+      </if>
+      <if test="bbh != null" >
+        #{bbh,jdbcType=DECIMAL},
+      </if>
+      <if test="ndjhsm != null" >
+        #{ndjhsm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="shyj != null" >
+        #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null" >
+        #{shsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pfyj != null" >
+        #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null" >
+        #{pfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.AnnualPlan" >
+    update B_Z_006
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="nf != null" >
+        NF = #{nf,jdbcType=DECIMAL},
+      </if>
+      <if test="bbh != null" >
+        BBH = #{bbh,jdbcType=DECIMAL},
+      </if>
+      <if test="ndjhsm != null" >
+        NDJHSM = #{ndjhsm,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="shyj != null" >
+        SHYJ = #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHRID = #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null" >
+        SHSJ = #{shsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pfyj != null" >
+        PFYJ = #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        PFRID = #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null" >
+        PFSJ = #{pfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.AnnualPlan" >
+    update B_Z_006
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      NF = #{nf,jdbcType=DECIMAL},
+      BBH = #{bbh,jdbcType=DECIMAL},
+      NDJHSM = #{ndjhsm,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      SHYJ = #{shyj,jdbcType=VARCHAR},
+      SHRID = #{shrid,jdbcType=VARCHAR},
+      SHSJ = #{shsj,jdbcType=TIMESTAMP},
+      PFYJ = #{pfyj,jdbcType=VARCHAR},
+      PFRID = #{pfrid,jdbcType=VARCHAR},
+      PFSJ = #{pfsj,jdbcType=TIMESTAMP},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询变更记录 -->
+  <select id="queryChangeRecord" resultMap="UserJoinMap" parameterType="com.eray.thjw.quality.po.AnnualPlan" >
+    select 
+    b.id, b.dprtcode, b.nf, b.bbh, b.ndjhsm, b.zt, b.shyj, b.shrid, b.shsj, b.pfyj, b.pfrid, b.pfsj, b.whbmid, 
+    b.whrid, b.whsj, whr.username as whrusername, whr.realname as whrrealname
+    from b_z_006 b
+    left join t_user whr on b.whrid = whr.id
+    where nf = #{nf,jdbcType=DECIMAL} and dprtcode = #{dprtcode,jdbcType=VARCHAR}
+    order by b.bbh desc
+  </select>
+  <!-- 查询变更记录 -->
+  <select id="queryAllByZt" resultMap="BaseResultMap" parameterType="com.eray.thjw.quality.po.AnnualPlan" >
+    select 
+      <include refid="Base_Column_List" />
+    from B_Z_006
+    where dprtcode = #{dprtcode,jdbcType=VARCHAR} and zt = #{zt,jdbcType=VARCHAR}
+  </select>
+</mapper>

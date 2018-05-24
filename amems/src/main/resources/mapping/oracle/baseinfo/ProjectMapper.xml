@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.baseinfo.dao.ProjectMapper">
+  <resultMap id="baseReuslt" type="com.eray.thjw.baseinfo.po.Project">
+     <id column="ID" jdbcType="VARCHAR"  property="id"/>
+     <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode"/>
+     <result column="WHBMID" jdbcType="VARCHAR" property="whbmid"/>
+     <result column="WHRID" jdbcType="VARCHAR" property="whrid"/>
+     <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj"/>
+     <result column="ZT" jdbcType="INTEGER" property="zt"/>
+     <result column="KZXBS" jdbcType="INTEGER" property="kzxbs"/>
+     <result column="XMBM" jdbcType="VARCHAR" property="xmbm"/>
+     <result column="XMMC" jdbcType="VARCHAR" property="xmmc"/>
+     <result column="XMZL" jdbcType="VARCHAR" property="xmzl"/>
+     <result column="FJZT" jdbcType="VARCHAR" property="fjzt"/>
+     <result column="FJZCH" jdbcType="VARCHAR" property="fjzch"/>
+     <result column="FJXLH" jdbcType="VARCHAR" property="fjxlh"/>
+     <result column="FJJX" jdbcType="VARCHAR" property="fjjx"/>  <!-- 飞机机型 -->
+     <result column="HBH" jdbcType="VARCHAR" property="hbh"/>    <!--  航班号 -->
+     
+     <result column="FJBZM" jdbcType="VARCHAR" property="fjbzm"/><!-- 飞机描述 -->
+     <result column="FJJSH" jdbcType="VARCHAR" property="fjjsh"/>
+     <result column="IPCYXXH" jdbcType="VARCHAR" property="ipcyxxh"/>
+     <result column="RHYZPH" jdbcType="VARCHAR" property="rhyzph"/>
+     <result column="YYYPH" jdbcType="VARCHAR" property="yyyph"/>
+     <result column="WBBS" jdbcType="INTEGER" property="wbbs"/>
+     <result column="KHID" jdbcType="VARCHAR" property="khid"/>
+     <result column="JH_KSRQ" jdbcType="TIMESTAMP" property="jhksrq"/>
+     <result column="JH_JSRQ" jdbcType="TIMESTAMP" property="jhjsrq"/>
+     <result column="SJ_KSRQ" jdbcType="TIMESTAMP" property="sjksrq"/>
+     <result column="SJ_JSRQ" jdbcType="TIMESTAMP" property="sjjsrq"/>
+     <result column="XSDDH" jdbcType="VARCHAR" property="xsddh"/>
+     <result column="FSTK" jdbcType="VARCHAR" property="fstk"/>
+     <result column="XMJL" jdbcType="VARCHAR" property="xmjl"/>
+     <result column="JHZK" jdbcType="VARCHAR" property="jhzk"/>
+     <result column="KZS" jdbcType="VARCHAR" property="kzs"/>
+     <result column="KZSDH" jdbcType="VARCHAR" property="kzsdh"/>
+     <result column="QSGS" jdbcType="DECIMAL" property="qsgs"/>
+     <result column="FXSJ" jdbcType="INTEGER" property="fxsj"/>
+     <result column="FXXH" jdbcType="INTEGER" property="fxxh"/>
+  </resultMap>
+  
+  <sql id="common_column_list">
+     t.ID, t.DPRTCODE, t.WHBMID, t.WHSJ, t.WHRID,
+     (CASE 
+        when t.ZT = 1 then '保存'
+        when t.ZT = 2 then '提交'
+        when t.ZT = 9 then '关闭'
+        when t.ZT = 10 then '完成'
+     END) ztstr, 
+     t.KZXBS, t.XMBM, t.XMMC, t.XMZL, t.FJZT, t.FJZCH, t.FJXLH, t.FJJX,t.HBH,
+     t.FJBZM, t.FJJSH, t.IPCYXXH,t.RHYZPH, t.YYYPH, t.WBBS,t.KHID, 
+     to_char(t.JH_KSRQ, 'yyyy-mm-dd') jhksrqstr, 
+     to_char(t.JH_JSRQ,'yyyy-mm-dd')  jhjsrqstr, 
+     to_char(t.SJ_KSRQ, 'yyyy-mm-dd') sjksrqstr, 
+     to_char(t.SJ_JSRQ,'yyyy-mm-dd')  sjjsrqstr, 
+     t.JH_KSRQ, t.JH_JSRQ, t.SJ_KSRQ, t.SJ_JSRQ, 
+     t.XSDDH, t.FSTK, t.XMJL, t.JHZK,t.KZS, t.KZSDH, t.QSGS, t.FXSJ, t.FXXH,
+     to_char(t.WHSJ,'yyyy-mm-dd hh24:mi:ss') AS whsjstr
+  </sql>
+  
+  <sql id="Base_Query">
+      where 1 = 1
+      <if test="xmbm != null and xmbm !=''">
+          and  lower(t.XMBM) like lower("%",#{xmbm},"%")
+      </if>
+      <if test="xmmc != null and xmmc !=''">
+          and  lower(t.XMMC) like lower("%",#{xmmc},"%")
+      </if>
+      <if test="fjzch != null and fjzch !=''">
+          and  lower(t.FJZCH) like lower("%",#{FJZCH},"%")
+      </if>
+      <if test="fjxlh != null and fjxlh !=''">
+          and  lower(t.FJXLH) like lower("%",#{FJXLH},"%")
+      </if>
+      <if test="zt != null and zt !=''">
+          and  t.ZT = #{zt}
+      </if>
+      <if test="xmzl != null and xmzl !=''">
+          and  t.XMZL = #{xmzl}
+      </if>
+      <if test="dprtcode != null and dprtcode != ''">
+            and  t.DPRTCODE = #{dprtcode}
+      </if>
+  </sql>
+  
+  
+  <select id="getProjectList" parameterType="com.eray.thjw.baseinfo.po.Project" resultMap="baseReuslt">
+     SELECT A.*
+      FROM (SELECT <include refid="common_column_list"></include>,
+	     <!-- t4.khbm, t4.khmc,   -->
+	     t2.DPRTNAME AS dprtname, 
+	     t3.username||' '||t3.realname AS whr,
+	     D011.ATTACHCOUNT,
+	     (CASE 
+	         WHEN t.WBBS = 0 Then (SELECT t5.dprtcode FROM t_department t5 WHERE t.khid = t5.id)  <!-- 0 取基地，1取客户 -->
+	         WHEN t.WBBS = 1 Then (SELECT t4.khbm FROM D_019 t4 WHERE t.khid = t4.id)
+	      END) khbm,
+	     (CASE 
+	         WHEN t.WBBS = 0 Then (SELECT t5.DPRTNAME FROM t_department t5  WHERE t.khid = t5.id)
+	         WHEN t.WBBS = 1 Then (SELECT t4.khmc FROM D_019 t4 WHERE t.khid = t4.id)
+	      END) khmc
+     FROM D_020 t
+     LEFT JOIN t_department t2 on t.dprtcode = t2.id 
+     LEFT JOIN t_user t3 on t.whrid = t3.id
+     LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011
+        ON D011.MAINID = t.ID
+     <include refid="Base_Query"></include>
+  
+	 ) A
+	 WHERE 1 = 1 
+	 <if test="keyword != null and keyword !=''">
+	  and (
+	       (lower(A.khbm) like lower('%'||#{keyword}||'%'))
+	    or (lower(A.khmc) like lower('%'||#{keyword}||'%'))
+	    or (lower(A.XMBM) like lower('%'||#{keyword}||'%'))
+	    or (lower(A.XMMC) like lower('%'||#{keyword}||'%'))
+	    or (lower(A.FJZCH) like lower('%'||#{keyword}||'%')) ) 
+	 </if>
+	 <choose>
+    	<when test='pagination.sort == "auto"'>                       
+    		order by A.WHSJ DESC
+    	</when>
+    	<otherwise>
+		    order by ${pagination.sort}  ${pagination.order}
+    	</otherwise>
+	 </choose>
+  </select>
+  
+  <insert id="addProject" parameterType="com.eray.thjw.baseinfo.po.Project">
+     INSERT INTO D_020(ID, DPRTCODE, WHBMID, WHRID, WHSJ, ZT, KZXBS, 
+              XMBM, XMMC, XMZL, FJZT, FJZCH, FJXLH, FJBZM, FJJSH, FJJX, HBH,
+              IPCYXXH, RHYZPH, YYYPH, WBBS,KHID, JH_KSRQ, JH_JSRQ, SJ_KSRQ, SJ_JSRQ,
+              XSDDH, FSTK, XMJL, JHZK, KZS, KZSDH, QSGS, FXSJ, FXXH)
+     VALUES(#{id,jdbcType=VARCHAR}, #{dprtcode, jdbcType=VARCHAR}, #{whbmid, jdbcType=VARCHAR}, 
+            #{whrid, jdbcType=VARCHAR}, #{whsj, jdbcType=TIMESTAMP}, #{zt, jdbcType=INTEGER},
+            #{kzxbs, jdbcType=VARCHAR}, #{xmbm, jdbcType=VARCHAR} , #{xmmc, jdbcType=VARCHAR}, #{xmzl, jdbcType=VARCHAR},
+            #{fjzt, jdbcType=VARCHAR}, #{fjzch, jdbcType=VARCHAR} , #{fjxlh, jdbcType=VARCHAR} ,#{fjbzm, jdbcType=VARCHAR},
+            #{fjjsh, jdbcType=VARCHAR}, #{fjjx, jdbcType=VARCHAR} , #{hbh, jdbcType=VARCHAR}, #{ipcyxxh, jdbcType=VARCHAR},  #{rhyzph, jdbcType=VARCHAR}, 
+            #{yyyph, jdbcType=VARCHAR},#{wbbs, jdbcType=INTEGER}, #{khid, jdbcType=VARCHAR}, #{jhksrq, jdbcType=TIMESTAMP},  
+            #{jhjsrq, jdbcType=TIMESTAMP},#{sjksrq, jdbcType=TIMESTAMP},#{sjjsrq, jdbcType=TIMESTAMP}, #{xsddh, jdbcType=VARCHAR}, 
+            #{fstk, jdbcType=VARCHAR}, #{xmjl, jdbcType=VARCHAR}, #{jhzk, jdbcType=VARCHAR}, #{kzs, jdbcType=VARCHAR}, 
+            #{kzsdh, jdbcType=VARCHAR}, #{qsgs, jdbcType=VARCHAR}, #{fxsj, jdbcType=INTEGER}, #{fxxh, jdbcType=INTEGER})
+   </insert>
+   
+   <update id="updateProject" parameterType="com.eray.thjw.baseinfo.po.Project">
+      UPDATE D_020 
+      <set>
+          <if test="dprtcode != null">
+	        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whbmid != null">
+	        WHBMID = #{whbmid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whrid != null">
+	        WHRID = #{whrid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="whsj != null">
+	        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="zt != null">
+	        ZT = #{zt,jdbcType=INTEGER},
+	      </if>
+	      <if test="kzxbs != null">
+	        KZXBS = #{kzxbs,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xmbm != null">
+	        XMBM = #{xmbm,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xmmc != null">
+	        XMMC = #{xmmc,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xmzl != null">
+	        XMZL = #{xmzl,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fjzt != null">
+	        FJZT = #{fjzt,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fjzch != null">
+	        FJZCH = #{fjzch,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fjxlh != null">
+	        FJXLH = #{fjxlh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fjbzm != null">
+	        FJBZM = #{fjbzm,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fjjsh != null">
+	        FJJSH = #{fjjsh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fjjx != null">
+	        FJJX = #{fjjx,jdbcType=VARCHAR},
+	      </if>
+	        HBH = #{hbh,jdbcType=VARCHAR},
+	        
+	        IPCYXXH = #{ipcyxxh,jdbcType=VARCHAR},
+	        
+	        RHYZPH = #{rhyzph,jdbcType=VARCHAR},
+	        
+	        YYYPH = #{yyyph,jdbcType=VARCHAR},
+	      
+	      <if test="wbbs != null">
+	        WBBS = #{wbbs,jdbcType=INTEGER},
+	      </if>
+	      
+	        KHID = #{khid,jdbcType=VARCHAR},
+	      
+	        JH_KSRQ = #{jhksrq,jdbcType=TIMESTAMP},
+	      
+	        JH_JSRQ = #{jhjsrq,jdbcType=TIMESTAMP},
+	     
+	        SJ_KSRQ = #{sjksrq,jdbcType=TIMESTAMP},
+	      
+	        SJ_JSRQ = #{sjjsrq,jdbcType=TIMESTAMP},
+	      
+	      <if test="xsddh != null">
+	        XSDDH = #{xsddh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fstk != null">
+	        FSTK = #{fstk,jdbcType=VARCHAR},
+	      </if>
+	      <if test="xmjl != null">
+	        XMJL = #{xmjl,jdbcType=VARCHAR},
+	      </if>
+	      <if test="jhzk != null">
+	        JHZK = #{jhzk,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kzs != null">
+	        KZS = #{kzs,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kzsdh != null">
+	        KZSDH = #{kzsdh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="qsgs != null">
+	        QSGS = #{qsgs,jdbcType=DECIMAL},
+	      </if>
+	      <if test="fxsj != null">
+	        FXSJ = #{fxsj,jdbcType=INTEGER},
+	      </if>
+	      <if test="fxxh != null">
+	        FXXH = #{fxxh,jdbcType=INTEGER},
+	      </if>
+      </set>
+        where ID = #{id,jdbcType=VARCHAR}
+   </update>
+   
+   <select id="getProjectById" parameterType="com.eray.thjw.baseinfo.po.Project" resultMap="baseReuslt">
+       SELECT <include refid="common_column_list"></include>
+       FROM D_020 t
+       WHERE ID = #{id, jdbcType=VARCHAR}
+   </select>
+   
+   <select id="checkProject" parameterType="com.eray.thjw.baseinfo.po.Project" resultMap="baseReuslt">
+       SELECT <include refid="common_column_list"></include>
+       FROM D_020 t
+       WHERE  DPRTCODE = #{dprtcode,jdbcType=VARCHAR} AND XMBM = #{xmbm,jdbcType=VARCHAR} 
+   </select>
+  <select id="selectProjectByDprt" parameterType="com.eray.thjw.baseinfo.po.Project" resultType="com.eray.thjw.baseinfo.po.Project">
+  	 SELECT <include refid="common_column_list"></include>
+       FROM D_020 t
+       WHERE dprtcode = #{dprtcode, jdbcType=VARCHAR} and zt in (2,10)
+  </select>
+	<select id="selectProjectByDprtAndKhid" parameterType="com.eray.thjw.baseinfo.po.Project" resultType="com.eray.thjw.baseinfo.po.Project">
+  	 SELECT                     
+    		(CASE 
+	         WHEN t.WBBS = 0 Then (SELECT t5.DPRTNAME FROM t_department t5  WHERE t.khid = t5.id)
+	         WHEN t.WBBS = 1 Then (SELECT t4.khmc FROM D_019 t4 WHERE t.khid = t4.id)
+	      END) khmc,
+	       (CASE 
+	         WHEN t.WBBS = 0 Then (SELECT t5.dprtcode FROM t_department t5 WHERE t.khid = t5.id)  <!-- 0 取基地，1取客户 -->
+	         WHEN t.WBBS = 1 Then (SELECT t4.khbm FROM D_019 t4 WHERE t.khid = t4.id)
+	      END) khbm, 
+  	 <include refid="common_column_list"></include>
+       FROM D_020 t
+       WHERE t.dprtcode =  #{dprtcode, jdbcType=VARCHAR}  and zt in (2,10) 
+       <if test="fjjx != null and fjjx !='' ">                       
+    		and t.fjjx= #{fjjx, jdbcType=VARCHAR}
+    	</if>
+    	<if test="fjjx == null or fjjx ==''">
+    		and t.fjjx is null
+    	</if>
+       <if test="wbbs != null">
+       and t.wbbs =  #{wbbs,jdbcType=INTEGER}
+       </if>
+       <if test="khid != null and khid !='' ">                       
+    		and t.khid= #{khid, jdbcType=VARCHAR}
+    	</if>                          		
+       <if test="fjzch != null and fjzch !='' ">                       
+    		and t.fjzch= #{fjzch, jdbcType=VARCHAR}
+    	</if>
+       <if test="fjxlh != null and fjxlh !='' ">                       
+    		and t.fjxlh= #{fjxlh, jdbcType=VARCHAR}
+    	</if>
+       <if test="keyword != null and keyword !=''">
+	  and (
+	     (lower(t.XMBM) like lower('%'||#{keyword}||'%'))
+	    or (lower(t.XMMC) like lower('%'||#{keyword}||'%'))
+	    ) 
+	 </if>
+  </select>
+  
+  <delete id="deleteProject" parameterType="com.eray.thjw.baseinfo.po.Project">
+    DELETE FROM D_020
+    WHERE ID = #{id}
+  </delete>
+	
+</mapper>

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.ReferenceMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.Reference" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YWLX" property="ywlx" jdbcType="DECIMAL" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="WJLY" property="wjly" jdbcType="VARCHAR" />
+    <result column="WJLX" property="wjlx" jdbcType="VARCHAR" />
+    <result column="WJBH" property="wjbh" jdbcType="VARCHAR" />
+    <result column="WJBT" property="wjbt" jdbcType="VARCHAR" />
+    <result column="BFRQ" property="bfrq" jdbcType="TIMESTAMP" />
+    <result column="SXRQ" property="sxrq" jdbcType="TIMESTAMP" />
+    <result column="DQRQ" property="dqrq" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="WJBB" property="wjbb" jdbcType="VARCHAR" />
+    <result column="YM" property="ym" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, YWLX, YWID, XC, WJLY, WJLX, WJBH, WJBT, BFRQ, SXRQ, DQRQ, ZT, WHDWID, 
+    WHRID, WHSJ, WJBB, YM
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_999
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据业务id、业务类型、机构代码查询相关参考文件列表 -->
+	<select id="queryByYwidAndYwlxAndDrpt" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+        from B_G2_999
+        where ZT = 1 and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and YWLX = #{ywlx,jdbcType=DECIMAL} and YWID = #{ywid,jdbcType=VARCHAR}
+	</select>
+  
+  	<!-- 根据条件查询相关参考文件列表 -->
+	<select id="queryAllList" parameterType="com.eray.thjw.project2.po.Reference" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+        from B_G2_999
+        where ZT = 1
+	      	<if test="dprtcode != null" >
+	        	and DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	      	</if>
+	      	<if test="ywlx != null" >
+	        	and YWLX = #{ywlx,jdbcType=DECIMAL}
+	      	</if>
+	      	<if test="ywid != null" >
+	        	and YWID = #{ywid,jdbcType=VARCHAR}
+	      	</if>
+	      	<if test="id != null" >
+        		and ID = #{id,jdbcType=VARCHAR}
+      		</if>
+           order by XC asc
+	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_999
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByYwid" parameterType="java.lang.String" >
+    delete from B_G2_999
+    where YWID = #{ywid,jdbcType=VARCHAR}
+  </delete>
+  
+  	<delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_G2_999
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.Reference" >
+    insert into B_G2_999 (ID, DPRTCODE, YWLX, 
+      YWID, XC, WJLY, WJLX, 
+      WJBH, WJBT, BFRQ, 
+      SXRQ, DQRQ, ZT, 
+      WHDWID, WHRID, WHSJ, 
+      WJBB, YM)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{ywlx,jdbcType=DECIMAL}, 
+      #{ywid,jdbcType=VARCHAR}, #{xc,jdbcType=DECIMAL}, #{wjly,jdbcType=VARCHAR}, #{wjlx,jdbcType=VARCHAR}, 
+      #{wjbh,jdbcType=VARCHAR}, #{wjbt,jdbcType=VARCHAR}, #{bfrq,jdbcType=TIMESTAMP}, 
+      #{sxrq,jdbcType=TIMESTAMP}, #{dqrq,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{wjbb,jdbcType=VARCHAR}, #{ym,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.Reference" >
+    insert into B_G2_999
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="ywlx != null" >
+        YWLX,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="xc != null" >
+        XC,
+      </if>
+      <if test="wjly != null" >
+        WJLY,
+      </if>
+      <if test="wjlx != null" >
+        WJLX,
+      </if>
+      <if test="wjbh != null" >
+        WJBH,
+      </if>
+      <if test="wjbt != null" >
+        WJBT,
+      </if>
+      <if test="bfrq != null" >
+        BFRQ,
+      </if>
+      <if test="sxrq != null" >
+        SXRQ,
+      </if>
+      <if test="dqrq != null" >
+        DQRQ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="wjbb != null" >
+        WJBB,
+      </if>
+      <if test="ym != null" >
+        YM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="wjly != null" >
+        #{wjly,jdbcType=VARCHAR},
+      </if>
+      <if test="wjlx != null" >
+        #{wjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="wjbh != null" >
+        #{wjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="wjbt != null" >
+        #{wjbt,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sxrq != null" >
+        #{sxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dqrq != null" >
+        #{dqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="wjbb != null" >
+        #{wjbb,jdbcType=VARCHAR},
+      </if>
+      <if test="ym != null" >
+        #{ym,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  	<!-- 批量插入相关参考文件 -->
+  	<insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+			<include refid="insert_reference"></include>
+		</foreach>
+		select 1 from dual
+	</insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.Reference" >
+    update B_G2_999
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="ywlx != null" >
+        YWLX = #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="wjly != null" >
+        WJLY = #{wjly,jdbcType=VARCHAR},
+      </if>
+      <if test="wjlx != null" >
+        WJLX = #{wjlx,jdbcType=VARCHAR},
+      </if>
+      <if test="wjbh != null" >
+        WJBH = #{wjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="wjbt != null" >
+        WJBT = #{wjbt,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        BFRQ = #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sxrq != null" >
+        SXRQ = #{sxrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dqrq != null" >
+        DQRQ = #{dqrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+      <if test="wjbb != null" >
+        WJBB = #{wjbb,jdbcType=VARCHAR},
+      </if>
+      <if test="ym != null" >
+        YM = #{ym,jdbcType=VARCHAR},
+      </if>
+      <if test="paramsMap.ckwjBfrq != null and paramsMap.ckwjBfrq == 'ND' " >
+          BFRQ = #{bfrq,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 插入相关参考文件 start -->
+	<sql id="insert_reference">
+		into B_G2_999
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        ID,
+	      </if>
+	      <if test="item.dprtcode != null" >
+	        DPRTCODE,
+	      </if>
+	      <if test="item.ywlx != null" >
+	        YWLX,
+	      </if>
+	      <if test="item.ywid != null" >
+	        YWID,
+	      </if>
+	      <if test="item.xc != null" >
+	        XC,
+	      </if>
+	      <if test="item.wjly != null" >
+	        WJLY,
+	      </if>
+	      <if test="item.wjlx != null" >
+	        WJLX,
+	      </if>
+	      <if test="item.wjbh != null" >
+	        WJBH,
+	      </if>
+	      <if test="item.wjbt != null" >
+	        WJBT,
+	      </if>
+	      <if test="item.bfrq != null" >
+	        BFRQ,
+	      </if>
+	      <if test="item.sxrq != null" >
+	        SXRQ,
+	      </if>
+	      <if test="item.dqrq != null" >
+	        DQRQ,
+	      </if>
+	      <if test="item.zt != null" >
+	        ZT,
+	      </if>
+	      <if test="item.whdwid != null" >
+	        WHDWID,
+	      </if>
+	      <if test="item.whrid != null" >
+	        WHRID,
+	        WHSJ,
+	      </if>
+	      <if test="item.wjbb != null" >
+	        WJBB,
+	      </if>
+	      <if test="item.ym != null" >
+	        YM,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        #{item.id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.dprtcode != null" >
+	        #{item.dprtcode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.ywlx != null" >
+	        #{item.ywlx,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.ywid != null" >
+	        #{item.ywid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.xc != null" >
+	        #{item.xc,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.wjly != null" >
+	        #{item.wjly,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.wjlx != null" >
+	        #{item.wjlx,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.wjbh != null" >
+	        #{item.wjbh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.wjbt != null" >
+	        #{item.wjbt,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.bfrq != null" >
+	        #{item.bfrq,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="item.sxrq != null" >
+	        #{item.sxrq,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="item.dqrq != null" >
+	        #{item.dqrq,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="item.zt != null" >
+	        #{item.zt,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.whdwid != null" >
+	        #{item.whdwid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.whrid != null" >
+	        #{item.whrid,jdbcType=VARCHAR},
+	        sysdate,
+	      </if>
+	      <if test="item.wjbb != null" >
+	        #{item.wjbb,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.ym != null" >
+	        #{item.ym,jdbcType=VARCHAR},
+	      </if>
+	    </trim>
+	</sql>
+	<!-- 插入相关参考文件 end -->
+  <insert id="insertByCopyReference" parameterType="com.eray.thjw.project2.po.Reference">
+  	INSERT INTO B_G2_999(
+    	 ID, DPRTCODE, YWLX, YWID, XC, WJLY, WJLX, WJBH, WJBT, BFRQ, SXRQ, DQRQ, ZT, WHDWID, 
+    WHRID, WHSJ, WJBB, YM)      
+    SELECT SYS_GUID(),#{dprtcode,jdbcType=VARCHAR}, YWLX, #{id,jdbcType=VARCHAR}, XC, WJLY, WJLX, WJBH, WJBT, BFRQ, SXRQ, DQRQ, ZT, 
+   #{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR}, sysdate,WJBB, YM
+    	FROM B_G2_999 
+	    WHERE zt=1 and ywid=#{ywid,jdbcType=VARCHAR}
+  </insert>
+  
+  	<!-- 同步参考文件 -->
+	<insert id="insertByCopy" parameterType="com.eray.thjw.project2.po.Reference">
+	  	INSERT INTO B_G2_999(
+	    	 ID, DPRTCODE, YWLX, YWID, XC, WJLY, WJLX, WJBH, WJBT, BFRQ, SXRQ, DQRQ, ZT, WHDWID, 
+	    WHRID, WHSJ, WJBB, YM)      
+	    SELECT SYS_GUID(),dprtcode, #{ywlx,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, XC, WJLY, WJLX, WJBH, WJBT, BFRQ, SXRQ, DQRQ, ZT, 
+	   #{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR}, sysdate, WJBB, YM
+	    	FROM B_G2_999 
+		    WHERE zt=1 and ywid=#{ywid,jdbcType=VARCHAR}
+	</insert>
+  
+</mapper>

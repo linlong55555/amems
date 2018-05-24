@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.CheckingContentMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.CheckingContent" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="NBXH" property="nbxh" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="WZ" property="wz" jdbcType="VARCHAR" />
+    <result column="CKSC" property="cksc" jdbcType="VARCHAR" />
+    <result column="CKGK" property="ckgk" jdbcType="VARCHAR" />
+    <result column="IS_BJ" property="isBj" jdbcType="DECIMAL" />
+    <result column="IS_MI" property="isMi" jdbcType="DECIMAL" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="xmly" property="xmly" jdbcType="VARCHAR" />
+    <result column="gzlx" property="gzlx" jdbcType="VARCHAR" />
+    <result column="scms_zw" property="scmsZw" jdbcType="VARCHAR" />
+    <result column="scms_yw" property="scmsYw" jdbcType="VARCHAR" />
+    <result column="jclx" property="jclx" jdbcType="VARCHAR" />
+    <result column="fjzch" property="fjzch" jdbcType="VARCHAR" />
+    <result column="gzzw" property="gzzw" jdbcType="VARCHAR" />
+     <result column="gdbh" property="gdbh" jdbcType="VARCHAR" />
+     <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, NBXH, ZJH, WZ, CKSC, CKGK, IS_BJ, IS_MI, BZ, ZT, WHBMID, WHRID, 
+    WHSJ, DPRTCODE
+  </sql>
+     
+       <!-- 查询定检任务单的工作内容 -->
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+   
+    a.ID, a.MAINID, a.NBXH, a.ZJH, a.WZ, a.CKSC, a.CKGK, a.IS_BJ, a.IS_MI, a.BZ, a.ZT, a.WHBMID, a.WHRID, 
+    
+    a.WHSJ, a.DPRTCODE,a.xmly,a.gzlx,a.scms_zw,a.scms_yw,a.jclx,a.fjzch,a.gzzw,t.gdbh,b.zwms
+   
+    from B_G_01402 a   left join 
+    
+    (select djrwdid,nbxh ,string_agg(gdbh||'@'||id,',') as gdbh from b_g_016   group by djrwdid,nbxh) t
+    
+     on a.mainid=t.djrwdid and a.nbxh=t.nbxh left join d_005 b on a.zjh=b.zjh and b.dprtcode=a.dprtcode
+     
+    where a.MAINID = #{mainid,jdbcType=VARCHAR} order by a.NBXH asc
+  </select>
+  
+  <!-- save b_g_01402  定检任务工作内容 -->
+   <insert id="save" parameterType="com.eray.thjw.productionplan.po.CheckingContent">
+    insert into b_g_01402 (ID, MAINID,NBXH,ZJH,CKSC,CKGK,IS_BJ,IS_MI,BZ,ZT,WHBMID,WHRID,WHSJ,DPRTCODE,xmly,gzlx,scms_zw,scms_yw,jclx,fjzch,gzzw,wz)
+    values (#{id},#{mainid},#{nbxh},#{zjh},#{cksc},#{ckgk},#{isBj},#{isMi},#{bz},#{zt},#{whbmid},#{whrid},current_timestamp,#{dprtcode},#{xmly},#{gzlx},#{scmsZw},#{scmsYw},#{jclx},#{fjzch},#{gzzw},#{wz})
+  </insert>
+  
+  
+</mapper>

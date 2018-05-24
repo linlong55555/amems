@@ -1,0 +1,1048 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.OutFieldStockMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.OutFieldStock">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="XGDJID" jdbcType="VARCHAR" property="xgdjid" />
+    <result column="KCID" jdbcType="VARCHAR" property="kcid" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="SJLY" jdbcType="DECIMAL" property="sjly" />
+    <result column="CKLB" jdbcType="DECIMAL" property="cklb" />
+    <result column="CKID" jdbcType="VARCHAR" property="ckid" />
+    <result column="CKH" jdbcType="VARCHAR" property="ckh" />
+    <result column="CKMC" jdbcType="VARCHAR" property="ckmc" />
+    <result column="KWID" jdbcType="VARCHAR" property="kwid" />
+    <result column="KWH" jdbcType="VARCHAR" property="kwh" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+    <result column="PCH" jdbcType="VARCHAR" property="pch" />
+    <result column="SN" jdbcType="VARCHAR" property="sn" />
+    <result column="ZWMS" jdbcType="VARCHAR" property="zwms" />
+    <result column="YWMS" jdbcType="VARCHAR" property="ywms" />
+    <result column="JLDW" jdbcType="VARCHAR" property="jldw" />
+    <result column="KCSL" jdbcType="DECIMAL" property="kcsl" />
+    <result column="DJSL" jdbcType="DECIMAL" property="djsl" />
+    <result column="CGHTID" jdbcType="VARCHAR" property="cghtid" />
+    <result column="HTBH_CG" jdbcType="VARCHAR" property="htbhCg" />
+    <result column="SXHTID" jdbcType="VARCHAR" property="sxhtid" />
+    <result column="HTBH_SX" jdbcType="VARCHAR" property="htbhSx" />
+    <result column="TDDID" jdbcType="VARCHAR" property="tddid" />
+    <result column="TDDH" jdbcType="VARCHAR" property="tddh" />
+    <result column="RKSJ" jdbcType="TIMESTAMP" property="rksj" />
+    <result column="RKBMID" jdbcType="VARCHAR" property="rkbmid" />
+    <result column="RKRID" jdbcType="VARCHAR" property="rkrid" />
+    <result column="SHZH" jdbcType="VARCHAR" property="shzh" />
+    <result column="SHZWZ" jdbcType="VARCHAR" property="shzwz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="JYDID" jdbcType="VARCHAR" property="jydid" />
+    <result column="HJSM" jdbcType="TIMESTAMP" property="hjsm" />
+    <result column="SPQX" jdbcType="TIMESTAMP" property="spqx" />
+    <result column="SCRQ" jdbcType="TIMESTAMP" property="scrq" />
+    <result column="XH" jdbcType="VARCHAR" property="xh" />
+    <result column="GG" jdbcType="VARCHAR" property="gg" />
+    <result column="ZZCS" jdbcType="VARCHAR" property="zzcs" />
+    <result column="TSN" jdbcType="VARCHAR" property="tsn" />
+    <result column="TSO" jdbcType="VARCHAR" property="tso" />
+    <result column="HCLY" jdbcType="DECIMAL" property="hcly" />
+    <result column="CFYQ" jdbcType="VARCHAR" property="cfyq" />
+    <result column="XKZH" jdbcType="VARCHAR" property="xkzh" />
+    <result column="IS_DJ" jdbcType="DECIMAL" property="isDj" />
+    <result column="KZLX" jdbcType="DECIMAL" property="kzlx" />
+    <result column="LLKLX" jdbcType="DECIMAL" property="llklx" />
+    <result column="LLKBH" jdbcType="VARCHAR" property="llkbh" />
+    <result column="BJGZJL" jdbcType="VARCHAR" property="bjgzjl" />
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.aerialmaterial.po.OutFieldStock" id="OutFieldStockToMaterialMap" extends="BaseResultMap">  
+       <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+       		<id column="HCID" property="id"/>  
+	        <result column="ZJH" property="zjh" jdbcType="VARCHAR" />  
+	        <result column="CJJH" property="cjjh" jdbcType="VARCHAR" />  
+	        <result column="HCZWMS" property="zwms" jdbcType="VARCHAR" />  
+	        <result column="HCYWMS" property="ywms" jdbcType="VARCHAR" />  
+	        <association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+		         <id column="FZJH" property="zjh"/>
+		         <result column="FZWMS" property="zwms"/>
+		         <result column="FYWMS" property="ywms"/>
+		    </association>
+	   </association>
+   </resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, XGDJID, KCID, DPRTCODE, SJLY, CKLB, CKID, CKH, CKMC, KWID, KWH, BJID, BJH, PCH, 
+    SN, ZWMS, YWMS, JLDW, KCSL, CGHTID, HTBH_CG, SXHTID, HTBH_SX, TDDID, TDDH, RKSJ, 
+    RKBMID, RKRID, SHZH, SHZWZ, ZT, BZ, JYDID, HJSM, SPQX, SCRQ, XH, GG, ZZCS, TSN, TSO, 
+    HCLY, CFYQ
+  </sql>
+  
+  <sql id="Base_Column_List1">
+    t1.ID,t1.XGDJID,  t1.KCID,  t1.DPRTCODE,  t1.SJLY,  t1.CKLB,  t1.CKID,  t1.CKH,  t1.CKMC,  t1.KWID,  t1.KWH,  t1.BJID,  t1.BJH,  t1.PCH, 
+     t1.SN,t1.ZWMS,  t1.YWMS, t1.JLDW,  t1.KCSL,  t1.CGHTID,  t1.HTBH_CG,  t1.SXHTID,  t1.HTBH_SX,  t1.TDDID,  t1.TDDH,  t1.RKSJ, 
+     t1.RKBMID,t1.RKRID,  t1.SHZH,  t1.SHZWZ,  t1.ZT,  t1.BZ,  t1.JYDID,  t1.HJSM,  t1.SPQX,  t1.SCRQ,  t1.XH,  t1.GG,  t1.ZZCS,  t1.TSN,  t1.TSO, 
+     t1.HCLY,t1.CFYQ
+  </sql>
+   	<select id="queryAllPageList" resultMap="BaseResultMap">
+	   select t1.ID,
+       t1.XGDJID,
+       t1.KCID,
+       t1.DPRTCODE,
+       t1.SJLY,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN t1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN t1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN t1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN t1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN t1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       t1.djsl
+  from b_h_003 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+ where t1.sjly = 2 and t1.zt&lt;&gt;4
+		<include refid="FlightRecordParam"></include>
+
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by hjsm 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+	
+  <!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx =  CAST(#{hclx} AS NUMERIC)
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+		  
+       <if test="id != null and id != '' " >   
+            and  t1.id  = #{id,jdbcType=VARCHAR}
+           </if>
+	</sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select t1.ID,
+       t1.XGDJID,
+       t1.KCID,
+       t1.DPRTCODE,
+       t1.SJLY,
+       t1.CKLB,
+       t1.CKID,
+       t1.CKH,
+       t1.CKMC,
+       t1.KWID,
+       t1.KWH,
+       t1.BJID,
+       t1.BJH,
+       t1.PCH,
+       t1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN t1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN t1.YWMS ELSE T2.YWMS END) YWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN t1.JLDW ELSE T2.JLDW END) JLDW,
+       t1.KCSL,
+       t1.CGHTID,
+       t1.HTBH_CG,
+       t1.SXHTID,
+       t1.HTBH_SX,
+       t1.TDDID,
+       t1.TDDH,
+       t1.RKSJ,
+       t1.RKBMID,
+       t1.RKRID,
+       t1.SHZH,
+       t1.SHZWZ,
+       t1.ZT,
+       t1.BZ,
+       t1.JYDID,
+       t1.HJSM,
+       t1.SPQX,
+       t1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN t1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN t1.GG ELSE T2.GG END) GG,
+       t1.ZZCS,
+       t1.TSN,
+       t1.TSO,
+       t1.HCLY,
+       t1.CFYQ,
+       t2.cjjh,
+       t2.hclx,
+       t2.gljb,
+       t1.djsl
+  from b_h_003 t1
+  left join d_008 t2
+    on t1.bjid = t2.id
+ where t1.sjly = 2  and t1.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="queryByKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select T1.ID,
+       T1.XGDJID,
+       T1.KCID,
+       T1.DPRTCODE,
+       T1.SJLY,
+       T1.CKLB,
+       T1.CKID,
+       T1.CKH,
+       T1.CKMC,
+       T1.KWID,
+       T1.KWH,
+       T1.BJID,
+       T1.BJH,
+       T1.PCH,
+       T1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN t1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN t1.YWMS ELSE T2.YWMS END) ZWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN t1.JLDW ELSE T2.JLDW END) JLDW,
+       T1.KCSL,
+       T1.CGHTID,
+       T1.HTBH_CG,
+       T1.SXHTID,
+       T1.HTBH_SX,
+       T1.TDDID,
+       T1.TDDH,
+       T1.RKSJ,
+       T1.RKBMID,
+       T1.RKRID,
+       T1.SHZH,
+       T1.SHZWZ,
+       T1.ZT,
+       T1.BZ,
+       T1.JYDID,
+       T1.HJSM,
+       T1.SPQX,
+       T1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN t1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN t1.GG ELSE T2.GG END) GG,
+       T1.ZZCS,
+       T1.TSN,
+       T1.TSO,
+       T1.HCLY,
+       T1.CFYQ
+  from B_H_003 T1 LEFT JOIN D_008 T2 ON T1.BJID = T2.ID
+    where T1.XGDJID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+<!--     查询外场库存  梅志亮 -->
+  <select id="queryById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select T1.ID,
+       T1.XGDJID,
+       T1.KCID,
+       T1.DPRTCODE,
+       T1.SJLY,
+       T1.CKLB,
+       T1.CKID,
+       T1.CKH,
+       T1.CKMC,
+       T1.KWID,
+       T1.KWH,
+       T1.BJID,
+       T1.BJH,
+       T1.PCH,
+       T1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN t1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN t1.YWMS ELSE T2.YWMS END) ZWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN t1.JLDW ELSE T2.JLDW END) JLDW,
+       T1.KCSL,
+       T1.CGHTID,
+       T1.HTBH_CG,
+       T1.SXHTID,
+       T1.HTBH_SX,
+       T1.TDDID,
+       T1.TDDH,
+       T1.RKSJ,
+       T1.RKBMID,
+       T1.RKRID,
+       T1.SHZH,
+       T1.SHZWZ,
+       T1.ZT,
+       T1.BZ,
+       T1.JYDID,
+       T1.HJSM,
+       T1.SPQX,
+       T1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN t1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN t1.GG ELSE T2.GG END) GG,
+       T1.ZZCS,
+       T1.TSN,
+       T1.TSO,
+       T1.HCLY,
+       T1.CFYQ
+  from B_H_003 T1 LEFT JOIN D_008 T2 ON T1.BJID = T2.ID
+    where T1.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="queryByParamKey" parameterType="com.eray.thjw.aerialmaterial.po.OutFieldStock" resultMap="BaseResultMap">
+    select T1.ID,
+       T1.XGDJID,
+       T1.KCID,
+       T1.DPRTCODE,
+       T1.SJLY,
+       T1.CKLB,
+       T1.CKID,
+       T1.CKH,
+       T1.CKMC,
+       T1.KWID,
+       T1.KWH,
+       T1.BJID,
+       T1.BJH,
+       T1.PCH,
+       T1.SN,
+       (CASE WHEN T2.ZWMS IS NULL THEN t1.ZWMS ELSE T2.ZWMS END) ZWMS,
+       (CASE WHEN T2.YWMS IS NULL THEN t1.YWMS ELSE T2.YWMS END) ZWMS,
+       (CASE WHEN T2.JLDW IS NULL THEN t1.JLDW ELSE T2.JLDW END) JLDW,
+       T1.KCSL,
+       T1.CGHTID,
+       T1.HTBH_CG,
+       T1.SXHTID,
+       T1.HTBH_SX,
+       T1.TDDID,
+       T1.TDDH,
+       T1.RKSJ,
+       T1.RKBMID,
+       T1.RKRID,
+       T1.SHZH,
+       T1.SHZWZ,
+       T1.ZT,
+       T1.BZ,
+       T1.JYDID,
+       T1.HJSM,
+       T1.SPQX,
+       T1.SCRQ,
+       (CASE WHEN T2.XINGH IS NULL THEN t1.XH ELSE T2.XINGH END) XH,
+       (CASE WHEN T2.GG IS NULL THEN t1.GG ELSE T2.GG END) GG,
+       T1.ZZCS,
+       T1.TSN,
+       T1.TSO,
+       T1.HCLY,
+       T1.CFYQ
+  from B_H_003 T1 LEFT JOIN D_008 T2 ON T1.BJID = T2.ID
+    where T1.XGDJID = #{xgdjid,jdbcType=VARCHAR} and T1.kcid=#{kcid,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_003
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.OutFieldStock">
+    insert into B_H_003 (ID, XGDJID, KCID, 
+      DPRTCODE, SJLY, CKLB, 
+      CKID, CKH, CKMC, KWID, 
+      KWH, BJID, BJH, PCH, 
+      SN, ZWMS, YWMS, JLDW, 
+      KCSL, CGHTID, HTBH_CG, 
+      SXHTID, HTBH_SX, TDDID, 
+      TDDH, RKSJ, RKBMID, 
+      RKRID, SHZH, SHZWZ, 
+      ZT, BZ, JYDID, HJSM, 
+      SPQX, SCRQ, XH, 
+      GG, ZZCS, TSN, TSO, 
+      HCLY, CFYQ)
+    values (#{id,jdbcType=VARCHAR}, #{xgdjid,jdbcType=VARCHAR}, #{kcid,jdbcType=VARCHAR}, 
+      #{dprtcode,jdbcType=VARCHAR}, #{sjly,jdbcType=DECIMAL}, #{cklb,jdbcType=DECIMAL}, 
+      #{ckid,jdbcType=VARCHAR}, #{ckh,jdbcType=VARCHAR}, #{ckmc,jdbcType=VARCHAR}, #{kwid,jdbcType=VARCHAR}, 
+      #{kwh,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{pch,jdbcType=VARCHAR}, 
+      #{sn,jdbcType=VARCHAR}, #{zwms,jdbcType=VARCHAR}, #{ywms,jdbcType=VARCHAR}, #{jldw,jdbcType=VARCHAR}, 
+      #{kcsl,jdbcType=DECIMAL}, #{cghtid,jdbcType=VARCHAR}, #{htbhCg,jdbcType=VARCHAR}, 
+      #{sxhtid,jdbcType=VARCHAR}, #{htbhSx,jdbcType=VARCHAR}, #{tddid,jdbcType=VARCHAR}, 
+      #{tddh,jdbcType=VARCHAR}, #{rksj,jdbcType=TIMESTAMP}, #{rkbmid,jdbcType=VARCHAR}, 
+      #{rkrid,jdbcType=VARCHAR}, #{shzh,jdbcType=VARCHAR}, #{shzwz,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{jydid,jdbcType=VARCHAR}, #{hjsm,jdbcType=TIMESTAMP}, 
+      #{spqx,jdbcType=TIMESTAMP}, #{scrq,jdbcType=TIMESTAMP}, #{xh,jdbcType=VARCHAR}, 
+      #{gg,jdbcType=VARCHAR}, #{zzcs,jdbcType=VARCHAR}, #{tsn,jdbcType=VARCHAR}, #{tso,jdbcType=VARCHAR}, 
+      #{hcly,jdbcType=DECIMAL}, #{cfyq,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.OutFieldStock">
+    insert into B_H_003
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="xgdjid != null">
+        XGDJID,
+      </if>
+      <if test="kcid != null">
+        KCID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="sjly != null">
+        SJLY,
+      </if>
+      <if test="cklb != null">
+        CKLB,
+      </if>
+      <if test="ckid != null">
+        CKID,
+      </if>
+      <if test="ckh != null">
+        CKH,
+      </if>
+      <if test="ckmc != null">
+        CKMC,
+      </if>
+      <if test="kwid != null">
+        KWID,
+      </if>
+      <if test="kwh != null">
+        KWH,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="bjh != null">
+        BJH,
+      </if>
+      <if test="pch != null">
+        PCH,
+      </if>
+      <if test="sn != null">
+        SN,
+      </if>
+      <if test="zwms != null">
+        ZWMS,
+      </if>
+      <if test="ywms != null">
+        YWMS,
+      </if>
+      <if test="jldw != null">
+        JLDW,
+      </if>
+      <if test="kcsl != null">
+        KCSL,
+      </if>
+      <if test="cghtid != null">
+        CGHTID,
+      </if>
+      <if test="htbhCg != null">
+        HTBH_CG,
+      </if>
+      <if test="sxhtid != null">
+        SXHTID,
+      </if>
+      <if test="htbhSx != null">
+        HTBH_SX,
+      </if>
+      <if test="tddid != null">
+        TDDID,
+      </if>
+      <if test="tddh != null">
+        TDDH,
+      </if>
+      <if test="rksj != null">
+        RKSJ,
+      </if>
+      <if test="rkbmid != null">
+        RKBMID,
+      </if>
+      <if test="rkrid != null">
+        RKRID,
+      </if>
+      <if test="shzh != null">
+        SHZH,
+      </if>
+      <if test="shzwz != null">
+        SHZWZ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="jydid != null">
+        JYDID,
+      </if>
+      <if test="hjsm != null">
+        HJSM,
+      </if>
+      <if test="spqx != null">
+        SPQX,
+      </if>
+      <if test="scrq != null">
+        SCRQ,
+      </if>
+      <if test="xh != null">
+        XH,
+      </if>
+      <if test="gg != null">
+        GG,
+      </if>
+      <if test="zzcs != null">
+        ZZCS,
+      </if>
+      <if test="tsn != null">
+        TSN,
+      </if>
+      <if test="tso != null">
+        TSO,
+      </if>
+      <if test="hcly != null">
+        HCLY,
+      </if>
+      <if test="cfyq != null">
+        CFYQ,
+      </if>
+      <if test="xkzh != null">
+        xkzh,
+      </if>
+      <if test="bjgzjl != null">
+        bjgzjl,
+      </if>
+      <if test="llklx != null">
+        llklx,
+      </if>
+      <if test="llkbh != null">
+        llkbh,
+      </if>
+      <if test="kzlx != null">
+        kzlx,
+      </if>
+      <if test="isDj != null">
+        is_dj,
+      </if>
+      <if test="kccb != null">
+        kccb,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="xgdjid != null">
+        #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null">
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="sjly != null">
+        #{sjly,jdbcType=DECIMAL},
+      </if>
+      <if test="cklb != null">
+        #{cklb,jdbcType=DECIMAL},
+      </if>
+      <if test="ckid != null">
+        #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null">
+        #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null">
+        #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null">
+        #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kwh != null">
+        #{kwh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null">
+        #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="jldw != null">
+        #{jldw,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="cghtid != null">
+        #{cghtid,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhCg != null">
+        #{htbhCg,jdbcType=VARCHAR},
+      </if>
+      <if test="sxhtid != null">
+        #{sxhtid,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhSx != null">
+        #{htbhSx,jdbcType=VARCHAR},
+      </if>
+      <if test="tddid != null">
+        #{tddid,jdbcType=VARCHAR},
+      </if>
+      <if test="tddh != null">
+        #{tddh,jdbcType=VARCHAR},
+      </if>
+      <if test="rksj != null">
+        #{rksj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rkbmid != null">
+        #{rkbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rkrid != null">
+        #{rkrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shzh != null">
+        #{shzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzwz != null">
+        #{shzwz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="jydid != null">
+        #{jydid,jdbcType=VARCHAR},
+      </if>
+      <if test="hjsm != null">
+        #{hjsm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spqx != null">
+        #{spqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scrq != null">
+        #{scrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xh != null">
+        #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null">
+        #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="zzcs != null">
+        #{zzcs,jdbcType=VARCHAR},
+      </if>
+      <if test="tsn != null">
+        #{tsn,jdbcType=VARCHAR},
+      </if>
+      <if test="tso != null">
+        #{tso,jdbcType=VARCHAR},
+      </if>
+      <if test="hcly != null">
+        #{hcly,jdbcType=DECIMAL},
+      </if>
+      <if test="cfyq != null">
+        #{cfyq,jdbcType=VARCHAR},
+      </if>
+      <if test="xkzh != null">
+        #{xkzh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjgzjl != null">
+        #{bjgzjl,jdbcType=VARCHAR},
+      </if>
+      <if test="llklx != null">
+        #{llklx,jdbcType=VARCHAR},
+      </if>
+      <if test="llkbh != null">
+        #{llkbh,jdbcType=VARCHAR},
+      </if>
+      <if test="kzlx != null">
+        #{kzlx,jdbcType=VARCHAR},
+      </if>
+      <if test="isDj != null">
+        #{isDj,jdbcType=VARCHAR},
+      </if>
+      <if test="kccb != null">
+        #{kccb,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.OutFieldStock">
+    update B_H_003
+    <set>
+      <if test="xgdjid != null">
+        XGDJID = #{xgdjid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null">
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="sjly != null">
+        SJLY = #{sjly,jdbcType=DECIMAL},
+      </if>
+      <if test="cklb != null">
+        CKLB = #{cklb,jdbcType=DECIMAL},
+      </if>
+      <if test="ckid != null">
+        CKID = #{ckid,jdbcType=VARCHAR},
+      </if>
+      <if test="ckh != null">
+        CKH = #{ckh,jdbcType=VARCHAR},
+      </if>
+      <if test="ckmc != null">
+        CKMC = #{ckmc,jdbcType=VARCHAR},
+      </if>
+      <if test="kwid != null">
+        KWID = #{kwid,jdbcType=VARCHAR},
+      </if>
+      <if test="kwh != null">
+        KWH = #{kwh,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null">
+        PCH = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        SN = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null">
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="ywms != null">
+        YWMS = #{ywms,jdbcType=VARCHAR},
+      </if>
+      <if test="jldw != null">
+        JLDW = #{jldw,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        KCSL = #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="cghtid != null">
+        CGHTID = #{cghtid,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhCg != null">
+        HTBH_CG = #{htbhCg,jdbcType=VARCHAR},
+      </if>
+      <if test="sxhtid != null">
+        SXHTID = #{sxhtid,jdbcType=VARCHAR},
+      </if>
+      <if test="htbhSx != null">
+        HTBH_SX = #{htbhSx,jdbcType=VARCHAR},
+      </if>
+      <if test="tddid != null">
+        TDDID = #{tddid,jdbcType=VARCHAR},
+      </if>
+      <if test="tddh != null">
+        TDDH = #{tddh,jdbcType=VARCHAR},
+      </if>
+      <if test="rksj != null">
+        RKSJ = #{rksj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rkbmid != null">
+        RKBMID = #{rkbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="rkrid != null">
+        RKRID = #{rkrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shzh != null">
+        SHZH = #{shzh,jdbcType=VARCHAR},
+      </if>
+      <if test="shzwz != null">
+        SHZWZ = #{shzwz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="jydid != null">
+        JYDID = #{jydid,jdbcType=VARCHAR},
+      </if>
+      <if test="hjsm != null">
+        HJSM = #{hjsm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spqx != null">
+        SPQX = #{spqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scrq != null">
+        SCRQ = #{scrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xh != null">
+        XH = #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="gg != null">
+        GG = #{gg,jdbcType=VARCHAR},
+      </if>
+      <if test="zzcs != null">
+        ZZCS = #{zzcs,jdbcType=VARCHAR},
+      </if>
+      <if test="tsn != null">
+        TSN = #{tsn,jdbcType=VARCHAR},
+      </if>
+      <if test="tso != null">
+        TSO = #{tso,jdbcType=VARCHAR},
+      </if>
+      <if test="hcly != null">
+        HCLY = #{hcly,jdbcType=DECIMAL},
+      </if>
+      <if test="cfyq != null">
+        CFYQ = #{cfyq,jdbcType=VARCHAR},
+      </if>
+      <if test="xkzh != null">
+        xkzh = #{xkzh,jdbcType=VARCHAR},
+      </if>
+      <if test="djsl != null">
+        djsl = #{djsl,jdbcType=DECIMAL},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.OutFieldStock">
+    update B_H_003
+    set XGDJID = #{xgdjid,jdbcType=VARCHAR},
+      KCID = #{kcid,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      SJLY = #{sjly,jdbcType=DECIMAL},
+      CKLB = #{cklb,jdbcType=DECIMAL},
+      CKID = #{ckid,jdbcType=VARCHAR},
+      CKH = #{ckh,jdbcType=VARCHAR},
+      CKMC = #{ckmc,jdbcType=VARCHAR},
+      KWID = #{kwid,jdbcType=VARCHAR},
+      KWH = #{kwh,jdbcType=VARCHAR},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      PCH = #{pch,jdbcType=VARCHAR},
+      SN = #{sn,jdbcType=VARCHAR},
+      ZWMS = #{zwms,jdbcType=VARCHAR},
+      YWMS = #{ywms,jdbcType=VARCHAR},
+      JLDW = #{jldw,jdbcType=VARCHAR},
+      KCSL = #{kcsl,jdbcType=DECIMAL},
+      CGHTID = #{cghtid,jdbcType=VARCHAR},
+      HTBH_CG = #{htbhCg,jdbcType=VARCHAR},
+      SXHTID = #{sxhtid,jdbcType=VARCHAR},
+      HTBH_SX = #{htbhSx,jdbcType=VARCHAR},
+      TDDID = #{tddid,jdbcType=VARCHAR},
+      TDDH = #{tddh,jdbcType=VARCHAR},
+      RKSJ = #{rksj,jdbcType=TIMESTAMP},
+      RKBMID = #{rkbmid,jdbcType=VARCHAR},
+      RKRID = #{rkrid,jdbcType=VARCHAR},
+      SHZH = #{shzh,jdbcType=VARCHAR},
+      SHZWZ = #{shzwz,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      JYDID = #{jydid,jdbcType=VARCHAR},
+      HJSM = #{hjsm,jdbcType=TIMESTAMP},
+      SPQX = #{spqx,jdbcType=TIMESTAMP},
+      SCRQ = #{scrq,jdbcType=TIMESTAMP},
+      XH = #{xh,jdbcType=VARCHAR},
+      GG = #{gg,jdbcType=VARCHAR},
+      ZZCS = #{zzcs,jdbcType=VARCHAR},
+      TSN = #{tsn,jdbcType=VARCHAR},
+      TSO = #{tso,jdbcType=VARCHAR},
+      HCLY = #{hcly,jdbcType=DECIMAL},
+      CFYQ = #{cfyq,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <sql id="outFieldStockParam">
+	   where 
+	   1=1
+         <!-- 机构id-->
+	     <if test="dprtcode != null and dprtcode != ''">
+            and  b1.dprtcode = #{dprtcode}
+         </if>
+         <if test="dprtcodes != null and dprtcodes.size > 0">
+            and b1.dprtcode in 
+            <foreach collection="dprtcodes" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+         </if>
+         <if test="dprtcodes != null and dprtcodes.size == 0">
+            and 1=0
+         </if>
+         <if test="notIds != null and notIds.size > 0">
+            and b1.id not in 
+            <foreach collection="notIds" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+	   		</foreach>
+         </if>
+         <if test="keyword != null and keyword != ''">
+            and  (b1.bjh like '%'||#{keyword}||'%'  or
+            	  b1.sn like '%'||#{keyword}||'%' or
+            	  b1.pch like '%'||#{keyword}||'%' or
+            	  b1.zwms like '%'||#{keyword}||'%' or
+            	  b1.ywms like '%'||#{keyword}||'%'
+            	)
+         </if>
+         <if test="paramsMap != null and paramsMap.keywords != null and paramsMap.keywords.size > 0">
+            <foreach collection="paramsMap.keywords" item="item" index="index">
+            and  (b1.bjh like '%'||#{item}||'%'  or
+            	  b1.sn like '%'||#{item}||'%' or
+            	  b1.pch like '%'||#{item}||'%' or
+            	  b1.zwms like '%'||#{item}||'%' or
+            	  b1.ywms like '%'||#{item}||'%'
+            	)
+	   		</foreach>
+         </if>
+	</sql>
+  
+  <!-- 根据条件查询外场库存 -->
+  <select id="queryByParam" parameterType="com.eray.thjw.aerialmaterial.po.OutFieldStock" resultMap="OutFieldStockToMaterialMap">
+    SELECT B1.ID,
+       B1.XGDJID,
+       B1.KCID,
+       B1.DPRTCODE,
+       B1.SJLY,
+       B1.CKLB,
+       B1.CKID,
+       B1.CKH,
+       B1.CKMC,
+       B1.KWID,
+       B1.KWH,
+       B1.BJID,
+       B1.BJH,
+       B1.PCH,
+       B1.SN,
+       (CASE WHEN D1.ZWMS IS NULL THEN B1.ZWMS ELSE D1.ZWMS END) ZWMS,
+       (CASE WHEN D1.YWMS IS NULL THEN B1.YWMS ELSE D1.YWMS END) YWMS,
+       (CASE WHEN D1.JLDW IS NULL THEN B1.JLDW ELSE D1.JLDW END) JLDW,
+       B1.KCSL,
+       B1.CGHTID,
+       B1.HTBH_CG,
+       B1.SXHTID,
+       B1.HTBH_SX,
+       B1.TDDID,
+       B1.TDDH,
+       B1.RKSJ,
+       B1.RKBMID,
+       B1.RKRID,
+       B1.SHZH,
+       B1.SHZWZ,
+       B1.ZT,
+       B1.BZ,
+       B1.JYDID,
+       B1.HJSM,
+       B1.SPQX,
+       B1.SCRQ,
+       (CASE WHEN D1.XINGH IS NULL THEN B1.XH ELSE D1.XINGH END) XH,
+       (CASE WHEN D1.GG IS NULL THEN B1.GG ELSE D1.GG END) GG,
+       B1.ZZCS,
+       B1.TSN,
+       B1.TSO,
+       B1.HCLY,
+       B1.CFYQ,
+       B1.BJGZJL,
+       B1.XKZH,
+       D1.ID       HCID,
+       D1.ZJH,
+       D1.CJJH,
+       D1.ZWMS     HCZWMS,
+       D1.YWMS     HCYWMS,
+       B1.LLKLX,
+       B1.LLKBH,
+       B1.KZLX,
+       B1.IS_DJ,
+       D2.ZJH      AS FZJH,
+       D2.ZWMS     AS FZWMS,
+       D2.YWMS     AS FYWMS
+  FROM B_H_003 B1
+ INNER JOIN D_008 D1
+    ON B1.DPRTCODE = D1.DPRTCODE
+   AND B1.BJH = D1.BJH
+   AND D1.ZT = 1
+  LEFT JOIN D_005 D2
+    ON D1.ZJH = D2.ZJH
+    AND D1.DPRTCODE = D2.DPRTCODE
+    <include refid="outFieldStockParam" />
+  ORDER BY B1.BJH, B1.SN, B1.PCH
+  </select>
+  	<update id="updateZTById" parameterType="String">
+		update b_h_003 set zt=2 where id =#{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteOutFieldStockById" parameterType="String">
+		delete from b_h_003 where id =#{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertOutFieldStockFromMaterialHistory" parameterType="String">
+	insert into B_H_003 (ID, DPRTCODE, CKLB, SJLY,
+	      CKID, CKH, CKMC, KWID, 
+	      KWH, BJID, BJH, PCH, 
+	      SN, ZWMS, YWMS, JLDW, 
+	      KCSL, CGHTID, 
+	      HTBH_CG, SXHTID, HTBH_SX, 
+	      TDDID, TDDH, RKSJ, 
+	      RKBMID, RKRID, XKZH, 
+	      SHZH, SHZWZ, ZT, BZ, 
+	      JYDID, HJSM, SPQX, 
+	      SCRQ, XH, GG, ZZCS, 
+	      TSN, TSO, HCLY, CFYQ, 
+	      BJGZJL, LLKLX, LLKBH, 
+	      KZLX, IS_DJ, KCCB,WHRID,WHSJ)
+	    select KCID, DPRTCODE, CKLB,2, 
+	      CKID, CKH, CKMC, KWID, 
+	      KWH, BJID, BJH, PCH, 
+	      SN, ZWMS, YWMS, JLDW, 
+	      KCSL,  CGHTID, 
+	      HTBH_CG, SXHTID, HTBH_SX, 
+	      TDDID, TDDH, RKSJ, 
+	      RKBMID, RKRID, XKZH, 
+	      SHZH, SHZWZ, 2, BZ, 
+	      JYDID, HJSM, SPQX, 
+	      SCRQ, XH, GG, ZZCS, 
+	      TSN, TSO, HCLY, CFYQ, 
+	      BJGZJL, LLKLX, LLKBH, 
+	      KZLX, IS_DJ, KCCB,#{0},current_timestamp from b_h_017 where id=#{1}
+	</insert>
+</mapper>

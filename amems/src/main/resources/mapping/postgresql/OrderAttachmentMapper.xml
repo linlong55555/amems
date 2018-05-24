@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.OrderAttachmentMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.OrderAttachment" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+    <result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+    <result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+    <result column="WJDX" property="wjdx" jdbcType="DECIMAL" />
+    <result column="HZM" property="hzm" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+    <result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+    <result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+    <association property="czr_user" javaType="com.eray.thjw.po.User">
+         <id column="czrid" property="id"/>
+         <result column="czr_realname" property="realname"/>
+         <result column="czr_username" property="username"/>
+     </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    D_011.ID, D_011.MAINID, D_011.DPRTCODE, D_011.YSWJM, D_011.WBWJM, D_011.NBWJM, D_011.WJDX, D_011.HZM, D_011.SM, D_011.CFLJ, D_011.YXZT, D_011.CZSJ, D_011.CZBMID, 
+    D_011.CZRID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_011
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryAll" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />,czr_user.realname czr_realname,czr_user.username czr_username
+    from D_011 left join t_user czr_user on(D_011.czrid=czr_user.id)
+    where MAINID = #{mainid,jdbcType=VARCHAR} and yxzt=1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_011
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.OrderAttachment" >
+    insert into D_011 (ID, MAINID, DPRTCODE, 
+      YSWJM, WBWJM, NBWJM, 
+      WJDX, HZM, SM, CFLJ, 
+      YXZT, CZSJ, CZBMID, 
+      CZRID)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{yswjm,jdbcType=VARCHAR}, #{wbwjm,jdbcType=VARCHAR}, #{nbwjm,jdbcType=VARCHAR}, 
+      #{wjdx,jdbcType=DECIMAL}, #{hzm,jdbcType=VARCHAR}, #{sm,jdbcType=VARCHAR}, #{cflj,jdbcType=VARCHAR}, 
+      #{yxzt,jdbcType=DECIMAL}, #{czsj,jdbcType=TIMESTAMP}, #{czbmid,jdbcType=VARCHAR}, 
+      #{czrid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.OrderAttachment" >
+    insert into D_011
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="yswjm != null" >
+        YSWJM,
+      </if>
+      <if test="wbwjm != null" >
+        WBWJM,
+      </if>
+      <if test="nbwjm != null" >
+        NBWJM,
+      </if>
+      <if test="wjdx != null" >
+        WJDX,
+      </if>
+      <if test="hzm != null" >
+        HZM,
+      </if>
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="cflj != null" >
+        CFLJ,
+      </if>
+      <if test="yxzt != null" >
+        YXZT,
+      </if>
+      <if test="czsj != null" >
+        CZSJ,
+      </if>
+      <if test="czbmid != null" >
+        CZBMID,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null" >
+        #{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wbwjm != null" >
+        #{wbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="nbwjm != null" >
+        #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wjdx != null" >
+        #{wjdx,jdbcType=DECIMAL},
+      </if>
+      <if test="hzm != null" >
+        #{hzm,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="cflj != null" >
+        #{cflj,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        #{yxzt,jdbcType=DECIMAL},
+      </if>
+      <if test="czsj != null" >
+        current_timestamp,
+      </if>
+      <if test="czbmid != null" >
+        #{czbmid,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czrid != null" >
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.OrderAttachment" >
+    update D_011
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="yswjm != null" >
+        YSWJM = #{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wbwjm != null" >
+        WBWJM = #{wbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="nbwjm != null" >
+        NBWJM = #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wjdx != null" >
+        WJDX = #{wjdx,jdbcType=DECIMAL},
+      </if>
+      <if test="hzm != null" >
+        HZM = #{hzm,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="cflj != null" >
+        CFLJ = #{cflj,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        YXZT = #{yxzt,jdbcType=DECIMAL},
+      </if>
+      <if test="czsj != null" >
+        CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czbmid != null" >
+        CZBMID = #{czbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.OrderAttachment" >
+    update D_011
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      YSWJM = #{yswjm,jdbcType=VARCHAR},
+      WBWJM = #{wbwjm,jdbcType=VARCHAR},
+      NBWJM = #{nbwjm,jdbcType=VARCHAR},
+      WJDX = #{wjdx,jdbcType=DECIMAL},
+      HZM = #{hzm,jdbcType=VARCHAR},
+      SM = #{sm,jdbcType=VARCHAR},
+      CFLJ = #{cflj,jdbcType=VARCHAR},
+      YXZT = #{yxzt,jdbcType=DECIMAL},
+      CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      CZBMID = #{czbmid,jdbcType=VARCHAR},
+      CZRID = #{czrid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+     <select id="queryAllByMainids" resultMap="BaseResultMap">
+	   select   <include refid="Base_Column_List" />
+	   			from d_011 
+				where d_011.yxzt =  1 and d_011.mainid in
+			<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+		   </foreach>
+	</select>
+  
+</mapper>

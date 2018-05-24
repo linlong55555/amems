@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MaterialRequisitionDetailMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="KCID" jdbcType="VARCHAR" property="kcid" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+    <result column="SQLYSL" jdbcType="DECIMAL" property="sqlysl" />
+    <result column="YLYSL" jdbcType="DECIMAL" property="ylysl" />
+    <result column="TKSL" jdbcType="DECIMAL" property="tksl" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+  </resultMap>
+  <resultMap type="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail" id="ResultMapWithAssociation" extends="BaseResultMap">  
+	  	<association property="stock" javaType="com.eray.thjw.aerialmaterial.po.Stock">  
+	        <id column="KC_ID" property="id" jdbcType="VARCHAR"/>  
+		    <result column="KC_CKMC" property="ckmc" jdbcType="VARCHAR" />
+		    <result column="KC_KWH" property="kwh" jdbcType="VARCHAR" />
+		    <result column="KC_PCH" property="pch" jdbcType="VARCHAR" />
+		    <result column="KC_SN" property="sn" jdbcType="VARCHAR" />
+		    <result column="KC_KCSL" property="kcsl" jdbcType="DECIMAL" />
+		    <result column="KC_SHZH" property="shzh" jdbcType="VARCHAR" />
+		    <result column="KC_SHZWZ" property="shzwz" jdbcType="VARCHAR" />
+		    <result column="KC_HJSM" property="hjsm" jdbcType="TIMESTAMP" />
+	    </association>
+	    <association property="hCMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+	        <id column="HC_ID" property="id" jdbcType="VARCHAR"/>  
+	        <result column="HC_BJH" property="bjh" jdbcType="VARCHAR" />
+		    <result column="HC_ZWMS" property="zwms" jdbcType="VARCHAR" />
+		    <result column="HC_YWMS" property="ywms" jdbcType="VARCHAR" />
+		    <result column="HC_JLDW" property="jldw" jdbcType="VARCHAR" />
+		    <result column="HC_CJJH" property="cjjh" jdbcType="VARCHAR" />
+		    <result column="HC_HCLX" property="hclx" jdbcType="DECIMAL" />
+    		<result column="HC_HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+	    </association>   
+  </resultMap> 
+  
+  
+  <sql id="Base_Column_List">
+    T.ID,  T.MAINID,  T.KCID,  T.BJID,  T.BJH,  T.SQLYSL,  T.YLYSL,  T.TKSL,  T.ZT,  T.WHDWID,  T.WHRID,  T.WHSJ
+  </sql>
+   
+   	<select id="queryAllPageList" resultMap="BaseResultMap">
+          <!--  领料申请从表中的KCID现在保存的是履历表ID，所以这里查询时用履历表的KCID来替换领料从表中的KCID，使得后面的业务逻辑不需改变 -->
+	select T3.ID,  T3.MAINID, T4.KCID,  T3.BJID,  T3.BJH,  T3.SQLYSL,  T3.YLYSL,  T3.TKSL,  T3.ZT,  T3.WHDWID,  T3.WHRID,  T3.WHSJ,
+	 t1.bjh,t2.zwms,t2.grn,t2.ywms,t1.cjjh,t1.hclx,t4.sn,t4.pch,t4.shzh,t2.kcsl,t6.kwh,t5.ckh,t5.ckmc,t5.cklb from b_h_00701 t3 
+    left join d_008 t1 on t3.bjid = t1.id
+    left join b_h_017 t4 on t4.id = t3.kcid
+    left join b_h_001 t2 on t4.kcid = t2.id and t2.zt = 2
+      left join d_009 t5 on t4.ckid=t5.id and t5.zt=1
+      left join d_00901 t6 on t4.kwid=t6.id and t6.zt=1
+		where t3.zt = 1 <include refid="FlightRecordParam"></include> 
+	 	order by t1.bjh desc
+ 	
+	</select>
+ 
+ 	<select id="queryCount" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail" resultType="int">
+		select count(*) from b_h_00701 t3 
+		left join d_008 t1 on t3.bjid = t1.id
+		left join b_h_001 t2 on t3.kcid = t2.id
+		where t3.zt = 1 
+	 <include refid="FlightRecordParam"></include>
+ 	 </select>
+ 	 
+ 	 <!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+         <if test="id != null and id != ''">
+             and t3.mainid =  #{id}
+         </if>
+	</sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_00701 T
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByMainId" parameterType="java.lang.String" resultMap="ResultMapWithAssociation">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    T1.ID as HC_ID,
+    T1.BJH as HC_BJH,
+    T1.ZWMS as HC_ZWMS,
+    T1.YWMS as HC_YWMS,
+    T1.JLDW as HC_JLDW,
+    T1.CJJH as HC_CJJH,
+    T1.HCLX as HC_HCLX,
+    T1.HCLX_EJ as HC_HCLX_EJ,
+    (CASE WHEN T2.ID IS NULL THEN T3.KCID ELSE T2.ID END) AS KC_ID,
+    (CASE WHEN T2.ID IS NULL THEN T3.CKMC ELSE T2.CKMC END) AS KC_CKMC, 
+    (CASE WHEN T2.ID IS NULL THEN T3.KWH ELSE T2.KWH END) AS KC_KWH,
+    (CASE WHEN T2.ID IS NULL THEN T3.PCH ELSE T2.PCH END) AS KC_PCH,
+    (CASE WHEN T2.ID IS NULL THEN T3.SN ELSE T2.SN END) AS KC_SN,
+    (CASE WHEN T2.ID IS NULL THEN 0 ELSE T2.KCSL END) AS KC_KCSL,
+    (CASE WHEN T2.ID IS NULL THEN T3.SHZH ELSE T2.SHZH END) AS KC_SHZH,
+    (CASE WHEN T2.ID IS NULL THEN T3.SHZWZ ELSE T2.SHZWZ END) AS KC_SHZWZ,
+    (CASE WHEN T2.ID IS NULL THEN T3.HJSM ELSE T2.HJSM END) AS KC_HJSM
+    from B_H_00701 T
+    left join D_008 T1 on T.BJID = T1.ID
+    left join B_H_017 T3 on T.KCID = T3.ID <!-- KCID字段现存履历ID -->
+	<!-- 增加状态判断，防止库存状态变迁 -->
+    left join B_H_001 T2 on T3.KCID = T2.ID and t2.ZT = 2		
+    where T.MAINID = #{mainId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByMainIdKcIdCount" resultType="int">
+    select count(1)
+    from B_H_00701 T
+    left join b_h_017 T1 on T.KCID = T1.ID	 <!-- KCID字段现存履历ID -->	
+    where T.ZT = 1 and T1.KCID = #{1,jdbcType=VARCHAR} and T.MAINID = #{0,jdbcType=VARCHAR} 
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_00701 T
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 根据多个ID删除数据 -->
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from B_H_00701 T
+    where ID in
+    <foreach item="idItem" collection="list" open="(" separator="," close=")">
+		#{idItem}
+	</foreach>
+  </delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail">
+    insert into B_H_00701 (ID, MAINID, KCID, 
+      BJID, BJH, SQLYSL, 
+      YLYSL, TKSL, ZT, WHDWID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcid,jdbcType=VARCHAR}, 
+      #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, #{sqlysl,jdbcType=DECIMAL}, 
+      #{ylysl,jdbcType=DECIMAL}, #{tksl,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, sysdate)
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail">
+    insert into B_H_00701
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="kcid != null">
+        KCID,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="bjh != null">
+        BJH,
+      </if>
+      <if test="sqlysl != null">
+        SQLYSL,
+      </if>
+      <if test="ylysl != null">
+        YLYSL,
+      </if>
+      <if test="tksl != null">
+        TKSL,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null">
+        #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqlysl != null">
+        #{sqlysl,jdbcType=DECIMAL},
+      </if>
+      <if test="ylysl != null">
+        #{ylysl,jdbcType=DECIMAL},
+      </if>
+      <if test="tksl != null">
+        #{tksl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail">
+    update B_H_00701
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null">
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqlysl != null">
+        SQLYSL = #{sqlysl,jdbcType=DECIMAL},
+      </if>
+      <if test="ylysl != null">
+        YLYSL = #{ylysl,jdbcType=DECIMAL},
+      </if>
+      <if test="tksl != null">
+        TKSL = #{tksl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where mainid = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeySelectives" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail">
+    update B_H_00701
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcid != null">
+        KCID = #{kcid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sqlysl != null">
+        SQLYSL = #{sqlysl,jdbcType=DECIMAL},
+      </if>
+      <if test="ylysl != null">
+        YLYSL = #{ylysl,jdbcType=DECIMAL},
+      </if>
+      <if test="tksl != null">
+        TKSL = #{tksl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRequisitionDetail">
+    update B_H_00701
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCID = #{kcid,jdbcType=VARCHAR},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      SQLYSL = #{sqlysl,jdbcType=DECIMAL},
+      YLYSL = #{ylysl,jdbcType=DECIMAL},
+      TKSL = #{tksl,jdbcType=DECIMAL},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+	<update id="updateNumber">
+        update B_H_00701 
+        set	SQLYSL = #{1, jdbcType=DECIMAL}
+        where ID = #{0, jdbcType=VARCHAR}
+	</update> 
+  
+</mapper>

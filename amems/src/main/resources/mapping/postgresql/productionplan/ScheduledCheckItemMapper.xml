@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.ScheduledCheckItemMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ZJQDID" property="zjqdid" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BJLX" property="bjlx" jdbcType="INTEGER" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="DJXMID" property="djxmid" jdbcType="VARCHAR" />
+    <result column="DJBH" property="djbh" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="zwmc" property="zwmc" jdbcType="VARCHAR" />
+  	<result column="ywmc" property="ywmc" jdbcType="VARCHAR" />
+  	<result column="jhc" property="jhc" jdbcType="VARCHAR" />
+  	<result column="sj" property="sj" jdbcType="VARCHAR" />
+  	<result column="sy" property="sy" jdbcType="VARCHAR" />
+  	<result column="syts" property="syts" jdbcType="VARCHAR" />
+  	<result column="wz" property="wz" jdbcType="VARCHAR" />
+  	<result column="JKBZ" property="jkbz" jdbcType="VARCHAR" />
+  	<result column="zyxs" property="zyxs" jdbcType="VARCHAR" />
+  	 <result column="rwdh" property="rwdh" jdbcType="VARCHAR" />
+  	<result column="whrxm" property="whsj1" jdbcType="VARCHAR" />
+  	<result column="whsj" property="whrid1" jdbcType="VARCHAR" />
+  	<result column="rwid" property="rwid" jdbcType="VARCHAR" />
+  
+  </resultMap>
+  <!--  -->
+  <sql id="Base_Column_List" >
+    ID, ZJQDID, FJZCH, BJLX, JH, XLH, DJXMID, DJBH, ZWMS, ZT, WHSJ, DPRTCODE
+  </sql>
+
+	<select id="updatePlaneEditable" parameterType="com.eray.thjw.productionplan.po.ScheduledCheckItem" >
+		 update b_s_00303 
+		 	<trim prefix="SET" suffixOverrides=",">
+            <if test="null != rwid">
+                rwid=#{rwid},
+            </if>
+              <if test="null != jkbz">
+                jkbz=#{jkbz},
+            </if>
+           ID = id
+        </trim>
+		 
+		 where ID = #{id}
+	</select>
+  
+  <sql id="BaseResulParam">
+	   where 1=1  and t1.zt=1
+       <if test="fjzch != null and fjzch != ''">
+             and t1.fjzch = #{fjzch}
+         </if>
+          <if test="dprtcode != null and dprtcode != ''">
+             and t1.DPRTCODE = #{dprtcode}
+         </if>
+          <if test="id != null and id != ''">
+             and t1.id = #{id}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		    and (    t1.djbh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.jh like '%'||#{keyword}||'%'
+		    	or   t3.zwmc like '%'||#{keyword}||'%'
+		    	or   t3.ywmc like '%'||#{keyword}||'%'
+		    	or  t1.xlh like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+  
+  <select id="queryAllPageList" resultMap="BaseResultMap">
+  select t1.id,
+       t1.djbh,
+       t1.bjlx,
+       t1.djxmid,
+       t1.zwms,
+       t1.jh,
+       t1.fjzch,
+       (CASE WHEN t5.zwms IS NULL THEN t3.zwmc ELSE t5.zwms END) zwmc,
+       (CASE WHEN t5.ywms IS NULL THEN t3.ywmc ELSE t5.ywms END) ywmc,
+       t1.xlh,
+       t1.dprtcode,
+       t3.wz,
+       t3.gdid,
+       t1.rwid,
+       t4.rwdh,
+       t4.xggdid,
+       (select t_user.username || ' ' || t_user.realname
+          from t_user
+         where t_user.id = t4.whrid) whrxm,
+       to_char(t4.whsj, 'yyyy-mm-dd hh24:mi:ss') whsj,
+       t1.jkbz,
+       t2.zyxs,
+       t6.dprtname
+  from b_s_00303 t1
+  left join b_g_012 t2
+    on t1.djxmid = t2.id
+   join b_s_003 t3
+    on t1.zjqdid = t3.id
+    and  t3.zt=1
+  left join b_s_009 t4
+    on t1.rwid = t4.id
+    and t4.zt in (1,2)
+  left join d_008 t5
+    on t3.jh = t5.bjh
+    and t5.zt=1
+   and t3.dprtcode = t5.dprtcode
+  left join t_department t6
+    on t1.dprtcode=t6.id
+	   <include refid="BaseResulParam"></include>
+	   
+	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	</choose>
+  </select>
+  
+    <select id="queryAllPageList1" resultMap="BaseResultMap">
+  select 
+   		t5.id bjid,
+   		t1.id,
+   		t1.zjqdid,
+       t1.djbh,
+       t1.bjlx,
+       t1.djxmid,
+       t1.zwms,
+       t1.jh,
+       t1.fjzch,
+       (CASE WHEN t5.zwms IS NULL THEN t3.zwmc ELSE t5.zwms END) zwmc,
+       (CASE WHEN t5.ywms IS NULL THEN t3.ywmc ELSE t5.ywms END) ywmc,
+       t1.xlh,
+       t1.dprtcode,
+       t3.wz,
+       t3.gdid,
+       t1.rwid,
+       t4.rwdh,
+       (select t_user.username || ' ' || t_user.realname
+          from t_user
+         where t_user.id = t4.whrid) whrxm,
+       to_char(t4.whsj, 'yyyy-mm-dd hh24:mi:ss') whsj,
+       t1.jkbz,
+       t2.zyxs,
+       t6.dprtname
+  from b_s_00303 t1
+  left join b_g_012 t2
+    on t1.djxmid = t2.id
+   join b_s_003 t3
+    on t1.zjqdid = t3.id
+  left join b_s_009 t4
+    on t1.rwid = t4.id
+  left join d_008 t5
+    on t3.jh = t5.bjh
+       and t5.zt=1
+   and t3.dprtcode = t5.dprtcode
+   left join t_department t6 on t1.dprtcode=t6.id 
+	   <include refid="BaseResulParam"></include>
+	   
+  </select>
+
+</mapper>

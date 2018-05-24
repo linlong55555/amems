@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.TechnicalUploadMapper">
+     
+	<resultMap id="TechnicalUploadMap" type="com.eray.thjw.po.TechnicalUpload">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		<result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+		<result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+		<result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+		<result column="SM" property="sm" jdbcType="VARCHAR" />
+		<result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+		<result column="YXZT" property="yxzt" jdbcType="INTEGER" />
+		<result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+		<result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+		<result column="HSM" property="hzm" jdbcType="VARCHAR" />
+		<result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+		<result column="WjDX" property="wjdx" jdbcType="INTEGER" />
+		<result column="DPRTCODE" property="dprtCode" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 添加附件-->
+	<insert id="save"  parameterType="com.eray.thjw.po.TechnicalUpload" >
+		insert into   
+		B_G_00101
+		(<include refid="technicalUploadColumn"></include>)
+		 values
+		 (#{id,jdbcType=VARCHAR},#{mainid,jdbcType=VARCHAR},#{yswjm,jdbcType=VARCHAR},#{wbwjm,jdbcType=VARCHAR},#{nbwjm,jdbcType=VARCHAR},#{sm,jdbcType=VARCHAR},#{cflj,jdbcType=VARCHAR},#{yxzt,jdbcType=DECIMAL},current_timestamp,#{czbmid,jdbcType=VARCHAR},#{czrid,jdbcType=VARCHAR},#{dprtCode,jdbcType=VARCHAR},#{hzm,jdbcType=VARCHAR},#{wjdx,jdbcType=DECIMAL})
+	</insert>
+	
+	<!-- 字段 -->
+	<sql id="technicalUploadColumn">
+		ID,MAINID,YSWJM,WBWJM,NBWJM,SM,CFLJ,YXZT,CZSJ,CZBMID,CZRID,DPRTCODE,hzm,wjdx
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="TechnicalUploadMap" parameterType="java.lang.String" >
+	select 
+		<include refid="technicalUploadColumn"></include> from B_G_00101
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 评估技术文件-->
+	<select id="modify" parameterType="com.eray.thjw.po.TechnicalUpload" >
+		 update B_G_00101 
+		 <trim prefix="SET" suffixOverrides=",">
+            <if test="null != yswjm">
+                yswjm = #{yswjm},
+            </if>
+             <if test="null != wbwjm">
+                wbwjm = #{wbwjm},
+            </if>
+             <if test="null != nbwjm">
+                nbwjm = #{nbwjm},
+            </if>
+            <if test="null != cflj">
+                cflj = #{cflj},
+            </if>
+            <if test="null != czsj">
+                czsj = current_timestamp,
+            </if>
+             <if test="null != hzm">
+                hzm = #{hzm},
+            </if>
+             <if test="null != wjdx">
+                wjdx = #{wjdx},
+            </if>
+            mainid=mainid
+        </trim>
+		 where MAINID = #{mainid}
+	</select>
+	
+	<!-- 搜索参数 -->
+	<sql id="TechnicalUploadParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="mainid != null and mainid != ''">
+             and mainid = #{mainid}
+         </if>
+	</sql>
+	
+	<select id="selectByManid" resultMap="TechnicalUploadMap" parameterType="java.lang.String">
+		select <include refid="technicalUploadColumn"></include>  from B_G_00101 where  mainid = #{mainid}
+	</select>
+	
+	
+	
+</mapper>

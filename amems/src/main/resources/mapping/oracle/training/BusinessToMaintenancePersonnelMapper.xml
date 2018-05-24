@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.training.dao.BusinessToMaintenancePersonnelMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="GWID" property="gwid" jdbcType="VARCHAR" />
+    <result column="WXRYDAID" property="wxrydaid" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="KSRQ" property="ksrq" jdbcType="TIMESTAMP" />
+    <result column="JZRQ" property="jzrq" jdbcType="TIMESTAMP" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="LB" property="lb" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="rybh" property="paramsMap.rybh" jdbcType="VARCHAR" />
+    <result column="xm" property="paramsMap.xm" jdbcType="VARCHAR" />
+    <result column="DGBH" property="paramsMap.dgbh" jdbcType="VARCHAR" />
+    <result column="DGMC" property="paramsMap.dgmc" jdbcType="VARCHAR" />
+    <result column="KCID" property="paramsMap.kcid" jdbcType="VARCHAR" />
+    <result column="KCBH" property="paramsMap.kcbh" jdbcType="VARCHAR" />
+    <result column="KCMC" property="paramsMap.kcmc" jdbcType="VARCHAR" />
+    <result column="IS_FX" property="paramsMap.is_fx" jdbcType="VARCHAR" />
+    <result column="ZQZ" property="paramsMap.zqz" jdbcType="VARCHAR" />
+    <result column="ZQDW" property="paramsMap.zqdw" jdbcType="VARCHAR" />
+    <result column="SCPXJHID" property="paramsMap.scpxjhid" jdbcType="VARCHAR" />
+    <result column="XCPXRQ" property="paramsMap.xcpxrq" jdbcType="VARCHAR" />
+    <result column="SJ_KSRQ" property="paramsMap.sj_ksrq" jdbcType="VARCHAR" />
+    <result column="PXGH" property="paramsMap.pxgh" jdbcType="VARCHAR" />
+    <result column="KCDD" property="paramsMap.kcdd" jdbcType="VARCHAR" />
+    <result column="JSXM" property="paramsMap.jsxm" jdbcType="VARCHAR" />
+    <result column="CQL" property="paramsMap.cql" jdbcType="VARCHAR" />
+    <result column="CJ" property="paramsMap.cj" jdbcType="VARCHAR" />
+    <result column="ZS" property="paramsMap.zs" jdbcType="VARCHAR" />
+    <result column="KHJG" property="paramsMap.khjg" jdbcType="VARCHAR" />
+    <result column="PXJHID" property="paramsMap.pxjhid" jdbcType="VARCHAR" />
+    <result column="JHSJ" property="paramsMap.jhsj" jdbcType="VARCHAR" />
+  </resultMap>
+   <resultMap id="RecentlyResultMap" extends="BaseResultMap" type="com.eray.thjw.training.po.BusinessToMaintenancePersonnel">
+   		<collection property="businesss" ofType="com.eray.thjw.training.po.Business">
+	    	<id column="BID" property="id" jdbcType="VARCHAR" />
+	   		 <result column="dgbh" property="dgbh" jdbcType="VARCHAR" />
+	   		 <result column="dgmc" property="dgmc" jdbcType="VARCHAR" />
+		    <collection property="BusinessToCourses" ofType="com.eray.thjw.training.po.BusinessToCourse">
+	                <result column="kcid" property="course.id" jdbcType="VARCHAR" />
+	                <result column="kcbh" property="course.kcbh" jdbcType="VARCHAR" />
+				    <result column="kcmc" property="course.kcmc" jdbcType="VARCHAR" />
+				    <result column="is_fx" property="course.isFx" jdbcType="DECIMAL" />
+				    <result column="zqz" property="course.zqz" jdbcType="DECIMAL" />
+				    <result column="zqdw" property="course.zqdw" jdbcType="VARCHAR" />
+				      <collection property="personnelTrainingRecentlys" ofType="com.eray.thjw.training.po.PersonnelTrainingRecently">
+				       <result column="scpxjhid" property="planPerson.paramsMap.scpxjhid" jdbcType="VARCHAR" />
+				       <result column="xcpxrq" property="planPerson.xcpxrq" jdbcType="TIMESTAMP" />
+					    <result column="sj_ksrq" property="planPerson.sjKsrq" jdbcType="TIMESTAMP" />
+					    <result column="pxgh" property="planPerson.pxgh" jdbcType="VARCHAR" />
+					    <result column="kcdd" property="planPerson.kcdd" jdbcType="VARCHAR" />
+					    <result column="jsxm" property="planPerson.jsxm" jdbcType="VARCHAR" />
+					    <result column="cql" property="planPerson.cql" jdbcType="DECIMAL" />
+					    <result column="cj" property="planPerson.cj" jdbcType="VARCHAR" />
+					    <result column="zs" property="planPerson.zs" jdbcType="VARCHAR" />
+					    <result column="khjg" property="planPerson.khjg" jdbcType="DECIMAL" />
+					    <result column="pxjhid" property="planPerson.paramsMap.pxjhid" jdbcType="VARCHAR" />
+					    <result column="jhsj" property="planPerson.paramsMap.jhsj" jdbcType="VARCHAR" />
+       			</collection> 
+       		</collection> 
+       </collection> 
+  </resultMap>
+  
+  
+      <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.training.po.BusinessToMaintenancePersonnel">
+	    <!--T_DEPARTMENT 组织机构信息  -->
+	    <association property="dprt" javaType="com.eray.thjw.po.Department">
+	       <id column="ID" property="id" jdbcType="VARCHAR" />
+		    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+		    <result column="PARENTID" property="parentid" jdbcType="VARCHAR" />
+		    <result column="DPRTTYPE" property="dprttype" jdbcType="VARCHAR" />
+		    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		     <result column="PXH" property="pxh" jdbcType="DECIMAL" />
+	    </association>
+	    <!--MaintenancePersonnel  维修档案人员-->
+       <association property="maintenancePersonnel" javaType="com.eray.thjw.quality.po.MaintenancePersonnel">
+		    <id column="WXRYDAID" jdbcType="VARCHAR" property="id" />
+		    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+		    <result column="RYBH" jdbcType="VARCHAR" property="rybh" />
+		    <result column="WBBS" jdbcType="DECIMAL" property="wbbs" />
+		    <result column="SZDW" property="szdw" jdbcType="VARCHAR" />
+		    <result column="WXRBMID" jdbcType="VARCHAR" property="wxrbmid" />
+		    <result column="WXRYID" jdbcType="VARCHAR" property="wxryid" />
+		    <result column="XM" jdbcType="VARCHAR" property="xm" />
+		    <result column="ZW" jdbcType="VARCHAR" property="zw" />
+		    <result column="XL" jdbcType="VARCHAR" property="xl" />
+		    <result column="SR" jdbcType="TIMESTAMP" property="sr" />
+		    <result column="RZRQ" jdbcType="TIMESTAMP" property="rzrq" />
+		    <result column="YXDZ" jdbcType="VARCHAR" property="yxdz" />
+		    <result column="GW" jdbcType="VARCHAR" property="gw" />
+		    <result column="ZZH" jdbcType="VARCHAR" property="zzh" />
+		    <result column="ZY" jdbcType="VARCHAR" property="zy" />
+		    <result column="GZFW" jdbcType="VARCHAR" property="gzfw" />
+		    <result column="ZPDZ_D" jdbcType="VARCHAR" property="zpdzD" />
+		    <result column="ZPDZ_X" jdbcType="VARCHAR" property="zpdzX" />
+		    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+		    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+		    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+		    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+		    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+		    
+		  </association>
+		  
+  </resultMap>
+  
+   <select id="queryAllBywxrydaid" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+   
+   		SELECT B_P_001.ID BID,
+			       B_P_001.DGBH,
+			       B_P_001.DGMC,
+			       B_P_006.ZT,
+			       B_P_006.LB,
+			       B_P_003.ID KCID,
+			       B_P_003.KCBH,
+			       B_P_003.KCMC,
+			       B_P_003.IS_FX,
+			       B_P_003.ZQZ,
+			       B_P_003.ZQDW,
+			       COALESCE(B_P_003.FJJX, '') FJJX,
+			       BP00201.PXJHID SCPXJHID,
+			       BP00201.XCPXRQ,
+			       BP00201.SJ_KSRQ,
+			       BP00201.PXGH,
+			       BP00201.KCDD,
+			       BP00201.JSXM,
+			       BP00201.CQL,
+			       BP00201.CJ,
+			       BP00201.ZS,
+			       BP00201.KHJG,
+			       BP002_B.PXJHID PXJHID,
+			       BP002_B.JHSJ,
+			       b_z_001.rybh,
+		      	   b_z_001.xm
+			  FROM B_P_006
+			  JOIN B_P_001
+			    ON B_P_006.GWID = B_P_001.ID
+			   AND B_P_001.ZT = 1
+			   AND B_P_006.ZT = 1
+			   AND B_P_006.WXRYDAID = #{wxrydaid,jdbcType=VARCHAR}
+			  JOIN B_P_005
+			    ON B_P_001.ID = B_P_005.GWID
+			   AND B_P_005.ZT = 1
+			  JOIN B_P_003
+			    ON B_P_003.DPRTCODE = B_P_001.DPRTCODE
+			   AND B_P_003.ZT = 1
+			   AND COALESCE(B_P_003.FJJX, '-') = COALESCE(B_P_006.FJJX, '-')
+			   AND (B_P_003.KCBH = B_P_005.KCID OR B_P_003.ID = B_P_005.KCID) --需要删掉OR后的条件
+			
+			  LEFT JOIN (SELECT B_P_00201.PXJHID,
+			                    B_P_00201.XCPXRQ,
+			                    B_P_00201.SJ_KSRQ,
+			                    B_P_00201.PXGH,
+			                    B_P_00201.KCDD,
+			                    B_P_00201.JSXM,
+			                    B_P_00201.CQL,
+			                    B_P_00201.CJ,
+			                    B_P_00201.ZS,
+			                    B_P_00201.KHJG,
+			                    B_P_00201.KCID
+			               FROM B_P_00201
+			               JOIN B_P_004
+			                 ON B_P_00201.ZT = 1
+			                AND B_P_00201.ID = B_P_004.PXJLID
+			                AND B_P_004.WXRYDAID = #{wxrydaid,jdbcType=VARCHAR}) BP00201
+			    ON BP00201.KCID = B_P_003.ID
+			
+			  LEFT JOIN (SELECT T1.KCID, T1.WXRYDAID, T1.JHSJ, T1.PXJHID
+			               FROM (SELECT ROW_NUMBER() OVER(PARTITION BY B_P_00201.KCID, B_P_00201.WXRYDAID ORDER BY B_P_002.JH_KSRQ DESC, B_P_002.JH_KSSJ DESC) RN,
+			                            B_P_00201.KCID,
+			                            B_P_00201.WXRYDAID,
+			                            B_P_00201.PXJHID,
+			                            TO_CHAR(B_P_002.JH_KSRQ, 'yyyy-mm-dd') ||
+			                            (CASE
+			                               WHEN B_P_002.JH_KSSJ IS NULL THEN
+			                                ''
+			                               ELSE
+			                                ' ' || B_P_002.JH_KSSJ
+			                             END) JHSJ
+			                       FROM B_P_00201
+			                       JOIN B_P_002
+			                         ON B_P_00201.ZT = 1
+			                        AND B_P_002.ZT = 1
+			                        AND B_P_00201.IS_YC = 1
+			                        AND B_P_00201.PXJHID = B_P_002.ID) T1
+			              WHERE RN = 1) BP002_B
+			    ON B_P_003.ID = BP002_B.KCID
+			   AND B_P_006.WXRYDAID = BP002_B.WXRYDAID
+			  left join b_z_001 on b_p_006.wxrydaid = b_z_001.id
+			 ORDER BY B_P_001.DGBH
+  </select>
+   <select id="queryAll" resultMap="BaseResultMap"  parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+   
+   		SELECT B_P_001.ID BID,
+		       B_P_001.DGBH,
+		       B_P_001.DGMC,
+		       B_P_006.ZT,
+		       B_P_006.LB,
+		       B_P_006.WXRYDAID,
+		       B_P_003.ID KCID,
+		       B_P_003.KCBH,
+		       B_P_003.KCMC,
+		       B_P_003.IS_FX,
+		       B_P_003.ZQZ,
+		       B_P_003.ZQDW,
+		       COALESCE(B_P_003.FJJX, '') FJJX,
+		       BP00201.PXJHID SCPXJHID,
+		       BP00201.XCPXRQ,
+		       BP00201.SJ_KSRQ,
+		       BP00201.PXGH,
+		       BP00201.KCDD,
+		       BP00201.JSXM,
+		       BP00201.CQL,
+		       BP00201.CJ,
+		       BP00201.ZS,
+		       BP00201.KHJG,
+		       BP002_B.PXJHID PXJHID,
+		       BP002_B.JHSJ,
+		       b_z_001.rybh,
+		       b_z_001.xm
+		  FROM B_P_006
+		  JOIN B_P_001
+		    ON B_P_006.GWID = B_P_001.ID
+		   AND B_P_001.ZT = 1
+		   AND B_P_006.ZT = 1
+		  JOIN B_P_005
+		    ON B_P_001.ID = B_P_005.GWID
+		   AND B_P_005.ZT = 1
+		  JOIN B_P_003
+		    ON B_P_003.DPRTCODE = B_P_001.DPRTCODE
+		   AND B_P_003.ZT = 1
+		   AND COALESCE(B_P_003.FJJX, '-') = COALESCE(B_P_006.FJJX, '-')
+		   AND (B_P_003.KCBH = B_P_005.KCID OR B_P_003.ID = B_P_005.KCID) 
+		
+		  LEFT JOIN (SELECT B_P_00201.PXJHID,
+		                    B_P_00201.XCPXRQ,
+		                    B_P_00201.SJ_KSRQ,
+		                    B_P_00201.PXGH,
+		                    B_P_00201.KCDD,
+		                    B_P_00201.JSXM,
+		                    B_P_00201.CQL,
+		                    B_P_00201.CJ,
+		                    B_P_00201.ZS,
+		                    B_P_00201.KHJG,
+		                    B_P_00201.KCID,
+		                    B_P_004.WXRYDAID
+		               FROM B_P_00201
+		               JOIN B_P_004
+		                 ON B_P_00201.ZT = 1
+		                AND B_P_00201.ID = B_P_004.PXJLID) BP00201
+		    ON BP00201.KCID = B_P_003.ID AND BP00201.WXRYDAID = B_P_006.WXRYDAID
+		
+		  LEFT JOIN (SELECT T1.KCID, T1.WXRYDAID, T1.JHSJ, T1.PXJHID
+		               FROM (SELECT ROW_NUMBER() OVER(PARTITION BY B_P_00201.KCID, B_P_00201.WXRYDAID ORDER BY B_P_002.JH_KSRQ DESC, B_P_002.JH_KSSJ DESC) RN,
+		                            B_P_00201.KCID,
+		                            B_P_00201.WXRYDAID,
+		                            B_P_00201.PXJHID,
+		                            TO_CHAR(B_P_002.JH_KSRQ, 'yyyy-mm-dd') ||
+		                            (CASE
+		                               WHEN B_P_002.JH_KSSJ IS NULL THEN
+		                                ''
+		                               ELSE
+		                                ' ' || B_P_002.JH_KSSJ
+		                             END) JHSJ
+		                       FROM B_P_00201
+		                       JOIN B_P_002
+		                         ON B_P_00201.ZT = 1
+		                        AND B_P_002.ZT = 1
+		                        AND B_P_00201.IS_YC = 1
+		                        AND B_P_00201.PXJHID = B_P_002.ID) T1
+		              WHERE RN = 1) BP002_B
+		    ON B_P_003.ID = BP002_B.KCID
+		   AND B_P_006.WXRYDAID = BP002_B.WXRYDAID
+		   left join b_z_001 on b_p_006.wxrydaid = b_z_001.id
+		   WHERE 1=1
+		   and B_P_001.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		     <if test="paramsMap != null and paramsMap.ry != null and paramsMap.ry != ''">
+		      and ( b_z_001.rybh like '%'||#{paramsMap.ry}||'%'
+		    	or b_z_001.xm like '%'||#{paramsMap.ry}||'%') 
+	         </if>
+	           <if test="paramsMap != null and paramsMap.kc != null and paramsMap.kc != ''">
+	             and ( B_P_003.KCBH like '%'||#{paramsMap.kc}||'%'
+		    	or B_P_003.KCMC like '%'||#{paramsMap.kc}||'%') 
+	         </if>
+	          <if test="paramsMap != null and paramsMap.gw != null and paramsMap.gw != ''">
+	             and ( B_P_001.DGBH like '%'||#{paramsMap.gw}||'%'
+		    	or B_P_001.DGMC like '%'||#{paramsMap.gw}||'%') 
+	         </if>
+	          <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+			    and (  BP00201.PXGH like '%'||#{paramsMap.keyword}||'%'
+		    		or  BP00201.jsxm like '%'||#{paramsMap.keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+			</if>
+		 <choose>                                                                                 
+		    	<when test='pagination.sort == "auto"'>                       
+		    		ORDER BY B_P_001.DGBH	
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 </choose> 
+  </select>
+ 
+  
+  
+  <sql id="Base_Column_List" >
+    ID, GWID, WXRYDAID, ZT, FJJX, LB WHBMID, WHRID, WHSJ
+  </sql>
+  
+  <select id="queryByGwids" resultMap="ResultMap">
+	select t1.ID, t1.GWID, t1.WXRYDAID, t1.ZT, t1.WHBMID, t1.WHRID, t1.WHSJ, t1.FJJX, t1.LB,t2.xm,t2.rybh,(dprt.dprtname) wxrbmid from b_p_006 t1 
+	left join b_z_001 t2 on t1.wxrydaid=t2.id
+	left join t_department dprt on t2.whbmid=dprt.id
+        where 1=1
+             and t1.GWID in 
+			<foreach collection="list" item="gwid" index="index" open="(" close=")" separator=",">
+				#{gwid,jdbcType=VARCHAR}
+			</foreach>
+  </select>
+  
+  <select id="queryAllPageList" resultMap="ResultMap">
+	select t1.ID, t1.GWID, t1.WXRYDAID, t1.ZT, t1.WHBMID, t1.WHRID, t1.WHSJ, t1.FJJX,t1.LB,t1.KSRQ, t1.JZRQ,t2.szdw,t2.xm,t2.rybh,t2.wbbs from b_p_006 t1 
+	left join b_z_001 t2 on t1.wxrydaid=t2.id
+		 <include refid="FlightRecordParam1"></include>
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by t2.wbbs asc,t2.szdw desc,t2.rybh desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+		 	
+	</select>
+ 
+	<sql id="FlightRecordParam1">
+	   where  t1.zt=1
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="gwid != null and gwid != ''">
+             and t1.gwid =  #{gwid}
+         </if>
+	     <if test="id != null and id != '' " >   
+            and  t1.id  = #{id,jdbcType=VARCHAR}
+         </if>
+         <if test="paramsMap != null and paramsMap.bs != null and paramsMap.bs != ''">
+		    and coalesce(to_date(to_char(t1.KSRQ, 'yyyy-mm-dd'), 'yyyy-mm-dd'),to_date('1111-11-11', 'yyyy-MM-dd')) &lt;= to_date(to_char(sysdate, 'YYYYMMDD'), 'yyyy-MM-dd')
+  			and coalesce(to_date(to_char(t1.JZRQ, 'yyyy-mm-dd'), 'yyyy-mm-dd'),to_date('9999-11-11', 'yyyy-MM-dd')) &gt;= to_date(to_char(sysdate, 'YYYYMMDD'), 'yyyy-MM-dd') 
+		</if>
+		
+	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryByGwidAndWxdaid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_P_006
+    where wxrydaid = #{wxrydaid,jdbcType=VARCHAR} and gwid = #{gwid,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectByPrimarygwwxId" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" resultType="java.lang.Integer" >
+    select 
+   	count(1)
+    from B_P_006
+    where wxrydaid = #{wxrydaid,jdbcType=VARCHAR} and gwid = #{gwid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_P_006
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByGwid" parameterType="java.lang.String" >
+    delete from B_P_006
+    where gwid = #{gwid,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByPrimaryBt" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    delete from B_P_006
+     where wxrydaid = #{wxrydaid,jdbcType=VARCHAR}
+    and gwid = #{gwid,jdbcType=VARCHAR}
+    and zt = #{zt,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    insert into B_P_006 (ID, GWID, WXRYDAID, 
+      ZT, WHBMID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{gwid,jdbcType=VARCHAR}, #{wxrydaid,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    insert into B_P_006
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="gwid != null" >
+        GWID,
+      </if>
+      <if test="wxrydaid != null" >
+        WXRYDAID,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="ksrq != null" >
+        KSRQ,
+      </if>
+      <if test="jzrq != null" >
+        JZRQ,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+      <if test="fjjx != null" >
+        fjjx,
+      </if>
+      <if test="lb != null" >
+        lb,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="gwid != null" >
+        #{gwid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxrydaid != null" >
+        #{wxrydaid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="ksrq != null" >
+        #{ksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jzrq != null" >
+        #{jzrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="lb != null" >
+       #{lb,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    update B_P_006
+    <set >
+      <if test="gwid != null" >
+        GWID = #{gwid,jdbcType=VARCHAR},
+      </if>
+      <if test="wxrydaid != null" >
+        WXRYDAID = #{wxrydaid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ksrq != null" >
+        KSRQ = #{ksrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jzrq != null" >
+        JZRQ = #{jzrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lb != null" >
+        LB = #{lb,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    update B_P_006
+    set GWID = #{gwid,jdbcType=VARCHAR},
+      WXRYDAID = #{wxrydaid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateById" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    update B_P_006
+    set 
+      ZT = 1,
+      KSRQ = #{ksrq,jdbcType=TIMESTAMP},
+      JZRQ = #{jzrq,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByGwid" parameterType="com.eray.thjw.training.po.BusinessToMaintenancePersonnel" >
+    update B_P_006
+    set 
+      ZT = 1,
+      KSRQ = #{ksrq,jdbcType=TIMESTAMP},
+      JZRQ = #{jzrq,jdbcType=TIMESTAMP}
+    where GWID = #{gwid,jdbcType=VARCHAR} and WXRYDAID = #{wxrydaid,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!-- 根据维修人员档案id删除岗位 -->
+  <delete id="deleteByWxrydaid" parameterType="java.lang.String" >
+    delete from B_P_006
+    where wxrydaid = #{wxrydaid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

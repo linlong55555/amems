@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MaterialCostMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.MaterialCost">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="JUESCB" jdbcType="DECIMAL" property="juescb" />
+    <result column="JIESCB" jdbcType="DECIMAL" property="jiescb" />
+    <result column="GSCB" jdbcType="DECIMAL" property="gscb" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, JUESCB, JIESCB, GSCB, WHRID, WHSJ
+  </sql>
+   <select id="selectMaterialCostList" parameterType="com.eray.thjw.aerialmaterial.po.MaterialCost"  resultMap="BaseResultMap" >
+		select a.ID, a.MAINID, a.JUESCB, a.JIESCB, a.GSCB, a.WHRID, a.WHSJ ,b.username,b.realname 
+		
+		from D_00803 a left join  t_user b on a.WHRID=b.id   
+		
+		where a.MAINID= #{mainid}
+		order by a.WHSJ DESC 
+   </select>
+  
+    <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialCost">
+    insert into D_00803
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="juescb != null">
+        JUESCB,
+      </if>
+      <if test="jiescb != null">
+        JIESCB,
+      </if>
+      <if test="gscb != null">
+        GSCB,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+        WHSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="juescb != null">
+        #{juescb,jdbcType=DECIMAL},
+      </if>
+      <if test="jiescb != null">
+        #{jiescb,jdbcType=DECIMAL},
+      </if>
+      <if test="gscb != null">
+        #{gscb,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+       current_timestamp
+    </trim>
+  </insert>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from D_00803
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from D_00803
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectNewestByBjid" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select * from ( select 
+    <include refid="Base_Column_List" />,
+    ROW_NUMBER() OVER (order by WHSJ desc) as row_num
+    from D_00803
+    where MAINID = #{mainid,jdbcType=VARCHAR} 
+    order by WHSJ desc
+    ) as TT where row_num=1
+  </select>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.MaterialCost">
+    insert into (ID, MAINID, JUESCB, 
+      JIESCB, GSCB, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{juescb,jdbcType=DECIMAL}, 
+      #{jiescb,jdbcType=DECIMAL}, #{gscb,jdbcType=DECIMAL}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialCost">
+    update D_00803
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="juescb != null">
+        JUESCB = #{juescb,jdbcType=DECIMAL},
+      </if>
+      <if test="jiescb != null">
+        JIESCB = #{jiescb,jdbcType=DECIMAL},
+      </if>
+      <if test="gscb != null">
+        GSCB = #{gscb,jdbcType=DECIMAL},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.MaterialCost">
+    update D_00803
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      JUESCB = #{juescb,jdbcType=DECIMAL},
+      JIESCB = #{jiescb,jdbcType=DECIMAL},
+      GSCB = #{gscb,jdbcType=DECIMAL},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

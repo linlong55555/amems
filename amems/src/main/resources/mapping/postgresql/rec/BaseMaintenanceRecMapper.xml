@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.BaseMaintenanceRecMapper">
+   
+  
+  <select id="queryList_D_012_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	       		  SELECT 
+	       		  B.ID AS "ID",
+       B.DPRTCODE AS "DPRTCODE",
+       B.JDMS AS "JDMS",
+       B.SSJGDM AS "SSJGDM",
+       B.ZT AS "ZT",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",      
+             WHR.USERNAME ||' '|| WHR.REALNAME AS "WHR_REALNAME",
+             CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR",
+             t.dprtname AS "WHDW_DRPTNAME",        
+           '基地描述:'||B.JDMS||' '||( F_GETREC_HD(B.REC_CZSM)) AS "REC_HD"
+             
+            FROM D_012_REC B
+            LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+            LEFT JOIN T_DEPARTMENT T ON T.ID=B.DPRTCODE
+            LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID         
+            WHERE 1=1
+	       	<if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+	        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	        </if>
+	        <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+	        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	         </if>
+	          <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+	        	and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+	         </if>
+	         <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+	        	and (
+	                 B.JDMS like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+	            )
+	         </if>
+		         order by B.REC_CZSJ DESC
+  </select>
+  
+  <select id="queryDiff_D_012_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+               B.ID AS "ID",
+       B.DPRTCODE AS "DPRTCODE",
+       B.JDMS AS "JDMS",
+       B.SSJGDM AS "SSJGDM",
+       B.ZT AS "ZT",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",      
+                WHR.USERNAME ||' '|| WHR.REALNAME AS "WHR_REALNAME",
+                CZR.USERNAME ||' '|| CZR.REALNAME AS "REC_CZR_STR",
+                t.dprtname AS "WHDW_DRPTNAME",  
+               '基地描述:'|| B.JDMS || ' ' ||( F_GETREC_HD(B.REC_CZSM)) AS "REC_HD",
+                 (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) AS "DATA_VERSION"
+               
+          FROM D_012_REC B
+          LEFT JOIN T_USER WHR
+            ON WHR.ID = B.WHRID
+        left join t_department t on t.id=b.dprtcode
+        LEFT JOIN T_USER CZR ON CZR.ID = B.REC_CZRID  
+          WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           AND  (select rec_czsj
+                  from D_012_REC
+                 where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+       
+  </select> 
+</mapper>

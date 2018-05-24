@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.ExpatriateMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Expatriate">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="JDLX" jdbcType="DECIMAL" property="jdlx" />
+    <result column="WPDXID" jdbcType="VARCHAR" property="wpdxid" />
+    <result column="BJID" jdbcType="VARCHAR" property="bjid" />
+    <result column="BJH" jdbcType="VARCHAR" property="bjh" />
+    <result column="PCH" jdbcType="VARCHAR" property="pch" />
+    <result column="SN" jdbcType="VARCHAR" property="sn" />
+    <result column="KCSL" jdbcType="DECIMAL" property="kcsl" />
+    <result column="GHSL" jdbcType="DECIMAL" property="ghsl" />
+    <result column="WPSJ" jdbcType="TIMESTAMP" property="wpsj" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="SXQX" jdbcType="TIMESTAMP" property="sxqx" />
+    <result column="SPQX" jdbcType="TIMESTAMP" property="spqx" />
+    <result column="DGHSL" jdbcType="DECIMAL" property="dghsl" />
+  </resultMap>
+  <resultMap id="ResultMap" type="com.eray.thjw.aerialmaterial.po.Expatriate" extends="BaseResultMap">
+    <association property="secondment" javaType = "com.eray.thjw.aerialmaterial.po.Secondment">
+	    <id column="S_ID" jdbcType="VARCHAR" property="id" />
+	    <result column="S_JDDXBH" jdbcType="VARCHAR" property="jddxbh" />
+	    <result column="S_JDDXLX" jdbcType="DECIMAL" property="jddxlx" />
+	    <result column="S_JDDXMS" jdbcType="VARCHAR" property="jddxms" />
+    </association>
+    <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">  
+        <id column="HC_ID" property="id" jdbcType="VARCHAR"/>  
+        <result column="HC_BJH" property="bjh" jdbcType="VARCHAR" />
+	    <result column="HC_ZWMS" property="zwms" jdbcType="VARCHAR" />
+	    <result column="HC_YWMS" property="ywms" jdbcType="VARCHAR" />
+	    <result column="HC_JLDW" property="jldw" jdbcType="VARCHAR" />
+	    <result column="HC_CJJH" property="cjjh" jdbcType="VARCHAR" />
+	    <result column="HC_HCLX" property="hclx" jdbcType="DECIMAL" />
+   		<result column="HC_HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+   		<result column="HC_GLJB" property="gljb" jdbcType="DECIMAL" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, JDLX, WPDXID, BJID, BJH, PCH, SN, KCSL, GHSL, WPSJ, ZT, BZ, SXQX, SPQX
+  </sql>
+  <sql id="Column_List">
+    T.ID, T.DPRTCODE, T.JDLX, T.WPDXID, T.BJID, T.BJH, T.PCH, T.SN, T.KCSL, T.GHSL, T.WPSJ, T.ZT, T.BZ, T.SXQX, T.SPQX
+  </sql>
+	<!--   查询借出待归还统计 start -->
+  <select id="queryLendStatisticsPage" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate" resultMap="ResultMap">
+  		<include refid="selectLendStatistics"></include>
+     	<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by bjh desc
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+ 		</choose>
+  </select>
+  <select id="queryLendStatistics" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate" resultMap="ResultMap">
+		<include refid="selectLendStatistics"></include>
+  </select>
+  <sql id="selectLendStatistics">
+  	select  ROW_NUMBER() OVER () as ID, T.DPRTCODE, T.WPDXID, T.BJID, T.DGHSL,
+	    	T1.ID as S_ID, T1.JDDXBH as S_JDDXBH, T1.JDDXLX as S_JDDXLX, T1.JDDXMS as S_JDDXMS,
+	    	T2.ID as HC_ID,
+	    	T2.BJH as HC_BJH,
+	    	T2.ZWMS as HC_ZWMS,
+	    	T2.YWMS as HC_YWMS,
+	    	T2.JLDW as HC_JLDW,
+	    	T2.CJJH as HC_CJJH,
+	    	T2.HCLX as HC_HCLX,
+	    	T2.HCLX_EJ as HC_HCLX_EJ,
+	    	T2.GLJB as HC_GLJB
+	    from (select DPRTCODE, WPDXID, BJID, sum(KCSL-GHSL) as DGHSL
+	    	from B_H_012 
+	    	where ZT=1 
+	    		and JDLX=1 
+	    		and KCSL > GHSL 
+	 		    <include refid="queryLendStatisticsCondition"/>
+	    	group by DPRTCODE, WPDXID, BJID) T 
+	    	left join B_H_014 T1 on T1.ID = T.WPDXID
+	    	left join D_008 T2 on T2.ID = T.BJID
+  </sql>
+  <sql id="queryLendStatisticsCondition">
+  	<if test="dprtcode != null and dprtcode != ''">
+  		and DPRTCODE = #{dprtcode, jdbcType=VARCHAR}
+  	</if>
+  	<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		and BJID in ( select id from d_008 where 
+			BJH like '%'||#{paramsMap.keyword}||'%'
+			or ZWMS like '%'||#{paramsMap.keyword}||'%'
+			or YWMS like '%'||#{paramsMap.keyword}||'%'
+	    )             
+	</if>
+	<if test="bjid != null and bjid != ''">
+		and BJID = #{bjid, jdbcType=VARCHAR}
+	</if>
+	<if test="wpdxid != null and wpdxid != ''">
+		and WPDXID = #{wpdxid, jdbcType=VARCHAR}
+	</if>
+	<if test="secondment != null and secondment.id != null and secondment.id != ''">
+		and WPDXID = #{secondment.id, jdbcType=VARCHAR}       
+	</if>
+	<if test="secondment != null and secondment.jddxlx != null and secondment.jddxlx != ''">
+		and WPDXID in (select id from B_H_014 where JDDXLX = #{secondment.jddxlx, jdbcType=DECIMAL})       
+	</if>
+  </sql>
+  <!--   查询借出待归还统计 end -->
+  
+  <!--   查询借出待归还记录 start -->
+  	<select id="queryLendList" resultMap="ResultMap">
+	    select 
+	    <include refid="Column_List" />
+	    ,T1.BJH as HC_BJH,
+    	T1.ZWMS as HC_ZWMS,
+    	T1.YWMS as HC_YWMS
+	    from B_H_012 T
+	    left join D_008 T1 on T.BJID = T1.ID
+	    where T.ZT =1
+	     	and T.DPRTCODE=#{0, jdbcType=VARCHAR}
+	    	and T.WPDXID=#{1, jdbcType=VARCHAR}
+	    	and T.BJID=#{2, jdbcType=VARCHAR}
+    		and T.KCSL > GHSL 
+	    	and T.JDLX=1 
+	    order by T.WPSJ
+	</select>
+	
+	  <!--   查询借出待归还记录 start -->
+  	<select id="queryLendListcheck" resultMap="BaseResultMap">
+	 select  b1. ID,
+        b1.DPRTCODE,
+       b1. JDLX,
+       b1. WPDXID,
+      b1.  BJID,
+       b1. BJH,
+       b1. PCH,
+      b1.  SN,
+      b1.  KCSL,
+      b1.  GHSL,
+       b1. WPSJ,
+      b1.  ZT,
+      b1.  BZ,
+      b1.  SXQX,
+       b1. SPQX,
+        b2.zwms,b2.ywms
+  from B_H_012 b1 left join d_008 b2 on b1.bjid=b2.id
+ where b1.ZT = 1
+   and  b1.KCSL >  b1.GHSL
+	     	and b1.DPRTCODE=#{0, jdbcType=VARCHAR}
+	    	and b1.WPDXID=#{1, jdbcType=VARCHAR}
+	    	and b1.BJID=#{2, jdbcType=VARCHAR}
+    		and b1.KCSL > GHSL 
+	    	and b1.JDLX=2 
+	    order by b1.WPSJ
+	</select>
+  <!--   查询借出待归还记录 end -->
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_012
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="queryByKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_012
+    where zt=1 and ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="querySelectCount" resultMap="BaseResultMap">
+	  
+	select t2.bjh,t2.zwms,t2.ywms,t2.cjjh,t2.hclx,t2.jldw,DGHSL  from  (select DPRTCODE, WPDXID, BJID, sum(KCSL-GHSL) as DGHSL 
+        from B_H_012 
+        where ZT=1 
+          and JDLX=2 
+          and KCSL > GHSL 
+	    	group by DPRTCODE, WPDXID, BJID ) T 
+        left join D_008 T2 on T2.ID = T.BJID
+
+		<include refid="FlightRecordParam"></include>
+		 	
+	</select>
+  
+  
+  <select id="queryAllPageList" resultMap="BaseResultMap">
+	select t2.id,t2.bjh,t2.zwms,t2.ywms,t2.cjjh,t2.hclx,t2.jldw,DGHSL  from  (select DPRTCODE, WPDXID, BJID, sum(KCSL-GHSL) as DGHSL 
+        from B_H_012 
+        where ZT=1 
+          and JDLX=2 
+          and KCSL > GHSL 
+	    	group by DPRTCODE, WPDXID, BJID ) T 
+        left join D_008 T2 on T2.ID = T.BJID
+
+		<include refid="FlightRecordParam"></include>
+		
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by t2.bjh desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+	
+		<!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+	where 1=1
+		 <if test="bjid != null and bjid != ''">
+           and   T.bjid = #{bjid}
+         </if>
+	   	 <if test="gljb != null and gljb != ''">
+           and   t2.gljb = #{gljb}
+         </if>
+          <if test="hclx != null and hclx != ''">
+           and   t2.hclx = #{hclx}
+         </if>
+          <if test="dprtcode != null and dprtcode != ''">
+           and t2.dprtcode = #{dprtcode}
+         </if>
+         <if test="wpdxid != null and wpdxid != ''">
+           and t.wpdxid = #{wpdxid}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t2.bjh like '%'||#{keyword}||'%'
+		    	or t2.zwms like '%'||#{keyword}||'%'
+		    	or t2.ywms like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+	
+  <select id="queryAllPageListjie" resultMap="BaseResultMap">
+	  
+	  select T.DPRTCODE, T.WPDXID, T.BJID, T.DGHSL,
+        T1.ID as sId, T1.JDDXBH as jddxbh, T1.JDDXLX as jddxlx, T1.JDDXMS as jddxms,
+        T2.ID as HC_ID,
+        T2.BJH as bjh,
+        T2.ZWMS as zwms,
+        T2.YWMS as ywms,
+        T2.JLDW as jldw,
+        T2.CJJH as cjjh,
+        T2.HCLX as hclx,
+        T2.HCLX_EJ as hclxEj,
+        T2.GLJB as gljb
+      from (select DPRTCODE, WPDXID, BJID, sum(KCSL-GHSL) as dghsl 
+        from B_H_012 
+        where ZT=1 
+          and KCSL > GHSL 
+          and jdlx =2
+        group by DPRTCODE, WPDXID, BJID ) T 
+        left join B_H_014 T1 on T1.ID = T.WPDXID
+        left join D_008 T2 on T2.ID = T.BJID
+		 <include refid="FlightRecordParam1"></include>
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by DGHSL 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+ 
+  <select id="queryAllPageListhai" resultMap="BaseResultMap">
+	  select T.DPRTCODE, T.WPDXID, T.BJID, T.DGHSL,
+        T1.ID as sId, T1.JDDXBH as jddxbh, T1.JDDXLX as jddxlx, T1.JDDXMS as jddxms,
+        T2.ID as HC_ID,
+        T2.BJH as bjh,
+        T2.ZWMS as zwms,
+        T2.YWMS as ywms,
+        T2.JLDW as jldw,
+        T2.CJJH as cjjh,
+        T2.HCLX as hclx,
+        T2.HCLX_EJ as hclxEj,
+        T2.GLJB as gljb
+      from (select DPRTCODE, WPDXID, BJID, sum(KCSL-GHSL) as dghsl 
+        from B_H_012 
+        where ZT=1 
+          and KCSL > GHSL 
+          and jdlx =1
+        group by DPRTCODE, WPDXID, BJID ) T 
+        left join B_H_014 T1 on T1.ID = T.WPDXID
+        left join D_008 T2 on T2.ID = T.BJID
+		 <include refid="FlightRecordParam1"></include>
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by DGHSL 
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+ 
+  		<!-- 搜索参数 -->
+	<sql id="FlightRecordParam1">
+			where 1=1
+          <if test="jddxlx != null and jddxlx != ''">
+           and   jddxlx = cast(#{jddxlx,jdbcType=DECIMAL} as integer)
+         </if>
+          <if test="hclx != null and hclx != ''">
+           and   t2.hclx = cast(#{hclx,jdbcType=DECIMAL}as integer)
+         </if>
+          <if test="dprtcode != null and dprtcode != ''">
+           and t.dprtcode = #{dprtcode}
+         </if>
+     
+         <if test="keyword != null and keyword != ''">
+		      and (t2.bjh like '%'||#{keyword}||'%'
+		    	or t2.zwms like '%'||#{keyword}||'%'
+		    	or t2.ywms like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_012
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate">
+    insert into B_H_012 (ID, DPRTCODE, JDLX, 
+      WPDXID, BJID, BJH, 
+      PCH, SN, KCSL, GHSL, 
+      WPSJ, ZT, BZ, SXQX, 
+      SPQX)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jdlx,jdbcType=DECIMAL}, 
+      #{wpdxid,jdbcType=VARCHAR}, #{bjid,jdbcType=VARCHAR}, #{bjh,jdbcType=VARCHAR}, 
+      #{pch,jdbcType=VARCHAR}, #{sn,jdbcType=VARCHAR}, #{kcsl,jdbcType=DECIMAL}, #{ghsl,jdbcType=DECIMAL}, 
+      #{wpsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{sxqx,jdbcType=TIMESTAMP}, 
+      #{spqx,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate">
+    insert into B_H_012
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="jdlx != null">
+        JDLX,
+      </if>
+      <if test="wpdxid != null">
+        WPDXID,
+      </if>
+      <if test="bjid != null">
+        BJID,
+      </if>
+      <if test="bjh != null">
+        BJH,
+      </if>
+      <if test="pch != null">
+        PCH,
+      </if>
+      <if test="sn != null">
+        SN,
+      </if>
+      <if test="kcsl != null">
+        KCSL,
+      </if>
+      <if test="ghsl != null">
+        GHSL,
+      </if>
+      <if test="wpsj != null">
+        WPSJ,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="sxqx != null">
+        SXQX,
+      </if>
+      <if test="spqx != null">
+        SPQX,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jdlx != null">
+        #{jdlx,jdbcType=DECIMAL},
+      </if>
+      <if test="wpdxid != null">
+        #{wpdxid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null">
+        #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="ghsl != null">
+        #{ghsl,jdbcType=DECIMAL},
+      </if>
+      <if test="wpsj != null">
+    	 current_timestamp,
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="sxqx != null">
+        #{sxqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spqx != null">
+        #{spqx,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate">
+    update B_H_012
+    <set>
+<!--       <if test="dprtcode != null"> -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="jdlx != null">
+        JDLX = #{jdlx,jdbcType=DECIMAL},
+      </if>
+      <if test="wpdxid != null">
+        WPDXID = #{wpdxid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjid != null">
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="bjh != null">
+        BJH = #{bjh,jdbcType=VARCHAR},
+      </if>
+      <if test="pch != null">
+        PCH = #{pch,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        SN = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="kcsl != null">
+        KCSL = #{kcsl,jdbcType=DECIMAL},
+      </if>
+      <if test="ghsl != null">
+        GHSL = #{ghsl,jdbcType=DECIMAL},
+      </if>
+      <if test="wpsj != null">
+        WPSJ = #{wpsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="sxqx != null">
+        SXQX = #{sxqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spqx != null">
+        SPQX = #{spqx,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate">
+    update B_H_012
+<!--     set DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+     set JDLX = #{jdlx,jdbcType=DECIMAL},
+      WPDXID = #{wpdxid,jdbcType=VARCHAR},
+      BJID = #{bjid,jdbcType=VARCHAR},
+      BJH = #{bjh,jdbcType=VARCHAR},
+      PCH = #{pch,jdbcType=VARCHAR},
+      SN = #{sn,jdbcType=VARCHAR},
+      KCSL = #{kcsl,jdbcType=DECIMAL},
+      GHSL = #{ghsl,jdbcType=DECIMAL},
+      WPSJ = #{wpsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      SXQX = #{sxqx,jdbcType=TIMESTAMP},
+      SPQX = #{spqx,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 调整归还数量 start -->
+  <update id="updateGhslAdd" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate">
+    update B_H_012
+      set GHSL = GHSL + #{ghsl, jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateGhslSub" parameterType="com.eray.thjw.aerialmaterial.po.Expatriate">
+    update B_H_012
+       set GHSL = GHSL - #{ghsl, jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+<!-- 调整归还数量 end -->
+
+	<!--   查询借出待归还记录 start -->
+  	<select id="queryLendByBj" parameterType="map" resultMap="BaseResultMap">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from B_H_012
+	    where ZT = 1
+	     	and DPRTCODE=#{dprtcode, jdbcType=VARCHAR}
+	    	and WPDXID=#{wpdxid, jdbcType=VARCHAR}
+	    	and BJID in
+		    	<foreach collection="bjIdList" open="(" close=")" item="idItem" separator=",">
+		    		#{idItem}
+		    	</foreach>
+    		and KCSL > GHSL 
+	    	and JDLX=1 
+	    order by WPSJ
+	</select>
+</mapper>

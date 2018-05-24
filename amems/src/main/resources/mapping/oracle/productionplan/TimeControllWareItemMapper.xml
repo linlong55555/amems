@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.productionplan.dao.TimeControllWareItemMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.productionplan.po.TimeControllWareItem" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BJLX" property="bjlx" jdbcType="INTEGER" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+  <result column="NBSBM" property="nbsbm" jdbcType="VARCHAR" />
+    <result column="ZJH" property="zjh" jdbcType="VARCHAR" />
+    <result column="CJJH" property="cjjh" jdbcType="VARCHAR" />
+    <result column="ZWMC" property="zwmc" jdbcType="VARCHAR" />
+    <result column="YWMC" property="ywmc" jdbcType="VARCHAR" />
+    <result column="BJGZJL" property="bjgzjl" jdbcType="VARCHAR" />
+  <result column="ZJSL" property="zjsl" jdbcType="INTEGER" />
+    <result column="WZ" property="wz" jdbcType="INTEGER" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+  <result column="SCRQ" property="scrq" jdbcType="TIMESTAMP" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="AZRQ" property="azrq" jdbcType="TIMESTAMP" />
+   <result column="AZJLDH" property="azjldh" jdbcType="VARCHAR" />
+    <result column="CCRQ" property="ccrq" jdbcType="TIMESTAMP" />
+    <result column="CCJLDH" property="ccjldh" jdbcType="VARCHAR" />
+   <result column="LLKLX" property="llklx" jdbcType="INTEGER" />
+    <result column="LLKBH" property="llkbh" jdbcType="VARCHAR" />
+    <result column="KZLX" property="kzlx" jdbcType="INTEGER" />
+    <result column="IS_DJ" property="is_dj" jdbcType="INTEGER" />
+    <result column="TSN" property="tsn" jdbcType="VARCHAR" />
+    <result column="TSO" property="tso" jdbcType="VARCHAR" />
+     <result column="CJ" property="cj" jdbcType="INTEGER" />
+    <result column="FJDID" property="fjdid" jdbcType="VARCHAR" />
+    <result column="SXRQ" property="sxrq" jdbcType="TIMESTAMP" />
+    <result column="SXZT" property="sxzt" jdbcType="INTEGER" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    
+    <result column="GDID" property="gdid" jdbcType="VARCHAR" />
+    <result column="RWID" property="rwid" jdbcType="VARCHAR" />
+    <result column="JKBZ" property="jkbz" jdbcType="VARCHAR" />
+    
+    <result column="gdbh" property="gdbh" jdbcType="VARCHAR" />
+    <result column="rwdh" property="rwdh" jdbcType="VARCHAR" />
+    <result column="gdzt" property="gdzt" jdbcType="VARCHAR" />
+    <result column="gdwhr" property="gdwhr" jdbcType="VARCHAR" />
+    <result column="gdwhsj" property="gdwhsj" jdbcType="VARCHAR" />
+    <result column="rwwhr" property="rwwhr" jdbcType="VARCHAR" />
+    <result column="rwwhsj" property="rwwhsj" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+  <!--  -->
+  <sql id="Base_Column_List" >
+    ID, FJZCH, BJLX, JH, XLH, NBSBM, ZJH, CJJH, ZWMC, YWMC, BJGZJL,ZJSL,WZ,ZT,SCRQ,BZ,AZRQ,AZJLDH,CCRQ,CCJLDH,LLKLX,LLKBH,KZLX,IS_DJ,TSN,TSO,CJ,FJDID,SXRQ,SXZT,WHSJ,DPRTCODE
+ ,GDID,RWID,JKBZ
+  </sql>
+  
+  	<select id="update" parameterType="com.eray.thjw.productionplan.po.TimeControllWareItem" >
+		 update b_s_003
+		 	<trim prefix="SET" suffixOverrides=",">
+          
+            <if test="null != jkbz">
+                jkbz=#{jkbz},
+            </if>
+           ID = id
+        </trim>
+		 
+		 where ID = #{id}
+	</select>
+  
+  <sql id="BaseResulParam">
+	   where 1=1
+	    <if test="id != null and id != ''">
+             and t1.id = #{id}
+       </if>
+       <if test="fjzch != null and fjzch != ''">
+             and t1.fjzch = #{fjzch}
+       </if>
+        <if test="dprtcode != null and dprtcode != ''">
+             and t1.DPRTCODE = #{dprtcode}
+       </if>
+       <if test="keyword != null and keyword != ''">
+		    and (  UPPER(t1.zjh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.zwmc) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.ywmc) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.jh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.xlh) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.tsn) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(t1.tso) like UPPER('%'||#{keyword}||'%'))              <!-- 左右匹配 查询关键字 -->
+		</if>
+   and t1.sxzt = 1
+   and t1.kzlx in (1, 2) 
+   and t1.zt = 1
+	</sql>
+  
+  <select id="queryAllPageList" resultMap="BaseResultMap">
+  select t1.id,
+       t1.jh,
+       t1.cj,
+       t1.xlh,
+       (CASE WHEN t5.zjh IS NULL THEN t1.zjh ELSE t5.zjh END) zjh,
+       (select zwms from d_005 where (CASE WHEN t5.zjh IS NULL THEN t1.zjh ELSE t5.zjh END)=zjh AND t1.dprtcode = dprtcode) zjhzwms,
+       (CASE WHEN t5.zwms IS NULL THEN t1.zwmc ELSE t5.zwms END) zwmc,
+       (CASE WHEN t5.ywms IS NULL THEN t1.ywmc ELSE t5.ywms END) ywmc,
+       t1.fjzch,
+       t1.bjlx,
+       t1.kzlx,
+       t1.tsn,
+       t1.dprtcode,
+       t1.tso,
+       t1.wz,
+       t1.gdid,
+       t1.rwid,
+       t1.jkbz,
+       t2.gdbh,
+       t3.rwdh,
+       t2.zt as gdzt,
+       t6.dprtname,
+       (select t_user.username || ' ' || t_user.realname
+          from t_user
+         where t_user.id = t2.zdrid) gdwhr,
+       to_char(t2.zdsj, 'yyyy-mm-dd hh24:mi:ss') gdwhsj,
+       (select t_user.username || ' ' || t_user.realname
+          from t_user
+         where t_user.id = t3.whrid) rwwhr,
+       to_char(t3.whsj, 'yyyy-mm-dd hh24:mi:ss') rwwhsj
+  from b_s_003 t1
+left  join b_g_007 t2
+    on t1.gdid = t2.id
+left  join b_s_009 t3
+    on t1.rwid = t3.id
+    and t3.zt in (1,2)
+left join d_008 t5
+    on t1.jh = t5.bjh
+   and t1.dprtcode = t5.dprtcode
+    and t5.zt=1
+  left join t_department t6 on t1.dprtcode=t6.id    
+	<include refid="BaseResulParam"></include>
+		   
+	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+	</choose>
+  </select>
+  
+  <select id="queryAllPageList1" resultMap="BaseResultMap">
+  select t1.id,
+       t1.jh,
+       t1.xlh,
+       (CASE WHEN t5.zjh IS NULL THEN t1.zjh ELSE t5.zjh END) zjh,
+       (CASE WHEN t5.zwms IS NULL THEN t1.zwmc ELSE t5.zwms END) zwmc,
+       (CASE WHEN t5.ywms IS NULL THEN t1.ywmc ELSE t5.ywms END) ywmc,
+       t1.fjzch,
+       t1.bjlx,
+       t1.kzlx,
+       t1.tsn,
+       t1.dprtcode,
+       t1.tso,
+       t1.wz,
+       t1.gdid,
+       t1.rwid,
+       t1.jkbz,
+       t2.gdbh,
+       t3.rwdh,
+       t2.zt as gdzt,
+       (select t_user.username || ' ' || t_user.realname
+          from t_user
+         where t_user.id = t2.zdrid) gdwhr,
+       to_char(t2.zdsj, 'yyyy-mm-dd hh24:mi:ss') gdwhsj,
+       (select t_user.username || ' ' || t_user.realname
+          from t_user
+         where t_user.id = t3.whrid) rwwhr,
+       to_char(t3.whsj, 'yyyy-mm-dd hh24:mi:ss') rwwhsj
+  from b_s_003 t1
+left  join b_g_007 t2
+    on t1.gdid = t2.id
+left  join b_s_009 t3
+    on t1.rwid = t3.id
+left join d_008 t5
+    on t1.jh = t5.bjh
+      and t5.zt=1
+   and t1.dprtcode = t5.dprtcode
+	<include refid="BaseResulParam"></include>
+		   
+  </select>
+  
+	 <select id="queryCount" parameterType="com.eray.thjw.productionplan.po.TimeControllWareItem" resultType="int">
+			select count(*) FROM b_s_003  <include refid="BaseResulParam"></include>
+	 </select>
+
+</mapper>

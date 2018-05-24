@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.WOJobEnclosureMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.WOJobEnclosure">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="YSWJM" jdbcType="VARCHAR" property="yswjm" />
+    <result column="WBWJM" jdbcType="VARCHAR" property="wbwjm" />
+    <result column="NBWJM" jdbcType="VARCHAR" property="nbwjm" />
+    <result column="SM" jdbcType="VARCHAR" property="sm" />
+    <result column="CFLJ" jdbcType="VARCHAR" property="cflj" />
+    <result column="YXZT" jdbcType="DECIMAL" property="yxzt" />
+    <result column="CZDWID" jdbcType="VARCHAR" property="czdwid" />
+    <result column="CZRID" jdbcType="VARCHAR" property="czrid" />
+    <result column="CZSJ" jdbcType="TIMESTAMP" property="czsj" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="wjdx" jdbcType="VARCHAR" property="wjdx" />
+    <association property="czr_user" javaType="com.eray.thjw.po.User">
+         <id column="czrid" property="id"/>
+         <result column="czr_realname" property="realname"/>
+         <result column="czr_username" property="username"/>
+     </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    B_G_00603.ID,B_G_00603. MAINID, B_G_00603.YSWJM, B_G_00603.WBWJM, B_G_00603.NBWJM, B_G_00603.SM, B_G_00603.CFLJ, B_G_00603.YXZT, B_G_00603.CZDWID,B_G_00603.CZRID, B_G_00603.CZSJ, B_G_00603.DPRTCODE, B_G_00603.wjdx
+  </sql>
+  
+    <sql id="BaseResulParam">
+	     where 
+		   1=1
+		   <!-- 工单工作内容的maidid -->
+		     <if test="mainid != null and mainid != ''">
+	            and  MAINID = #{mainid,jdbcType=VARCHAR}
+	         </if>
+	         
+		     <if test="dprtcode != null and dprtcode != ''">
+	            and  dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	         </if>
+   </sql>
+  
+   <select id="selectedFjList" parameterType="com.eray.thjw.po.WOJobEnclosure"  resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"></include>,czr_user.realname czr_realname,czr_user.username czr_username
+		from B_G_00603 left join t_user czr_user on(B_G_00603.czrid=czr_user.id)
+		<include refid="BaseResulParam"></include>
+  </select>
+  
+    <delete id="deleteById" parameterType="java.lang.String" >
+     delete from B_G_00603
+       where ID = #{id}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.WOJobEnclosure">
+    insert into B_G_00603
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="yswjm != null">
+        YSWJM,
+      </if>
+      <if test="wbwjm != null">
+        WBWJM,
+      </if>
+      <if test="nbwjm != null">
+        NBWJM,
+      </if>
+      <if test="sm != null">
+        SM,
+      </if>
+      <if test="cflj != null">
+        CFLJ,
+      </if>
+        YXZT,
+      <if test="czdwid != null">
+        CZDWID,
+      </if>
+      <if test="czrid != null">
+        CZRID,
+      </if>
+        CZSJ,
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="wjdx != null">
+        wjdx,
+      </if>
+      <if test="hzm != null">
+        hzm,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null">
+        #{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wbwjm != null">
+        #{wbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="nbwjm != null">
+        #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null">
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="cflj != null">
+        #{cflj,jdbcType=VARCHAR},
+      </if>
+        1,
+       <if test="czdwid != null">
+        #{czdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null">
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+        current_timestamp,
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="wjdx != null">
+        #{wjdx,jdbcType=VARCHAR},
+      </if>
+      <if test="hzm != null">
+        #{hzm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+   <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.WOJobEnclosure" >
+    update B_G_00603
+    <set >
+      <if test="mainid != null" >
+        mainid=#{mainid,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yswjm != null" >
+        yswjm=#{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wbwjm != null" >
+        wbwjm=#{wbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="nbwjm != null" >
+        nbwjm=#{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        sm=#{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="cflj != null" >
+        cflj=#{cflj,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        yxzt=#{yxzt,jdbcType=VARCHAR},
+      </if>
+       <if test="czdwid != null" >
+        czdwid=#{czdwid,jdbcType=VARCHAR},
+      </if>
+       <if test="czsj != null" >
+        czsj=#{czsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         dprtcode=#{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="wjdx != null" >
+        wjdx=#{wjdx,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_00603
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap"  parameterType="java.lang.String" >
+    select 
+     t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.czdwid, 
+     t1.username || ' ' ||t1.realname as CZRNAME
+    from B_G_00603 t left join T_USER t1 on t.czrid=t1.id 
+    where t.id = #{id} and t.yxzt = 1
+  </select>
+</mapper>

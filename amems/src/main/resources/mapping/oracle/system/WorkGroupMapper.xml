@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.WorkGroupMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.WorkGroup">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="GZZDM" jdbcType="VARCHAR" property="gzzdm" />
+    <result column="GZZMC" jdbcType="VARCHAR" property="gzzmc" />
+    <result column="mrbs" jdbcType="INTEGER" property="mrbs" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="ZT" jdbcType="INTEGER" property="zt" />
+    <result column="WHBMID" jdbcType="VARCHAR" property="whbmid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <association property="whr" javaType="com.eray.thjw.po.User">
+			<id column="whrid" property="id" />
+			<result column="whr_realname" property="realname" />
+			<result column="whr_username" property="username" />
+	</association>
+	<association property="wh_department" javaType="com.eray.thjw.po.Department">
+			<id column="whbmid" property="id" />
+			<result column="wh_dprtname" property="dprtname" />
+	</association>
+  </resultMap>
+	<sql id="workGroupParam">
+		where
+		1=1
+		<!-- 机构id -->
+		<if test="dprtcode != null and dprtcode != ''">
+			and t.dprtcode = #{dprtcode}
+		</if>
+		<if test="keyword != null and keyword != ''" >
+			and (
+			 UPPER(t.gzzdm) like UPPER('%'||#{keyword}||'%')
+				or UPPER(t.gzzmc) like UPPER('%'||#{keyword}||'%')
+			or UPPER(t.remark) like UPPER('%'||#{keyword}||'%') 
+			)
+		</if>
+  		 <if test="id != null and id !='' ">
+		    and t.ID = #{id}
+		</if> 
+	</sql>
+	
+	<!-- 查询默认的工作组id -->
+  	<select id="getId4Mrbs" parameterType="java.lang.String" resultType="java.lang.String">
+	   select id from t_workgroup where mrbs = 1 and zt = 1 and dprtcode = #{dprtcode, jdbcType=VARCHAR}
+  	</select>
+	
+
+  <select id="getCount" parameterType="com.eray.thjw.system.po.WorkGroup"
+		resultType="java.lang.Integer">
+		select count(1) from t_workgroup t  left join t_user whr on (t.whrid = whr.id)
+		<include refid="workGroupParam" />
+		and t.zt=1
+  </select>
+  <select id="selectWorkGroupList" parameterType="com.eray.thjw.system.po.WorkGroup" resultMap="BaseResultMap">
+		select
+    	 t.id, t.gzzdm, t.gzzmc, t.mrbs,t.dprtcode, t.remark,  
+    	 t.whbmid, t.whrid, t.whsj, 
+    	whr.username whr_username,
+    	whr.realname whr_realname,
+    	d.dprtname   wh_dprtname,
+   	 	t1.dprtname name
+   		 from
+    	t_workgroup t 
+    	left join t_user whr on (t.whrid = whr.id)
+    	left join t_department d on  t.whbmid=d.id
+    	left join t_department t1 on t.dprtcode=t1.id
+		<include refid="workGroupParam" />
+		and t.zt =1
+		<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+			    	<when test='pagination.sort == "auto"'>                       
+			    		order by whsj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 </choose>
+  </select>
+  <insert id="insertWorkGroup" parameterType="com.eray.thjw.system.po.WorkGroup">
+    insert into t_workgroup (ID, GZZDM, GZZMC,mrbs, dprtcode, 
+      REMARK, WHBMID, WHRID, WHSJ, ZT
+      )
+    values (#{id,jdbcType=VARCHAR}, #{gzzdm,jdbcType=VARCHAR}, #{gzzmc,jdbcType=VARCHAR},  #{mrbs,jdbcType=INTEGER},#{dprtcode,jdbcType=VARCHAR}, 
+		#{remark,jdbcType=VARCHAR}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, sysdate, 1
+      )
+  </insert>
+  <update id="updateWorkGroupByPrimaryKey" parameterType="com.eray.thjw.system.po.WorkGroup">
+    update t_workgroup
+    set gzzdm = #{gzzdm,jdbcType=VARCHAR},
+      gzzmc = #{gzzmc,jdbcType=VARCHAR},
+      mrbs = #{mrbs,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = sysdate
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="updateToInvalid" parameterType="com.eray.thjw.system.po.WorkGroup">
+  	update t_workgroup set zt=0, WHSJ = sysdate,WHRID = #{whrid,jdbcType=VARCHAR}
+      WHBMID = #{whbmid,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  <update id="updateToMrbs" parameterType="com.eray.thjw.system.po.WorkGroup">
+  	update t_workgroup set mrbs=0 where dprtcode=#{dprtcode,jdbcType=VARCHAR}
+  </update>
+  <select id="getWorkGroupById" parameterType="com.eray.thjw.system.po.WorkGroup" resultType="com.eray.thjw.system.po.WorkGroup">
+  		select
+    	 t.id, t.gzzdm, t.gzzmc,t.mrbs, t.dprtcode, t.remark,  
+    	 t.whbmid, t.whrid, t.whsj, 
+    	whr.username whr_username,
+    	whr.realname whr_realname,
+    	d.dprtname   wh_dprtname,
+   	 	t1.dprtname name
+   		 from
+    	t_workgroup t 
+    	left join t_user whr on (t.whrid = whr.id)
+    	left join t_department d on  t.whbmid=d.id
+    	left join t_department t1 on t.dprtcode=t1.id
+    	where t.id=#{id}
+  </select>
+   <select id="getCountByDprtCode2" parameterType="com.eray.thjw.system.po.WorkGroup" resultType="java.lang.Integer">
+  		select count(1) from t_workgroup where dprtcode=#{dprtcode,jdbcType=VARCHAR} and gzzdm=#{gzzdm,jdbcType=VARCHAR} and zt=1
+  </select>
+  
+  
+   <select id="getWorkGroupList" parameterType="com.eray.thjw.system.po.WorkGroup"  resultMap="BaseResultMap">
+		select t.id, t.gzzdm, t.gzzmc, t.mrbs,t.dprtcode, t.remark,   t.whbmid, t.whrid, t.whsj, t.zt
+   		from t_workgroup t where t.dprtcode=#{dprtcode,jdbcType=VARCHAR}
+   		<!-- 状态 -->
+		<if test="zt != null">
+			and t.zt = #{zt}
+		</if>
+  </select>
+</mapper>

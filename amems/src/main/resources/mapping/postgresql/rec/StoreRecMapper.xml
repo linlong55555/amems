@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.StoreRecMapper" >
+   
+	<!-- 仓库管理日志列表 开始 -->
+  
+	<select id="queryList_D009_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+				SELECT 
+				B.ID AS "ID",
+       B.CKH AS "CKH",
+       B.DPRTCODE AS "DPRTCODE",
+       B.CKMC AS "CKMC",
+       B.CKDZ AS "CKDZ",
+       B.CKLB AS "CKLB",
+       B.KGYID AS "KGYID",
+       B.JD AS "JD",
+       B.BZ AS "BZ",
+       B.ZT AS "ZT",
+       B.BMID AS "BMID",
+       B.CJRID AS "CJRID",
+       B.CJSJ AS "CJSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",      
+		        	WHR.USERNAME||' '||WHR.REALNAME AS "WHR_REALNAME",
+		        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+		        	WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+		        	KGY.USERNAME||' '||KGY.REALNAME AS "KGY_NAME",
+		        	(
+	         		CASE 
+	          			WHEN B.ZT = 0 THEN '无效'
+			          	WHEN B.ZT = 1 THEN '有效'
+	         		END 
+	     	   		) AS "ZT_NAME",
+		        	(
+			        CASE 
+						WHEN B.CKLB = 0 THEN '其它'
+						WHEN B.CKLB = 1 THEN '待检库'
+			           	WHEN B.CKLB = 2 THEN '报废库'
+			           	WHEN B.CKLB = 3 THEN '待修库'
+			           	WHEN B.CKLB = 4 THEN '危险品'
+			           	WHEN B.CKLB = 5 THEN '工具'
+			           	WHEN B.CKLB = 6 THEN '航材'
+			           	WHEN B.CKLB = 7 THEN '设备'
+			           	WHEN B.CKLB = 8 THEN '低值易耗品'
+					END 
+			        ) AS "CKLB_NAME"
+			        , B.CKH||' '||(
+			        F_GETREC_HD(B.REC_CZSM)
+			        ) AS "REC_HD"
+				FROM D_009_REC B 
+		        LEFT JOIN T_USER KGY ON KGY.ID = B.KGYID
+	        	LEFT JOIN T_USER WHR ON WHR.ID = B.CJRID
+	        	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	        	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.BMID
+		        WHERE 1=1
+				<if test='paramsMap!=null and paramsMap.REC_CZLS!=null and paramsMap.REC_CZLS!=""'>
+					and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	       	 	</if>
+	        	<if test='paramsMap!=null and paramsMap.ID!=null and paramsMap.ID!=""'>
+	        		and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	        	</if>
+	        	<if test='paramsMap!=null and paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+		       		and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+		        </if>
+		        <if test='paramsMap!=null and paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+		       		and (
+		                B.CKH like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%'
+		           	)
+		    	</if>
+				order by B.CJSJ DESC
+	</select>
+  
+	<select id="queryDiff_D009_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT * FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+            	
+            	B.ID AS "ID",
+       B.CKH AS "CKH",
+       B.DPRTCODE AS "DPRTCODE",
+       B.CKMC AS "CKMC",
+       B.CKDZ AS "CKDZ",
+       B.CKLB AS "CKLB",
+       B.KGYID AS "KGYID",
+       B.JD AS "JD",
+       B.BZ AS "BZ",
+       B.ZT AS "ZT",
+       B.BMID AS "BMID",
+       B.CJRID AS "CJRID",
+       B.CJSJ AS "CJSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+            	WHR.USERNAME||' '||WHR.REALNAME AS "WHR_REALNAME",
+	        	WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+	        	WHDW.DPRTNAME AS "WHDW_DRPTNAME",
+	        	D012.JDMS AS "JDMS",
+            	KGY.USERNAME||' '||KGY.REALNAME AS "KGY_NAME",
+            	(
+         		CASE 
+          			WHEN B.ZT = 0 THEN '无效'
+		          	WHEN B.ZT = 1 THEN '有效'
+         		END 
+     	   		) AS "ZT_NAME",
+            	(
+         		CASE 
+          			WHEN B.CKLB = 0 THEN '其它'
+		          	WHEN B.CKLB = 1 THEN '待检库'
+		          	WHEN B.CKLB = 2 THEN '报废库'
+		          	WHEN B.CKLB = 3 THEN '待修库'
+		          	WHEN B.CKLB = 4 THEN '危险品'
+		          	WHEN B.CKLB = 5 THEN '工具'
+		          	WHEN B.CKLB = 6 THEN '航材'
+		          	WHEN B.CKLB = 7 THEN '设备'
+		          	WHEN B.CKLB = 8 THEN '低值易耗品'
+         		END 
+     	   		) AS "CKLB_NAME",
+            	'仓库编号:'||B.CKH || ' ' || (
+            	F_GETREC_HD(B.REC_CZSM)
+            	) AS "REC_HD",
+            	(CASE 
+            		WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+            		ELSE 'LAST'
+            	END
+            	) AS "DATA_VERSION"
+               
+			FROM D_009_REC B
+          	LEFT JOIN T_USER KGY ON KGY.ID = B.KGYID
+          	LEFT JOIN T_USER WHR ON WHR.ID = B.CJRID
+          	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+          	LEFT JOIN T_DEPARTMENT WHDW ON WHDW.ID = B.BMID
+          	LEFT JOIN D_012 D012 on D012.ID = B.JD AND B.DPRTCODE = D012.DPRTCODE
+         	WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+           	AND (select rec_czsj from D_009_REC where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} and ID = #{paramsMap.ID,jdbcType=VARCHAR}) >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+	</select>
+   
+	<select id="queryDiff_D00901_Rec" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+		SELECT  
+		B.ID AS "ID",
+       B.MAINID AS "MAINID",
+       B.KWH AS "KWH",
+       B.DPRTCODE AS "DPRTCODE",
+       B.CKH AS "CKH",
+       B.CKLB AS "CKLB",
+       B.BZ AS "BZ",
+       B.ZT AS "ZT",
+       B.BMID AS "BMID",
+       B.CJRID AS "CJRID",
+       B.CJSJ AS "CJSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+		'CURRENT' AS "DATA_VERSION" ,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+			(
+       		CASE 
+	        	WHEN B.CKLB = 0 THEN '其它'
+	          	WHEN B.CKLB = 1 THEN '待检库'
+	          	WHEN B.CKLB = 2 THEN '报废库'
+	          	WHEN B.CKLB = 3 THEN '待修库'
+	          	WHEN B.CKLB = 4 THEN '危险品'
+	          	WHEN B.CKLB = 5 THEN '工具'
+	          	WHEN B.CKLB = 6 THEN '航材'
+	          	WHEN B.CKLB = 7 THEN '设备'
+	          	WHEN B.CKLB = 8 THEN '低值易耗品'
+       		END 
+   	   		) AS "CKLB_NAME",
+			(CASE 
+	         	WHEN B.REC_XGLX = 1 THEN '新增'
+	         	WHEN B.REC_XGLX = 2 THEN '修改'
+	         	WHEN B.REC_XGLX = 3 THEN '删除'
+	      	END
+	      	) AS "REC_XGLX_TEXT" ,
+		 F_GETREC_HD(B.REC_CZSM) AS "REC_HD"
+	  	FROM D_00901_REC B
+	  	LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+	 	WHERE B.MAINID = #{paramsMap.ID,jdbcType=VARCHAR} AND B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	 	
+		UNION ALL
+	
+		SELECT  
+		B.ID AS "ID",
+       B.MAINID AS "MAINID",
+       B.KWH AS "KWH",
+       B.DPRTCODE AS "DPRTCODE",
+       B.CKH AS "CKH",
+       B.CKLB AS "CKLB",
+       B.BZ AS "BZ",
+       B.ZT AS "ZT",
+       B.BMID AS "BMID",
+       B.CJRID AS "CJRID",
+       B.CJSJ AS "CJSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID",
+		'LAST' AS "DATA_VERSION" ,
+			WHR_REC.USERNAME||' '||WHR_REC.REALNAME AS "WHR_REC_REALNAME",
+			(
+       		CASE 
+	        	WHEN B.CKLB = 0 THEN '其它'
+	          	WHEN B.CKLB = 1 THEN '待检库'
+	          	WHEN B.CKLB = 2 THEN '报废库'
+	          	WHEN B.CKLB = 3 THEN '待修库'
+	          	WHEN B.CKLB = 4 THEN '危险品'
+	          	WHEN B.CKLB = 5 THEN '工具'
+	          	WHEN B.CKLB = 6 THEN '航材'
+	          	WHEN B.CKLB = 7 THEN '设备'
+	          	WHEN B.CKLB = 8 THEN '低值易耗品'
+       		END 
+   	   		) AS "CKLB_NAME",
+			(CASE 
+         		WHEN B.REC_XGLX = 1 THEN '新增'
+         		WHEN B.REC_XGLX = 2 THEN '修改'
+         		WHEN B.REC_XGLX = 3 THEN '删除'
+      		END) AS "REC_XGLX_TEXT" ,
+	 		F_GETREC_HD(B.REC_CZSM) AS "REC_HD"
+		FROM D_00901_REC B
+		LEFT JOIN T_USER WHR_REC ON WHR_REC.ID = B.REC_CZRID
+		WHERE B.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+			AND B.REC_CZLS IN
+	         (           
+	            SELECT REC_CZLS FROM (
+	            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+	              	FROM D_009_REC A WHERE 
+	             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	            	AND A.REC_CZSJ &lt;=
+	            	(
+		              	SELECT C.REC_CZSJ FROM D_009_REC C WHERE 
+		              	C.ID= #{paramsMap.ID,jdbcType=VARCHAR}
+		              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		             )            
+	             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+	            ) AS T WHERE 1 = RNO                        
+            )      
+  	</select>
+  	<!-- 仓库管理日志 结束 -->
+
+</mapper>

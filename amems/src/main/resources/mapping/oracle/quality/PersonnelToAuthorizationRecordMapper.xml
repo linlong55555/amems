@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.quality.dao.PersonnelToAuthorizationRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.quality.po.PersonnelToAuthorizationRecord" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="XXLX" property="xxlx" jdbcType="DECIMAL" />
+    <result column="ZJBH" property="zjbh" jdbcType="VARCHAR" />
+    <result column="BFRQ" property="bfrq" jdbcType="TIMESTAMP" />
+    <result column="BFDW" property="bfdw" jdbcType="VARCHAR" />
+    <result column="YXQ_KS" property="yxqKs" jdbcType="TIMESTAMP" />
+    <result column="YXQ_JS" property="yxqJs" jdbcType="TIMESTAMP" />
+    <result column="ZY" property="zy" jdbcType="VARCHAR" />
+    <result column="SQDJ" property="sqdj" jdbcType="VARCHAR" />
+    <result column="XC" property="xc" jdbcType="VARCHAR" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="IS_JK" property="isJk" jdbcType="DECIMAL" />
+      <result column="SYTS" property="paramsMap.syts" jdbcType="VARCHAR" />
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="JoinResultMap" type="com.eray.thjw.quality.po.PersonnelToAuthorizationRecord" extends="BaseResultMap">
+     <association property="maintenancePersonnel" javaType="com.eray.thjw.quality.po.MaintenancePersonnel">
+        <id column="MP_ID" property="id" jdbcType="VARCHAR" />
+   		<result column="MP_RYBH" property="rybh" jdbcType="VARCHAR" />
+   		<result column="MP_XM" property="xm" jdbcType="VARCHAR" />
+   		<result column="MP_WBBS" property="wbbs" jdbcType="INTEGER" />
+     </association>
+     
+     <association property="department" javaType="com.eray.thjw.po.Department">
+        <id column="D_ID" property="id" jdbcType="VARCHAR" />
+   		<result column="D_DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+     </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, DPRTCODE, ZT, WHBMID, WHRID, WHSJ, XXLX, ZJBH, BFRQ, BFDW, YXQ_KS, YXQ_JS, 
+    ZY, SQDJ, XC, FJJX, BZ, IS_JK
+  </sql>
+  
+  <sql id="Join_Column_List" >
+    a.ID, a.MAINID, a.DPRTCODE, a.ZT, a.WHBMID, a.WHRID, a.WHSJ, a.XXLX, a.ZJBH, a.BFRQ, a.BFDW, a.YXQ_KS, a.YXQ_JS, 
+    a.ZY, a.SQDJ, a.XC, a.FJJX, a.BZ, a.IS_JK,
+    b.id as MP_ID, b.rybh as MP_RYBH, b.xm as MP_XM, b.wbbs as MP_WBBS ,
+    d.id as D_ID, d.dprtname as D_DPRTNAME,CEIL(a.YXQ_JS  - sysdate) AS SYTS,
+    D011.ATTACHCOUNT
+   </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00101
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_Z_00101
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.quality.po.PersonnelToAuthorizationRecord" >
+    insert into B_Z_00101 (ID, MAINID, DPRTCODE, 
+      ZT, WHBMID, WHRID, 
+      WHSJ, XXLX, ZJBH, 
+      BFRQ, BFDW, YXQ_KS, 
+      YXQ_JS, ZY, SQDJ, 
+      XC, FJJX, BZ, IS_JK
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{xxlx,jdbcType=DECIMAL}, #{zjbh,jdbcType=VARCHAR}, 
+      #{bfrq,jdbcType=TIMESTAMP}, #{bfdw,jdbcType=VARCHAR}, #{yxqKs,jdbcType=TIMESTAMP}, 
+      #{yxqJs,jdbcType=TIMESTAMP}, #{zy,jdbcType=VARCHAR}, #{sqdj,jdbcType=VARCHAR}, 
+      #{xc,jdbcType=VARCHAR}, #{fjjx,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, #{isJk,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.quality.po.PersonnelToAuthorizationRecord" >
+    insert into B_Z_00101
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="xxlx != null" >
+        XXLX,
+      </if>
+      <if test="zjbh != null" >
+        ZJBH,
+      </if>
+      <if test="bfrq != null" >
+        BFRQ,
+      </if>
+      <if test="bfdw != null" >
+        BFDW,
+      </if>
+      <if test="yxqKs != null" >
+        YXQ_KS,
+      </if>
+      <if test="yxqJs != null" >
+        YXQ_JS,
+      </if>
+      <if test="zy != null" >
+        ZY,
+      </if>
+      <if test="sqdj != null" >
+        SQDJ,
+      </if>
+      <if test="xc != null" >
+        XC,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="isJk != null" >
+        IS_JK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xxlx != null" >
+        #{xxlx,jdbcType=DECIMAL},
+      </if>
+      <if test="zjbh != null" >
+        #{zjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bfdw != null" >
+        #{bfdw,jdbcType=VARCHAR},
+      </if>
+      <if test="yxqKs != null" >
+        #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null" >
+        #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zy != null" >
+        #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="sqdj != null" >
+        #{sqdj,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        #{xc,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="isJk != null" >
+        #{isJk,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.quality.po.PersonnelToAuthorizationRecord" >
+    update B_Z_00101
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="xxlx != null" >
+        XXLX = #{xxlx,jdbcType=DECIMAL},
+      </if>
+      <if test="zjbh != null" >
+        ZJBH = #{zjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="bfrq != null" >
+        BFRQ = #{bfrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bfdw != null" >
+        BFDW = #{bfdw,jdbcType=VARCHAR},
+      </if>
+      <if test="yxqKs != null" >
+        YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yxqJs != null" >
+        YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zy != null" >
+        ZY = #{zy,jdbcType=VARCHAR},
+      </if>
+      <if test="sqdj != null" >
+        SQDJ = #{sqdj,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="isJk != null" >
+        IS_JK = #{isJk,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.quality.po.PersonnelToAuthorizationRecord" >
+    update B_Z_00101
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      XXLX = #{xxlx,jdbcType=DECIMAL},
+      ZJBH = #{zjbh,jdbcType=VARCHAR},
+      BFRQ = #{bfrq,jdbcType=TIMESTAMP},
+      BFDW = #{bfdw,jdbcType=VARCHAR},
+      YXQ_KS = #{yxqKs,jdbcType=TIMESTAMP},
+      YXQ_JS = #{yxqJs,jdbcType=TIMESTAMP},
+      ZY = #{zy,jdbcType=VARCHAR},
+      SQDJ = #{sqdj,jdbcType=VARCHAR},
+      XC = #{xc,jdbcType=VARCHAR},
+      FJJX = #{fjjx,jdbcType=VARCHAR},
+      BZ = #{bz,jdbcType=VARCHAR},
+      IS_JK = #{isJk,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 删除列表中不存在的数据 -->
+  <delete id="deleteNotExist" parameterType="com.eray.thjw.quality.po.MaintenancePersonnel" >
+    DELETE FROM  B_Z_00101 
+		WHERE MAINID = #{id,jdbcType=VARCHAR} AND XXLX = #{paramsMap.lx,jdbcType=DECIMAL}
+        <if test="paramsMap.lx == 21 and maintenanceLicenses != null and maintenanceLicenses.size > 0">
+            AND ID NOT IN 
+            <foreach collection="maintenanceLicenses" item="item" index="index" open="(" close=")" separator=",">
+			#{item.id,jdbcType=VARCHAR}
+	   		</foreach>
+        </if>
+         <if test="paramsMap.lx == 22 and typeLicenses != null and typeLicenses.size > 0">
+            AND ID NOT IN 
+            <foreach collection="typeLicenses" item="item" index="index" open="(" close=")" separator=",">
+			#{item.id,jdbcType=VARCHAR}
+	   		</foreach>
+        </if>
+  </delete>
+  
+  <!-- 查询维修执照 -->
+  <select id="queryMaintenanceLicenses" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00101
+    where MAINID = #{id,jdbcType=VARCHAR} AND XXLX = 21 AND ZT = 1
+    order by bfdw, bfrq desc
+  </select>
+  
+  <!-- 查询机型执照 -->
+  <select id="queryTypeLicenses" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_Z_00101
+    where MAINID = #{id,jdbcType=VARCHAR} AND XXLX = 22 AND ZT = 1
+    order by bfdw, bfrq desc
+  </select>
+  
+  <select id="queryList" resultMap="JoinResultMap" parameterType="com.eray.thjw.quality.po.PersonnelToAuthorizationRecord" >
+    select 
+    <include refid="Join_Column_List" />
+    from B_Z_00101 a
+    join b_z_001 b on a.mainid = b.id
+    left join t_department d on d.id = a.dprtCode 
+   	LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 where YXZT = 1 GROUP BY MAINID) D011
+        ON D011.MAINID = a.ID
+    where 1=1 AND a.ZT = 1 
+   <!--  and (a.XXLX = 21 or (a.XXLX = 22 and a.yxq_js is not null)) -->
+    
+    <if test="xxlx != null and xxlx != ''">
+    	and a.XXLX = #{xxlx}
+    </if>
+    <if test="paramsMap.dprtcode != null and paramsMap.dprtcode != ''">
+    	and a.dprtCode = #{paramsMap.dprtcode}
+    </if>
+    
+    <if test="paramsMap.keyword != null and paramsMap.keyword != ''">
+    	and (
+    		   UPPER(b.rybh) like UPPER('%'||#{paramsMap.keyword}||'%') 
+    		or UPPER(b.xm) like  UPPER('%'||#{paramsMap.keyword}||'%') 
+    		or UPPER(a.bfdw) like  UPPER('%'||#{paramsMap.keyword}||'%') 
+    	) 
+    </if>
+    
+     <if test="paramsMap.dqrqStart != null and paramsMap.dqrqStart != ''" >
+       and (a.yxq_js &gt;= to_date(#{paramsMap.dqrqStart},'yyyy-mm-dd hh24:mi:ss') ) 
+    </if>
+    
+    <!-- 
+       <if test="paramsMap.dqrqEnd != null and paramsMap.dqrqEnd != ''" >
+       and (to_date(#{paramsMap.dqrqEnd},'yyyy-mm-dd hh24:mi:ss') >= a.yxq_js)
+    </if>
+    
+     -->
+  
+    
+    <choose>                                                                 
+    	<when test='pagination.sort == "auto"'>                       
+    	order by SYTS asc
+    	</when>
+    	<otherwise>
+		    order by ${pagination.sort} ${pagination.order}
+    	</otherwise>
+   </choose>
+  </select>
+  
+  <!-- 根据组织机构查询维修执照 -->
+  <select id="queryMaintenanceLicensesByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    B_Z_00101.ID, B_Z_00101.MAINID, B_Z_00101.DPRTCODE, B_Z_00101.ZT, B_Z_00101.WHBMID, B_Z_00101.WHRID, 
+    B_Z_00101.WHSJ, B_Z_00101.XXLX, B_Z_00101.ZJBH, B_Z_00101.BFRQ, B_Z_00101.BFDW, B_Z_00101.YXQ_KS, B_Z_00101.YXQ_JS, 
+    B_Z_00101.ZY, B_Z_00101.SQDJ, B_Z_00101.XC, B_Z_00101.FJJX, B_Z_00101.BZ, B_Z_00101.IS_JK, B_Z_001.rybh
+    from B_Z_00101
+    left join B_Z_001 on B_Z_00101.mainid = B_Z_001.id
+    where B_Z_00101.dprtcode = #{dprtcode,jdbcType=VARCHAR} AND B_Z_00101.XXLX = 21 AND B_Z_00101.ZT = 1
+    order by B_Z_00101.bfdw, B_Z_00101.bfrq desc
+  </select>
+  
+  <!-- 根据组织机构查询机型执照 -->
+  <select id="queryTypeLicensesByDprtcode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    B_Z_00101.ID, B_Z_00101.MAINID, B_Z_00101.DPRTCODE, B_Z_00101.ZT, B_Z_00101.WHBMID, B_Z_00101.WHRID, 
+    B_Z_00101.WHSJ, B_Z_00101.XXLX, B_Z_00101.ZJBH, B_Z_00101.BFRQ, B_Z_00101.BFDW, B_Z_00101.YXQ_KS, B_Z_00101.YXQ_JS, 
+    B_Z_00101.ZY, B_Z_00101.SQDJ, B_Z_00101.XC, B_Z_00101.FJJX, B_Z_00101.BZ, B_Z_00101.IS_JK, B_Z_001.rybh
+    from B_Z_00101
+    left join B_Z_001 on B_Z_00101.mainid = B_Z_001.id
+    where B_Z_00101.dprtcode = #{dprtcode,jdbcType=VARCHAR} AND B_Z_00101.XXLX = 22 AND B_Z_00101.ZT = 1
+    order by B_Z_00101.bfdw, B_Z_00101.bfrq desc
+  </select>
+  
+</mapper>

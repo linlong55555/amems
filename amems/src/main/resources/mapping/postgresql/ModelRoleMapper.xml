@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.ModelRoleMapper">
+     
+	<resultMap id="roleMap" type="com.eray.thjw.po.ModelRole">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="ROLE_CODE" property="roleCode" jdbcType="VARCHAR" />
+		<result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+		<result column="ROLE_REMARK" property="roleRemark" jdbcType="VARCHAR" />
+		<result column="DPRT_ID" property="dprtId" jdbcType="VARCHAR" />
+		<result column="DPRTNAME" property="dprtName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="roleColumn">
+		ID,ROLE_CODE,ROLE_NAME,ROLE_REMARK,DPRT_ID
+	</sql>
+	
+	<!-- 搜索参数 -->
+	<sql id="roleParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="id != null and id != ''">
+             and ID = #{id}
+         </if>
+         <if test="roleCode != null and roleCode != ''">
+             and ROLE_CODE = #{roleCode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (ROLE_CODE like '%'||#{keyword}||'%'
+		    	or ROLE_NAME like '%'||#{keyword}||'%' 	)              <!-- 左右匹配 查询关键字 -->
+		  </if>
+		 
+			<choose>
+			<when test="dprtId != null and dprtId != '' ">
+	        	and DPRT_ID = #{dprtId}
+		    </when>
+		    <when test="paramsMap.userId != null ">
+	        	and DPRT_ID in (select rd.dprt_Id
+						      from t_user2role ur
+						      left join t_role2dprt rd
+						      on rd.role_id = ur.role_id
+							where ur.user_id = #{paramsMap.userId,jdbcType=VARCHAR})
+		    </when>
+		</choose>
+		
+	</sql>
+	
+		<!-- 查询所有 -->
+	<select id="queryAllModelRole" resultMap="roleMap">
+		select <include refid="roleColumn"></include>  from t_role_jx
+		<include refid="roleParam"></include>
+	</select>
+  
+	<select id="queryAllPageList" parameterType="com.eray.thjw.po.ModelRole" resultMap="roleMap">
+		
+		  select  ID,ROLE_CODE,ROLE_NAME,ROLE_REMARK,(select dprtName from t_department where DPRT_ID=id) DPRT_ID
+              from t_role_jx <include refid="roleParam"></include>
+              
+              <choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		order by ROLE_CODE asc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+	
+	 <select id="queryCount" parameterType="com.eray.thjw.po.ModelRole" resultType="int">
+		select count(*) FROM t_role_jx <include refid="roleParam"></include>
+ 	 </select>
+	
+	<select id="queryAll" resultMap="roleMap">
+		select <include refid="roleColumn"></include>  from t_role_jx
+		<include refid="roleParam"></include>
+	</select>
+	
+	<!-- 查询所有 -->
+	<select id="queryAllRole" resultMap="roleMap">
+		select <include refid="roleColumn"></include>  from t_role_jx
+		<include refid="roleParam"></include>
+	</select>
+
+	<!-- 添加角色信息 -->
+	<insert id="save"  parameterType="com.eray.thjw.po.ModelRole" >
+	
+		insert into   
+		t_role_jx
+		(<include refid="roleColumn"></include>)
+		 values
+		 (#{id},#{roleCode},#{roleName},#{roleRemark},#{dprtId})
+		 
+	</insert>
+	
+	<select id="findOneByRoleID"  parameterType="java.lang.String" resultMap="roleMap">
+		select T.ID,T.ROLE_CODE,T.ROLE_NAME,T.ROLE_REMARK,T.DPRT_ID, D.DPRTNAME
+		from t_role_jx t
+		left join t_department d ON T.DPRT_ID = D.ID
+		where t.ID = #{id}
+	</select>
+	
+	<!-- 修改角色信息 -->
+	<select id="modify" parameterType="com.eray.thjw.po.ModelRole" >
+		 update t_role_jx set
+		 ROLE_NAME=#{roleName},
+		ROLE_REMARK=#{roleRemark}
+		 where ID = #{id}
+	</select>
+	
+	
+	<!-- 根据id获取角色信息 -->
+  <select id="queryRole" resultMap="roleMap" parameterType="java.lang.String">
+ 	 SELECT R.ID,R.ROLE_CODE,R.ROLE_NAME,R.ROLE_REMARK,R.DPRT_ID FROM (select ID, USERNAME, REALNAME, CELLPHONE, PHONE, SEX, STATE, 
+    BMDM,JGDM FROM t_user WHERE ID = #{userId,jdbcType=VARCHAR}) U , t_user2role_jx UR,t_role_jx R
+		WHERE U.ID = UR.USER_ID AND UR.ROLE_ID = R.ID 
+		
+  </select>
+  <!-- 查询除用户选择的角色以外的所有角色信息 -->
+  <select id="queryUserNotRole" resultMap="roleMap" parameterType="java.lang.String">
+	SELECT ID,ROLE_CODE,ROLE_NAME,ROLE_REMARK,DPRT_ID FROM t_role_jx WHERE ID not IN (
+		SELECT R.id FROM (select ID, USERNAME, REALNAME, CELLPHONE, PHONE, SEX, STATE, 
+    BMDM,JGDM FROM t_user WHERE ID = #{userId,jdbcType=VARCHAR}) U , t_user2role_jx UR,t_role_jx R
+		WHERE U.ID = UR.USER_ID AND UR.ROLE_ID = R.ID
+	)
+  </select>
+	<delete id="delete" parameterType="java.lang.String">
+		delete from t_role_jx  where ID = #{id}
+	</delete>
+	
+	
+</mapper>

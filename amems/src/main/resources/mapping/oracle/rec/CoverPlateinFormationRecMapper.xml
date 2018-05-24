@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.mapping.rec.CoverPlateinFormationRecMapper" >
+<!-- EO日志列表 开始 -->
+<!-- EO主列表 -->
+<select id="queryList4D021" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	select 
+		 D.ID,
+		 U.USERNAME ||' '|| U.REALNAME AS REC_CZR,
+		 D.REC_CZLS,
+		 D.REC_XGLX,
+		 '盖板编号:'||D.GBBH||' ' AS REC_HD, 
+		 D.REC_CZSJ,
+		 D.REC_CZSM,
+		 D.REC_IP
+	from D_021_REC D 
+		LEFT JOIN T_USER U ON D.WHRID = U.ID
+	<!-- 查询条件start -->
+		<include refid="Base_Query_tj" /> 
+	<!-- 查询条件end -->
+	 order by D.REC_CZSJ DESC
+		
+</select>
+<select id="queryDiff4D021" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	select 
+		 D.ID,
+		 D.FJJX AS JX,
+		 D.GBBH,
+		 D.GBMC,
+		 D.SZQYWZ,
+		 D.KGGS,
+		 D.HGGS,
+		 D.QY,
+		 D.RLGBBS,
+		 U.USERNAME ||' '|| U.REALNAME AS WHRNAME,
+		 D.WHSJ,
+		 T.DPRTNAME AS WHBMNAME,
+		 CASE WHEN D.ZT='1' THEN '已激活' ELSE '已失效' END AS ZTNAME,
+		 U.USERNAME ||' '|| U.REALNAME AS REC_CZR,
+		 '盖板编号:'||D.GBBH||' ' AS REC_HD,
+		 'CURRENT' DATA_VERSION,
+		 D.REC_CZLS,
+		 D.REC_XGLX,
+		 D.REC_CZSJ,
+		 D.REC_CZSM,
+		 D.REC_IP
+	from D_021_REC D
+		LEFT JOIN T_USER U ON D.WHRID = U.ID 
+		LEFT JOIN T_DEPARTMENT T ON D.WHBMID = T.ID
+		 WHERE D.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+		 AND   D.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	UNION ALL
+		select 
+		 D.ID,
+		 D.FJJX AS JX,
+		 D.GBBH,
+		 D.GBMC,
+		 D.SZQYWZ,
+		 D.KGGS,
+		 D.HGGS,
+		 D.QY,
+		 D.RLGBBS,
+		 U.USERNAME ||' '|| U.REALNAME AS WHRNAME,
+		 D.WHSJ,
+		 T.DPRTNAME AS WHBMNAME,
+		 CASE WHEN D.ZT='1' THEN '已激活' ELSE '已失效' END AS ZTNAME,
+		 U.USERNAME ||' '|| U.REALNAME AS REC_CZR,
+		 '盖板编号:'||D.GBBH||' ' AS REC_HD,
+		 'LAST' DATA_VERSION ,
+		 D.REC_CZLS,
+		 D.REC_XGLX,
+		 D.REC_CZSJ,
+		 D.REC_CZSM,
+		 D.REC_IP
+	from D_021_REC D
+		LEFT JOIN T_USER U ON D.WHRID = U.ID 
+		LEFT JOIN T_DEPARTMENT T ON D.WHBMID = T.ID
+		 WHERE D.REC_ZBID = #{paramsMap.ID,jdbcType=VARCHAR}
+	 AND D.REC_CZLS IN
+         (           
+            SELECT REC_CZLS FROM (
+            	SELECT ROW_NUMBER() OVER(ORDER BY REC_CZSJ DESC) RNO , REC_CZLS
+              	FROM (select id,rec_czsj,rec_czls from D_021_REC
+              	      ) A WHERE 
+             	A.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+            	AND A.REC_CZSJ &lt;=
+            	(
+	              	SELECT MIN(C.REC_CZSJ) FROM (
+	              	   select id,rec_czsj,rec_czls from D_021_REC 
+              	      )C WHERE 
+	              	C.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+	              	AND C.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+	             )            
+             AND A.REC_CZLS != #{paramsMap.REC_CZLS,jdbcType=VARCHAR}        
+            ) WHERE 1 = RNO                        
+           )  
+</select>
+
+<sql id="Base_Query_tj">
+	where 1=1
+       <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+       	and D.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+       </if>
+       <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+       	and D.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+       </if>
+       <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+        and D.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+      </if>
+      <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+        AND (UPPER(D.GBBH) like UPPER('%'||#{paramsMap.KEYWORD}||'%') or UPPER(D.GBMC) like UPPER('%'||#{paramsMap.KEYWORD}||'%')) 
+      </if>
+</sql>
+</mapper>

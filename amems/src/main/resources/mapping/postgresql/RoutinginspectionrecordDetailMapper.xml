@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.RoutinginspectionrecordDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.RoutinginspectionrecordDetail" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="XJXMBH" property="xjxmbh" jdbcType="VARCHAR" />
+    <result column="XJXMBS" property="xjxmbs" jdbcType="DECIMAL" />
+    <result column="XJXMBZ" property="xjxmbz" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+    <!-- 查询附件表的一对多 -->
+    <collection property="orderAttachmentList" ofType="com.eray.thjw.po.OrderAttachment" >  
+           	<id property="id" column="AID" />  
+           	<result column="AMAINID" property="mainid" />
+		    <result column="DPRTCODE" property="dprtcode" />
+		    <result column="YSWJM" property="yswjm" />
+		    <result column="WBWJM" property="wbwjm" />
+		    <result column="NBWJM" property="nbwjm"  />
+		    <result column="WJDX" property="wjdx" />
+		    <result column="HZM" property="hzm" />
+		    <result column="SM" property="sm"  />
+		    <result column="CFLJ" property="cflj" />
+		    <result column="YXZT" property="yxzt"  />
+		    <result column="CZSJ" property="czsj"  />
+		    <result column="CZBMID" property="czbmid"  />
+		    <result column="CZRID" property="czrid"  />  
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    B_J_00201.ID, B_J_00201.MAINID, B_J_00201.XJXMBH, B_J_00201.XJXMBS, B_J_00201.XJXMBZ, B_J_00201.WHBMID, B_J_00201.WHRID, B_J_00201.WHSJ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_J_00201
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_J_00201
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.RoutinginspectionrecordDetail" >
+    insert into B_J_00201 (ID, MAINID, XJXMBH, 
+      XJXMBS, XJXMBZ, WHBMID, 
+      WHRID, WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{xjxmbh,jdbcType=VARCHAR}, 
+      #{xjxmbs,jdbcType=DECIMAL}, #{xjxmbz,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.RoutinginspectionrecordDetail" >
+    insert into B_J_00201
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="xjxmbh != null" >
+        XJXMBH,
+      </if>
+      <if test="xjxmbs != null" >
+        XJXMBS,
+      </if>
+      <if test="xjxmbz != null" >
+        XJXMBZ,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="xjxmbh != null" >
+        #{xjxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="xjxmbs != null" >
+        #{xjxmbs,jdbcType=DECIMAL},
+      </if>
+      <if test="xjxmbz != null" >
+        #{xjxmbz,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.RoutinginspectionrecordDetail" >
+    update B_J_00201
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="xjxmbh != null" >
+        XJXMBH = #{xjxmbh,jdbcType=VARCHAR},
+      </if>
+      <if test="xjxmbs != null" >
+        XJXMBS = #{xjxmbs,jdbcType=DECIMAL},
+      </if>
+      <if test="xjxmbz != null" >
+        XJXMBZ = #{xjxmbz,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.RoutinginspectionrecordDetail" >
+    update B_J_00201
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      XJXMBH = #{xjxmbh,jdbcType=VARCHAR},
+      XJXMBS = #{xjxmbs,jdbcType=DECIMAL},
+      XJXMBZ = #{xjxmbz,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <select id="queryAllByMainid" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.RoutinginspectionrecordDetail">
+           
+	   select  <include refid="Base_Column_List"></include>,d_011.id AID,d_011.mainid AMAINID,
+	   d_011.DPRTCODE DPRTCODE, d_011.YSWJM YSWJM, d_011.WBWJM WBWJM, d_011.NBWJM NBWJM,
+	    d_011.WJDX WJDX, d_011.HZM HZM, d_011.SM SM, d_011.CFLJ CFLJ,
+	     d_011.YXZT YXZT, d_011.CZSJ CZSJ, d_011.CZBMID CZBMID, d_011.CZRID CZRID
+	   			from B_J_00201 left join d_011 on (B_J_00201.id=d_011.mainid)
+				where B_J_00201.mainid =  #{mainid}
+
+	</select>
+	
+  	 <!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+	where 1=1
+         <if test="mainid != null and mainid != '' ">
+             and B_J_00201.mainid =  #{mainid}
+         </if>
+	</sql>
+  
+</mapper>

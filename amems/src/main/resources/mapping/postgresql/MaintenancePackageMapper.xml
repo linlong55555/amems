@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.MaintenancePackageMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.MaintenancePackage" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YSWJM" property="yswjm" jdbcType="VARCHAR" />
+    <result column="WBWJM" property="wbwjm" jdbcType="VARCHAR" />
+    <result column="NBWJM" property="nbwjm" jdbcType="VARCHAR" />
+    <result column="WJDX" property="wjdx" jdbcType="DECIMAL" />
+    <result column="HZM" property="hzm" jdbcType="VARCHAR" />
+    <result column="SM" property="sm" jdbcType="VARCHAR" />
+    <result column="CFLJ" property="cflj" jdbcType="VARCHAR" />
+    <result column="YXZT" property="yxzt" jdbcType="DECIMAL" />
+    <result column="CZSJ" property="czsj" jdbcType="TIMESTAMP" />
+    <result column="CZBMID" property="czbmid" jdbcType="VARCHAR" />
+    <result column="CZRID" property="czrid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID, 
+     t1.username || ' ' ||t1.realname as CZRID
+  </sql>
+  
+    <sql id="Base_Column_List1" >
+    t.ID, t.MAINID, t.DPRTCODE, t.YSWJM, t.WBWJM, t.NBWJM, t.WJDX, t.HZM, t.SM, t.CFLJ, t.YXZT, t.CZSJ, t.CZBMID,t.CZRID
+ 
+  </sql>
+  
+    <insert id="save" parameterType="com.eray.thjw.po.MaintenancePackage" >
+    insert into D_011 (ID, MAINID, DPRTCODE, YSWJM, WBWJM, NBWJM, WJDX, HZM, SM, CFLJ, YXZT, CZSJ, CZBMID,CZRID)
+    values (#{id}, #{mainid}, #{dprtcode}, 
+      #{yswjm}, #{wbwjm}, #{nbwjm}, 
+      #{wjdx}, #{hzm}, #{sm}, #{cflj}, 
+      #{yxzt},current_timestamp, #{czbmid}, 
+      #{czrid})
+  </insert>
+  
+    <update id="update" parameterType="com.eray.thjw.po.MaintenancePackage" >
+    update D_011
+    set wbwjm = #{wbwjm},sm = #{sm}
+    where ID = #{id}
+  </update>
+  
+  <update id="delete" parameterType="com.eray.thjw.po.MaintenancePackage" >
+    update D_011
+    set yxzt = 0
+    where ID = #{id}
+  </update>
+  
+  
+  
+   <select id="queryAllPageList" resultMap="BaseResultMap">
+	     select 
+	    <include refid="Base_Column_List" />
+	    from D_011 t left join T_USER t1 on t.czrid=t1.id 
+	    <include refid="BaseResultParam"></include>
+	     <choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		order by t.czsj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+   </select>
+  
+   	<!-- 搜索参数 -->
+	<sql id="BaseResultParam">
+	   where 1=1
+         <if test="id != null and id != ''">
+             and t.MAINID = #{id}
+         </if>
+         <if test="yxzt != null and yxzt != ''">
+             and t.yxzt = #{yxzt}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t.dprtcode = #{dprtcode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (
+		      	   t.wbwjm like '%'||#{keyword}||'%'
+		    	or t.sm like '%'||#{keyword}||'%'
+		    	or to_char(t.czsj,'yyyy-MM-dd hh24:mi') like '%'||#{keyword}||'%'
+		    	 )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+ 	 
+   <select id="queryCount" parameterType="com.eray.thjw.po.MaintenancePackage" resultType="int">
+		select count(*) FROM D_011 t<include refid="BaseResultParam"></include>
+ 	 </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_011 
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_011
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.MaintenancePackage" >
+    insert into D_011
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="yswjm != null" >
+        YSWJM,
+      </if>
+      <if test="wbwjm != null" >
+        WBWJM,
+      </if>
+      <if test="nbwjm != null" >
+        NBWJM,
+      </if>
+      <if test="wjdx != null" >
+        WJDX,
+      </if>
+      <if test="hzm != null" >
+        HZM,
+      </if>
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="cflj != null" >
+        CFLJ,
+      </if>
+      <if test="yxzt != null" >
+        YXZT,
+      </if>
+      <if test="czsj != null" >
+        CZSJ,
+      </if>
+      <if test="czbmid != null" >
+        CZBMID,
+      </if>
+      <if test="czrid != null" >
+        CZRID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="yswjm != null" >
+        #{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wbwjm != null" >
+        #{wbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="nbwjm != null" >
+        #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wjdx != null" >
+        #{wjdx,jdbcType=DECIMAL},
+      </if>
+      <if test="hzm != null" >
+        #{hzm,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="cflj != null" >
+        #{cflj,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        #{yxzt,jdbcType=DECIMAL},
+      </if>
+      <if test="czsj != null" >
+        #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czbmid != null" >
+        #{czbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        #{czrid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.MaintenancePackage" >
+    update D_011
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="yswjm != null" >
+        YSWJM = #{yswjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wbwjm != null" >
+        WBWJM = #{wbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="nbwjm != null" >
+        NBWJM = #{nbwjm,jdbcType=VARCHAR},
+      </if>
+      <if test="wjdx != null" >
+        WJDX = #{wjdx,jdbcType=DECIMAL},
+      </if>
+      <if test="hzm != null" >
+        HZM = #{hzm,jdbcType=VARCHAR},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="cflj != null" >
+        CFLJ = #{cflj,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        YXZT = #{yxzt,jdbcType=DECIMAL},
+      </if>
+      <if test="czsj != null" >
+        CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="czbmid != null" >
+        CZBMID = #{czbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="czrid != null" >
+        CZRID = #{czrid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.MaintenancePackage" >
+    update D_011
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      YSWJM = #{yswjm,jdbcType=VARCHAR},
+      WBWJM = #{wbwjm,jdbcType=VARCHAR},
+      NBWJM = #{nbwjm,jdbcType=VARCHAR},
+      WJDX = #{wjdx,jdbcType=DECIMAL},
+      HZM = #{hzm,jdbcType=VARCHAR},
+      SM = #{sm,jdbcType=VARCHAR},
+      CFLJ = #{cflj,jdbcType=VARCHAR},
+      YXZT = #{yxzt,jdbcType=DECIMAL},
+      CZSJ = #{czsj,jdbcType=TIMESTAMP},
+      CZBMID = #{czbmid,jdbcType=VARCHAR},
+      CZRID = #{czrid,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

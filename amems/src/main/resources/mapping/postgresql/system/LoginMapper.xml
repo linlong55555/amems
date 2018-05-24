@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.system.dao.LoginMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.system.po.Login">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="JGDM" jdbcType="VARCHAR" property="jgdm" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, USERNAME, PASSWORD, STATE, JGDM
+  </sql>
+  
+  <!-- 分页查询账号 start --> 
+  <select id="selectPage" parameterType="com.eray.thjw.po.BaseEntity" resultMap="BaseResultMap">
+	    select ID, USERNAME, PASSWORD, STATE,(select dprtName from t_department where JGDM=id) JGDM
+	    from T_LOGIN
+	    where 1=1 <include refid="condition"></include>
+	    <choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by JGDM,USERNAME
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 	</choose>
+  </select>
+ 
+  <sql id="condition">
+  	<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+       	and USERNAME like '%'||#{paramsMap.keyword}||'%'
+   	</if>
+  	<if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+       	and id like '%'||#{paramsMap.id}||'%'
+   	</if>
+   	<if test="paramsMap != null and paramsMap.state != null and paramsMap.state != '' ">
+       	and state = cast(#{paramsMap.state,jdbcType=DECIMAL}as integer)
+   	</if>
+   	<if test="paramsMap != null and paramsMap.jgdm != null and paramsMap.jgdm != '' and paramsMap.jgdm != 'yes'">
+       	and jgdm = #{paramsMap.jgdm}
+   	</if>
+   	<if test="paramsMap != null  and paramsMap.jgdm =='yes'">
+       	and jgdm is null 
+   	</if>
+  </sql>
+  <!-- 分页查询账号 end -->
+  
+  
+    <!-- 根据机构代码查询条数 -->
+  <select id="queryCountByJgdm"  parameterType="java.lang.String" resultType="int">
+  	  select count(1) from T_LOGIN where jgdm=#{jgdm} 
+  </select>
+  
+  <!-- 分页查询未绑定账号 start -->
+  <select id="selectUnboundPage" parameterType="com.eray.thjw.po.BaseEntity" resultMap="BaseResultMap">
+	    select T1.ID, T1.USERNAME, T1.PASSWORD, T1.STATE, (select dprtName from t_department where T1.JGDM=t_department.id) JGDM
+	    from T_LOGIN T1
+	    where not exists (select 1 from T_USER T2 where T2.DRZHID = T1.ID) and T1.STATE = 1 <include refid="unboundCondition"></include> and (jgdm =#{paramsMap.jgdm} or jgdm is null)
+	    <choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by jgdm,USERNAME
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 	</choose>
+  </select>
+
+  <sql id="unboundCondition">
+  
+  	<if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+       	and T1.USERNAME like '%'||#{paramsMap.keyword}||'%'
+   	</if>
+  </sql>
+  <!-- 分页查询未绑定账号 end -->
+  
+  <select id="selectCountByUserName" parameterType="java.lang.String" resultType="int">
+    select 
+    count(1)
+    from T_LOGIN
+    where USERNAME = #{userName}
+  </select>
+  
+    <select id="selectCounts" parameterType="java.lang.String" resultType="int">
+    select 
+    count(1)
+    from T_LOGIN
+    where STATE = 1 and JGDM= #{jgdm}
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_LOGIN
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+    <select id="selectByPrimaryName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_LOGIN
+    where userName = #{userName,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_LOGIN
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.system.po.Login">
+    insert into T_LOGIN (ID, USERNAME, PASSWORD, 
+      STATE, JGDM)
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{state,jdbcType=DECIMAL}, #{jgdm,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.system.po.Login">
+    insert into T_LOGIN
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="username != null">
+        USERNAME,
+      </if>
+      <if test="password != null">
+        PASSWORD,
+      </if>
+      <if test="state != null">
+        STATE,
+      </if>
+      <if test="jgdm != null">
+        JGDM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="jgdm != null">
+        #{jgdm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.system.po.Login">
+    update T_LOGIN
+    <set>
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="jgdm != null">
+        JGDM = #{jgdm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.system.po.Login">
+    update T_LOGIN
+    set USERNAME = #{username,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      STATE = #{state,jdbcType=DECIMAL},
+      JGDM = #{jgdm,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+</mapper>

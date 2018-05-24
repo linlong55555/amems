@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.material2.dao.DemandMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.material2.po.Demand" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="BH" property="bh" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="JJCD" property="jjcd" jdbcType="DECIMAL" />
+    <result column="IS_YXFX" property="isYxfx" jdbcType="DECIMAL" />
+    <result column="IS_FJHTC" property="isFjhtc" jdbcType="DECIMAL" />
+    <result column="XQLB" property="xqlb" jdbcType="VARCHAR" />
+    <result column="JHSYRQ" property="jhsyrq" jdbcType="TIMESTAMP" />
+    <result column="SJBJH" property="sjbjh" jdbcType="VARCHAR" />
+    <result column="SJBJMC" property="sjbjmc" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="FXSJ" property="fxsj" jdbcType="DECIMAL" />
+    <result column="FXXH" property="fxxh" jdbcType="DECIMAL" />
+    <result column="XQYY" property="xqyy" jdbcType="VARCHAR" />
+    <result column="GMJY" property="gmjy" jdbcType="VARCHAR" />
+    <result column="SQRID" property="sqrid" jdbcType="VARCHAR" />
+    <result column="SQSJ" property="sqsj" jdbcType="TIMESTAMP" />
+    <result column="SQBMID" property="sqbmid" jdbcType="VARCHAR" />
+    <result column="JHBMID" property="jhbmid" jdbcType="VARCHAR" />
+    <result column="JHRID" property="jhrid" jdbcType="VARCHAR" />
+    <result column="JHSJ" property="jhsj" jdbcType="TIMESTAMP" />
+    <result column="JHYJ" property="jhyj" jdbcType="VARCHAR" />
+    <result column="LYLX" property="lylx" jdbcType="DECIMAL" />
+    <result column="LYID" property="lyid" jdbcType="VARCHAR" />
+    <result column="LYBH" property="lybh" jdbcType="VARCHAR" />
+    <result column="BS145" property="bs145" jdbcType="DECIMAL" />
+    
+     
+  </resultMap>
+  
+  <resultMap type="com.eray.thjw.material2.po.Demand" id="DetailResultMap" extends="BaseResultMap">
+  	<association property="sqr" javaType="com.eray.thjw.po.User">  
+        <id column="SQRID" property="id"/>  
+        <result column="SQRUSERNAME" property="username"/>  
+        <result column="SQRREALNAME" property="realname"/>  
+    </association>  
+    <association property="jhr" javaType="com.eray.thjw.po.User">  
+        <id column="JHRID" property="id"/>  
+        <result column="JHRUSERNAME" property="username"/>  
+        <result column="JHRREALNAME" property="realname"/>  
+    </association>  
+  	<collection property="details" ofType="com.eray.thjw.material2.po.DemandDetails">
+    	<id column="DETAIL_ID" property="id" jdbcType="VARCHAR" />
+	    <result column="DETAIL_MAINID" property="mainid" jdbcType="VARCHAR" />
+	    <result column="DETAIL_WHBMID" property="whbmid" jdbcType="VARCHAR" />
+	    <result column="DETAIL_WHRID" property="whrid" jdbcType="VARCHAR" />
+	    <result column="DETAIL_WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+	    <result column="DETAIL_WLLB" property="wllb" jdbcType="DECIMAL" />
+	    <result column="DETAIL_BJID" property="bjid" jdbcType="VARCHAR" />
+	    <result column="DETAIL_BJH" property="bjh" jdbcType="VARCHAR" />
+	    <result column="DETAIL_BJMC" property="bjmc" jdbcType="VARCHAR" />
+	    <result column="DETAIL_XINGH" property="xingh" jdbcType="VARCHAR" />
+	    <result column="DETAIL_GG" property="gg" jdbcType="VARCHAR" />
+	    <result column="DETAIL_JHLY" property="jhly" jdbcType="VARCHAR" />
+	    <result column="DETAIL_ZJH" property="zjh" jdbcType="VARCHAR" />
+	    <result column="DETAIL_ZJHMS" property="zjhms" jdbcType="VARCHAR" />
+	    <result column="DETAIL_BZJH" property="bzjh" jdbcType="VARCHAR" />
+	    <result column="DETAIL_XQSL" property="xqsl" jdbcType="DECIMAL" />
+	    <result column="DETAIL_DW" property="dw" jdbcType="VARCHAR" />
+	    <result column="DETAIL_XLH" property="xlh" jdbcType="VARCHAR" />
+	    <result column="DETAIL_THJ" property="thj" jdbcType="VARCHAR" />
+	    <result column="DETAIL_XQBS" property="xqbs" jdbcType="DECIMAL" />
+	    <result column="DETAIL_TBBS" property="tbbs" jdbcType="DECIMAL" />
+	    <result column="BZZT" property="paramsMap.bzzt" jdbcType="VARCHAR" />
+   		<result column="BZBZ" property="paramsMap.bzbz" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, WHBMID, WHRID, WHSJ, BH, ZT, JJCD, IS_YXFX, IS_FJHTC, XQLB, JHSYRQ, 
+    SJBJH, SJBJMC, FJZCH, XLH, FXSJ, FXXH, XQYY, GMJY, SQRID, SQSJ, SQBMID, JHBMID, JHRID, 
+    JHSJ, JHYJ, LYLX, LYID, LYBH, BS145
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_024
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_H_024
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.material2.po.Demand" >
+    insert into B_H_024 (ID, DPRTCODE, WHBMID, 
+      WHRID, WHSJ, BH, 
+      ZT, JJCD, IS_YXFX, IS_FJHTC, 
+      XQLB, JHSYRQ, SJBJH, 
+      SJBJMC, FJZCH, XLH, 
+      FXSJ, FXXH, XQYY, GMJY, 
+      SQRID, SQSJ, SQBMID, 
+      JHBMID, JHRID, JHSJ, 
+      JHYJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, 
+      #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, #{bh,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{jjcd,jdbcType=DECIMAL}, #{isYxfx,jdbcType=DECIMAL}, #{isFjhtc,jdbcType=DECIMAL}, 
+      #{xqlb,jdbcType=VARCHAR}, #{jhsyrq,jdbcType=TIMESTAMP}, #{sjbjh,jdbcType=VARCHAR}, 
+      #{sjbjmc,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, 
+      #{fxsj,jdbcType=DECIMAL}, #{fxxh,jdbcType=DECIMAL}, #{xqyy,jdbcType=VARCHAR}, #{gmjy,jdbcType=VARCHAR}, 
+      #{sqrid,jdbcType=VARCHAR}, #{sqsj,jdbcType=TIMESTAMP}, #{sqbmid,jdbcType=VARCHAR}, 
+      #{jhbmid,jdbcType=VARCHAR}, #{jhrid,jdbcType=VARCHAR}, #{jhsj,jdbcType=TIMESTAMP}, 
+      #{jhyj,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.material2.po.Demand" >
+    insert into B_H_024
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="bh != null" >
+        BH,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="jjcd != null" >
+        JJCD,
+      </if>
+      <if test="isYxfx != null" >
+        IS_YXFX,
+      </if>
+      <if test="isFjhtc != null" >
+        IS_FJHTC,
+      </if>
+      <if test="xqlb != null" >
+        XQLB,
+      </if>
+      <if test="jhsyrq != null" >
+        JHSYRQ,
+      </if>
+      <if test="sjbjh != null" >
+        SJBJH,
+      </if>
+      <if test="sjbjmc != null" >
+        SJBJMC,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="fxsj != null" >
+        FXSJ,
+      </if>
+      <if test="fxxh != null" >
+        FXXH,
+      </if>
+      <if test="xqyy != null" >
+        XQYY,
+      </if>
+      <if test="gmjy != null" >
+        GMJY,
+      </if>
+      <if test="sqrid != null" >
+        SQRID,
+      </if>
+      <if test="sqsj != null" >
+        SQSJ,
+      </if>
+      <if test="sqbmid != null" >
+        SQBMID,
+      </if>
+      <if test="jhbmid != null" >
+        JHBMID,
+      </if>
+      <if test="jhrid != null" >
+        JHRID,
+      </if>
+      <if test="jhsj != null" >
+        JHSJ,
+      </if>
+      <if test="jhyj != null" >
+        JHYJ,
+      </if>
+      <if test="lylx != null" >
+        LYLX,
+      </if>
+      <if test="lyid != null" >
+        LYID,
+      </if>
+      <if test="lybh != null" >
+        LYBH,
+      </if>
+      <if test="bs145 != null" >
+        BS145,
+      </if>
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bh != null" >
+        #{bh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jjcd != null" >
+        #{jjcd,jdbcType=DECIMAL},
+      </if>
+      <if test="isYxfx != null" >
+        #{isYxfx,jdbcType=DECIMAL},
+      </if>
+      <if test="isFjhtc != null" >
+        #{isFjhtc,jdbcType=DECIMAL},
+      </if>
+      <if test="xqlb != null" >
+        #{xqlb,jdbcType=VARCHAR},
+      </if>
+      <if test="jhsyrq != null" >
+        #{jhsyrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sjbjh != null" >
+        #{sjbjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sjbjmc != null" >
+        #{sjbjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="fxsj != null" >
+        #{fxsj,jdbcType=DECIMAL},
+      </if>
+      <if test="fxxh != null" >
+        #{fxxh,jdbcType=DECIMAL},
+      </if>
+      <if test="xqyy != null" >
+        #{xqyy,jdbcType=VARCHAR},
+      </if>
+      <if test="gmjy != null" >
+        #{gmjy,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsj != null" >
+        #{sqsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sqbmid != null" >
+        #{sqbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhbmid != null" >
+        #{jhbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhrid != null" >
+        #{jhrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhsj != null" >
+        #{jhsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jhyj != null" >
+        #{jhyj,jdbcType=VARCHAR},
+      </if>
+      <if test="lylx != null" >
+        #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="bs145 != null" >
+        #{bs145,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.material2.po.Demand" >
+    update B_H_024
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bh != null" >
+        BH = #{bh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jjcd != null" >
+        JJCD = #{jjcd,jdbcType=DECIMAL},
+      </if>
+      <if test="isYxfx != null" >
+        IS_YXFX = #{isYxfx,jdbcType=DECIMAL},
+      </if>
+      <if test="isFjhtc != null" >
+        IS_FJHTC = #{isFjhtc,jdbcType=DECIMAL},
+      </if>
+      <if test="xqlb != null" >
+        XQLB = #{xqlb,jdbcType=VARCHAR},
+      </if>
+      <if test="jhsyrq != null" >
+        JHSYRQ = #{jhsyrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sjbjh != null" >
+        SJBJH = #{sjbjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sjbjmc != null" >
+        SJBJMC = #{sjbjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="fxsj != null" >
+        FXSJ = #{fxsj,jdbcType=DECIMAL},
+      </if>
+      <if test="fxxh != null" >
+        FXXH = #{fxxh,jdbcType=DECIMAL},
+      </if>
+      <if test="xqyy != null" >
+        XQYY = #{xqyy,jdbcType=VARCHAR},
+      </if>
+      <if test="gmjy != null" >
+        GMJY = #{gmjy,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        SQRID = #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsj != null" >
+        SQSJ = #{sqsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sqbmid != null" >
+        SQBMID = #{sqbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhbmid != null" >
+        JHBMID = #{jhbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhrid != null" >
+        JHRID = #{jhrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhsj != null" >
+        JHSJ = #{jhsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jhyj != null" >
+        JHYJ = #{jhyj,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.material2.po.Demand" >
+    update B_H_024
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHBMID = #{whbmid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      BH = #{bh,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      JJCD = #{jjcd,jdbcType=DECIMAL},
+      IS_YXFX = #{isYxfx,jdbcType=DECIMAL},
+      IS_FJHTC = #{isFjhtc,jdbcType=DECIMAL},
+      XQLB = #{xqlb,jdbcType=VARCHAR},
+      JHSYRQ = #{jhsyrq,jdbcType=TIMESTAMP},
+      SJBJH = #{sjbjh,jdbcType=VARCHAR},
+      SJBJMC = #{sjbjmc,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      FXSJ = #{fxsj,jdbcType=DECIMAL},
+      FXXH = #{fxxh,jdbcType=DECIMAL},
+      XQYY = #{xqyy,jdbcType=VARCHAR},
+      GMJY = #{gmjy,jdbcType=VARCHAR},
+      SQRID = #{sqrid,jdbcType=VARCHAR},
+      SQSJ = #{sqsj,jdbcType=TIMESTAMP},
+      SQBMID = #{sqbmid,jdbcType=VARCHAR},
+      JHBMID = #{jhbmid,jdbcType=VARCHAR},
+      JHRID = #{jhrid,jdbcType=VARCHAR},
+      JHSJ = #{jhsj,jdbcType=TIMESTAMP},
+      JHYJ = #{jhyj,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   
+  <select id="queryAllDemandpprotectionPageList"  resultMap="BaseResultMap">
+  SELECT  b1.ID, b1.DPRTCODE, b1.WHBMID, b1.WHRID, b1.WHSJ, b1.BH, b1.JJCD, b1.IS_YXFX, b1.IS_FJHTC, b1.XQLB, b1.JHSYRQ, 
+        b1.SJBJH, b1.SJBJMC, b1.FJZCH, b1.XLH, b1.FXSJ, b1.FXXH, b1.XQYY, b1.GMJY, b1.SQRID, b1.SQSJ, b1.SQBMID, b1.JHBMID, b1.JHRID, 
+        b1.JHSJ, b1.JHYJ
+         FROM b_h_028 b1
+         where 1=1
+          <if test="dprtcode != null and dprtcode != '' " >   
+             AND  b1.DPRTCODE  = #{dprtcode, jdbcType=VARCHAR}
+          </if>
+          <if test="keyword != null and keyword != ''">
+		     AND (lower(b1.bh) LIKE lower('%'||#{keyword}||'%')
+		     	 )              <!-- 左右匹配 查询关键字 -->
+		 </if>
+		 <if test="zt != null and zt != '' " >   
+             AND  b1.ZT  = #{zt, jdbcType=VARCHAR}
+        </if>
+		
+        <if test="fjzch != null and fjzch != '' and fjzch !='null' " >   
+             AND  FJZCH  = #{fjzch, jdbcType=VARCHAR}
+        </if>
+	    <if test=" fjzch =='null' " >   
+             AND  FJZCH  is null
+        </if>
+        <if test="fjzch != null and fjzch != '' and fjzch !='null' " >   
+          <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    		b1.fjzch = FJZCH
+	    		AND b1.dprtcode = DPRTCODE
+	    		AND zt = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userId!=null and paramsMap.userId != "" '>                       
+	    		 AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    		b1.fjzch= FJZCH
+	    		AND b1.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    	</when>
+	   	</choose>
+	   	</if>
+          AND exists 
+	    		( SELECT 1 from b_h_02801 b2 where 
+	    		b1.id = b2.mainid
+	    	
+	    		AND b2.xqbs in (1, 2)
+	    		)
+	order by b1.bh desc
+  </select>
+  
+  
+  <select id="queryAllList"  resultMap="BaseResultMap">
+   	SELECT  ID, DPRTCODE, WHBMID, WHRID, WHSJ, BH, ZT, JJCD, IS_YXFX, IS_FJHTC, XQLB, JHSYRQ, 
+		    SJBJH, SJBJMC, FJZCH, XLH, FXSJ, FXXH, XQYY, GMJY, SQRID, SQSJ, SQBMID, JHBMID, JHRID, 
+		    JHSJ, JHYJ, LYLX, LYID, LYBH, BS145
+         FROM b_h_024 
+	<include refid="BaseResulParam"></include>
+	order by jjcd desc,JHSYRQ asc,SQSJ desc
+  </select>
+  
+  <select id="queryAllClosePageList"  resultMap="BaseResultMap">
+   	SELECT  ID, DPRTCODE, WHBMID, WHRID, WHSJ, BH, ZT, JJCD, IS_YXFX, IS_FJHTC, XQLB, JHSYRQ, 
+		    SJBJH, SJBJMC, FJZCH, XLH, FXSJ, FXXH, XQYY, GMJY, SQRID, SQSJ, SQBMID, JHBMID, JHRID, 
+		    JHSJ, JHYJ, LYLX, LYID, LYBH, BS145
+         FROM b_h_024 
+	<include refid="BaseResulParam"></include>
+	order by bh desc
+  </select>
+ 
+  
+    <!-- 搜索参数 -->
+  <sql id="BaseResulParam">
+   		 WHERE 1=1  
+        <if test="keyword != null and keyword != ''">
+		     AND (lower(xqyy) LIKE lower('%'||#{keyword}||'%')
+		     OR   lower(bh)  LIKE lower('%'||#{keyword}||'%')
+		     	 )              <!-- 左右匹配 查询关键字 -->
+		</if>
+	    <if test="id != null and id != '' " >   
+             AND  ID  = #{id, jdbcType=VARCHAR}
+        </if>
+	    <if test="sqrid != null and sqrid != '' " >   
+             AND  SQRID  = #{sqrid, jdbcType=VARCHAR}
+        </if>
+	    <if test="jhrid != null and jhrid != '' " >   
+             AND  JHRID  = #{jhrid, jdbcType=VARCHAR}
+        </if>
+	    <if test="xqlb != null and xqlb != '' " >   
+             AND  XQLB  = #{xqlb, jdbcType=VARCHAR}
+        </if>
+	    <if test="zt != null and zt != '' " >   
+             AND  ZT  = #{zt, jdbcType=VARCHAR}
+        </if>
+	    <if test="fjzch != null and fjzch != '' and fjzch !='null' " >   
+             AND  FJZCH  = #{fjzch, jdbcType=VARCHAR}
+        </if>
+	    <if test=" fjzch =='null' " >   
+             AND  FJZCH  is null
+        </if>
+        
+	    <if test="dprtcode != null and dprtcode != '' " >   
+             AND  DPRTCODE  = #{dprtcode, jdbcType=VARCHAR}
+        </if>
+        <if test="paramsMap != null and paramsMap.zts != null and paramsMap.zts != ''">
+		  AND ZT IN (${paramsMap.zts})
+		</if>
+        <if test="paramsMap != null and paramsMap.isYxfx != null and paramsMap.isYxfx != ''">
+		    AND IS_YXFX IN
+     			 <foreach item="item" index="index" collection="paramsMap.isYxfx" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+        <if test="paramsMap != null and paramsMap.isFjhtc != null and paramsMap.isFjhtc != ''">
+		    AND IS_FJHTC IN
+     			 <foreach item="item" index="index" collection="paramsMap.isFjhtc" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+        <if test="paramsMap != null and paramsMap.jhsyrqBeginDate != null and paramsMap.jhsyrqBeginDate != ''">
+		     AND JHSYRQ &gt;= TO_DATE(#{paramsMap.jhsyrqBeginDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+        <if test="paramsMap != null and paramsMap.jhsyrqEndDate != null and paramsMap.jhsyrqEndDate != ''">
+		     AND JHSYRQ &lt;= TO_DATE(#{paramsMap.jhsyrqEndDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+        <if test="paramsMap != null and paramsMap.sqsjBeginDate != null and paramsMap.sqsjBeginDate != ''">
+		     AND SQSJ &gt;= TO_DATE(#{paramsMap.sqsjBeginDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+        <if test="paramsMap != null and paramsMap.sqsjEndDate != null and paramsMap.sqsjEndDate != ''">
+		     AND SQSJ &lt;= TO_DATE(#{paramsMap.sqsjEndDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+		<if test="fjzch != null and fjzch != '' and fjzch !='null' " >   
+            <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    		b_h_024.fjzch = FJZCH
+	    		AND b_h_024.dprtcode = DPRTCODE
+	    		AND zt = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userId!=null and paramsMap.userId != "" '>                       
+	    		 AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    		b_h_024.fjzch= FJZCH
+	    		AND b_h_024.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    	</when>
+	   	</choose>
+        </if>
+       
+  </sql>
+  
+  <!-- 查询需求提报详情 -->
+  <select id="queryDetail" resultMap="DetailResultMap" parameterType="java.lang.String" >
+     select 
+      b1.id, b1.dprtcode, b1.whbmid, b1.whrid, b1.whsj, b1.bh, b1.zt, b1.jjcd, b1.is_yxfx,
+        b1.is_fjhtc, b1.xqlb, b1.jhsyrq, b1.sjbjh, b1.sjbjmc, b1.fjzch, b1.xlh, b1.fxsj,
+        b1.fxxh, b1.xqyy, b1.gmjy, b1.sqrid, b1.sqsj, b1.sqbmid, b1.jhbmid, b1.jhrid,
+        b1.jhsj, b1.jhyj, b1.lylx, b1.lyid, b1.lybh, b1.bs145,
+        b2.id as detail_id, b2.mainid as detail_mainid, b2.wllb as detail_wllb, b2.bjid as detail_bjid, 
+        b2.bjh as detail_bjh, b2.zjh as detail_zjh, b2.xqsl as detail_xqsl, 
+        b2.xlh as detail_xlh, b2.thj as detail_thj, b2.xqbs as detail_xqbs, 
+        b2.tbbs as detail_tbbs,
+        case when d2.id is not null then d2.xingh else b2.xingh end as detail_xingh,
+        case when d2.id is not null then d2.gg else b2.gg end as detail_gg,
+        case when d2.id is not null then d2.bzjh else b2.bzjh end as detail_bzjh,
+        case when d2.id is not null then d2.jhly else b2.jhly end as detail_jhly,
+        case when d2.id is not null then d2.jldw else b2.dw end as detail_dw,
+        case when d2.id is not null then d2.ywms || ' ' || d2.zwms else b2.bjmc end as detail_bjmc,
+        sqr.id as sqrid, sqr.username as sqrusername, sqr.realname as sqrrealname,
+        jhr.id as jhrid, jhr.username as jhrusername, jhr.realname as jhrrealname,
+        case when d1.zjh is not null then d1.zjh ||' '|| d1.ywms else null end as detail_zjhms ,
+        bh02801.bzzt,bh02801.bzbz
+    from B_H_024 b1 
+    left join b_h_02401 b2 on b1.id = b2.mainid
+    left join d_005 d1 on b2.zjh = d1.zjh and b1.dprtcode = d1.dprtcode
+    left join t_user sqr on b1.sqrid = sqr.id
+    left join t_user jhr on b1.jhrid = jhr.id
+    left join d_008 d2 on b2.bjh = d2.bjh and b1.dprtcode = d2.dprtcode and d2.zt = 1
+    left join b_h_02801 bh02801 on bh02801.id=b2.id
+    where b1.ID = #{id,jdbcType=VARCHAR}
+    order by b2.wllb, b2.bjh
+  </select>
+  
+  <!-- 查询当前人的需求提报列表 -->
+  <select id="querySelfList" resultMap="DetailResultMap" parameterType="com.eray.thjw.material2.po.Demand" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_024
+    where sqrid = #{sqrid,jdbcType=VARCHAR} and zt in (1, 2, 4, 6)
+    <if test="xqlb != null and xqlb != ''">
+        AND  XQLB = #{xqlb,jdbcType=VARCHAR}
+    </if>
+    <if test="fjzch != null and fjzch != '' and fjzch != 'N/A'">
+        AND  FJZCH = #{fjzch,jdbcType=VARCHAR}
+    </if>
+    <if test="fjzch != null and fjzch != '' and fjzch == 'N/A'">
+        AND  FJZCH IS NULL
+    </if>
+    <!-- 关键字-->
+    <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+     	AND  (lower(bh) LIKE lower('%'||#{paramsMap.keyword,jdbcType=VARCHAR}||'%') OR
+     		  lower(xqyy) LIKE lower('%'||#{paramsMap.keyword,jdbcType=VARCHAR}||'%')
+       	)
+    </if>
+    order by bh
+  </select>
+  
+  <select id="getCurrentZt4Validation" parameterType="String" resultType="int">
+	select zt from b_h_024 where id=#{id, jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 需求提报更新数据 -->
+  <update id="updateByDemandApply" parameterType="com.eray.thjw.material2.po.Demand" >
+    update B_H_024
+    <set >
+      <if test="whbmid != null" >
+        WHBMID = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bh != null" >
+        BH = #{bh,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="jjcd != null" >
+        JJCD = #{jjcd,jdbcType=DECIMAL},
+      </if>
+      <if test="isYxfx != null" >
+        IS_YXFX = #{isYxfx,jdbcType=DECIMAL},
+      </if>
+      <if test="isFjhtc != null" >
+        IS_FJHTC = #{isFjhtc,jdbcType=DECIMAL},
+      </if>
+      <if test="xqlb != null" >
+        XQLB = #{xqlb,jdbcType=VARCHAR},
+      </if>
+      JHSYRQ = #{jhsyrq,jdbcType=TIMESTAMP},
+      <if test="sjbjh != null" >
+        SJBJH = #{sjbjh,jdbcType=VARCHAR},
+      </if>
+      <if test="sjbjmc != null" >
+        SJBJMC = #{sjbjmc,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+        FXSJ = #{fxsj,jdbcType=DECIMAL},
+        FXXH = #{fxxh,jdbcType=DECIMAL},
+      <if test="xqyy != null" >
+        XQYY = #{xqyy,jdbcType=VARCHAR},
+      </if>
+      <if test="gmjy != null" >
+        GMJY = #{gmjy,jdbcType=VARCHAR},
+      </if>
+      <if test="sqrid != null" >
+        SQRID = #{sqrid,jdbcType=VARCHAR},
+      </if>
+      <if test="sqsj != null" >
+        SQSJ = #{sqsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sqbmid != null" >
+        SQBMID = #{sqbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhbmid != null" >
+        JHBMID = #{jhbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhrid != null" >
+        JHRID = #{jhrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jhsj != null" >
+        JHSJ = #{jhsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jhyj != null" >
+        JHYJ = #{jhyj,jdbcType=VARCHAR},
+      </if>
+      <if test="lylx != null" >
+        LYLX = #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lyid != null" >
+        LYID = #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        LYBH = #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="bs145 != null" >
+        BS145 = #{bs145,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询航材工具需求来源 -->
+  <select id="queryMaterailToolSource" parameterType="com.eray.thjw.material2.po.Demand" 
+		resultType="com.eray.thjw.material2.po.Demand">
+	SELECT T1.LYID, 
+	       T1.LYBH, 
+	       T1.FJZCH, 
+	       T1.LYLX, 
+	       T1.BS145
+	  FROM B_G2_997 S2997_2
+	  JOIN (SELECT 
+	           S2014.ID       LYID, 
+		       S2014.GDBH     LYBH,
+	           S2014.ID       GDID, 
+		       S2014.FJZCH    FJZCH,
+		       S2014.DPRTCODE,
+		       2              LYLX, 
+		       1              BS145
+		  FROM B_S2_014 S2014
+		  WHERE S2014.ZT IN (2, 7)
+		  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		 	  AND S2014.ID IN
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item,jdbcType=VARCHAR}  
+     			 </foreach>  
+	      </if>
+	      UNION ALL
+	        SELECT 
+	           S2010.ID       LYID, 
+		       S2010.GBBH     LYBH,
+	           S2014.ID       GDID, 
+		       S2014.FJZCH    FJZCH,
+		       S2014.DPRTCODE,
+		       1              LYLX, 
+		       1              BS145
+		  FROM B_S2_014 S2014
+		    LEFT JOIN B_S2_010 S2010
+		   ON S2014.GBID = S2010.ID
+		  WHERE S2010.ZT IN (2, 7)
+		  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		 	  AND S2010.ID IN
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item,jdbcType=VARCHAR}  
+     			 </foreach>  
+	      </if>
+	        UNION ALL
+	        SELECT S2008.ID     LYID,
+	               S2008.GDBH   LYBH,
+	               S2008.ID     GDID,
+	               S2008.FJZCH  FJZCH,
+	               S2008.DPRTCODE,
+	               2            LYLX, 
+	               0            BS145
+	          FROM B_S2_008 S2008
+	          WHERE S2008.ZT IN (2, 7)
+	          <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+			 	 AND S2008.ID IN
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item,jdbcType=VARCHAR}  
+     			 </foreach>  
+		      </if>
+		    UNION ALL
+	        SELECT S2007.ID     LYID,
+	               S2007.GBBH   LYBH,
+	               S2008.ID     GDID,
+	               S2008.FJZCH  FJZCH,
+	               S2008.DPRTCODE,
+	               1            LYLX, 
+	               0            BS145
+	          FROM B_S2_008 S2008
+	            LEFT JOIN B_S2_007 S2007
+	           ON S2008.GBID = S2007.ID
+	          WHERE S2007.ZT IN (2, 7)
+	          <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+			 	 AND S2007.ID IN
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item,jdbcType=VARCHAR}  
+     			 </foreach>  
+		      </if>
+	       ) T1
+	    ON S2997_2.YWID = T1.GDID
+	   AND S2997_2.ZT = 1
+	 WHERE S2997_2.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	   AND S2997_2.JH = #{paramsMap.bjh,jdbcType=VARCHAR}  
+	   <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND (EXISTS 
+	    		( SELECT 1 FROM D_007 WHERE 
+	    			T1.FJZCH = D_007.FJZCH
+	    		AND T1.DPRTCODE = D_007.DPRTCODE
+	    		AND D_007.ZT = 1
+	    		)
+	    		OR T1.FJZCH=''
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+	    		 AND (EXISTS 
+	    		( SELECT 1 FROM V_ROLE_JX WHERE 
+	    			T1.FJZCH = FJZCH
+	    		AND T1.DPRTCODE = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    		OR T1.FJZCH=''
+	    		)
+	    	</when>
+	  </choose>
+  </select>
+	
+</mapper>

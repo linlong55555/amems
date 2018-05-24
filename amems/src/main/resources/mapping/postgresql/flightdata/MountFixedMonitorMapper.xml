@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.MountFixedMonitorMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.flightdata.po.MountFixedMonitor" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="BJLX" property="bjlx" jdbcType="DECIMAL" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="XLH" property="xlh" jdbcType="VARCHAR" />
+    <result column="DJBH" property="djbh" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="TBBS" property="tbbs" jdbcType="DECIMAL" />
+    <result column="BB" property="bb" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="DetailMap" type="com.eray.thjw.flightdata.po.MountFixedMonitor"  extends="BaseResultMap">  
+       <collection property="monitorItemList" ofType="com.eray.thjw.flightdata.po.MountMonitorItem">  
+            <id column="B2ID" property="id" jdbcType="VARCHAR" />
+		    <result column="B2MAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="B2FJZCH" property="fjzch" jdbcType="VARCHAR" />
+		    <result column="B2JH" property="jh" jdbcType="VARCHAR" />
+		    <result column="B2XLH" property="xlh" jdbcType="VARCHAR" />
+		    <result column="B2DJBH" property="djbh" jdbcType="VARCHAR" />
+		    <result column="B2ZWMS" property="zwms" jdbcType="VARCHAR" />
+		    <result column="JKFLBH" property="jkflbh" jdbcType="VARCHAR" />
+		    <result column="JKLBH" property="jklbh" jdbcType="VARCHAR" />
+		    <result column="JK_SZ" property="jkSz" jdbcType="VARCHAR" />
+		    <result column="JK_DW" property="jkDw" jdbcType="DECIMAL" />
+		    <result column="BJYY" property="bjyy" jdbcType="VARCHAR" />
+		    <result column="BJYY_DW" property="bjyyDw" jdbcType="DECIMAL" />
+		    <result column="ZJHYY" property="zjhyy" jdbcType="VARCHAR" />
+		    <result column="ZJHYY_DW" property="zjhyyDw" jdbcType="DECIMAL" />
+		    <result column="ZQZ" property="zqz" jdbcType="DECIMAL" />
+       </collection>  
+   </resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, MAINID, FJZCH, BJLX, JH, XLH, DJBH, ZWMS, ZT, WHDWID, WHRID, WHSJ, DPRTCODE, 
+    TBBS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_00602010103
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_00602010103
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.flightdata.po.MountFixedMonitor" >
+    insert into B_S_00602010103 (ID, MAINID, FJZCH, 
+      BJLX, JH, XLH, DJBH, 
+      ZWMS, ZT, WHDWID, WHRID, 
+      WHSJ, DPRTCODE, TBBS
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, 
+      #{bjlx,jdbcType=DECIMAL}, #{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{djbh,jdbcType=VARCHAR}, 
+      #{zwms,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR}, #{tbbs,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.flightdata.po.MountFixedMonitor" >
+    insert into B_S_00602010103
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="bjlx != null" >
+        BJLX,
+      </if>
+      <if test="jh != null" >
+        JH,
+      </if>
+      <if test="xlh != null" >
+        XLH,
+      </if>
+      <if test="djbh != null" >
+        DJBH,
+      </if>
+      <if test="zwms != null" >
+        ZWMS,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="tbbs != null" >
+        TBBS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bjlx != null" >
+        #{bjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null" >
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null" >
+        #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null" >
+        #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="tbbs != null" >
+        #{tbbs,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.flightdata.po.MountFixedMonitor" >
+    update B_S_00602010103
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="bjlx != null" >
+        BJLX = #{bjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null" >
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="djbh != null" >
+        DJBH = #{djbh,jdbcType=VARCHAR},
+      </if>
+      <if test="zwms != null" >
+        ZWMS = #{zwms,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="tbbs != null" >
+        TBBS = #{tbbs,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.flightdata.po.MountFixedMonitor" >
+    update B_S_00602010103
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      BJLX = #{bjlx,jdbcType=DECIMAL},
+      JH = #{jh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      DJBH = #{djbh,jdbcType=VARCHAR},
+      ZWMS = #{zwms,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      TBBS = #{tbbs,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+    <!-- 插入或更新 -->
+    <insert id="save" parameterType="com.eray.thjw.flightdata.po.MountFixedMonitor" >
+		  select fn_b_s_00602010103_save(#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, 
+					      #{bjlx,jdbcType=DECIMAL}, #{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{djbh,jdbcType=VARCHAR}, #{wxfabh,jdbcType=VARCHAR}, 
+					      #{zwms,jdbcType=VARCHAR}, #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+					      #{whsj,jdbcType=TIMESTAMP}, #{dprtcode,jdbcType=VARCHAR}, #{tbbs,jdbcType=DECIMAL})
+    </insert>
+    
+    
+    <!-- 根据飞行记录单查询 -->
+    <select id="findByMainid" resultMap="DetailMap" parameterType="java.lang.String" >
+    	 WITH 
+        NEWESTDJXH AS
+        (
+          SELECT * FROM (
+            SELECT B_G_012.WXFABH,B_G_012.DJBH,B_G_012.ID,B_G_012.ZWMS,B_G_012.BZ,B_G_012.BB,B_G_012.DPRTCODE,MAX(BB) OVER (PARTITION BY WXFABH, DJBH, DPRTCODE) MAXBB 
+            FROM B_G_012 WHERE ZT = 3
+            AND YXX = 1
+          )A WHERE A.BB = A.MAXBB 
+        )
+        
+	    SELECT 
+	    B1.ID, B1.MAINID, B1.FJZCH, B1.BJLX, B1.JH, B1.XLH, B1.DJBH, B1.ZWMS, B1.ZT, B1.WHDWID, B1.WHRID, B1.WHSJ, B1.DPRTCODE, B1.TBBS,
+	    B2.ID AS B2ID, B2.MAINID AS B2MAINID, B2.FJZCH AS B2FJZCH, B2.JH AS B2JH, B2.XLH AS B2XLH, B2.DJBH AS B2DJBH, 
+	    B2.ZWMS AS B2ZWMS, B2.JKFLBH, B2.JKLBH, B2.JK_SZ, B2.JK_DW, B2.BJYY, B2.BJYY_DW, B2.ZJHYY, B2.ZJHYY_DW,
+	    B3.BB, B4.ZQZ
+	    FROM B_S_00602010103 B1
+	    INNER JOIN NEWESTDJXH B3 ON B1.DJBH = B3.DJBH AND B1.WXFABH = B3.WXFABH AND B1.DPRTCODE = B3.DPRTCODE
+        INNER JOIN B_G_01201 B4 ON B3.ID = B4.DJXMID AND B4.ZT = 1
+	    INNER JOIN B_S_0060201010301 B2 ON B2.MAINID = B1.ID AND B2.JKLBH = B4.JKLBH AND B2.ZT = 1
+	    WHERE B1.MAINID = #{mainid,jdbcType=VARCHAR}
+	      AND B1.ZT = 1
+  	</select>
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.OtherBorrowApplyMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.BorrowApply">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="SQDH" jdbcType="VARCHAR" property="sqdh" />
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+    <result column="JDDXID" jdbcType="VARCHAR" property="jddxid" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="SQDWID" jdbcType="VARCHAR" property="sqdwid" />
+    <result column="SQRID" jdbcType="VARCHAR" property="sqrid" />
+    <result column="SQSJ" jdbcType="TIMESTAMP" property="sqsj" />
+    <result column="zdjsrid" jdbcType="VARCHAR" property="zdjsrid" />
+    <result column="zdjsrq" jdbcType="TIMESTAMP" property="zdjsrq" />
+    <result column="zdjsyy" jdbcType="VARCHAR" property="zdjsyy" />
+    <result column="zdbmid" jdbcType="VARCHAR" property="zdbmid" />
+    <result column="zdrid" jdbcType="VARCHAR" property="zdrid" />
+    <result column="zdsj" jdbcType="TIMESTAMP" property="zdsj" />
+    <result column="DPRTNAME" jdbcType="VARCHAR" property="paramsMap.dprtname" />
+    
+  </resultMap>
+  <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.BorrowApply">
+    <association property="secondment" javaType="com.eray.thjw.aerialmaterial.po.Secondment">
+	    <result column="JDDXLX" jdbcType="VARCHAR" property="jddxlx" />
+	    <result column="JDDXMS" jdbcType="VARCHAR" property="jddxms" />
+    </association>
+    <association property="sqrUser" javaType="com.eray.thjw.po.User">
+	    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+	    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+    </association>
+  </resultMap>
+  
+    <select id="queryAllPageListjie" resultMap="BaseResultMap">
+	  
+	 select  t1.id,t1.zt,t1.dprtcode,t1.sqdh,t1.zdjsyy,d.DPRTNAME,
+	       (t4.username || ' ' || t4.realname)
+	         sqr,
+	       to_char(t1.sqsj, 'yyyy-mm-dd hh24:mi:ss') sqsj,
+	       t1.fjzch,t2.jddxlx,t2.jddxms,t1.bz,(select t_user.username || ' ' || t_user.realname   from t_user
+	         where t_user.id = t1.zdrid) zdrs,
+	       to_char(t1.zdsj, 'yyyy-mm-dd hh24:mi:ss') zdsj
+	  from b_h_018 t1 left join b_h_014 t2 on t1.jddxid=t2.id left join t_user t4 on t1.sqrid=t4.id
+	  	   left join T_DEPARTMENT d on t1.dprtcode = d.id
+	 
+		 <include refid="FlightRecordParam1"></include>
+  		<choose>
+	    	<when test='pagination.sort == "auto"'>
+	    		 order by t1.sqdh desc,t2.jddxbh
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+	 	</choose>
+	</select>
+ 
+ 	  		<!-- 搜索参数 -->
+	<sql id="FlightRecordParam1">
+	   where 1=1  and t1.zt not in (1,8,9) 
+	    <if test="sqr != null and sqr != ''">
+             and (t4.username like '%'||#{sqr}||'%'
+             or  t4.realname like '%'||#{sqr}||'%'
+		     )   
+         </if>
+	    <if test="jddxlx != null and jddxlx != ''">
+             and t2.jddxlx = #{jddxlx}
+         </if>
+           <if test="jddxbh != null and jddxbh != ''">
+             and t2.jddxbh = #{jddxbh}
+         </if>
+	    <if test="fjzch != null and fjzch != ''">
+             and t1.fjzch = #{fjzch}
+         </if>
+           <if test="fxDateBegin != null and fxDateBegin != ''">
+		    and t1.sqsj &gt;=to_date(#{fxDateBegin}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="fxDateEnd != null and fxDateEnd != ''">
+		    and t1.sqsj &lt;=to_date(#{fxDateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="userCode != null and userCode != ''">
+             and t1.dprtcode &lt;&gt;  #{userCode}
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.sqdh like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+		     <if test="id != null and id != '' " >   
+            and  t1.id  = #{id,jdbcType=VARCHAR}
+           </if>
+	</sql>
+ 	 
+  
+  <sql id="Alias_Column_List">
+    T.ID, T.DPRTCODE, T.SQDH, T.FJZCH, T.JDDXID, T.BZ, T.ZT, T.SQDWID, T.SQRID,  to_char(T.SQSJ,'yyyy-mm-dd hh24:mi:ss') SQSJ
+  </sql>
+  <select id="selectById" parameterType="java.lang.String" resultMap="ResultMap">
+    select 
+		<include refid="Alias_Column_List" />,
+		T1.jddxlx,
+		T1.jddxms,
+		T1.dprtCode,
+		T2.username,
+		T2.realname
+		from B_H_018 T
+		left join B_H_014 T1 on T.JDDXID = T1.ID
+		left join T_USER T2 on T.SQRID = T2.ID
+    where T.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+	
+</mapper>

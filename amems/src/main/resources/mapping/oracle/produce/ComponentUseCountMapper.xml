@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.produce.dao.ComponentUseCountMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.produce.po.ComponentUseCount">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DPRTCODE" jdbcType="VARCHAR" property="dprtcode" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="JH" jdbcType="VARCHAR" property="jh" />
+    <result column="XLH" jdbcType="VARCHAR" property="xlh" />
+    <result column="FJZCH" jdbcType="VARCHAR" property="fjzch" />
+    <result column="ZJQDID" jdbcType="VARCHAR" property="zjqdid" />
+    <result column="JKLBH" jdbcType="VARCHAR" property="jklbh" />
+    <result column="JKFLBH" jdbcType="VARCHAR" property="jkflbh" />
+    <result column="SJ_FZ" jdbcType="DECIMAL" property="sjFz" />
+    <result column="CSZ" jdbcType="DECIMAL" property="csz" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DPRTCODE, WHSJ, JH, XLH, FJZCH, ZJQDID, JKLBH, JKFLBH, SJ_FZ, CSZ
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_S2_913
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_S2_913
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByZjqdid" parameterType="java.lang.String">
+    delete from B_S2_913
+    where ZJQDID = #{zjqdid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.produce.po.ComponentUseCount">
+    insert into B_S2_913 (ID, DPRTCODE, WHSJ, 
+      JH, XLH, FJZCH, ZJQDID, 
+      JKLBH, JKFLBH, SJ_FZ, 
+      CSZ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}, 
+      #{jh,jdbcType=VARCHAR}, #{xlh,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{zjqdid,jdbcType=VARCHAR}, 
+      #{jklbh,jdbcType=VARCHAR}, #{jkflbh,jdbcType=VARCHAR}, #{sjFz,jdbcType=DECIMAL}, 
+      #{csz,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.produce.po.ComponentUseCount">
+    insert into B_S2_913
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="dprtcode != null">
+        DPRTCODE,
+      </if>
+      <if test="whsj != null">
+        WHSJ,
+      </if>
+      <if test="jh != null">
+        JH,
+      </if>
+      <if test="xlh != null">
+        XLH,
+      </if>
+      <if test="fjzch != null">
+        FJZCH,
+      </if>
+      <if test="zjqdid != null">
+        ZJQDID,
+      </if>
+      <if test="jklbh != null">
+        JKLBH,
+      </if>
+      <if test="jkflbh != null">
+        JKFLBH,
+      </if>
+      <if test="sjFz != null">
+        SJ_FZ,
+      </if>
+      <if test="csz != null">
+        CSZ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null">
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jh != null">
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null">
+        #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null">
+        #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null">
+        #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null">
+        #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="sjFz != null">
+        #{sjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="csz != null">
+        #{csz,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.produce.po.ComponentUseCount">
+    update B_S2_913
+    <set>
+      <if test="dprtcode != null">
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jh != null">
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="xlh != null">
+        XLH = #{xlh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        FJZCH = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="zjqdid != null">
+        ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      </if>
+      <if test="jklbh != null">
+        JKLBH = #{jklbh,jdbcType=VARCHAR},
+      </if>
+      <if test="jkflbh != null">
+        JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      </if>
+      <if test="sjFz != null">
+        SJ_FZ = #{sjFz,jdbcType=DECIMAL},
+      </if>
+      <if test="csz != null">
+        CSZ = #{csz,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.produce.po.ComponentUseCount">
+    update B_S2_913
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      JH = #{jh,jdbcType=VARCHAR},
+      XLH = #{xlh,jdbcType=VARCHAR},
+      FJZCH = #{fjzch,jdbcType=VARCHAR},
+      ZJQDID = #{zjqdid,jdbcType=VARCHAR},
+      JKLBH = #{jklbh,jdbcType=VARCHAR},
+      JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+      SJ_FZ = #{sjFz,jdbcType=DECIMAL},
+      CSZ = #{csz,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 批量新增 -->
+  <insert id="insert4Batch" parameterType="java.util.List">
+  	insert into B_S2_913 (ID, DPRTCODE, WHSJ, 
+      JH, XLH, FJZCH, ZJQDID, 
+      JKLBH, JKFLBH, SJ_FZ, 
+      CSZ)
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+	    select #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, sysdate, 
+	      #{item.jh,jdbcType=VARCHAR}, #{item.xlh,jdbcType=VARCHAR}, #{item.fjzch,jdbcType=VARCHAR}, #{item.zjqdid,jdbcType=VARCHAR}, 
+	      #{item.jklbh,jdbcType=VARCHAR}, #{item.jkflbh,jdbcType=VARCHAR}, #{item.sjFz,jdbcType=DECIMAL}, 
+	      #{item.csz,jdbcType=DECIMAL}
+	  	from dual
+    </foreach>
+  </insert>
+  
+  <!-- 批量修改 -->
+  <update id="update4Batch" parameterType="java.util.List">
+  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+        update B_S2_913
+		    set WHSJ = sysdate,
+		      JH = #{item.jh,jdbcType=VARCHAR},
+		      XLH = #{item.xlh,jdbcType=VARCHAR},
+		      FJZCH = #{item.fjzch,jdbcType=VARCHAR},
+		      SJ_FZ = #{item.sjFz,jdbcType=DECIMAL},
+		      CSZ = #{item.csz,jdbcType=DECIMAL}
+		    where JKLBH = #{item.jklbh,jdbcType=VARCHAR} and ZJQDID = #{item.zjqdid,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+  
+   <!-- 批量修改累计值(实际值) -->
+  <update id="updateSJ4Batch" parameterType="java.util.List">
+  	<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+        update B_S2_913
+		    set WHSJ = sysdate,
+		      SJ_FZ = #{item.sjFz,jdbcType=DECIMAL}
+		    where JKLBH = #{item.jklbh,jdbcType=VARCHAR} and ZJQDID = #{item.zjqdid,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+  
+</mapper>

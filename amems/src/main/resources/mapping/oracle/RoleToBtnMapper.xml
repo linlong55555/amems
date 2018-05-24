@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.dao.RoleToBtnMapper">
+     
+	<resultMap id="roleToBtnMap" type="com.eray.thjw.po.RoleToBtn">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+		<result column="BUTTON_ID" property="buttonId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="roleToBtnColumn">
+		ID,ROLE_ID,BUTTON_ID
+	</sql>
+	
+	<!-- 搜索参数 -->
+	<sql id="roleToBtnParam">
+	   where 1=1
+	     <!--id-->
+	     <if test="roleId != null and roleId != ''">
+             and ROLE_ID = #{roleId}
+         </if>
+         <if test="buttonId != null and buttonId != ''">
+             and BUTTON_ID = #{buttonId}
+         </if>
+	</sql>
+
+	 <select id="queryCount" parameterType="com.eray.thjw.po.RoleToBtn" resultType="int">
+		select count(*) FROM T_ROLE2Btn <include refid="roleToBtnParam"></include>
+ 	 </select>
+	
+	<!-- 添加角色信息 -->
+	<insert id="save"  parameterType="com.eray.thjw.po.RoleToBtn" >
+		insert into   
+		T_ROLE2Btn
+		(<include refid="roleToBtnColumn"></include>)
+		 values
+		 (#{id},#{roleId},#{buttonId})
+	</insert>
+	
+	<!-- 删除角色信息 -->
+	<delete id="delete" parameterType="com.eray.thjw.po.RoleToBtn" >
+		delete from T_ROLE2Btn
+		<include refid="roleToBtnParam"></include>
+	</delete>
+	
+	<select id="selectByRole" resultMap="roleToBtnMap">
+		select ID,ROLE_ID,BUTTON_ID FROM T_ROLE2Btn where ROLE_ID = #{roleId}
+ 	</select>
+ 	
+ 	<delete id="deleteRoleBtns">
+		delete from T_ROLE2Btn 
+		where ROLE_ID = #{roleId}
+			and BUTTON_ID in 
+			<foreach item="idItem" collection="btnIds" open="(" separator="," close=")">
+				#{idItem}
+			</foreach>
+	</delete> 
+ 	
+	<insert id="insertRoleBtn">
+		insert into   
+		T_ROLE2Btn
+		(<include refid="roleToBtnColumn"></include>)
+		 values
+        ( #{0}, #{1},#{2})  
+	</insert>
+	
+</mapper>

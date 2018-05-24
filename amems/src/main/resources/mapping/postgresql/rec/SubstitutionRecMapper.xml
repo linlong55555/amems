@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.flightdata.dao.SubstitutionRecMapper" >
+   
+  <!--等效替代列表 开始 -->
+  <select id="queryList4D_017" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+    	 SELECT 
+		       B.ID AS "ID",
+		       B.BJH AS "BJH",
+		       B.MS AS "MS",
+		       B.TDJH AS "TDJH",
+		       B.TDJMS AS "TDJMS",
+		       B.JXBS AS "JXBS",
+		       B.GKBS AS "GKBS",
+		       B.KNXBS AS "KNXBS",
+		       B.ZT AS "ZT",
+		       B.DPRTCODE AS "DPRTCODE",
+		       B.WHBMID AS "WHBMID",
+		       B.WHRID AS "WHRID",
+		       B.WHSJ AS "WHSJ",
+		       B.REC_XGLX AS "REC_XGLX",
+		       B.REC_CZRID AS "REC_CZRID",
+		       B.REC_CZSJ AS "REC_CZSJ",
+		       B.REC_IP AS "REC_IP",
+		       B.REC_CZSM AS "REC_CZSM",
+		       B.REC_CZLS AS "REC_CZLS",
+		       B.REC_ZBID AS "REC_ZBID"      
+		        ,WHR.USERNAME||' '||WHR.REALNAME AS "REC_CZR_NAME"
+		        , (
+		       F_GETREC_HD(B.REC_CZSM)
+		        ) AS "REC_HD"
+		        FROM D_017_REC B 
+		        LEFT JOIN T_USER WHR ON WHR.ID = B.REC_CZRID
+		        WHERE 1=1
+	       		 <if test='paramsMap.REC_CZLS !=null and paramsMap.REC_CZLS!=""'>
+		        	and B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.ID !=null and paramsMap.ID!=""'>
+		        	and B.ID = #{paramsMap.ID,jdbcType=VARCHAR}
+		         </if>
+		         <if test='paramsMap.DPRTCODE !=null and paramsMap.DPRTCODE!=""'>
+			        and B.DPRTCODE = #{paramsMap.DPRTCODE,jdbcType=VARCHAR}
+			      </if>
+			      <if test='paramsMap.KEYWORD !=null and paramsMap.KEYWORD!=""'>
+			        and (B.BJH like '%'||#{paramsMap.KEYWORD,jdbcType=VARCHAR}||'%')
+			      </if>
+		         order by B.REC_CZSJ DESC
+	   
+  </select>
+  
+  <select id="queryDiff4D_017" resultType="map" parameterType="com.eray.thjw.po.BaseEntity">
+	   SELECT * FROM (
+	   		   SELECT ROW_NUMBER() OVER(ORDER BY B.REC_CZSJ DESC) AS "RNO",
+               
+               B.ID AS "ID",
+      		   B.BJH AS "BJH",
+		       B.MS AS "MS",
+		       B.TDJH AS "TDJH",
+		       B.TDJMS AS "TDJMS",
+		       B.JXBS AS "JXBS",
+		       B.GKBS AS "GKBS",
+		       B.KNXBS AS "KNXBS",
+		       B.ZT AS "ZT",
+		       B.DPRTCODE AS "DPRTCODE",
+       B.WHBMID AS "WHBMID",
+       B.WHRID AS "WHRID",
+       B.WHSJ AS "WHSJ",
+       B.REC_XGLX AS "REC_XGLX",
+       B.REC_CZRID AS "REC_CZRID",
+       B.REC_CZSJ AS "REC_CZSJ",
+       B.REC_IP AS "REC_IP",
+       B.REC_CZSM AS "REC_CZSM",
+       B.REC_CZLS AS "REC_CZLS",
+       B.REC_ZBID AS "REC_ZBID", 
+               RECWHR.USERNAME||' '||RECWHR.REALNAME AS "REC_CZR_NAME", 
+               WHDW.DPRTNAME AS "NEW_WHBM",
+               WHR.USERNAME||' '||WHR.REALNAME AS "NEW_WHR",
+                (CASE 
+		         WHEN B.ZT = 0 THEN '无效'
+		         WHEN B.ZT = 1 THEN '有效'
+		         END) AS "NEW_ZT" ,
+                 (CASE 
+		         WHEN B.JXBS = '00000' THEN '通用'
+		         ELSE B.JXBS
+		         END) AS "NEW_JXBS" ,
+                (CASE 
+		         WHEN B.GKBS = '00000' THEN '通用'
+		         ELSE B.GKBS
+		         END) AS "NEW_GKBS" , 
+                (CASE 
+		         WHEN B.KNXBS = 1 THEN '否' 
+		         WHEN B.KNXBS = 2 THEN '是'
+		         END) AS "NEW_KNXBS" ,
+		         
+              	(F_GETREC_HD(B.REC_CZSM)) AS "REC_HD",
+               (CASE WHEN B.REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR} THEN 'CURRENT'
+               ELSE 'LAST'
+               END) AS "DATA_VERSION"
+               
+          FROM D_017_REC B 
+          LEFT JOIN T_USER RECWHR ON RECWHR.ID = B.REC_CZRID
+          LEFT JOIN T_USER WHR ON WHR.ID = B.WHRID
+          LEFT JOIN T_DEPARTMENT WHDW  ON WHDW.ID = B.WHBMID
+          WHERE B.ID = #{paramsMap.ID,jdbcType=VARCHAR} 
+          AND (select rec_czsj from D_017_REC
+                where REC_CZLS = #{paramsMap.REC_CZLS,jdbcType=VARCHAR}
+                   and ID = #{paramsMap.ID,jdbcType=VARCHAR})
+                   >= b.rec_czsj 
+       ) AS A WHERE 2 >="RNO"
+       
+  </select>
+  
+
+
+  
+</mapper>

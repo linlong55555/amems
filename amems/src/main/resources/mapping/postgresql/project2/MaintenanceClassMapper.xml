@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.MaintenanceClassMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.MaintenanceClass" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="DLBH" property="dlbh" jdbcType="VARCHAR" />
+    <result column="DLZWMS" property="dlzwms" jdbcType="VARCHAR" />
+    <result column="DLYWMS" property="dlywms" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, JX, DLBH, DLZWMS, DLYWMS, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+  
+  <sql id="Maintenance_Column_List" >
+    B.ID, B.DPRTCODE, B.JX, B.DLBH, B.DLZWMS, B.DLYWMS, B.ZT, B.WHDWID, B.WHRID, B.WHSJ
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_01101
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据飞机机型查询维修方案大类(弹窗) -->
+   <select id="queryWinByFjjx" resultMap="BaseResultMap"  parameterType="com.eray.thjw.project2.po.MaintenanceClass" >
+    select 
+    	<include refid="Maintenance_Column_List" />
+    from B_G2_01101 B
+    where B.ZT = 1
+         	<include refid="maintenance_class_Param"></include>
+          <!-- order by ID asc -->
+		  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='pagination.sort == "auto"'>                       
+		    		order by B.WHSJ DESC
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+			</choose>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_01101
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.MaintenanceClass" >
+    insert into B_G2_01101 (ID, DPRTCODE, JX, 
+      DLBH, DLZWMS, DLYWMS, 
+      ZT, WHDWID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{jx,jdbcType=VARCHAR}, 
+      #{dlbh,jdbcType=VARCHAR}, #{dlzwms,jdbcType=VARCHAR}, #{dlywms,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.MaintenanceClass" >
+    insert into B_G2_01101
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="dlbh != null" >
+        DLBH,
+      </if>
+      <if test="dlzwms != null" >
+        DLZWMS,
+      </if>
+      <if test="dlywms != null" >
+        DLYWMS,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="dlbh != null" >
+        #{dlbh,jdbcType=VARCHAR},
+      </if>
+      <if test="dlzwms != null" >
+        #{dlzwms,jdbcType=VARCHAR},
+      </if>
+      <if test="dlywms != null" >
+        #{dlywms,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.MaintenanceClass" >
+    update B_G2_01101
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="dlbh != null" >
+        DLBH = #{dlbh,jdbcType=VARCHAR},
+      </if>
+      <if test="dlzwms != null" >
+        DLZWMS = #{dlzwms,jdbcType=VARCHAR},
+      </if>
+      <if test="dlywms != null" >
+        DLYWMS = #{dlywms,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        WHSJ = #{whsj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.MaintenanceClass" >
+    update B_G2_01101
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      JX = #{jx,jdbcType=VARCHAR},
+      DLBH = #{dlbh,jdbcType=VARCHAR},
+      DLZWMS = #{dlzwms,jdbcType=VARCHAR},
+      DLYWMS = #{dlywms,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+    <!-- 搜索参数 -->
+	<sql id="maintenance_class_Param">
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	(B.JX) like ('%'||#{keyword}||'%')
+		    	or (B.DLBH) like ('%'||#{keyword}||'%')
+		    	or (B.DLZWMS) like ('%'||#{keyword}||'%')
+		    	or (B.DLYWMS) like ('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="dprtcode != null">
+		    and B.DPRTCODE = #{dprtcode}
+		</if>
+		<!--id-->
+		<if test="jx != null and jx != ''">
+			and B.JX = #{jx}
+		</if>
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B.ID = #{id}
+		</if>
+		<if test="paramsMap != null and paramsMap.codeList != null and paramsMap.codeList != ''">
+		    and B.ID not in
+     			 <foreach item="item" index="index" collection="paramsMap.codeList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+		
+	</sql>
+  
+</mapper>

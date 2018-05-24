@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.baseinfo.dao.ProjectMainAreaMapper">
+   <resultMap  id="baseResult" type="com.eray.thjw.baseinfo.po.ProjectMainArea">
+      <id column="ID" jdbcType="VARCHAR"  property="id"/>
+      <result column="MAINID" jdbcType="VARCHAR" property="mainid"/>
+      <result column="WHBMID" jdbcType="VARCHAR" property="whbmid"/>
+      <result column="WHRID" jdbcType="VARCHAR" property="whrid"/>
+      <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj"/>
+      <result column="ZT" jdbcType="INTEGER" property="zt"/>
+      <result column="WZ" jdbcType="INTEGER" property="wz"/>
+      <result column="JH" jdbcType="VARCHAR" property="jh"/>
+      <result column="XLH" jdbcType="VARCHAR" property="xlh"/>
+      <result column="XH" jdbcType="VARCHAR" property="xh"/>
+      <result column="JKLBH" jdbcType="VARCHAR" property="jklbh"/>
+      <result column="JKFLBH" jdbcType="VARCHAR" property="jkflbh"/>
+      <result column="SJZ" jdbcType="INTEGER" property="sjz"/>
+   </resultMap>
+   
+   <sql id="common_column_list">
+	     t.ID, t.MAINID, t.WHBMID, t.WHRID, to_char(t.WHSJ,'yyyy-mm-dd hh24:mi:ss') AS whsjstr, t.ZT, 
+	     t.WZ, t.JH, t.XLH, t.XH, t.JKLBH, t.JKFLBH, t.sjz 
+   </sql>
+   
+   <select id="getProjectMainArea" parameterType="com.eray.thjw.baseinfo.po.ProjectMainArea" resultMap="baseResult">
+       SELECT <include refid="common_column_list"></include>
+       FROM D_02001 t
+       WHERE t.ZT = 1 
+       <if test="mainid != null and mainid !=''">
+          AND MAINID = #{mainid}
+       </if>
+       <if test="id != null and id !=''">
+          AND ID = #{id}
+       </if>
+   </select>
+   
+   <insert id="addProjectMainArea" parameterType="com.eray.thjw.baseinfo.po.ProjectMainArea">
+      INSERT INTO D_02001(ID, MAINID, WHBMID, WHRID, WHSJ, ZT, WZ, JH, XLH, XH, JKLBH, JKFLBH, SJZ)
+      VALUES(#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR},
+             #{whsj,jdbcType=TIMESTAMP}, #{zt,jdbcType=INTEGER}, #{wz,jdbcType=INTEGER}, #{jh,jdbcType=VARCHAR},
+             #{xlh,jdbcType=VARCHAR}, #{xh,jdbcType=VARCHAR}, #{jklbh,jdbcType=VARCHAR}, #{jkflbh,jdbcType=VARCHAR},
+             #{sjz,jdbcType=VARCHAR})
+   </insert>
+     
+   <update id="updateProjectMainArea" parameterType="com.eray.thjw.baseinfo.po.ProjectMainArea">
+     UPDATE D_02001
+     <set>
+        <if test="mainid != null">
+           MAINID = #{mainid,jdbcType=VARCHAR},
+        </if>
+        <if test="mainid != null">
+           WHBMID = #{whbmid,jdbcType=VARCHAR},
+        </if>
+        <if test="whrid != null">
+           WHRID = #{whrid,jdbcType=VARCHAR},
+        </if>
+        <if test="whsj != null">
+           WHSJ = #{whsj,jdbcType=VARCHAR},
+        </if>
+        <if test="zt != null">
+           ZT = #{zt,jdbcType=VARCHAR},
+        </if>
+        <if test="wz != null">
+           WZ = #{wz,jdbcType=VARCHAR},
+        </if>
+        <if test="jh != null">
+           JH = #{jh,jdbcType=VARCHAR},
+        </if>
+        <if test="xlh != null">
+           XLH = #{xlh,jdbcType=VARCHAR},
+        </if>
+        <if test="xh != null">
+           XH = #{xh,jdbcType=VARCHAR},
+        </if>
+        <if test="jklbh != null">
+           JKLBH = #{jklbh,jdbcType=VARCHAR},
+        </if>
+        <if test="jkflbh != null">
+           JKFLBH = #{jkflbh,jdbcType=VARCHAR},
+        </if>
+        <if test="sjz != null">
+           SJZ = #{sjz,jdbcType=VARCHAR},
+        </if>
+     </set>
+     WHERE ID = #{id}
+   </update>
+   
+   <delete id="deleteProjectMainAreaByProjectId" parameterType="com.eray.thjw.baseinfo.po.ProjectMainArea">
+      DELETE FROM D_02001
+      WHERE MAINID = #{mainid}
+   </delete>
+   
+</mapper>

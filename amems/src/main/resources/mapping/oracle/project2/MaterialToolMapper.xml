@@ -1,0 +1,1973 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.MaterialToolMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.MaterialTool" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="YWLX" property="ywlx" jdbcType="DECIMAL" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="XC" property="xc" jdbcType="DECIMAL" />
+    <result column="BJLX" property="bjlx" jdbcType="DECIMAL" />
+    <result column="BJID" property="bjid" jdbcType="VARCHAR" />
+    <result column="JH" property="jh" jdbcType="VARCHAR" />
+    <result column="SL" property="sl" jdbcType="DECIMAL" />
+    <result column="HHXX" property="hhxx" jdbcType="VARCHAR" />
+    <result column="JHLY" property="jhly" jdbcType="VARCHAR" />
+    <result column="BXX" property="bxx" jdbcType="VARCHAR" />
+    <result column="QCDH" property="qcdh" jdbcType="VARCHAR" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="WHDWID" property="whdwid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    
+    <!-- 扩充字段 start -->
+    <result column="XQSL" property="paramsMap.xqsl" jdbcType="VARCHAR" /><!-- 需求数量-->
+    <result column="BJZWMS" property="paramsMap.bjzwms" jdbcType="VARCHAR" /><!-- 部件中文描述-->
+    <result column="BJYWMS" property="paramsMap.bjywms" jdbcType="VARCHAR" /><!-- 部件英文描述-->
+    <result column="JLDW" property="paramsMap.jldw" jdbcType="VARCHAR" /><!-- 计量单位-->
+    <result column="HCLX" property="paramsMap.hclx" jdbcType="DECIMAL" /><!-- 航材类型-->
+    <result column="BJHCLXEJ" property="paramsMap.hclxEj" jdbcType="DECIMAL" /><!-- 航材二级类型-->
+    <result column="XINGH" property="paramsMap.xh" jdbcType="VARCHAR" /><!-- 型号-->
+    <result column="KCSL" property="paramsMap.kcsl" jdbcType="VARCHAR" /><!-- 库存数量-->
+    <result column="DJSL" property="paramsMap.djsl" jdbcType="VARCHAR" /><!-- 冻结数量-->
+    <result column="TDJXX" property="paramsMap.tdjxx" jdbcType="VARCHAR" /><!-- 替代件信息-->
+    <result column="IS_WARNING" property="paramsMap.isWarning" jdbcType="DECIMAL" /><!-- 预警-->
+    
+    <result column="YWBH" property="paramsMap.ywbh" jdbcType="VARCHAR" /><!-- 业务编号 -->
+    <result column="LYLX" property="paramsMap.lylx" jdbcType="DECIMAL" /><!-- 来源类型（1维修项目、2EO、3NRC） -->
+    <result column="LYZLX" property="paramsMap.lyzlx" jdbcType="DECIMAL" /><!-- 来源子类型（1一般项目、2时控项目、3时寿项目、4定检包、NULL）只有来源类型=1的才有子类型，其他都为NULL -->
+    <result column="GKID" property="paramsMap.gkid" jdbcType="DECIMAL" /><!-- 工卡ID -->
+    <result column="GKBH" property="paramsMap.gkbh" jdbcType="DECIMAL" /><!-- 工卡编号 -->
+    
+    <!-- 扩充字段 end -->
+    
+  </resultMap>
+
+	<!-- 注意：在写对应关系时,id字段需要重命名 -->
+  	<resultMap type="com.eray.thjw.project2.po.MaterialTool" id="MaterialToolWithRel" extends="BaseResultMap">  
+      <association property="hcMainData" javaType="com.eray.thjw.aerialmaterial.po.HCMainData">
+         <id column="M_ID" property="id"/>
+	    <result column="M_BJH" property="bjh" jdbcType="VARCHAR" />
+	    <result column="M_ZWMS" property="zwms" jdbcType="VARCHAR" />
+	    <result column="M_YWMS" property="ywms" jdbcType="VARCHAR" />
+	    <result column="M_JLDW" property="jldw" jdbcType="VARCHAR" />
+	    <result column="M_CJJH" property="cjjh" jdbcType="VARCHAR" />
+	    <result column="M_ZJH" property="zjh" jdbcType="VARCHAR" />
+	    <result column="M_HCJZ" property="hcjz" jdbcType="DECIMAL" />
+	    <result column="M_GLJB" property="gljb" jdbcType="DECIMAL" />
+	    <result column="M_SXKZ" property="sxkz" jdbcType="DECIMAL" />
+	    <result column="M_HCLX" property="hclx" jdbcType="DECIMAL" />
+	    <result column="M_HCLX_EJ" property="hclxEj" jdbcType="DECIMAL" />
+	    <result column="M_IS_MEL" property="isMel" jdbcType="DECIMAL" />
+	    <result column="M_MIN_KCL" property="minKcl" jdbcType="DECIMAL" />
+	    <result column="M_MAX_KCL" property="maxKcl" jdbcType="DECIMAL" />
+	    <result column="M_R_JCSJ" property="rJcsj" jdbcType="VARCHAR" />
+	    <result column="M_XH" property="xh" jdbcType="VARCHAR" />
+	    <result column="M_XINGH" property="xingh" jdbcType="VARCHAR" />
+	    <result column="M_KCSL" property="kcsl" jdbcType="DECIMAL" />
+	    <result column="M_JHLY" property="jhly" jdbcType="VARCHAR" />
+     </association>
+  </resultMap> 
+  
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, YWLX, YWID, XC, BJLX, BJID, JH, SL, HHXX, JHLY, BXX, QCDH, BZ, ZT, WHDWID, WHRID, WHSJ
+  </sql>
+  
+  <sql id="Main_Column_List" >
+    g2997.ID, g2997.DPRTCODE, g2997.YWLX, g2997.YWID, g2997.XC, g2997.BJLX, g2997.BJID, g2997.JH, 
+    g2997.SL, g2997.HHXX, g2997.JHLY, g2997.BXX, g2997.QCDH, g2997.BZ, g2997.ZT, g2997.WHDWID, g2997.WHRID, g2997.WHSJ
+  </sql>
+  
+  	<sql id="Material_Column_List" >
+    	B.ID, B.DPRTCODE, B.YWLX, B.YWID, B.XC, B.BJLX, B.BJID, B.JH, B.SL, B.HHXX, B.JHLY, B.BXX, B.QCDH, B.BZ, B.ZT, B.WHDWID, B.WHRID, B.WHSJ
+  	</sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_997
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  	<!-- 根据业务id、业务类型、机构代码查询器材/工具列表 -->
+	<select id="queryByYwidAndYwlxAndDrpt" resultMap="BaseResultMap">
+		select 
+           	<include refid="Base_Column_List" />
+        from B_G2_997
+        where ZT = 1 and DPRTCODE = #{dprtcode,jdbcType=VARCHAR} and YWLX = #{ywlx,jdbcType=DECIMAL} and YWID = #{ywid,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 根据条件查询器材/工具任务信息列表 (选中的)-->
+	<select id="queryTaskInfoList" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+		SELECT distinct T1.YWID, <!-- 业务ID -->
+		       T1.YWBH, <!-- 业务编号 -->
+		       1 YWLX, <!-- 业务类型：1预组包，2工单、3工卡 -->
+		       T1.LYLX, <!-- 1维修项目、2EO、3NRC、4MO/MCC、5其他指令、6生产指令） -->
+		       T1.LYZLX, <!-- 来源子类型（1一般项目、2时控项目、3时寿项目、4定检包、NULL）只有来源类型=1的才有子类型，其他都为NULL -->
+		       T1.GKID, <!-- 工卡ID -->
+		       T1.GKBH, <!-- 工卡编号 -->
+		       S2997_2.SL, <!-- 需求数量 -->
+		       S2997_2.BZ, <!-- 备注 -->
+		       S2997_2.BXX, <!-- 必需性 -->
+		       S2997_2.QCDH, <!-- 器材代号 -->
+		       S2997_2.DPRTCODE <!-- 机构代码 -->
+		  FROM B_G2_997 S2997_2
+		  JOIN (SELECT G2012.ID     YWID,
+		               G2012.RWH    YWBH,
+		               1            LYLX,
+		               G2012.WXXMLX LYZLX,
+		               G2013.ID     GKID,
+		               G2013.GKH    GKBH
+		          FROM B_G2_012 G2012
+		          LEFT JOIN B_G2_013 G2013
+		            ON G2013.DPRTCODE = G2012.DPRTCODE
+		           AND G2013.GKH = G2012.GKBH
+		           AND G2013.JX = G2012.JX
+		           AND G2013.ZXBS = 2
+		         <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 WHERE G2012.ID IN
+	     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          			#{item}  
+	     			 </foreach>  
+			     </if>
+		        UNION ALL
+		        SELECT G2010.ID   YWID,
+		               G2010.EOBH YWBH,
+		               2          LYLX,
+		               NULL       LYZLX,
+		               NULL       GKID,
+		               NULL       GKBH
+		          FROM B_G2_010 G2010
+		         <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 WHERE G2010.ID IN
+	     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          			#{item}  
+	     			 </foreach>  
+			     </if>
+			    UNION ALL
+		        SELECT g2014.ID   YWID,
+		               g2014.ZLBH YWBH,
+		               6          LYLX,
+		               NULL       LYZLX,
+		               B13.ID       GKID,
+		               B13.GKH       GKBH
+		          FROM b_g2_014 g2014
+		          LEFT JOIN B_G2_013 B13 ON g2014.dprtcode = B13.dprtcode and g2014.GKBH = B13.GKH and B13.zt = 7 and B13.zxbs = 2
+		         <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 WHERE g2014.ID IN
+	     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          			#{item}  
+	     			 </foreach>  
+			     </if>
+		        UNION ALL
+		        SELECT S2008.ID   YWID,
+		               S2008.GDBH YWBH,
+		               S2008.gdlx LYLX,
+		               NULL       LYZLX,
+		               S2008.GKID,
+		               S2008.GKBH
+		          FROM B_S2_008 S2008
+		          <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 WHERE S2008.gdlx in (4, 5) AND S2008.ID IN
+	     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          			#{item}  
+	     			 </foreach>  
+			      </if>
+		        UNION ALL
+		        SELECT G201103.XGWXXMID YWID,
+		               G2012_2.RWH      YWBH,
+		               1                LYLX,
+		               G2012_2.WXXMLX   LYZLX,
+		               G200102_2.GKID,
+		               G200102_2.GKBH
+		          FROM B_G2_012 G2012
+		          JOIN B_G2_01102 G201102
+		            ON G201102.WXXMID = G2012.ID
+		           AND G2012.WXXMLX = 4
+		           	<if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 	AND G2012.ID IN
+	     			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          				#{item}  
+	     			 	</foreach>  
+			       	</if>
+		          JOIN B_G2_011 G2011
+		            ON G2011.DPRTCODE = G2012.DPRTCODE
+		           AND G2011.WXFABH = G2012.WXFABH
+		           AND G2011.ZXBS = 2
+		           AND G2011.ID = G201102.MAINID
+		          JOIN B_G2_01103 G201103
+		            ON G201103.MAINID = G2011.ID
+		           	<if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 	AND G201103.WXXMID IN
+	     			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          				#{item}  
+	     			 	</foreach>  
+			       	</if>
+		           AND G2012.WXXMLX = 4
+		          JOIN B_G2_012 G2012_2
+		            ON G201103.XGWXXMID = G2012_2.ID
+		           AND G2012_2.YXBS = 1
+		          JOIN B_G2_01102 G200102_2
+		            ON G200102_2.MAINID = G2011.ID
+		           AND G200102_2.WXXMID = G201103.XGWXXMID) T1
+		    ON S2997_2.YWID = (CASE WHEN T1.LYLX in (1,6) THEN T1.GKID ELSE T1.YWID END)
+		   AND S2997_2.ZT = 1
+		 WHERE S2997_2.DPRTCODE = #{dprtcode}
+		   AND S2997_2.JH = #{jh}  
+		   	<!-- <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+	 	 		 AND S2997_2.YWID IN
+   			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+        				#{item}  
+   			 	</foreach>  
+       		</if> -->
+		 ORDER BY T1.LYLX, T1.LYZLX, T1.YWBH
+	</select>
+	
+	<!-- 根据条件查询器材/工具任务信息列表 (工包)-->
+	<select id="queryTaskInfoList4Package" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+		SELECT T1.YWID, <!-- 业务ID -->
+		       T1.YWBH, <!-- 业务编号 -->
+		       T1.YWLX, <!-- 业务类型：1预组包，2工单、3工卡 -->
+		       T1.LYLX, <!-- 1维修项目、2EO、3NRC、4MO/MCC、5其他指令） -->
+		       T1.LYZLX, <!-- 来源子类型（1一般项目、2时控项目、3时寿项目、4定检包、NULL）只有来源类型=1的才有子类型，其他都为NULL -->
+		       T1.GKID, <!-- 工卡ID -->
+		       T1.GKBH, <!-- 工卡编号 -->
+		       S2997_2.SL, <!-- 需求数量 -->
+		       S2997_2.BZ, <!-- 备注 -->
+		       S2997_2.BXX, <!-- 必需性 -->
+		       S2997_2.QCDH, <!-- 器材代号 -->
+		       S2997_2.DPRTCODE <!-- 机构代码 -->
+		  FROM B_G2_997 S2997_2
+		  JOIN (<!-- 工包下的工单 START -->
+		        SELECT  S2008.ID   YWID,
+		                S2008.GDBH YWBH,
+		                2          YWLX,
+		                S2008.GDLX LYLX,
+		                NULL       LYZLX,
+		                S2008.GKID,
+		                S2008.GKBH
+		          FROM B_S2_008 S2008
+		         WHERE S2008.ZT != 9
+			     	<if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+		  			    AND S2008.GBID = #{paramsMap.id}
+	   			    </if>
+		            <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 	AND S2008.GBID IN
+	     			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          				#{item}  
+	     			 	</foreach>  
+			     	</if>
+		        	<!-- 工包下的工单 END -->
+		        	<if test="paramsMap != null and paramsMap.yzb != null and paramsMap.yzb != ''">
+       				<!-- 工包下的预组包的数据 START****************************************************************** -->
+				        UNION ALL
+				        <!-- 维修项目 -->
+				        SELECT G2012.ID     YWID,
+				                G2012.RWH    YWBH,
+				                1            YWLX,
+				                1            LYLX,
+				                G2012.WXXMLX LYZLX,
+				                G201102.GKID,
+				                G201102.GKBH
+				          FROM B_S2_009 S2009
+				          JOIN B_S2_901 S2901
+				            ON S2009.JKSJGDID = S2901.ID
+				           AND S2009.LX = 1
+				           AND S2901.LYLX = 1
+				            <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			    AND S2009.GBID = #{paramsMap.id}
+			   			    </if>
+				            <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+						 	 	AND S2009.GBID IN
+			     			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+			          				#{item}  
+			     			 	</foreach>  
+					     	</if>
+				          JOIN B_G2_012 G2012
+				            ON G2012.ID = S2901.LYID
+				          JOIN B_G2_01102 G201102
+				            ON G201102.MAINID = S2901.WXFAID
+				           AND G201102.WXXMID = S2901.LYID
+				        
+				        <!-- 维修项目-定检包 -->
+				        UNION ALL
+				        SELECT G2012_2.ID     YWID,
+				                G2012_2.RWH    YWBH,
+				                1              YWLX,
+				                1              LYLX,
+				                G2012_2.WXXMLX LYZLX,
+				                G201102.GKID,
+				                G201102.GKBH
+				          FROM B_S2_009 S2009
+				          JOIN B_S2_901 S2901
+				            ON S2009.JKSJGDID = S2901.ID
+				           AND S2009.LX = 1
+				           AND S2901.LYLX = 1
+				            <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			    AND S2009.GBID = #{paramsMap.id}
+			   			    </if>
+				            <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+						 	 	AND S2009.GBID IN
+			     			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+			          				#{item}  
+			     			 	</foreach>  
+					     	</if>
+				          JOIN B_G2_012 G2012
+				            ON G2012.ID = S2901.LYID
+				           AND G2012.WXXMLX = 4
+				          JOIN B_G2_01103 G201103
+				            ON G201103.MAINID = S2901.WXFAID
+				           AND G201103.WXXMID = S2901.LYID
+				           AND EXISTS (SELECT 1
+				                  FROM B_G2_012 G2012_2
+				                 WHERE G2012_2.ID = G201103.XGWXXMID
+				                   AND G2012_2.YXBS = 1)
+				          JOIN B_G2_01102 G201102
+				            ON G201102.MAINID = S2901.WXFAID
+				           AND G201102.WXXMID = G201103.XGWXXMID
+				          JOIN B_G2_012 G2012_2
+				            ON G2012_2.ID = G201103.XGWXXMID
+				        
+				        <!-- EO -->
+				        UNION ALL
+				        SELECT G2010.ID   YWID,
+				                G2010.EOBH YWBH,
+				                1          YWLX,
+				                2          LYLX,
+				                NULL       LYZLX,
+				                NULL       GKID,
+				                NULL       GKBH
+				          FROM B_S2_009 S2009
+				          JOIN B_S2_901 S2901
+				            ON S2009.JKSJGDID = S2901.ID
+				           AND S2009.LX = 1
+				           AND S2901.LYLX = 2
+				           <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			    AND S2009.GBID = #{paramsMap.id}
+			   			    </if>
+				            <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+						 	 	AND S2009.GBID IN
+			     			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+			          				#{item}  
+			     			 	</foreach>  
+					     	</if>
+				          JOIN B_G2_010 G2010
+				            ON G2010.ID = S2901.LYID
+				        
+				        <!-- NRC工单 -->
+				        UNION ALL
+				        SELECT S2008.ID   YWID,
+				                S2008.GDBH YWBH,
+				                2          YWLX,
+				                S2008.gdlx  LYLX,
+				                NULL       LYZLX,
+				                S2008.GKID,
+				                S2008.GKBH
+				          FROM B_S2_009 S2009
+				          JOIN B_S2_008 S2008
+				            ON S2008.ID = S2009.JKSJGDID
+				         WHERE S2009.LX = 2
+				           <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			    AND S2009.GBID = #{paramsMap.id}
+			   			    </if>
+				            <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+						 	 	AND S2009.GBID IN
+			     			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+			          				#{item}  
+			     			 	</foreach>  
+					     	</if>
+			        <!-- 工包下的预组包的数据 END************************************************** -->
+			        </if>
+		        	) T1
+		        	
+			ON S2997_2.YWID = T1.YWID
+		    AND S2997_2.ZT = 1
+		 	WHERE S2997_2.DPRTCODE = #{dprtcode}
+		    AND S2997_2.JH = #{jh}
+		 	ORDER BY T1.LYLX, T1.LYZLX, T1.YWBH
+		        	
+	</select>
+	
+		<!-- 根据条件查询器材/工具任务信息列表 (工单)-->
+	<select id="queryTaskInfoList4WorkOrder" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+		SELECT T1.YWID, <!-- 业务ID -->
+		       T1.YWBH, <!-- 业务编号 -->
+		       2 YWLX, <!-- 业务类型：1预组包，2工单、3工卡 -->
+		       T1.LYLX, <!-- 1维修项目、2EO、3NRC、4MO/MCC、5其他指令） -->
+		       T1.LYZLX, <!-- 来源子类型（1一般项目、2时控项目、3时寿项目、4定检包、NULL）只有来源类型=1的才有子类型，其他都为NULL -->
+		       T1.GKID, <!-- 工卡ID -->
+		       T1.GKBH, <!-- 工卡编号 -->
+		       S2997_2.SL, <!-- 需求数量 -->
+		       S2997_2.BZ, <!-- 备注 -->
+		       S2997_2.BXX, <!-- 必需性 -->
+		       S2997_2.QCDH, <!-- 器材代号 -->
+		       S2997_2.DPRTCODE <!-- 机构代码 -->
+		  FROM B_G2_997 S2997_2
+		  JOIN (
+		        SELECT S2008.ID   YWID,
+		               S2008.GDBH YWBH,
+		               S2008.GDLX LYLX,
+		               NULL       LYZLX,
+		               S2008.GKID,
+		               S2008.GKBH
+		          FROM B_S2_008 S2008
+		          <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	 WHERE S2008.ID IN
+	     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          			#{item}  
+	     			 </foreach>  
+			      </if>
+		       ) T1
+		    ON S2997_2.YWID = T1.YWID
+		   AND S2997_2.ZT = 1
+		 WHERE S2997_2.DPRTCODE = #{dprtcode}
+		   AND S2997_2.JH = #{jh}  
+		   	<if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+	 	 		 AND S2997_2.YWID IN
+   			 	<foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+        				#{item}  
+   			 	</foreach>  
+       		</if>
+		 ORDER BY T1.LYLX, T1.LYZLX, T1.YWBH
+	</select>
+	
+	<!-- 根据条件查询器材/工具列表 -->
+	<select id="queryAllList" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="MaterialToolWithRel">
+		
+		SELECT G2997.ID,
+			   G2997.BJID,
+		       G2997.DPRTCODE,
+		       G2997.JH,
+		       COALESCE(G2997.SL, 0) SL,
+		       G2997.BJLX,
+		       G2997.BZ,
+		       G2997.BXX,
+		 	   G2997.QCDH,
+		       D008.ID AS M_ID,
+		       D008.BJH AS M_BJH,
+		       D008.ZWMS AS M_ZWMS,
+		       D008.YWMS AS M_YWMS,
+		       D008.JLDW AS M_JLDW,
+		       D008.HCLX AS M_HCLX,
+		       D008.JHLY AS M_JHLY,
+		       D008.XINGH AS M_XINGH,
+		       D017.TDJXX <!-- 替代件信息：替代件号+库存数量+冻结数量+替代件描述   可用数量=库存数量-冻结数量 -->
+		  FROM (
+		  		SELECT G2997.ID,
+		  			   G2997.DPRTCODE,
+		               G2997.BJLX,
+		               G2997.BJID,
+		               G2997.JH,
+		               G2997.SL,
+		 			   G2997.BZ,
+		 			   G2997.BXX,
+		 			   G2997.QCDH,
+		               G2997.XC
+		          FROM B_G2_997 G2997
+		         WHERE G2997.ZT = 1 
+		               	<if test="paramsMap != null and paramsMap.hclxlist != null and paramsMap.hclxlist != ''">
+						    and G2997.BJLX in
+				     			 <foreach item="item" index="index" collection="paramsMap.hclxlist" open="(" separator="," close=")">  
+				          			#{item}  
+				     			 </foreach>  
+						</if>
+		                <if test="dprtcode != null" >
+				        	and G2997.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+				      	</if>
+				      	<if test="ywlx != null" >
+				        	and G2997.YWLX = #{ywlx,jdbcType=DECIMAL}
+				      	</if>
+				      	<if test="ywid != null" >
+				        	and G2997.YWID = #{ywid,jdbcType=VARCHAR}
+				      	</if>
+				      	<if test="id != null" >
+			        		and G2997.ID = #{id,jdbcType=VARCHAR}
+			      		</if>
+		       ) G2997
+		  LEFT JOIN D_008 D008 ON D008.DPRTCODE = G2997.DPRTCODE AND D008.BJH = G2997.JH
+		  <!-- 等效替代件库存信息 -->
+		  LEFT JOIN (SELECT D017.DPRTCODE,
+		                    D017.BJH,
+		                    WM_CONCAT(D017.TDJH || '#_#' || H001.TDJKCSL || '#_#' ||
+		                              H001.TDJDJSL || '#_#' || D017.TDJMS) TDJXX
+		               FROM (SELECT D_017.DPRTCODE,
+		                            D_017.BJH,
+		                            D_017.TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.ZT = 1
+		                     UNION
+		                     SELECT D_017.DPRTCODE,
+		                            D_017.TDJH     BJH,
+		                            D_017.BJH      TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.KNXBS = 2
+		                        AND D_017.ZT = 1) D017
+		               LEFT JOIN (SELECT H001.DPRTCODE,
+		                                H001.BJH,
+		                                SUM(H001.KCSL) TDJKCSL,
+		                                SUM(H001.DJSL) TDJDJSL
+		                           FROM B_H_001 H001
+		                          WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		                            AND H001.ZT = 2
+		                          GROUP BY H001.DPRTCODE, H001.BJH) H001
+		                 ON H001.DPRTCODE = D017.DPRTCODE
+		                AND H001.BJH = D017.TDJH
+		              GROUP BY D017.DPRTCODE, D017.BJH) D017
+		    ON D017.DPRTCODE = G2997.DPRTCODE
+		   AND D017.BJH = G2997.JH
+		 ORDER BY G2997.XC
+		
+	</select>
+	
+	<!-- 根据条件查询器材清单列表 -->
+	<select id="queryEquipmentList" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="MaterialToolWithRel">
+		
+		SELECT G2997.ID,
+			   G2997.BJID,
+		       G2997.DPRTCODE,
+		       G2997.JH,
+		       COALESCE(G2997.SL, 0) SL,
+		       G2997.BJLX,
+		       G2997.BZ,
+		       G2997.BXX,
+		 	   G2997.QCDH,
+		 	   G2997.YWID,
+		       D008.ID AS M_ID,
+		       D008.BJH AS M_BJH,
+		       D008.ZWMS AS M_ZWMS,
+		       D008.YWMS AS M_YWMS,
+		       D008.JLDW AS M_JLDW,
+		       D008.HCLX AS M_HCLX,
+		       D008.HCLX_EJ AS M_HCLX_EJ,
+		       D008.JHLY AS M_JHLY,
+		       D008.XINGH AS M_XINGH,
+		       D017.TDJXX <!-- 替代件信息：替代件号+库存数量+冻结数量+替代件描述   可用数量=库存数量-冻结数量 -->
+		  FROM (
+		  		SELECT G2997.ID,
+		  			   G2997.DPRTCODE,
+		               G2997.BJLX,
+		               G2997.BJID,
+		               G2997.JH,
+		               G2997.SL,
+		 			   G2997.BZ,
+		 			   G2997.BXX,
+		 			   G2997.QCDH,
+		 			   G2997.YWID,
+		               G2997.XC
+		          FROM B_G2_997 G2997
+		         WHERE G2997.ZT = 1 
+		               	<if test="paramsMap != null and paramsMap.hclxlist != null and paramsMap.hclxlist != ''">
+						    and G2997.BJLX in
+				     			 <foreach item="item" index="index" collection="paramsMap.hclxlist" open="(" separator="," close=")">  
+				          			#{item}  
+				     			 </foreach>  
+						</if>
+		                <if test="dprtcode != null" >
+				        	and G2997.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+				      	</if>
+				      	<if test="ywlx != null" >
+				        	and G2997.YWLX = #{ywlx,jdbcType=DECIMAL}
+				      	</if>
+				      	<if test="ywid != null" >
+				        	and G2997.YWID = #{ywid,jdbcType=VARCHAR}
+				      	</if>
+				      	<if test="paramsMap != null and paramsMap.ywidList != null and paramsMap.ywidList != ''">
+						    and G2997.YWID in
+				     			 <foreach item="item" index="index" collection="paramsMap.ywidList" open="(" separator="," close=")">  
+				          			#{item}  
+				     			 </foreach>  
+						</if>
+				      	<if test="id != null" >
+			        		and G2997.ID = #{id,jdbcType=VARCHAR}
+			      		</if>
+		       ) G2997
+		  LEFT JOIN D_008 D008 ON D008.DPRTCODE = G2997.DPRTCODE AND D008.BJH = G2997.JH
+		  <!-- 等效替代件库存信息 -->
+		  LEFT JOIN (SELECT D017.DPRTCODE,
+		                    D017.BJH,
+		                    WM_CONCAT(D017.TDJH || '#_#' || H001.TDJKCSL || '#_#' ||
+		                              H001.TDJDJSL || '#_#' || D017.TDJMS) TDJXX
+		               FROM (SELECT D_017.DPRTCODE,
+		                            D_017.BJH,
+		                            D_017.TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.ZT = 1
+		                     UNION
+		                     SELECT D_017.DPRTCODE,
+		                            D_017.TDJH     BJH,
+		                            D_017.BJH      TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.KNXBS = 2
+		                        AND D_017.ZT = 1) D017
+		               LEFT JOIN (SELECT H001.DPRTCODE,
+		                                H001.BJH,
+		                                SUM(H001.KCSL) TDJKCSL,
+		                                SUM(H001.DJSL) TDJDJSL
+		                           FROM B_H_001 H001
+		                          WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		                            AND H001.ZT = 2
+		                          GROUP BY H001.DPRTCODE, H001.BJH) H001
+		                 ON H001.DPRTCODE = D017.DPRTCODE
+		                AND H001.BJH = D017.TDJH
+		              GROUP BY D017.DPRTCODE, D017.BJH) D017
+		    ON D017.DPRTCODE = G2997.DPRTCODE
+		   AND D017.BJH = G2997.JH
+		  <choose>
+		  	<when test="paramsMap != null and paramsMap.sort != null and paramsMap.sort != ''">
+		  		ORDER BY G2997.BJLX ,G2997.XC
+		  	</when>
+		  	<otherwise>
+		  		ORDER BY G2997.XC
+		  	</otherwise>
+		  </choose>
+		 
+           
+	</select>
+	
+	<!-- 根据条件查询航材工具需求清单(维修项目) -->
+  	<select id="queryToolList4Maintenance" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+  		select 
+  		   g2997.dprtcode,
+       	   g2997.bjlx,
+       	   g2997.jh,
+       	   g2997.bjid,
+	       COALESCE(g2997.xqsl, 0) xqsl,
+	       d008.zwms as BJZWMS,
+	       d008.ywms as BJYWMS,
+	       d008.jldw,
+	       d008.hclx,
+	       d008.HCLX_EJ AS BJHCLXEJ,
+	       d008.jhly,
+	       d008.xingh,
+	       COALESCE(h001.kcsl, 0) kcsl,
+	       COALESCE(h001.djsl, 0) djsl,
+	       d017.tdjxx,
+	       case
+	         when COALESCE(g2997.xqsl, 0) &gt; COALESCE(h001.kcsl, 0) then
+	          1
+	         else
+	          0
+	       end is_warning
+	  <!-- 航材工具需求信息 -->
+	  FROM (SELECT G2997.DPRTCODE,
+	               G2997.BJLX,
+	               G2997.BJID,
+	               G2997.JH,
+	               CASE
+	                 WHEN G2997.BJLX = 1 THEN
+	                  SUM(G2997.SL)
+	                 ELSE
+	                  MAX(G2997.SL)
+	               END XQSL
+	          FROM (SELECT G201102.GKID
+	                  FROM (SELECT G2011.ID WXFAID,
+	                               CASE
+	                                 WHEN G2012.WXXMLX = 4 THEN
+	                                  G201103.XGWXXMID
+	                                 ELSE
+	                                  G201102.WXXMID
+	                               END WXXMID
+	                          FROM B_G2_012 G2012
+	                          JOIN B_G2_01102 G201102
+	                            ON G201102.WXXMID = G2012.ID
+	                           AND G2012.ID = #{paramsMap.id,jdbcType=VARCHAR}
+	                          JOIN B_G2_011 G2011
+	                            ON G2011.DPRTCODE = G2012.DPRTCODE
+	                           AND G2011.WXFABH = G2012.WXFABH
+	                           AND G2011.ZXBS = 2
+	                           AND G2011.ID = G201102.MAINID
+	                          LEFT JOIN B_G2_01103 G201103
+	                            ON G201103.MAINID = G2011.ID
+	                           AND G201103.WXXMID = #{paramsMap.id,jdbcType=VARCHAR}
+	                           AND G2012.WXXMLX = 4
+	                           AND EXISTS
+	                         (SELECT 1
+	                                  FROM B_G2_012 G2012_2
+	                                 WHERE G2012_2.ID = G201103.XGWXXMID
+	                                   AND G2012_2.YXBS = 1)) G2012
+	                  JOIN B_G2_01102 G201102
+	                    ON G2012.WXFAID = G201102.MAINID
+	                   AND G201102.WXXMID = G2012.WXXMID
+	                  JOIN B_S2_901 S2901
+	                    ON S2901.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	                   AND S2901.WXFAID = G201102.MAINID
+	                   AND S2901.LYID = G201102.WXXMID
+	                   AND S2901.JSSJ IS NULL
+	                 WHERE G201102.GKID IS NOT NULL
+	                   AND EXISTS (SELECT 1
+	                          FROM B_S2_901 S2901
+	                         WHERE S2901.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                           AND S2901.FJZCH = #{paramsMap.fjzch,jdbcType=VARCHAR}
+	                           AND S2901.LYID = G2012.WXXMID)
+	                 GROUP BY G201102.GKID) G2013
+	          JOIN B_G2_997 G2997
+	            ON G2997.ZT = 1
+	           AND G2013.GKID = G2997.YWID
+	           AND G2997.YWLX = 8
+	         GROUP BY G2997.DPRTCODE, G2997.BJLX, G2997.BJID, G2997.JH) G2997
+	  LEFT JOIN D_008 D008
+	    ON D008.DPRTCODE = G2997.DPRTCODE
+	   AND D008.BJH = G2997.JH
+	  <!-- 部件库存信息 -->
+	  LEFT JOIN (SELECT H001.DPRTCODE,
+	                    H001.BJH,
+	                    SUM(H001.KCSL) KCSL,
+	                    SUM(H001.DJSL) DJSL
+	               FROM B_H_001 H001
+	              WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND H001.ZT = 2
+	                <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+					 	AND H001.CKID IN 
+		     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+		          			#{item}  
+		     			 </foreach>  
+				    </if>
+	              GROUP BY H001.DPRTCODE, H001.BJH) H001
+	    ON H001.DPRTCODE = G2997.DPRTCODE
+	   AND H001.BJH = G2997.JH
+	--等效替代件库存信息
+	  LEFT JOIN (SELECT D017.DPRTCODE,
+	                    D017.BJH,
+	                    WM_CONCAT(D017.TDJH || '#_#' || H001.TDJKCSL || '#_#' ||
+	                              H001.TDJDJSL || '#_#' || D017.TDJMS) TDJXX
+	               FROM (SELECT D_017.DPRTCODE,
+	                            D_017.BJH,
+	                            D_017.TDJH,
+	                            D_017.TDJMS
+	                       FROM D_017
+	                      WHERE D_017.ZT = 1
+	                     UNION
+	                     SELECT D_017.DPRTCODE,
+	                            D_017.TDJH     BJH,
+	                            D_017.BJH      TDJH,
+	                            D_017.TDJMS
+	                       FROM D_017
+	                      WHERE D_017.KNXBS = 2
+	                        AND D_017.ZT = 1) D017
+	               LEFT JOIN (SELECT H001.DPRTCODE,
+	                                H001.BJH,
+	                                SUM(H001.KCSL) TDJKCSL,
+	                                SUM(H001.DJSL) TDJDJSL
+	                           FROM B_H_001 H001
+	                          WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                            AND H001.ZT = 2
+	                            <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+								 	AND H001.CKID IN 
+					     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+					          			#{item}  
+					     			 </foreach>  
+							    </if>
+	                          GROUP BY H001.DPRTCODE, H001.BJH) H001
+	                 ON H001.DPRTCODE = D017.DPRTCODE
+	                AND H001.BJH = D017.TDJH
+	              GROUP BY D017.DPRTCODE, D017.BJH) D017
+	    ON D017.DPRTCODE = G2997.DPRTCODE
+	   AND D017.BJH = JH
+	 ORDER BY CASE
+	            WHEN COALESCE(G2997.XQSL, 0) &gt; COALESCE(H001.KCSL, 0) THEN
+	             1
+	            ELSE
+	             0
+	          END DESC,
+	          G2997.BJLX,
+	          G2997.JH
+
+  	</select>
+  	
+  	<!-- 根据条件查询航材工具需求清单(EO) -->
+  	<select id="queryToolList4EO" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+  		select 
+  		   g2997.dprtcode,
+       	   g2997.bjlx,
+       	   g2997.jh,
+       	   g2997.bjid,
+	       COALESCE(g2997.xqsl, 0) xqsl,
+	       d008.zwms as BJZWMS,
+	       d008.ywms as BJYWMS,
+	       d008.jldw,
+	       d008.hclx,
+	       d008.HCLX_EJ AS BJHCLXEJ,
+	       d008.jhly,
+	       d008.xingh,
+	       COALESCE(h001.kcsl, 0) kcsl,
+	       COALESCE(h001.djsl, 0) djsl,
+	       d017.tdjxx,
+	       case
+	         when COALESCE(g2997.xqsl, 0) &gt; COALESCE(h001.kcsl, 0) then
+	          1
+	         else
+	          0
+	       end is_warning
+	  <!-- 航材工具需求信息 -->
+	  from (select g2997.dprtcode,
+	               g2997.bjlx,
+	               g2997.bjid,
+	               g2997.jh,
+	               g2997.sl xqsl
+	          from dual
+	          join b_g2_997 g2997
+	            on g2997.zt = 1
+	           and g2997.ywlx = 6
+	           and g2997.ywid = #{paramsMap.id}) g2997
+	  left join d_008 d008
+	    on d008.dprtcode = g2997.dprtcode
+	   and d008.bjh = g2997.jh
+	  <!-- 部件库存信息 -->
+	  left join (select h001.dprtcode,
+	                    h001.bjh,
+	                    sum(h001.kcsl) kcsl,
+	                    sum(h001.djsl) djsl
+	               from b_h_001 h001
+	              where h001.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	                and h001.zt = 2
+	                <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+					 	AND h001.CKID IN 
+		     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+		          			#{item}  
+		     			 </foreach>  
+				    </if>
+	              group by h001.dprtcode, h001.bjh) h001
+	    on h001.dprtcode = g2997.dprtcode
+	   and h001.bjh = g2997.jh
+	  <!-- 等效替代件库存信息 -->
+	  left join (select d017.dprtcode,
+	                    d017.bjh,
+	                    wm_concat(d017.tdjh || '#_#' || h001.tdjkcsl || '#_#' ||
+	                              h001.tdjdjsl || '#_#' || d017.tdjms) tdjxx
+	               from (select d_017.dprtcode,
+	                            d_017.bjh,
+	                            d_017.tdjh,
+	                            d_017.tdjms
+	                       from d_017
+	                      where d_017.zt = 1
+	                     union
+	                     select d_017.dprtcode,
+	                            d_017.tdjh     bjh,
+	                            d_017.bjh      tdjh,
+	                            d_017.tdjms
+	                       from d_017
+	                      where d_017.knxbs = 2
+	                        and d_017.zt = 1) d017
+	               left join (select h001.dprtcode,
+	                                h001.bjh,
+	                                sum(h001.kcsl) tdjkcsl,
+	                                sum(h001.djsl) tdjdjsl
+	                           from b_h_001 h001
+	                          where h001.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+	                            and h001.zt = 2
+	                            <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+								 	AND h001.CKID IN 
+					     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+					          			#{item}  
+					     			 </foreach>  
+							    </if>
+	                          group by h001.dprtcode, h001.bjh) h001
+	                 on h001.dprtcode = d017.dprtcode
+	                and h001.bjh = d017.tdjh
+	              group by d017.dprtcode, d017.bjh) d017
+	    on d017.dprtcode = g2997.dprtcode
+	   and d017.bjh = jh
+	 order by case
+	            when COALESCE(g2997.xqsl, 0) &gt; COALESCE(h001.kcsl, 0) then
+	             1
+	            else
+	             0
+	          end desc,
+	          g2997.bjlx,
+	          g2997.jh
+  	</select>
+  	
+  	<!-- 根据条件查询航材工具需求清单(工单) -->
+  	<select id="queryToolList4WorkOrder" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+  		select 
+  		   g2997.dprtcode,
+       	   g2997.bjlx,
+       	   g2997.jh,
+       	   g2997.bjid,
+	       COALESCE(g2997.xqsl, 0) xqsl,
+	       d008.zwms as BJZWMS,
+	       d008.ywms as BJYWMS,
+	       d008.jldw,
+	       d008.hclx,
+	       d008.HCLX_EJ AS BJHCLXEJ,
+	       d008.jhly,
+	       d008.xingh,
+	       COALESCE(h001.kcsl, 0) kcsl,
+	       COALESCE(h001.djsl, 0) djsl,
+	       d017.tdjxx,
+	       case
+	         when COALESCE(g2997.xqsl, 0) &gt; COALESCE(h001.kcsl, 0) then
+	          1
+	         else
+	          0
+	       end is_warning
+	  <!-- 航材工具需求信息 -->
+	   from (select g2997.dprtcode,
+               g2997.bjlx,
+               g2997.bjid,
+               <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  	g2997.sl xqsl,
+			   </if>
+	           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				  	CASE
+	                 WHEN g2997.bjlx = 1 OR g2997.bjlx = 4 THEN
+	                  sum(g2997.sl)
+	                 ELSE
+	                  MAX(g2997.sl)
+	               	END xqsl,
+			   </if>
+			   g2997.jh
+          from dual
+          join b_g2_997 g2997
+            on g2997.zt = 1
+           and g2997.ywlx = 21
+           <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+			  and g2997.ywid = #{paramsMap.id}
+		   </if>
+           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+			  and g2997.ywid IN
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+     		 GROUP BY g2997.DPRTCODE, g2997.BJLX, g2997.BJID, g2997.JH
+		   </if>
+           ) g2997
+		  left join d_008 d008
+		    on d008.dprtcode = g2997.dprtcode
+		   and d008.bjh = g2997.jh
+		<!-- 部件库存信息 -->
+		  left join (select h001.dprtcode,
+		                    h001.bjh,
+		                    sum(h001.kcsl) kcsl,
+		                    sum(h001.djsl) djsl
+		               from b_h_001 h001
+		              where h001.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		                and h001.zt = 2 
+		                <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+						 	AND h001.CKID IN 
+			     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+			          			#{item}  
+			     			 </foreach>  
+					    </if>
+		              group by h001.dprtcode, h001.bjh) h001
+		    on h001.dprtcode = g2997.dprtcode
+		   and h001.bjh = g2997.jh
+		<!-- 等效替代件库存信息 -->
+		  left join (select d017.dprtcode,
+		                    d017.bjh,
+		                    wm_concat(d017.tdjh || '#_#' || h001.tdjkcsl || '#_#' ||
+		                              h001.tdjdjsl || '#_#' || d017.tdjms) tdjxx
+		               from (select d_017.dprtcode,
+		                            d_017.bjh,
+		                            d_017.tdjh,
+		                            d_017.tdjms
+		                       from d_017
+		                      where d_017.zt = 1
+		                     union
+		                     select d_017.dprtcode,
+		                            d_017.tdjh     bjh,
+		                            d_017.bjh      tdjh,
+		                            d_017.tdjms
+		                       from d_017
+		                      where d_017.knxbs = 2
+		                        and d_017.zt = 1) d017
+		               left join (select h001.dprtcode,
+		                                h001.bjh,
+		                                sum(h001.kcsl) tdjkcsl,
+		                                sum(h001.djsl) tdjdjsl
+		                           from b_h_001 h001
+		                          where h001.dprtcode = #{dprtcode,jdbcType=VARCHAR}
+		                            and h001.zt = 2 
+		                            <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+									 	AND h001.CKID IN 
+						     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+						          			#{item}  
+						     			 </foreach>  
+								    </if>
+		                          group by h001.dprtcode, h001.bjh) h001
+		                 on h001.dprtcode = d017.dprtcode
+		                and h001.bjh = d017.tdjh
+		              group by d017.dprtcode, d017.bjh) d017
+		    on d017.dprtcode = g2997.dprtcode
+		   and d017.bjh = jh
+		   where 1=1
+		   <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+			    and (
+			    	UPPER(g2997.jh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.xingh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.zwms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.ywms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.jhly) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    )
+			</if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 1">
+			 	AND COALESCE(G2997.XQSL, 0) &gt; COALESCE(H001.KCSL, 0)
+		   </if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 0">
+			 	AND COALESCE(G2997.XQSL, 0) &lt;= COALESCE(H001.KCSL, 0)
+		   </if>
+		 order by case
+		            when COALESCE(g2997.xqsl, 0) &gt; COALESCE(h001.kcsl, 0) then
+		             1
+		            else
+		             0
+		          end desc,
+		          g2997.bjlx,
+		          g2997.jh
+  	</select>
+  	
+  	<!-- 根据条件查询航材工具需求清单(工包) -->
+  	<select id="queryToolList4Package" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+  		select 
+  		   G2997.dprtcode,
+       	   G2997.bjlx,
+       	   G2997.jh,
+       	   G2997.bjid,
+	       COALESCE(G2997.xqsl, 0) xqsl,
+	       D008.zwms as BJZWMS,
+	       D008.ywms as BJYWMS,
+	       D008.jldw,
+	       D008.hclx,
+	       d008.HCLX_EJ AS BJHCLXEJ,
+	       D008.jhly,
+	       D008.xingh,
+	       COALESCE(H001.kcsl, 0) kcsl,
+	       COALESCE(H001.djsl, 0) djsl,
+	       D017.tdjxx,
+	       case
+	         when COALESCE(G2997.xqsl, 0) &gt; COALESCE(H001.kcsl, 0) then
+	          1
+	         else
+	          0
+	       end is_warning
+		   FROM (SELECT G2997.DPRTCODE,
+	               G2997.BJLX,
+	               G2997.BJID,
+	               G2997.JH,
+	               CASE
+	                 WHEN G2997.BJLX = 1 OR G2997.BJLX = 4 THEN
+	                  SUM(G2997.SL)
+	                 ELSE
+	                  MAX(G2997.SL)
+	               END XQSL
+	          FROM (
+	                <!-- 工包下的工单 START -->
+	                SELECT S2008.ID LYID
+	                  FROM B_S2_008 S2008
+	                 WHERE S2008.ZT != 9
+	                   <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+			  			   AND S2008.GBID = #{paramsMap.id}
+		   			   </if>
+			           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+						  AND S2008.GBID IN
+			     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+			          			#{item}  
+			     			 </foreach>  
+					   </if>
+	                <!-- 工包下的工单 END -->
+	                
+	                <if test="paramsMap != null and paramsMap.yzb != null and paramsMap.yzb != ''">
+		                <!-- 工包下的预组包的数据 START****************************************************** -->
+		                UNION ALL
+		                --维修项目
+		                SELECT G201102.GKID LYID
+		                  FROM B_S2_009 S2009
+		                  JOIN B_S2_901 S2901
+		                    ON S2009.JKSJGDID = S2901.ID
+		                   AND S2009.LX = 1
+		                   AND S2901.LYLX = 1
+		                   <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			   AND S2009.GBID = #{paramsMap.id}
+			   			   </if>
+				           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+							  AND S2009.GBID IN
+				     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+				          			#{item}  
+				     			 </foreach>  
+						   </if>
+		                  JOIN B_G2_01102 G201102
+		                    ON G201102.MAINID = S2901.WXFAID
+		                   AND G201102.WXXMID = S2901.LYID
+		                
+		                <!-- 维修项目-定检包 -->
+		                UNION ALL
+		                SELECT G201102.GKID LYID
+		                  FROM B_S2_009 S2009
+		                  JOIN B_S2_901 S2901
+		                    ON S2009.JKSJGDID = S2901.ID
+		                   AND S2009.LX = 1
+		                   AND S2901.LYLX = 1
+		                   <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			   AND S2009.GBID = #{paramsMap.id}
+			   			   </if>
+				           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+							  AND S2009.GBID IN
+				     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+				          			#{item}  
+				     			 </foreach>  
+						   </if>
+		                  JOIN B_G2_012 G2012
+		                    ON G2012.ID = S2901.LYID
+		                   AND G2012.WXXMLX = 4
+		                  JOIN B_G2_01103 G201103
+		                    ON G201103.MAINID = S2901.WXFAID
+		                   AND G201103.WXXMID = S2901.LYID
+		                   AND EXISTS (SELECT 1
+		                          FROM B_G2_012 G2012_2
+		                         WHERE G2012_2.ID = G201103.XGWXXMID
+		                           AND G2012_2.YXBS = 1)
+		                  JOIN B_G2_01102 G201102
+		                    ON G201102.MAINID = S2901.WXFAID
+		                   AND G201102.WXXMID = G201103.XGWXXMID
+		                
+		                <!-- EO -->
+		                UNION ALL
+		                SELECT S2901.LYID
+		                  FROM B_S2_009 S2009
+		                  JOIN B_S2_901 S2901
+		                    ON S2009.JKSJGDID = S2901.ID
+		                   AND S2009.LX = 1
+		                   AND S2901.LYLX = 2
+		                   <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			   AND S2009.GBID = #{paramsMap.id}
+			   			   </if>
+				           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+							  AND S2009.GBID IN
+				     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+				          			#{item}  
+				     			 </foreach>  
+						   </if>
+		                
+		                <!-- NRC工单 -->
+		                UNION ALL
+		                SELECT S2009.JKSJGDID LYID
+		                  FROM B_S2_009 S2009
+		                 WHERE S2009.LX = 2
+		                   <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+				  			   AND S2009.GBID = #{paramsMap.id}
+			   			   </if>
+				           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+							  AND S2009.GBID IN
+				     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+				          			#{item}  
+				     			 </foreach>  
+						   </if>
+		                
+		                <!-- 工包下的预组包的数据 END*************************************************************** -->
+	                </if>
+	                ) G2997_LY
+	          JOIN B_G2_997 G2997
+	            ON G2997.ZT = 1
+	           AND G2997_LY.LYID = G2997.YWID
+	         GROUP BY G2997.DPRTCODE, G2997.BJLX, G2997.BJID, G2997.JH) G2997
+	  LEFT JOIN D_008 D008
+	    ON D008.DPRTCODE = G2997.DPRTCODE
+	   AND D008.BJH = G2997.JH
+	  <!-- 部件库存信息 -->
+	  LEFT JOIN (SELECT H001.DPRTCODE,
+	                    H001.BJH,
+	                    SUM(H001.KCSL) KCSL,
+	                    SUM(H001.DJSL) DJSL
+	               FROM B_H_001 H001
+	              WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                AND H001.ZT = 2
+	                <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+					 	AND H001.CKID IN 
+		     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+		          			#{item}  
+		     			 </foreach>  
+				    </if>
+	              GROUP BY H001.DPRTCODE, H001.BJH) H001
+	    ON H001.DPRTCODE = G2997.DPRTCODE
+	   AND H001.BJH = G2997.JH
+	  <!-- 等效替代件库存信息 -->
+	  LEFT JOIN (SELECT D017.DPRTCODE,
+	                    D017.BJH,
+	                    WM_CONCAT(D017.TDJH || '#_#' || H001.TDJKCSL || '#_#' ||
+	                              H001.TDJDJSL || '#_#' || D017.TDJMS) TDJXX
+	               FROM (SELECT D_017.DPRTCODE,
+	                            D_017.BJH,
+	                            D_017.TDJH,
+	                            D_017.TDJMS
+	                       FROM D_017
+	                      WHERE D_017.ZT = 1
+	                     UNION
+	                     SELECT D_017.DPRTCODE,
+	                            D_017.TDJH     BJH,
+	                            D_017.BJH      TDJH,
+	                            D_017.TDJMS
+	                       FROM D_017
+	                      WHERE D_017.KNXBS = 2
+	                        AND D_017.ZT = 1) D017
+	               LEFT JOIN (SELECT H001.DPRTCODE,
+	                                H001.BJH,
+	                                SUM(H001.KCSL) TDJKCSL,
+	                                SUM(H001.DJSL) TDJDJSL
+	                           FROM B_H_001 H001
+	                          WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+	                            AND H001.ZT = 2
+	                            <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+								 	AND H001.CKID IN 
+					     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+					          			#{item}  
+					     			 </foreach>  
+							    </if>
+	                          GROUP BY H001.DPRTCODE, H001.BJH) H001
+	                 ON H001.DPRTCODE = D017.DPRTCODE
+	                AND H001.BJH = D017.TDJH
+	              GROUP BY D017.DPRTCODE, D017.BJH) D017
+	    	ON D017.DPRTCODE = G2997.DPRTCODE
+	   		AND D017.BJH = JH
+		   where 1=1
+		   <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+			    and (
+			    	UPPER(G2997.jh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.xingh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.zwms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.ywms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.jhly) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    )
+			</if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 1">
+			 	AND COALESCE(G2997.XQSL, 0) &gt; COALESCE(H001.KCSL, 0)
+		   </if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 0">
+			 	AND COALESCE(G2997.XQSL, 0) &lt;= COALESCE(H001.KCSL, 0)
+		   </if>
+		  ORDER BY IS_WARNING DESC, G2997.BJLX, G2997.JH
+  	</select>
+  	
+  	<!-- 根据条件查询航材工具需求清单(选中的) -->
+  	<select id="queryAllToolList" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+  		select 
+  		   g2997.dprtcode,
+       	   g2997.bjlx,
+       	   g2997.jh,
+       	   g2997.bjid,
+	       COALESCE(g2997.xqsl, 0) xqsl,
+	       d008.zwms as BJZWMS,
+	       d008.ywms as BJYWMS,
+	       d008.jldw,
+	       d008.hclx,
+	       d008.HCLX_EJ AS BJHCLXEJ,
+	       d008.jhly,
+	       d008.xingh,
+	       COALESCE(h001.kcsl, 0) kcsl,
+	       COALESCE(h001.djsl, 0) djsl,
+	       d017.tdjxx,
+	       case
+	         when COALESCE(g2997.xqsl, 0) &gt; COALESCE(h001.kcsl, 0) then
+	          1
+	         else
+	          0
+	       end is_warning
+	  	<!-- 航材工具需求信息 -->
+	    FROM (SELECT G2997.DPRTCODE,
+               G2997.BJLX,
+               G2997.BJID,
+               G2997.JH,
+               CASE
+                 WHEN G2997.BJLX = 1 OR G2997.BJLX = 4 THEN
+                  SUM(G2997.SL)
+                 ELSE
+                  MAX(G2997.SL)
+               END XQSL
+          FROM (SELECT G201102.GKID LYID
+                  FROM (SELECT G2011.ID WXFAID,
+                               CASE
+                                 WHEN G2012.WXXMLX = 4 THEN
+                                  G201103.XGWXXMID
+                                 ELSE
+                                  G201102.WXXMID
+                               END WXXMID
+                          FROM B_G2_012 G2012
+                          JOIN B_G2_01102 G201102
+                            ON G201102.WXXMID = G2012.ID
+                            <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+							     AND G2012.ID IN 
+					     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+					          			#{item}  
+					     			 </foreach>  
+							</if>
+                          JOIN B_G2_011 G2011
+                            ON G2011.DPRTCODE = G2012.DPRTCODE
+                           AND G2011.WXFABH = G2012.WXFABH
+                           AND G2011.ZXBS = 2
+                           AND G2011.ID = G201102.MAINID
+                          LEFT JOIN B_G2_01103 G201103
+                            ON G201103.MAINID = G2011.ID
+                            <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+							     AND G201103.WXXMID IN
+					     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+					          			#{item}  
+					     			 </foreach>  
+							</if>
+                           AND G2012.WXXMLX = 4
+                           AND EXISTS
+                         (SELECT 1
+                                  FROM B_G2_012 G2012_2
+                                 WHERE G2012_2.ID = G201103.XGWXXMID
+                                   AND G2012_2.YXBS = 1)) G2012
+                  JOIN B_G2_01102 G201102
+                    ON G2012.WXFAID = G201102.MAINID
+                   AND G201102.WXXMID = G2012.WXXMID
+                 WHERE G201102.GKID IS NOT NULL
+                   AND EXISTS (SELECT 1
+                          FROM B_S2_901 S2901
+                         WHERE S2901.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+                           AND S2901.FJZCH = #{paramsMap.fjzch}
+                           AND S2901.LYID = G2012.WXXMID)
+                 GROUP BY G201102.GKID
+                UNION ALL
+                SELECT B13.ID LYID
+                  FROM b_g2_014 g2014
+                  LEFT JOIN B_G2_013 B13 ON g2014.dprtcode = B13.dprtcode and g2014.GKBH = B13.GKH and B13.zt = 7 and B13.zxbs = 2
+                  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+					  WHERE g2014.ID IN
+		     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+		          			#{item}  
+		     			 </foreach>  
+				  </if>
+                UNION ALL
+                SELECT G2010.ID LYID
+                  FROM B_G2_010 G2010
+                  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+					  WHERE G2010.ID IN
+		     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+		          			#{item}  
+		     			 </foreach>  
+				  </if>
+                UNION ALL
+                SELECT S2008.ID LYID
+                  FROM B_S2_008 S2008
+                  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+					  WHERE S2008.ID IN
+		     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+		          			#{item}  
+		     			 </foreach>  
+				  </if>
+                  ) G2013
+          JOIN B_G2_997 G2997
+            ON G2997.ZT = 1
+           AND G2013.LYID = G2997.YWID
+         GROUP BY G2997.DPRTCODE, G2997.BJLX, G2997.BJID, G2997.JH) G2997
+		  LEFT JOIN D_008 D008
+		    ON D008.DPRTCODE = G2997.DPRTCODE
+		   AND D008.BJH = G2997.JH
+		  <!-- 部件库存信息 -->
+		  LEFT JOIN (SELECT H001.DPRTCODE,
+		                    H001.BJH,
+		                    SUM(H001.KCSL) KCSL,
+		                    SUM(H001.DJSL) DJSL
+		               FROM B_H_001 H001
+		              WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		                AND H001.ZT = 2
+		                <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+						 	AND H001.CKID IN
+			     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+			          			#{item}  
+			     			 </foreach>  
+					   </if>
+		              GROUP BY H001.DPRTCODE, H001.BJH) H001
+		    ON H001.DPRTCODE = G2997.DPRTCODE
+		   AND H001.BJH = G2997.JH
+		  <!-- 等效替代件库存信息 -->
+		  LEFT JOIN (SELECT D017.DPRTCODE,
+		                    D017.BJH,
+		                    WM_CONCAT(D017.TDJH || '#_#' || H001.TDJKCSL || '#_#' ||
+		                              H001.TDJDJSL || '#_#' || D017.TDJMS) TDJXX
+		               FROM (SELECT D_017.DPRTCODE,
+		                            D_017.BJH,
+		                            D_017.TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.ZT = 1
+		                     UNION
+		                     SELECT D_017.DPRTCODE,
+		                            D_017.TDJH     BJH,
+		                            D_017.BJH      TDJH,
+		                            D_017.TDJMS
+		                       FROM D_017
+		                      WHERE D_017.KNXBS = 2
+		                        AND D_017.ZT = 1) D017
+		               LEFT JOIN (SELECT H001.DPRTCODE,
+		                                H001.BJH,
+		                                SUM(H001.KCSL) TDJKCSL,
+		                                SUM(H001.DJSL) TDJDJSL
+		                           FROM B_H_001 H001
+		                          WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+		                            AND H001.ZT = 2
+		                            <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+									 	AND H001.CKID IN 
+						     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+						          			#{item}  
+						     			 </foreach>  
+								   </if>
+		                          GROUP BY H001.DPRTCODE, H001.BJH) H001
+		                 ON H001.DPRTCODE = D017.DPRTCODE
+		                AND H001.BJH = D017.TDJH
+		              GROUP BY D017.DPRTCODE, D017.BJH) D017
+		    ON D017.DPRTCODE = G2997.DPRTCODE
+		   AND D017.BJH = JH
+		   where 1=1
+		   <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+			    and (
+			    	UPPER(g2997.jh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.xingh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.zwms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.ywms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(d008.jhly) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    )
+			</if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 1">
+			 	AND COALESCE(G2997.XQSL, 0) &gt; COALESCE(H001.KCSL, 0)
+		   </if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 0">
+			 	AND COALESCE(G2997.XQSL, 0) &lt;= COALESCE(H001.KCSL, 0)
+		   </if>
+		 ORDER BY CASE
+		            WHEN COALESCE(G2997.XQSL, 0) &gt; COALESCE(H001.KCSL, 0) THEN
+		             1
+		            ELSE
+		             0
+		          END DESC,
+		          G2997.BJLX,
+		          G2997.JH
+		
+  	</select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_997
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByYwid" parameterType="java.lang.String" >
+    delete from B_G2_997
+    where YWID = #{ywid,jdbcType=VARCHAR}
+  </delete>
+  
+  	<delete id="delete4Batch" parameterType="java.lang.String" >
+    	delete from B_G2_997
+    	where ID in
+    		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+				#{id,jdbcType=VARCHAR}
+			</foreach>
+  	</delete>
+  
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.MaterialTool" >
+    insert into B_G2_997 (ID, DPRTCODE, YWLX, 
+      YWID, XC, BJLX, BJID, 
+      JH, SL, HHXX, BZ, 
+      ZT, WHDWID, WHRID, 
+      WHSJ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{ywlx,jdbcType=DECIMAL}, 
+      #{ywid,jdbcType=VARCHAR}, #{xc,jdbcType=DECIMAL}, #{bjlx,jdbcType=DECIMAL}, #{bjid,jdbcType=VARCHAR}, 
+      #{jh,jdbcType=VARCHAR}, #{sl,jdbcType=DECIMAL}, #{hhxx,jdbcType=VARCHAR}, #{bz,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, 
+      #{whsj,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.MaterialTool" >
+    insert into B_G2_997
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="ywlx != null" >
+        YWLX,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="xc != null" >
+        XC,
+      </if>
+      <if test="bjlx != null" >
+        BJLX,
+      </if>
+      <if test="bjid != null" >
+        BJID,
+      </if>
+      <if test="jh != null" >
+        JH,
+      </if>
+      <if test="sl != null" >
+        SL,
+      </if>
+      <if test="hhxx != null" >
+        HHXX,
+      </if>
+      <if test="jhly != null" >
+        JHLY,
+      </if>
+      <if test="bxx != null" >
+        BXX,
+      </if>
+      <if test="qcdh != null" >
+        QCDH,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="whdwid != null" >
+        WHDWID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+        WHSJ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ywlx != null" >
+        #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="bjlx != null" >
+        #{bjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="bjid != null" >
+        #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null" >
+        #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="hhxx != null" >
+        #{hhxx,jdbcType=VARCHAR},
+      </if>
+      <if test="jhly != null" >
+        #{jhly,jdbcType=VARCHAR},
+      </if>
+      <if test="bxx != null" >
+        #{bxx,jdbcType=VARCHAR},
+      </if>
+      <if test="qcdh != null" >
+        #{qcdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  
+  	<!-- 批量插入器材/工具 -->
+  	<insert id="insert4Batch" parameterType="java.util.List">
+		insert all
+		<foreach collection="list" item="item" index="index" >
+			<include refid="insert_material_tool"></include>
+		</foreach>
+		select 1 from dual
+	</insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.MaterialTool" >
+    update B_G2_997
+    <set >
+      <!-- <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if> -->
+      <if test="ywlx != null" >
+        YWLX = #{ywlx,jdbcType=DECIMAL},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="xc != null" >
+        XC = #{xc,jdbcType=DECIMAL},
+      </if>
+      <if test="bjlx != null" >
+        BJLX = #{bjlx,jdbcType=DECIMAL},
+      </if>
+      <if test="bjid != null" >
+        BJID = #{bjid,jdbcType=VARCHAR},
+      </if>
+      <if test="jh != null" >
+        JH = #{jh,jdbcType=VARCHAR},
+      </if>
+      <if test="sl != null" >
+        SL = #{sl,jdbcType=DECIMAL},
+      </if>
+      <if test="hhxx != null" >
+        HHXX = #{hhxx,jdbcType=VARCHAR},
+      </if>
+      <if test="jhly != null" >
+        JHLY = #{jhly,jdbcType=VARCHAR},
+      </if>
+      <if test="bxx != null" >
+        BXX = #{bxx,jdbcType=VARCHAR},
+      </if>
+      <if test="qcdh != null" >
+        QCDH = #{qcdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="whdwid != null" >
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        WHRID = #{whrid,jdbcType=VARCHAR},
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 插入器材/工具 start -->
+	<sql id="insert_material_tool">
+		into B_G2_997
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        ID,
+	      </if>
+	      <if test="item.dprtcode != null" >
+	        DPRTCODE,
+	      </if>
+	      <if test="item.ywlx != null" >
+	        YWLX,
+	      </if>
+	      <if test="item.ywid != null" >
+	        YWID,
+	      </if>
+	      <if test="item.xc != null" >
+	        XC,
+	      </if>
+	      <if test="item.bjlx != null" >
+	        BJLX,
+	      </if>
+	      <if test="item.bjid != null" >
+	        BJID,
+	      </if>
+	      <if test="item.jh != null" >
+	        JH,
+	      </if>
+	      <if test="item.sl != null" >
+	        SL,
+	      </if>
+	      <if test="item.hhxx != null" >
+	        HHXX,
+	      </if>
+	      <if test="item.jhly != null" >
+	        JHLY,
+	      </if>
+	      <if test="item.bxx != null" >
+	        BXX,
+	      </if>
+	      <if test="item.qcdh != null" >
+	        QCDH,
+	      </if>
+	      <if test="item.bz != null" >
+	        BZ,
+	      </if>
+	      <if test="item.zt != null" >
+	        ZT,
+	      </if>
+	      <if test="item.whdwid != null" >
+	        WHDWID,
+	      </if>
+	      <if test="item.whrid != null" >
+	        WHRID,
+	        WHSJ,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="item.id != null" >
+	        #{item.id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.dprtcode != null" >
+	        #{item.dprtcode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.ywlx != null" >
+	        #{item.ywlx,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.ywid != null" >
+	        #{item.ywid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.xc != null" >
+	        #{item.xc,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.bjlx != null" >
+	        #{item.bjlx,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.bjid != null" >
+	        #{item.bjid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.jh != null" >
+	        #{item.jh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.sl != null" >
+	        #{item.sl,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.hhxx != null" >
+	        #{item.hhxx,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.jhly != null" >
+	        #{item.jhly,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.bxx != null" >
+	        #{item.bxx,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.qcdh != null" >
+	        #{item.qcdh,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.bz != null" >
+	        #{item.bz,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.zt != null" >
+	        #{item.zt,jdbcType=DECIMAL},
+	      </if>
+	      <if test="item.whdwid != null" >
+	        #{item.whdwid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.whrid != null" >
+	        #{item.whrid,jdbcType=VARCHAR},
+	        sysdate,
+	      </if>
+	    </trim>
+	</sql>
+	<!-- 插入器材/工具 end -->
+  	<insert id="insertByCopyMaterialTool" parameterType="com.eray.thjw.project2.po.MaterialTool">
+  		INSERT INTO B_G2_997(
+    	 ID, DPRTCODE, YWLX, YWID, XC, BJLX, BJID, JH, SL, HHXX, JHLY, BXX, QCDH, BZ, ZT, WHDWID, WHRID, WHSJ)      
+    SELECT SYS_GUID(),#{dprtcode,jdbcType=VARCHAR}, YWLX, #{id,jdbcType=VARCHAR}, XC, BJLX, BJID, JH, SL, HHXX, JHLY, BXX, QCDH, BZ, ZT, 
+   #{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR}, sysdate
+    	FROM B_G2_997 
+	    WHERE zt=1 and ywid=#{ywid,jdbcType=VARCHAR}
+  	</insert>
+  	
+  	<!-- 同步器材工具 -->
+  	<insert id="insertByCopy" parameterType="com.eray.thjw.project2.po.MaterialTool">
+  		INSERT INTO B_G2_997(
+    	 ID, DPRTCODE, YWLX, YWID, XC, BJLX, BJID, JH, SL, HHXX, JHLY, BXX, QCDH, BZ, ZT, WHDWID, WHRID, WHSJ)      
+    SELECT SYS_GUID(),dprtcode, #{ywlx,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, XC, BJLX, BJID, JH, SL, HHXX, JHLY, BXX, QCDH, BZ, ZT, 
+   #{whdwid,jdbcType=VARCHAR},#{whrid,jdbcType=VARCHAR}, sysdate
+    	FROM B_G2_997 
+	    WHERE zt=1 and ywid=#{ywid,jdbcType=VARCHAR}
+  	</insert>
+  	
+  	<!-- 根据条件查询航材工具需求清单(145工包) -->
+  	<select id="queryToolList4WP145" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+  		SELECT G2997.DPRTCODE, --机构代码
+       G2997.JH, --部件号
+       COALESCE(G2997.XQSL, 0) XQSL, --需求数量
+       G2997.BJLX, --部件类型：1航材、2工具、3设备
+       G2997.bjid,
+       D008.zwms as BJZWMS,
+	   D008.ywms as BJYWMS,
+	   D008.jldw,
+	   D008.hclx,
+	   d008.HCLX_EJ AS BJHCLXEJ,
+	   D008.jhly,
+	   D008.xingh,
+       COALESCE(H001.KCSL, 0) KCSL, --库存数量
+       COALESCE(H001.DJSL, 0) DJSL, --冻结数量
+       D017.TDJXX, --替代件信息：替代件号+库存数量+冻结数量+替代件描述
+       CASE
+         WHEN COALESCE(G2997.XQSL, 0) &gt; COALESCE(H001.KCSL, 0) THEN
+          1
+         ELSE
+          0
+       END IS_WARNING --警告标识：0不警告、1警告
+  FROM (SELECT G2997.DPRTCODE,
+               G2997.BJLX,
+               G2997.BJID,
+               G2997.JH,
+               CASE
+                 WHEN G2997.BJLX = 1 THEN
+                  SUM(G2997.SL)
+                 ELSE
+                  MAX(G2997.SL)
+               END XQSL
+          FROM B_S2_014 S2014
+          JOIN B_G2_997 G2997
+            ON G2997.ZT = 1
+           AND S2014.ID = G2997.YWID
+           AND S2014.ZT != 9
+           <if test="paramsMap != null and paramsMap.id != null and paramsMap.id != ''">
+  			   AND S2014.GBID = #{paramsMap.id}
+  			  </if>
+           <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+			   AND S2014.GBID IN
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		   </if>
+         GROUP BY G2997.DPRTCODE, G2997.BJLX, G2997.BJID, G2997.JH) G2997
+  LEFT JOIN D_008 D008
+    ON D008.DPRTCODE = G2997.DPRTCODE
+   AND D008.BJH = G2997.JH
+--部件库存信息
+  LEFT JOIN (SELECT H001.DPRTCODE,
+                    H001.BJH,
+                    SUM(H001.KCSL) KCSL,
+                    SUM(H001.DJSL) DJSL
+               FROM B_H_001 H001
+              WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+                AND H001.ZT = 2
+                <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+				 	AND h001.CKID IN 
+	     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+	          			#{item}  
+	     			 </foreach>  
+			    </if>
+              GROUP BY H001.DPRTCODE, H001.BJH) H001
+    ON H001.DPRTCODE = G2997.DPRTCODE
+   AND H001.BJH = G2997.JH
+--等效替代件库存信息
+  LEFT JOIN (SELECT D017.DPRTCODE,
+                    D017.BJH,
+                    WM_CONCAT(D017.TDJH || '#_#' || H001.TDJKCSL || '#_#' ||
+                              H001.TDJDJSL || '#_#' || D017.TDJMS) TDJXX
+               FROM (SELECT D_017.DPRTCODE,
+                            D_017.BJH,
+                            D_017.TDJH,
+                            D_017.TDJMS
+                       FROM D_017
+                      WHERE D_017.ZT = 1
+                     UNION
+                     SELECT D_017.DPRTCODE,
+                            D_017.TDJH     BJH,
+                            D_017.BJH      TDJH,
+                            D_017.TDJMS
+                       FROM D_017
+                      WHERE D_017.KNXBS = 2
+                        AND D_017.ZT = 1) D017
+               LEFT JOIN (SELECT H001.DPRTCODE,
+                                H001.BJH,
+                                SUM(H001.KCSL) TDJKCSL,
+                                SUM(H001.DJSL) TDJDJSL
+                           FROM B_H_001 H001
+                          WHERE H001.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+                            AND H001.ZT = 2
+                            <if test="paramsMap != null and paramsMap.ckidList != null and paramsMap.ckidList != ''">
+						 	AND h001.CKID IN 
+			     			 <foreach item="item" index="index" collection="paramsMap.ckidList" open="(" separator="," close=")">  
+			          			#{item}  
+			     			 </foreach>  
+					    	</if>
+                          GROUP BY H001.DPRTCODE, H001.BJH) H001
+                 ON H001.DPRTCODE = D017.DPRTCODE
+                AND H001.BJH = D017.TDJH
+              GROUP BY D017.DPRTCODE, D017.BJH) D017
+    ON D017.DPRTCODE = G2997.DPRTCODE
+   AND D017.BJH = JH
+   where 1=1
+		   <if test="paramsMap != null and paramsMap.keyword != null and paramsMap.keyword != ''">
+			    and (
+			    	UPPER(G2997.jh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.xingh) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.zwms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.ywms) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    	or UPPER(D008.jhly) like UPPER('%'||#{paramsMap.keyword}||'%')
+			    )
+			</if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 1">
+			 	AND COALESCE(G2997.XQSL, 0) &gt; COALESCE(H001.KCSL, 0)
+		   </if>
+		   <if test="paramsMap != null and paramsMap.isWarning == 0">
+			 	AND COALESCE(G2997.XQSL, 0) &lt;= COALESCE(H001.KCSL, 0)
+		   </if>
+		  ORDER BY IS_WARNING DESC, G2997.BJLX, G2997.JH
+  	</select>
+  	<select id="queryTaskInfoList4WP145" parameterType="com.eray.thjw.project2.po.MaterialTool" resultMap="BaseResultMap">
+			SELECT T1.YWID, <!-- 业务ID -->
+		       T1.YWBH, <!-- 业务编号 -->
+		       2 YWLX, <!-- 业务类型：1预组包，2工单、3工卡 -->
+		       T1.LYLX, <!-- 1维修项目、2EO、3NRC、4MO/MCC、5其他指令） -->
+		       T1.LYZLX, <!-- 来源子类型（1一般项目、2时控项目、3时寿项目、4定检包、NULL）只有来源类型=1的才有子类型，其他都为NULL -->
+		       T1.GKID, <!-- 工卡ID -->
+		       T1.GKBH, <!-- 工卡编号 -->
+		       S2997_2.SL, <!-- 需求数量 -->
+		       S2997_2.BZ, <!-- 备注 -->
+		       S2997_2.BXX, <!-- 必需性 -->
+		       S2997_2.QCDH, <!-- 器材代号 -->
+		       S2997_2.DPRTCODE <!-- 机构代码 -->
+		  FROM B_G2_997 S2997_2
+		  JOIN (
+		        SELECT S2014.ID       YWID, --业务ID
+			       S2014.GDBH     YWBH, --业务编号
+			       2              YWLX, --业务类型：1预组包，2工单、3工卡
+			       S2014.GDLX     LYLX, --1维修项目、2EO、3NRC、4MO/MCC、5其他指令）
+			       NULL           LYZLX, --来源子类型（1一般项目、2时控项目、3时寿项目、4定检包、NULL）只有来源类型=1的才有子类型，其他都为NULL
+			       S2014.GKID, --工卡ID
+			       S2014.GKBH, --工单ID
+			       S2014.DPRTCODE --机构代码
+			  FROM B_S2_014 S2014
+			  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+				 	  WHERE S2014.GBID IN
+	     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+	          			#{item}  
+	     			 </foreach>  
+			      </if>
+			 ORDER BY S2014.GDLX, S2014.GDBH						
+		       ) T1
+		    ON S2997_2.YWID = T1.YWID
+		   AND S2997_2.ZT = 1
+		 WHERE S2997_2.DPRTCODE = #{dprtcode}
+		   AND S2997_2.JH = #{jh}  
+		 ORDER BY T1.LYLX, T1.LYZLX, T1.YWBH
+	</select>
+	
+	<!-- 批量删除:导入专用 -->
+	<delete id="delete4BatchImpl" parameterType="java.util.List" >
+	 		<foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+			  	delete from B_G2_997
+			   	where YWID = #{item.ywid,jdbcType=VARCHAR} and BJLX = #{item.bjlx,jdbcType=VARCHAR}
+			</foreach>
+	</delete>
+		
+	<!-- 批量新增:导入专用 -->
+	<insert id="insert4BatchImpl" parameterType="java.util.List" >
+	   INSERT INTO B_G2_997 (ID, DPRTCODE, YWLX, 
+						      YWID, XC, BJLX, BJID, 
+						      JH, SL, HHXX, BZ, JHLY,BXX,QCDH,
+						      ZT, WHDWID, WHRID, 
+						      WHSJ)
+	     <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all"> 
+		    select 
+		     	  #{item.id,jdbcType=VARCHAR}, #{item.dprtcode,jdbcType=VARCHAR}, #{item.ywlx,jdbcType=DECIMAL}, 
+			      #{item.ywid,jdbcType=VARCHAR}, #{item.xc,jdbcType=DECIMAL}, #{item.bjlx,jdbcType=DECIMAL}, #{item.bjid,jdbcType=VARCHAR}, 
+			      #{item.jh,jdbcType=VARCHAR}, #{item.sl,jdbcType=DECIMAL}, #{item.hhxx,jdbcType=VARCHAR}, #{item.bz,jdbcType=VARCHAR}, 
+			      #{item.jhly,jdbcType=VARCHAR}, #{item.bxx,jdbcType=DECIMAL}, #{item.qcdh,jdbcType=VARCHAR}, 
+			      #{item.zt,jdbcType=DECIMAL}, #{item.whdwid,jdbcType=VARCHAR}, #{item.whrid,jdbcType=VARCHAR}, 
+			      #{item.whsj,jdbcType=TIMESTAMP}
+		  	from dual
+	   </foreach>
+	</insert>
+	
+</mapper>

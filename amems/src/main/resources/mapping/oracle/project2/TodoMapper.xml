@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.TodoMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.Todo" >
+    <id column="ID" 	  property="id" jdbcType="VARCHAR" />
+    <result column="LYID" property="lyid" jdbcType="VARCHAR" />
+    <result column="LYBH" property="lybh" jdbcType="VARCHAR" />
+    <result column="BB" property="bb" jdbcType="VARCHAR" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="DBGZLX" property="dbgzlx" jdbcType="INTEGER" />
+    <result column="SM"     property="sm" jdbcType="VARCHAR" />
+    <result column="BLQX"   property="blqx" jdbcType="TIMESTAMP" />
+    <result column="BLRID"  property="blrid" jdbcType="VARCHAR" />
+    <result column="YXZT"   property="yxzt" jdbcType="INTEGER" />
+    <result column="ZT"     property="zt" jdbcType="INTEGER" />
+    <result column="FKYJ"   property="fkyj" jdbcType="VARCHAR" />
+    <result column="FKSJ"   property="fksj" jdbcType="TIMESTAMP" />
+    <result column="DPRTCODE"   property="dprtcode" jdbcType="VARCHAR" />
+    <result column="JD" property="jd" jdbcType="INTEGER" />
+    <result column="GNBM" property="gnbm" jdbcType="VARCHAR" />
+    <result column="DBYWID" property="dbywid" jdbcType="VARCHAR" />
+    <result column="DBSTR" property="paramsMap.dbstr" jdbcType="VARCHAR" /><!-- 待办业务id、业务编号、业务版本-->
+    
+  </resultMap>
+  <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.project2.po.Todo">
+	   <!--t_user 指派人  -->
+	   <association property="zpr" javaType="com.eray.thjw.po.User">  
+	        <id 	column="ZPR_ID" property="id"/>  
+	        <result column="ZPR_USERUSER" property="username"/>  
+	        <result column="ZPR_REALNAME" property="realname"/>  
+	   </association>  
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID, LYID, LYBH, BB, FJJX, DBGZLX, SM, BLQX, BLRID, YXZT, ZT, FKYJ, FKSJ, DPRTCODE, JD, GNBM, DBYWID
+  </sql>
+  
+   <update id="updatetBypgr" >
+  	update T_TODO set blrid = #{1,jdbcType=VARCHAR} where lyid = #{0,jdbcType=VARCHAR} and zt=1 and fjjx = #{2,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteByLyidAndFjjx" parameterType="com.eray.thjw.project2.po.Todo">
+   delete from T_TODO
+    where lyid = #{lyid,jdbcType=VARCHAR} and fjjx = #{fjjx,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 根据适评估单id查询下达指令来源表集合  -->
+  <select id="selectOrderList" resultMap="ResultMap" parameterType="com.eray.thjw.project2.po.Todo" >
+ 	SELECT 
+ 	B1.LYBH,B1.BB,B1.BLQX,B1.DBGZLX,B1.BLRID,B1.SM,B1.ZT,B1.ID,B1.FJJX,B1.FKYJ,B1.FKSJ,B1.LYID,
+	B2.USERNAME || ' ' || B2.REALNAME AS ZPR_ID
+	FROM T_TODO B1
+	LEFT JOIN T_USER B2 ON B1.BLRID=B2.ID
+    WHERE (B1.LYID = #{lyid,jdbcType=VARCHAR}
+    OR    B1.LYID= (select glpgdid from b_g2_001 where id = #{lyid,jdbcType=VARCHAR})) and   b1.jd=1
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TODO
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByLyid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TODO
+    where lyid = #{lyid,jdbcType=VARCHAR} and zt=1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_TODO
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.Todo" >
+    insert into T_TODO (ID, LYID, LYBH, 
+    BB, FJJX, DBGZLX, SM, 
+    BLQX, BLRID, YXZT, 
+    ZT, FKYJ, FKSJ,DPRTCODE,JD,GNBM,DBYWID)
+    values (#{id,jdbcType=VARCHAR}, #{lyid,jdbcType=VARCHAR}, #{lybh,jdbcType=VARCHAR}, 
+      #{bb,jdbcType=VARCHAR}, #{fjjx,jdbcType=VARCHAR}, #{dbgzlx,jdbcType=INTEGER}, #{sm,jdbcType=VARCHAR}, 
+      #{blqx,jdbcType=TIMESTAMP}, #{blrid,jdbcType=VARCHAR}, #{yxzt,jdbcType=INTEGER}, 
+      #{zt,jdbcType=INTEGER}, #{fkyj,jdbcType=VARCHAR}, sysdate,#{dprtcode,jdbcType=VARCHAR}
+      ,#{jd,jdbcType=INTEGER},#{gnbm,jdbcType=VARCHAR},#{dbywid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.Todo" >
+    insert into T_TODO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="lyid != null" >
+        LYID,
+      </if>
+      <if test="lybh != null" >
+        LYBH,
+      </if>
+      <if test="bb != null" >
+        BB,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="dbgzlx != null" >
+        DBGZLX,
+      </if>
+      <if test="sm != null" >
+        SM,
+      </if>
+      <if test="blqx != null" >
+        BLQX,
+      </if>
+      <if test="blrid != null" >
+        BLRID,
+      </if>
+      <if test="yxzt != null" >
+        YXZT,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="fkyj != null" >
+        FKYJ,
+      </if>
+      <if test="fksj != null" >
+        FKSJ,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="jd != null" >
+        JD,
+      </if>
+      <if test="gnbm != null" >
+        GNBM,
+      </if>
+       <if test="dbywid != null" >
+        DBYWID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="lyid != null" >
+        #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="dbgzlx != null" >
+        #{dbgzlx,jdbcType=INTEGER},
+      </if>
+      <if test="sm != null" >
+        #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="blqx != null" >
+        #{blqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="blrid != null" >
+        #{blrid,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        #{yxzt,jdbcType=INTEGER},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="fkyj != null" >
+        #{fkyj,jdbcType=VARCHAR},
+      </if>
+      <if test="fksj != null" >
+        sysdate,
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="jd != null" >
+        #{jd,jdbcType=INTEGER},
+      </if>
+      <if test="gnbm != null" >
+       #{gnbm,jdbcType=VARCHAR},
+      </if>
+      <if test="dbywid != null" >
+       #{dbywid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.Todo" >
+    update T_TODO
+    <set >
+      <if test="lyid != null" >
+        LYID = #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        LYBH = #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="dbgzlx != null" >
+        DBGZLX = #{dbgzlx,jdbcType=INTEGER},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="blqx != null" >
+        BLQX = #{blqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="blrid != null" >
+        BLRID = #{blrid,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        YXZT = #{yxzt,jdbcType=INTEGER},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="fkyj != null" >
+        FKYJ = #{fkyj,jdbcType=VARCHAR},
+      </if>
+      <if test="fksj != null" >
+        FKSJ = #{fksj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByLyidAndFjjx" parameterType="com.eray.thjw.project2.po.Todo" >
+    update T_TODO
+    <set >
+      <if test="lybh != null" >
+        LYBH = #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="dbgzlx != null" >
+        DBGZLX = #{dbgzlx,jdbcType=INTEGER},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="blqx != null" >
+        BLQX = #{blqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="blrid != null" >
+        BLRID = #{blrid,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        YXZT = #{yxzt,jdbcType=INTEGER},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="fkyj != null" >
+        FKYJ = #{fkyj,jdbcType=VARCHAR},
+      </if>
+      <if test="fksj != null" >
+        FKSJ = #{fksj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where LYID = #{lyid,jdbcType=VARCHAR} and FJJX = #{fjjx,jdbcType=VARCHAR}
+  </update>
+<!--   更新状态值 -->
+  <update id="updateZTByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.Todo" >
+    update T_TODO
+    <set>
+      <if test="blrid != null" >
+        BLRID = #{blrid,jdbcType=VARCHAR},
+      </if>      
+      <if test="fkyj != null" >
+        FKYJ = #{fkyj,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+        FKSJ = sysdate,
+
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.Todo" >
+    update T_TODO
+    set LYID = #{lyid,jdbcType=VARCHAR},
+      LYBH = #{lybh,jdbcType=VARCHAR},
+      BB = #{bb,jdbcType=VARCHAR},
+      FJJX = #{fjjx,jdbcType=VARCHAR},
+      DBGZLX = #{dbgzlx,jdbcType=INTEGER},
+      SM = #{sm,jdbcType=VARCHAR},
+      BLQX = #{blqx,jdbcType=TIMESTAMP},
+      BLRID = #{blrid,jdbcType=VARCHAR},
+      YXZT = #{yxzt,jdbcType=INTEGER},
+      ZT = #{zt,jdbcType=INTEGER},
+      FKYJ = #{fkyj,jdbcType=VARCHAR},
+      FKSJ = #{fksj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!--根据代办业务id,节点,状态更新数据  -->
+  
+  <update id="updateByDbId" parameterType="com.eray.thjw.project2.po.Todo">
+    UPDATE T_TODO SET ZT=2,BLRID=#{blrid,jdbcType=VARCHAR},FKSJ=sysdate
+    WHERE DBYWID=#{dbywid,jdbcType=VARCHAR} AND JD=#{jd,jdbcType=DECIMAL} AND ZT=#{zt,jdbcType=DECIMAL}
+  
+  </update>
+  
+  
+  
+  <select id="getTodoByParams" parameterType="com.eray.thjw.project2.po.Todo" resultMap="BaseResultMap"> 
+  	select 
+    <include refid="Base_Column_List"  />
+    from T_TODO
+    where yxzt = 1 and blrid = #{blrid,jdbcType=VARCHAR} and dbgzlx = #{dbgzlx,jdbcType=INTEGER}
+    and fjjx = #{fjjx,jdbcType=VARCHAR} and lyid in
+    <foreach collection="paramsMap.list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+	</foreach>
+  </select>
+  
+ <select id="getToDOList" parameterType="com.eray.thjw.project2.po.Todo" resultMap="BaseResultMap"> 
+    SELECT TODO.ID, --待办任务ID
+       TODO.LYID, --来源ID
+       TODO.LYBH, --来源编号
+       TODO.BB, --来源版本
+       TODO.FJJX, --飞机机型
+       TODO.DBGZLX, --待办工作类型
+       TODO.SM, --说明
+       TODO.BLQX, --办理期限
+       TODO.BLRID, --办理人id
+       TODO.YXZT, --有效状态
+       TODO.ZT, --状态
+       TODO.FKYJ, --反馈意见
+       TODO.FKSJ, --更新时间
+       TODO.DPRTCODE, --机构代码
+       TODO.JD, --节点
+       TODO.GNBM, --功能编码
+       TODO.DBYWID, --待办业务ID
+       TODO_RS.DBSTR --待办业务id、业务编号、业务版本
+  FROM T_TODO TODO
+  LEFT JOIN (SELECT TODO_RS.MAINID,
+                    WM_CONCAT(TODO_RS.YWID || '#_#' || TODO_RS.YWBH || '#_#' ||
+                              TODO_RS.YWBB) DBSTR
+               FROM T_TODO_RS TODO_RS
+              GROUP BY TODO_RS.MAINID) TODO_RS
+    ON TODO.ID = TODO_RS.MAINID
+ WHERE TODO.DPRTCODE = #{dprtcode,jdbcType=VARCHAR}
+   AND TODO.YXZT = 1
+   AND ((EXISTS (SELECT 1
+                   FROM (SELECT RB.ROLE_ID, B.BUTTONCODE GNCODE
+                           FROM T_BUTTON B
+                           JOIN T_ROLE2BTN RB
+                             ON B.ID = RB.BUTTON_ID
+                         UNION ALL
+                         SELECT RM.ROLE_ID, M.MENUCODE GNCODE
+                           FROM T_MENU M
+                           JOIN T_ROLE2MENU RM
+                             ON M.ID = RM.MENU_ID) MB
+                   JOIN T_USER2ROLE UR
+                     ON UR.ROLE_ID = MB.ROLE_ID
+                    AND UR.USER_ID = #{blrid,jdbcType=VARCHAR}
+                  WHERE MB.GNCODE = TODO.GNBM) AND TODO.BLRID is null) OR
+       TODO.BLRID = #{blrid,jdbcType=VARCHAR})
+     <if test="zt != null" >
+      AND TODO.zt=#{zt,jdbcType=INTEGER}
+     </if>
+      <if test="dbgzlx != null" >
+      AND TODO.dbgzlx=#{dbgzlx,jdbcType=INTEGER}
+     </if>
+    <if test="keyword != null and keyword != ''" >
+      AND UPPER(TODO.lybh) like UPPER('%'||#{keyword}||'%')
+     </if>
+  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+		    <when test='pagination.sort == "auto"'>                       
+		    		order by TODO.FKSJ ASC, TODO.ID
+		    </when>
+		    <otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    </otherwise>
+	</choose>   
+
+ </select>
+   <select id="selecttodo" resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.Todo" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TODO
+    where zt = #{zt,jdbcType=INTEGER} and fjjx = #{fjjx,jdbcType=VARCHAR} and lyid = #{lyid,jdbcType=VARCHAR}
+  </select>
+   <select id="selecttodolist" resultMap="BaseResultMap" parameterType="com.eray.thjw.project2.po.Todo" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TODO
+    where zt = #{zt,jdbcType=INTEGER} and fjjx = #{fjjx,jdbcType=VARCHAR} and lyid = #{lyid,jdbcType=VARCHAR}
+  </select>
+  
+   <delete id="deletedbyw" parameterType="com.eray.thjw.project2.po.Todo" >
+    delete from T_TODO
+    where dbywid = #{dbywid,jdbcType=VARCHAR}
+        and jd in 
+     <foreach collection="paramsMap.jdlist" item="item" index="index" open="("
+		close=")" separator=",">
+		#{item}
+	</foreach>
+     <if test="yxzt != null" >
+       and  yxzt = #{yxzt,jdbcType=INTEGER}
+      </if>
+     <if test="zt != null" >
+       and  zt = #{zt,jdbcType=INTEGER}
+      </if>
+     <if test="dbgzlx != null" >
+       and  dbgzlx = #{dbgzlx,jdbcType=INTEGER}
+      </if>
+  </delete>
+  
+  <update id="updateByDbyw" parameterType="com.eray.thjw.project2.po.Todo" >
+    update T_TODO
+    <set >
+      <if test="lyid != null" >
+        LYID = #{lyid,jdbcType=VARCHAR},
+      </if>
+      <if test="lybh != null" >
+        LYBH = #{lybh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        FJJX = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="dbgzlx != null" >
+        DBGZLX = #{dbgzlx,jdbcType=INTEGER},
+      </if>
+      <if test="sm != null" >
+        SM = #{sm,jdbcType=VARCHAR},
+      </if>
+      <if test="blqx != null" >
+        BLQX = #{blqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="blrid != null" >
+        BLRID = #{blrid,jdbcType=VARCHAR},
+      </if>
+      <if test="yxzt != null" >
+        YXZT = #{yxzt,jdbcType=INTEGER},
+      </if>
+      <if test="zt != null" >
+        ZT = 2,
+      </if>
+      <if test="fkyj != null" >
+        FKYJ = #{fkyj,jdbcType=VARCHAR},
+      </if>
+      <if test="fksj != null" >
+        FKSJ = #{fksj,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where dbywid = #{dbywid,jdbcType=VARCHAR} and  ZT = #{zt,jdbcType=INTEGER} 
+    	and jd in 
+     <foreach collection="paramsMap.jdlist" item="item" index="index" open="("
+		close=")" separator=",">
+		#{item}
+	</foreach>
+    
+  </update>
+  
+  <delete id="delById" parameterType="com.eray.thjw.project2.po.Todo">
+  DELETE FROM T_TODO  
+  WHERE DBYWID=#{dbywid,jdbcType=VARCHAR} 
+  <if test="zt !=null">
+  AND ZT=#{zt,jdbcType=DECIMAL}
+  </if>
+  <if test="paramsMap !=null and paramsMap.jdlist !=null and paramsMap.jdlist.size >0">
+    AND JD IN 
+    <foreach collection="paramsMap.jdlist" item="item" index="index" open="("
+		close=")" separator=",">
+		#{item}
+	</foreach>
+  </if>
+  </delete>
+  
+  <update id="updateBlrByYwid" parameterType="com.eray.thjw.project2.po.Todo">
+    UPDATE T_TODO  SET BLRID=#{blrid,jdbcType=VARCHAR} WHERE DBYWID=#{dbywid,jdbcType=VARCHAR}
+    AND ZT=#{zt,jdbcType=DECIMAL}
+  </update>
+  
+</mapper>

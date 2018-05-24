@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.TechnicalMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.Technical" >
+    <id column="ID" 		  property="id" 	  jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="PGDH"     property="pgdh"     jdbcType="VARCHAR" />
+    <result column="BB" 	  property="bb"       jdbcType="DECIMAL" />
+    <result column="LYLX" 	  property="lylx"     jdbcType="DECIMAL" />
+    <result column="LYSM"     property="lysm"     jdbcType="VARCHAR" />
+    <result column="JSWJID"   property="jswjid"   jdbcType="VARCHAR" />
+    <result column="GLPGDID"  property="glpgdid"  jdbcType="VARCHAR" />
+    <result column="JX"       property="jx"       jdbcType="VARCHAR" />
+    <result column="PGQX" 	  property="pgqx"     jdbcType="TIMESTAMP" />
+    <result column="ZJH" 	  property="zjh"      jdbcType="VARCHAR" />
+    <result column="PGDZT" 	  property="pgdzt"    jdbcType="VARCHAR" />
+    <result column="SXYQ"	  property="sxyq"     jdbcType="VARCHAR" />
+    <result column="BZ" 	  property="bz"       jdbcType="VARCHAR" />
+    <result column="ZXBS" 	  property="zxbs"     jdbcType="DECIMAL" />
+    <result column="F_BBID"   property="fBbid"    jdbcType="VARCHAR" />
+    <result column="B_BBID"   property="bBbid"    jdbcType="VARCHAR" />
+    <result column="ZT"       property="zt"       jdbcType="DECIMAL" />
+    <result column="PGBMID"   property="pgbmid"   jdbcType="VARCHAR" />
+    <result column="PGRID"    property="pgrid"    jdbcType="VARCHAR" />
+    <result column="PGSJ"     property="pgsj"     jdbcType="TIMESTAMP" />
+    <result column="SHBMID"   property="shbmid"   jdbcType="VARCHAR" />
+    <result column="SHRID"    property="shrid"    jdbcType="VARCHAR" />
+    <result column="SHSJ"     property="shsj"     jdbcType="TIMESTAMP" />
+    <result column="SHYJ"     property="shyj"     jdbcType="VARCHAR" />
+    <result column="PFBMID"   property="pfbmid"   jdbcType="VARCHAR" />
+    <result column="PFRID"    property="pfrid"    jdbcType="VARCHAR" />
+    <result column="PFSJ"     property="pfsj"     jdbcType="TIMESTAMP" />
+    <result column="PFYJ"     property="pfyj"     jdbcType="VARCHAR" />
+    <result column="GBRID"    property="gbrid"    jdbcType="VARCHAR" />
+    <result column="GBRQ"     property="gbrq"     jdbcType="TIMESTAMP" />
+    <result column="GBYY"     property="gbyy"     jdbcType="VARCHAR" />
+    <result column="PFJL"     property="pfjl"     jdbcType="DECIMAL" />
+    <result column="SHJL"     property="shjl"     jdbcType="DECIMAL" />
+    <result column="YJBFZLSJ" property="yjbfzlsj" jdbcType="TIMESTAMP" />
+    <result column="YJBFZL"   property="yjbfzl"   jdbcType="VARCHAR" />
+    <result column="SYTS"     property="paramsMap.syts"           jdbcType="VARCHAR" />
+    <result column="ATTACHCOUNT" property="paramsMap.attachCount" jdbcType="VARCHAR" />
+    <result column="GLPGDH"      property="paramsMap.glpgdh"      jdbcType="VARCHAR" />
+    <result column="GLPGDBB"     property="paramsMap.glpgdbb"     jdbcType="VARCHAR" />
+    <result column="GLGLJSWJID"  property="paramsMap.glgljswjid"  jdbcType="VARCHAR" />
+    <result column="GLJSWJIDS"    property="paramsMap.gljswjid"    jdbcType="VARCHAR" />
+    <result column="GLJSWJBH"    property="paramsMap.gljswjbh"    jdbcType="VARCHAR" />
+    <result column="GLJSWJBB"    property="paramsMap.gljswjbb"    jdbcType="VARCHAR" />
+	<result column="WBWJM"       property="paramsMap.wbwjm"       jdbcType="VARCHAR" />
+    <result column="OLDID"    	 property="paramsMap.oldid"    	  jdbcType="VARCHAR" />
+	<result column="OLDBB"       property="paramsMap.oldbb"       jdbcType="VARCHAR" />
+	
+  </resultMap>
+  
+  <resultMap id="TechnicalToGiveInstructionMap" extends="BaseResultMap" type="com.eray.thjw.project2.po.Technical">
+	  <association property="pgr" javaType="com.eray.thjw.po.User">  
+	        <id column="pgrid" property="id"/>  
+	        <result column="PGR_USERNAME" property="username"/>  
+	        <result column="PGR_REALNAME" property="realname"/>  
+	   </association>  
+	   <collection property="giveInstructionList" ofType="com.eray.thjw.project2.po.GiveInstruction">
+	       <result column="zlxl" property="zlxl" jdbcType="VARCHAR" />
+	   </collection> 
+  </resultMap>
+  
+     <resultMap id="ResultMap" extends="BaseResultMap" type="com.eray.thjw.project2.po.Technical">
+   		<!--b_g2_00100 技术评估单-附加信息  -->
+	    <association property="technicalAttached" javaType="com.eray.thjw.project2.po.TechnicalAttached">
+	    	<id column="TECHNICALATTACHED_ID" 		property="id"     jdbcType="VARCHAR" />
+		    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+		    <result column="WCLX"   property="wclx"   jdbcType="VARCHAR" />
+		    <result column="DJ"     property="dj" 	  jdbcType="VARCHAR" />
+		    <result column="JJCD"   property="jjcd"   jdbcType="VARCHAR" />
+		    <result column="SJGZ"   property="sjgz"   jdbcType="VARCHAR" />
+		    <result column="WJZY"   property="wjzy"   jdbcType="VARCHAR" />
+		    <result column="SYFW_YWJ" property="syfwYwj" jdbcType="VARCHAR" />
+		    <result column="SYX"      property="syx"     jdbcType="DECIMAL" />
+		    <result column="FSYYY"    property="fsyyy"   jdbcType="VARCHAR" />
+		    <result column="SYLB"     property="sylb"    jdbcType="DECIMAL" />
+		    <result column="SYFW_BDW" property="syfwBdw" jdbcType="VARCHAR" />
+		    <result column="GBTJ"     property="gbtj"     jdbcType="VARCHAR" />
+		    <result column="IS_CFJC"  property="isCfjc"  jdbcType="DECIMAL" />
+		    <result column="IS_ZZCS"  property="isZzcs"  jdbcType="DECIMAL" />
+		    <result column="IS_MFHC"  property="isMfhc"  jdbcType="DECIMAL" />
+		    <result column="IS_ZBHC"  property="isZbhc"  jdbcType="DECIMAL" />
+		    <result column="IS_TSGJ"  property="isTsgj"  jdbcType="DECIMAL" />
+		    <result column="IS_YXZLPH" property="isYxzlph" jdbcType="DECIMAL" />
+		    <result column="YWJNR"     property="ywjnr"    jdbcType="VARCHAR" />
+		    <result column="BJ"        property="bj"       jdbcType="VARCHAR" />
+		    <result column="WJGXJX"    property="wjgxjx"   jdbcType="VARCHAR" />
+		    <result column="XGWJZXZTDC" property="xgwjzxztdc" jdbcType="VARCHAR" />
+		    <result column="GCPGJL"     property="gcpgjl"	  jdbcType="VARCHAR" />
+		    <result column="JLFJID"     property="jlfjid" 	  jdbcType="VARCHAR" />
+		    <result column="fjzch"     property="fjzch" 	  jdbcType="VARCHAR" />
+	    </association>
+   		<!--b_g2_000 适航性资料  -->
+	    <association property="airworthiness" javaType="com.eray.thjw.project2.po.Airworthiness">
+    	    <id column="AIRWORTHINESS_ID" property="id" 	  jdbcType="VARCHAR" />
+		    <result column="DPRTCODE" 	  property="dprtcode" jdbcType="VARCHAR" />
+		    <result column="JSWJBH" 	  property="jswjbh"   jdbcType="VARCHAR" />
+		    <result column="A_BB" 		  property="bb"       jdbcType="VARCHAR" />
+		    <result column="JSWJZT" 	  property="jswjzt"   jdbcType="VARCHAR" />
+		    <result column="JSWJLY"       property="jswjly"   jdbcType="VARCHAR" />
+		    <result column="JSWJLX"		  property="jswjlx"   jdbcType="VARCHAR" />
+		    <result column="ATA" 		  property="ata" 	  jdbcType="VARCHAR" />
+		    <result column="XZAH" 		  property="xzah"     jdbcType="VARCHAR" />
+		    <result column="GLJSWJID"	  property="gljswjid" jdbcType="VARCHAR" />
+		    <result column="BFRQ" property="bfrq" jdbcType="TIMESTAMP" />
+		    <result column="SXRQ" property="sxrq" jdbcType="TIMESTAMP" />
+		    <result column="PGQX" property="pgqx" jdbcType="TIMESTAMP" />
+		    <result column="DQRQ" property="dqrq" jdbcType="TIMESTAMP" />
+		    <result column="BZ"   property="bz"   jdbcType="VARCHAR" />
+		    <result column="ZT"   property="zt"   jdbcType="DECIMAL" />
+		    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+		    <result column="ZDRID"  property="zdrid"  jdbcType="VARCHAR" />
+		    <result column="ZDSJ"   property="zdsj"   jdbcType="TIMESTAMP" />
+		    <result column="GBRID"  property="gbrid"  jdbcType="VARCHAR" />
+		    <result column="GBRQ"   property="gbrq"   jdbcType="TIMESTAMP" />
+		    <result column="GBYY"   property="gbyy"   jdbcType="VARCHAR" />
+	    </association>
+	    <!--pgr 评估人 -->
+ 		<association property="pgr" javaType="com.eray.thjw.po.User">  
+	        <id column="PGR_ID" property="id"/>  
+	        <result column="PGR_USERUSER" property="username"/>  
+	        <result column="PGR_REALNAME" property="realname"/>  
+	    </association>  
+	    <!--shr 审核人 -->
+ 		<association property="shr" javaType="com.eray.thjw.po.User">  
+	        <id column="SHR_ID" property="id"/>  
+	        <result column="SHR_USERUSER" property="username"/>  
+	        <result column="SHR_REALNAME" property="realname"/>  
+	    </association>  
+	    <!--pzr 批准人 -->
+ 		<association property="pzr" javaType="com.eray.thjw.po.User">  
+	        <id column="PZR_ID" property="id"/>  
+	        <result column="PZR_USERUSER" property="username"/>  
+	        <result column="PZR_REALNAME" property="realname"/>  
+	    </association>  
+	    <!--gbr 关闭人 -->
+ 		<association property="gbr" javaType="com.eray.thjw.po.User">  
+	        <id column="GBR_ID" property="id"/>  
+	        <result column="GBR_USERUSER" property="username"/>  
+	        <result column="GBR_REALNAME" property="realname"/>  
+	    </association>  
+	    <!--jg_dprt 机构代码  -->
+ 		<association property="jg_dprt" javaType="com.eray.thjw.po.Department">
+	        <id     column="dprtcode"    property="id"/>
+	        <result column="jg_dprtname" property="dprtname"/>
+     	</association>  
+	    <!--zjh 章节号 -->
+ 		<association property="fixChapter" javaType="com.eray.thjw.po.FixChapter">
+	       <id     column="ZJH_ZJH"      property="zjh"      jdbcType="VARCHAR" />
+		   <result column="ZJH_DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+		   <result column="ZJH_ZWMS"     property="zwms"     jdbcType="VARCHAR" />
+		   <result column="ZJH_YWMS"     property="ywms"     jdbcType="VARCHAR" />
+     	</association>  
+     	<!--assessmentAttachment 结论附件 -->
+	   	<association property="assessmentAttachment" javaType="com.eray.thjw.flightdata.po.Attachment">  
+	        <result column="SID" property="id"/>  
+	        <result column="SCFJ_WBWJM" property="wbwjm"/>  
+	        <result column="SCFJ_HZM" property="hzm"/>  
+	    </association>
+     	<!--airworthinessAttachment 适航性资料附件 -->
+	   	<association property="airworthinessAttachment" javaType="com.eray.thjw.flightdata.po.Attachment">  
+	        <result column="JSWJ_ID" property="id"/>  
+	        <result column="JSWJ_WBWJM" property="wbwjm"/>  
+	        <result column="JSWJ_HZM" property="hzm"/>  
+	    </association>
+	      <!-- 一对多,适用性列表 -->
+	    <collection property="syxszList" ofType="com.eray.thjw.project2.po.TEApplicability">  
+		    <id column="SYX_ID" property="id" jdbcType="VARCHAR" />
+		    <result column="SYX_XC" property="xc" jdbcType="DECIMAL" />
+		    <result column="SYX_BH" property="bh" jdbcType="VARCHAR" />
+		    <result column="SYX_XLH" property="xlh" jdbcType="VARCHAR" />
+		    <result column="SYX_SZWZ" property="szwz" jdbcType="VARCHAR" />
+		    <result column="SYX_WHDWID" property="whdwid" jdbcType="VARCHAR" />
+	        <result column="SYX_XINGH" property="paramsMap.xingh" jdbcType="VARCHAR" />
+        </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, PGDH, BB, LYLX, LYSM, JSWJID, GLPGDID, JX, PGQX, ZJH, PGDZT, SXYQ, 
+    BZ, ZXBS, F_BBID, B_BBID, ZT, PGBMID, PGRID, PGSJ, SHBMID, SHRID, SHSJ, SHYJ, PFBMID, 
+    PFRID, PFSJ, PFYJ, GBRID, GBRQ, GBYY, PFJL, SHJL,YJBFZLSJ,yjbfzl
+  </sql>
+  
+  <select id="queryAllByGlxswjids" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from b_g2_001
+    where 1=1
+    		and b_g2_001.JSWJID in  
+    		<foreach collection="list" item="mainid" index="index" open="(" close=")" separator=",">
+				#{mainid,jdbcType=VARCHAR}
+			</foreach>
+  </select>
+  
+     <!-- 根据工卡id查询当前工卡的历史版本集合 -->
+	<select id="queryHistoryListById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    SELECT 
+	    b1.id,b1.DPRTCODE,b1.PGDH,b1.BB,b1.PGSJ,b1.zt
+	    FROM b_g2_001 B1
+	    JOIN b_g2_001 B2
+	    ON B1.pgdh = B2.pgdh
+	    WHERE B2.ID = #{0,jdbcType=VARCHAR}
+	    AND B1.DPRTCODE = #{1,jdbcType=VARCHAR}
+	    ORDER BY B1.BB DESC
+    </select>
+  
+   <!--根据技术文件id查询当前的技术文件评估单状态-->
+   <select id="getCurrentZt4Validation" parameterType="String" resultType="int">
+		select zt from B_G2_001 where id=#{id, jdbcType=VARCHAR}
+   </select>
+  
+   <!--根据技术文件单号+版本查询技术评估单数量-->
+   <select id="getCount4Validation" parameterType="com.eray.thjw.project2.po.Technical"
+		resultType="int">
+		select count(1) from B_G2_001 where PGDH=#{pgdh,jdbcType=VARCHAR} and
+		bb=#{bb,jdbcType=DECIMAL}
+   </select>
+  
+   <!--根据技术文件id查询评估单-->
+   <select id="selectByjswjid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+	    <include refid="Base_Column_List" />
+	    	from B_G2_001
+	   		where jswjid = #{jswjid,jdbcType=VARCHAR} and LYLX=1
+  </select>
+  
+    <!--根据技术文件id查询评估单-->
+   <select id="selectTechnicalfileByJswjid" resultMap="TechnicalToGiveInstructionMap" parameterType="java.lang.String" >
+    select 
+	    B_G2_001.id,B_G2_001.jx,B_G2_001.pgrid,B_G2_001.pgdh,B_G2_001.zt,B_G2_001.bb,
+	    B_G2_00101.zlxl,
+	    pgr.realname pgr_realname,pgr.username pgr_username
+	    	from B_G2_001 left join t_user pgr on B_G2_001.pgrid=pgr.id
+	    				  left join B_G2_00101 on B_G2_00101.mainid=B_G2_001.id
+	   		where B_G2_001.jswjid = #{jswjid,jdbcType=VARCHAR} and B_G2_001.LYLX=1 order by B_G2_001.jx,B_G2_00101.zlxl asc  
+  </select>
+  
+  <!--根据id集合查询 技术评估单集合 Start-->
+  <select id="queryByIdList" resultMap="BaseResultMap" >
+		select 
+		<include refid="Base_Column_List" />
+    	from B_G2_001
+    	where ID in
+		<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList,jdbcType=VARCHAR}
+		 </foreach>
+  </select>
+  
+  <!--批量审核-->
+  <update id="updateBatchAudit" parameterType="Map" >
+    	UPDATE B_G2_001
+    	SET 
+    		SHRID = #{shrid,jdbcType=VARCHAR},
+    		SHBMID = #{shbmid,jdbcType=VARCHAR},
+    		ZT = 3,
+    		SHYJ = #{shyj,jdbcType=VARCHAR},
+      		SHSJ = sysdate,
+      		SHJL=3
+		WHERE ID IN 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+  </update>
+  
+  <!--批量批准-->
+  <update id="updateBatchApprovel" parameterType="Map" >
+    	UPDATE B_G2_001
+    	SET 
+    		PFRID = #{pfrid,jdbcType=VARCHAR},
+    		PFBMID = #{pfbmid,jdbcType=VARCHAR},
+    		ZT = 4,
+    		PFYJ = #{pfyj,jdbcType=VARCHAR},
+    		ZXBS = #{zxbs,jdbcType=DECIMAL},
+      		PFSJ = sysdate,
+      		PFJL=4
+		WHERE ID IN 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+  </update>
+  
+  <!--技术文件分页查询 Start-->
+  <select id="queryAllPageList"  resultMap="ResultMap">
+ SELECT B1.ID,B1.DPRTCODE,B1.PGDH,B1.BB,B1.LYLX,B1.LYSM,B1.JSWJID,B1.GLPGDID,B1.JX,B1.PGQX,B1.ZJH,B1.PGDZT,B1.SXYQ,B1.BZ,B1.ZXBS,
+         B1.F_BBID,B1.B_BBID,B1.ZT,B1.PGBMID,B1.PGRID,B1.PGSJ,B1.SHBMID,B1.SHRID,B1.SHSJ,B1.SHYJ,B1.PFBMID,B1.PFRID,B1.PFSJ,B1.PFYJ,
+         B1.GBRID,B1.GBRQ,B1.GBYY,B1.PFJL,B1.SHJL,B2.MAINID,
+         B2.WCLX,B2.DJ,B2.JJCD,B2.SJGZ,B2.WJZY,B2.SYFW_YWJ,B2.SYX,B2.FSYYY,B2.SYLB,B2.SYFW_BDW,B1.YJBFZLSJ,B1.YJBFZL,B2.GBTJ,B2.IS_CFJC,
+         B2.IS_ZZCS,B2.IS_MFHC,B2.IS_ZBHC,B2.IS_TSGJ,B2.IS_YXZLPH,B2.YWJNR,B2.BJ,B2.WJGXJX,B2.XGWJZXZTDC,B2.GCPGJL,B2.JLFJID,
+         B3.JSWJLX,B3.JSWJBH,B3.JSWJZT,B3.BB AS A_BB,B3.ID AIRWORTHINESS_ID,B3.GLJSWJID,B3.SXRQ,
+         B4.USERNAME || ' ' || B4.REALNAME AS PGR_ID,
+         B10.USERNAME || ' ' || B10.REALNAME AS GBR_ID,
+         CEIL(B1.PGQX  - SYSDATE) AS SYTS,
+         D011.ATTACHCOUNT,
+         B5.DPRTNAME AS JG_DPRTNAME,
+         B6.ZJH || ' ' ||B6.YWMS AS ZJH_ZJH,
+         B7.PGDH AS GLPGDH,B7.BB AS GLPGDBB,
+      	 B8.WBWJM JSWJ_WBWJM,B8.ID JSWJ_ID,B8.HZM JSWJ_HZM,
+         B9.JSWJBH AS GLJSWJBH,B9.BB AS GLJSWJBB,B9.id AS GLJSWJIDS,
+         B13.WBWJM SCFJ_WBWJM,B13.ID SID,B13.HZM SCFJ_HZM
+         FROM B_G2_001 B1
+         LEFT JOIN B_G2_00100 B2 ON B1.ID = B2.MAINID
+         LEFT JOIN B_G2_000 B3 ON B1.JSWJID = B3.ID
+         LEFT JOIN T_USER B4 ON B1.PGRID=B4.ID
+         LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 WHERE YXZT=1 GROUP BY MAINID) D011 ON D011.MAINID = B1.ID 
+         LEFT JOIN T_DEPARTMENT B5 ON B1.DPRTCODE=B5.ID
+         LEFT JOIN D_005 B6 ON B1.ZJH =B6.ZJH AND B1.DPRTCODE=B6.DPRTCODE
+         LEFT JOIN B_G2_001 B7 ON B1.GLPGDID= B7.ID
+         LEFT JOIN D_011 B8 ON B1.JSWJID=B8.MAINID 
+         LEFT JOIN B_G2_000 B9 ON B9.ID=B7.JSWJID
+         LEFT JOIN T_USER B10 ON B1.GBRID= B10.ID
+         LEFT JOIN D_011 B13 ON B2.JLFJID=B13.MAINID AND B13.YXZT=1
+		 <include refid="BaseResulParam"></include>
+	     <choose>
+		   <when test='pagination.sort == "auto"'>
+		    	 ORDER BY SYTS,b1.zt,b1.ID 
+		   </when>
+	     <otherwise>
+			     ORDER BY ${pagination.sort} ${pagination.order}
+	     </otherwise>
+	     </choose>
+  </select>
+  <!--技术文件分页查询 End-->
+  
+  <!--根据评估单id查询评估单信息 Start-->
+  <select id="getById"  resultMap="ResultMap" >
+		    SELECT B1.ID,B1.DPRTCODE,B1.PGDH,B1.BB,B1.LYLX,B1.LYSM,B1.JSWJID,B1.GLPGDID,B1.JX,B1.PGQX,B1.ZJH,B1.PGDZT,B1.SXYQ,B1.BZ,B1.ZXBS,
+         B1.F_BBID,B1.B_BBID,B1.ZT,B1.PGBMID,B1.PGRID,B1.PGSJ,B1.SHBMID,B1.SHRID,B1.SHSJ,B1.SHYJ,B1.PFBMID,B1.PFRID,B1.PFSJ,B1.PFYJ,
+         B1.GBRID,B1.GBRQ,B1.GBYY,B1.PFJL,B1.SHJL,B2.MAINID,
+         B2.ID AS TECHNICALATTACHED_ID,B2.WCLX,B2.DJ,B2.JJCD,B2.SJGZ,B2.WJZY,B2.SYFW_YWJ,B2.SYX,B2.FSYYY,B2.SYLB,B2.SYFW_BDW,B1.YJBFZLSJ,B1.YJBFZL,B2.GBTJ,B2.IS_CFJC,
+         B2.IS_ZZCS,B2.IS_MFHC,B2.IS_ZBHC,B2.IS_TSGJ,B2.IS_YXZLPH,B2.YWJNR,B2.BJ,B2.WJGXJX,B2.XGWJZXZTDC,B2.GCPGJL,B2.JLFJID,b2.fjzch,
+         B3.JSWJLX,B3.JSWJBH,B3.JSWJZT,B3.BB AS A_BB,B3.ID AIRWORTHINESS_ID,B3.GLJSWJID,B3.SXRQ,B3.XZAH,B3.JSWJLY,B3.JSWJLX,B3.ZDSJ,B3.BFRQ,B3.DQRQ,
+         B4.USERNAME || ' ' || B4.REALNAME AS PGR_ID,
+         CEIL(B1.PGQX  - SYSDATE) AS SYTS,
+         D011.ATTACHCOUNT,
+         B5.DPRTNAME AS JG_DPRTNAME,
+         B6.ZJH || ' ' ||B6.YWMS AS ZJH_ZJH,
+         B7.PGDH AS GLPGDH,
+         B8.WBWJM,
+         B9.JSWJBH AS GLJSWJBH,B9.ID AS GLGLJSWJID,B9.id AS GLJSWJID,
+         B10.USERNAME || ' ' || B10.REALNAME AS SHR_ID,
+         B11.USERNAME || ' ' || B11.REALNAME AS PZR_ID,
+         B12.ID OLDID,B12.BB OLDBB,
+         B13.WBWJM SCFJ_WBWJM,B13.ID SID,B13.HZM SCFJ_HZM,
+          B14.WBWJM JSWJ_WBWJM,B14.ID JSWJ_ID,B14.HZM JSWJ_HZM,
+          bg200102.id SYX_id,bg200102.xc SYX_XC,bg200102.bh SYX_BH,bg200102.xlh SYX_XLH,bg200102.szwz SYX_SZWZ,bg200102.whdwid SYX_WHDWID
+         ,D008.XINGH AS SYX_XINGH
+         
+         FROM B_G2_001 B1
+         LEFT JOIN B_G2_00100 B2 ON B1.ID = B2.MAINID
+         LEFT JOIN B_G2_000 B3 ON B1.JSWJID = B3.ID
+         LEFT JOIN T_USER B4 ON B1.PGRID=B4.ID
+         LEFT JOIN (SELECT MAINID,COUNT(1) AS ATTACHCOUNT FROM D_011 WHERE YXZT=1 GROUP BY MAINID) D011 ON D011.MAINID = B1.ID 
+         LEFT JOIN T_DEPARTMENT B5 ON B1.DPRTCODE=B5.ID
+         LEFT JOIN D_005 B6 ON B1.ZJH =B6.ZJH AND B1.DPRTCODE=B6.DPRTCODE
+         LEFT JOIN B_G2_001 B7 ON B1.GLPGDID= B7.ID
+         LEFT JOIN D_011 B8 ON B2.MAINID=B8.ID 
+         LEFT JOIN B_G2_000 B9 ON B9.ID=B7.JSWJID
+         LEFT JOIN T_USER B10 ON B1.SHRID=B10.ID 
+         LEFT JOIN T_USER B11 ON B1.PFRID=B11.ID 
+         LEFT JOIN B_G2_001 B12 ON B1.F_BBID=B12.ID
+         LEFT JOIN D_011 B13 ON B2.JLFJID=B13.MAINID AND B13.YXZT=1
+         LEFT JOIN D_011 B14 ON B1.JSWJID=B14.MAINID AND B14.YXZT=1
+         LEFT JOIN b_g2_00102 bg200102 ON bg200102.MAINID = B1.ID and bg200102.kjbs=1
+    	 LEFT JOIN D_008 D008 ON bg200102.BH = D008.BJH AND B1.DPRTCODE = D008.DPRTCODE
+		 WHERE  B1.ID  = #{id, jdbcType=VARCHAR}
+  </select>
+  <!--根据评估单id查询评估单信息 End-->
+  
+  <!-- 搜索参数 -->
+  <sql id="BaseResulParam">
+	   		 WHERE 1=1  
+	    <if test="jx != null and jx != ''">
+             AND B1.JX = #{jx, jdbcType=VARCHAR}
+        </if>
+        <if test="paramsMap.ztList != null and paramsMap.ztList != '' ">
+             AND  B1.ZT IN (${paramsMap.ztList})  
+        </if>
+         <if test="paramsMap != null and paramsMap.wjlxList != null and paramsMap.wjlxList != ''">
+		    and B3.jswjlx in
+     			 <foreach item="item" index="index" collection="paramsMap.wjlxList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if> 
+	  
+	    <if test="lylx != null and lylx != ''">
+             AND B1.LYLX = #{lylx, jdbcType=DECIMAL}
+        </if>
+	    <if test="zt != null and zt != ''">
+             AND B1.ZT = #{zt, jdbcType=DECIMAL}
+        </if>
+	    <if test="paramsMap.sylb != null and paramsMap.sylb != ''">
+             AND B2.SYLB = #{paramsMap.sylb, jdbcType=DECIMAL}
+        </if>
+	    <if test="paramsMap != null and paramsMap.pgBeginDate != null and paramsMap.pgBeginDate != ''">
+		     AND B1.PGSJ &gt;= TO_DATE(#{paramsMap.pgBeginDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.pgEndDate != null and paramsMap.pgEndDate != ''">
+		     AND B1.PGSJ &lt;= TO_DATE(#{paramsMap.pgEndDate, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+        <if test="pgrid != null and pgrid != ''"> 
+		      and (
+			        UPPER(B4.realname) like UPPER('%'||#{pgrid}||'%')
+		      	or  UPPER(B4.username) like UPPER('%'||#{pgrid}||'%')
+		     )              <!-- 左右匹配 查询关键字 -->
+        </if> 
+        <if test="dprtcode != null and dprtcode != ''">
+             AND B1.DPRTCODE =  #{dprtcode, jdbcType=VARCHAR}
+        </if>
+        <if test="keyword != null and keyword != ''">
+		     AND (
+		     	  UPPER(B1.pgdh) LIKE UPPER('%'||#{keyword}||'%')
+		     OR	  UPPER(B1.ZJH) LIKE UPPER('%'||#{keyword}||'%')
+		     OR	  UPPER(B1.PGDZT) LIKE UPPER('%'||#{keyword}||'%')
+		     OR	  UPPER(B8.WBWJM) LIKE UPPER('%'||#{keyword}||'%')
+		     OR	  UPPER(B3.JSWJBH) LIKE UPPER('%'||#{keyword}||'%')
+		     OR	  UPPER(B6.YWMS) LIKE UPPER('%'||#{keyword}||'%')
+		     	)              <!-- 左右匹配 查询关键字 -->
+		</if>
+	    <if test="id != null and id != '' " >   
+             AND  B1.ID  = #{id, jdbcType=VARCHAR}
+        </if>
+        
+         <if test="bBbid == null or bBbid == '' " >   
+             AND B1.B_BBID IS NULL
+         </if>
+        
+      	<!-- 前台条件：飞机，机型，sql需要全部的范围，以及带上当前记录的机构码 -->
+	    <choose>                                                                 
+	    	<when test='paramsMap.userType!=null and paramsMap.userType == "admin"'>                       
+	    		 AND exists 
+	    		( SELECT 1 from D_007 where 
+	    			B1.jx = FJJX
+	    		AND B1.dprtcode = DPRTCODE
+	    		AND zt = 1
+	    		)
+	    	</when>
+	    	<when test='paramsMap.userType != "admin" and paramsMap.userId!=null and paramsMap.userId != ""'>                       
+	    		 AND exists 
+	    		( SELECT 1 from V_ROLE_JX where 
+	    			B1.jx= FJJX
+	    		AND B1.dprtcode = DPRTCODE
+	    		AND USER_ID = #{paramsMap.userId,jdbcType=VARCHAR}
+	    		)
+	    	</when>
+	   	</choose>
+  </sql>
+  
+  <!-- 根据查询条件查询技术文件数量 -->
+  <select id="queryCount" parameterType="com.eray.thjw.project2.po.Technical" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM B_G2_001 
+    WHERE PGDH     = #{ pgdh,     jdbcType = VARCHAR }
+  	AND   DPRTCODE = #{ dprtcode, jdbcType = VARCHAR }
+  </select>
+  
+  <select id="selectMaxBb" resultMap="BaseResultMap" parameterType="java.lang.String" >
+ 	SELECT bb FROM (SELECT bb FROM B_G2_001 WHERE pgdh = #{ pgdh,  jdbcType = VARCHAR } and dprtcode = #{ dprtcode,  jdbcType = VARCHAR } ORDER BY BB DESC) WHERE  ROWNUM=1
+  </select>
+  
+  <!-- 根据适航性资料id查询技术文件评估单集合  -->
+  <select id="queryGljspgdList" resultMap="ResultMap" parameterType="com.eray.thjw.project2.po.Technical" >
+     SELECT 
+	   	B1.PGDH,B1.BB,B1.PGSJ,B1.PGDZT,B1.ID,B1.JSWJID,
+	    B4.USERNAME || ' ' || B4.REALNAME AS PGR_ID,
+	 	B2.ID AS AIRWORTHINESS_ID, B2.BB AS A_BB,B2.JSWJBH,B2.JSWJZT,B2.jswjlx,B2.bfrq,B2.sxrq,B2.dqrq
+	    FROM B_G2_001 B1
+	    LEFT JOIN B_G2_000 B2 ON B1.JSWJID=B2.ID
+	    LEFT JOIN T_USER B4 ON B1.PGRID=B4.ID
+	    WHERE 1=1
+         AND B1.ZT IN (4,10)
+    
+    <if test="jswjid != null and jswjid != ''"> 
+         AND B1.JSWJID = #{jswjid,jdbcType=VARCHAR} 
+    </if> 
+    <if test="jx != null and jx != ''"> 
+         AND B1.jx = #{jx,jdbcType=VARCHAR} 
+    </if> 
+    <if test="dprtcode != null and dprtcode != ''"> 
+         AND B1.dprtcode = #{dprtcode,jdbcType=VARCHAR} 
+    </if> 
+     order by b1.pgdh
+  </select>
+  
+  <!-- 根据适航性资料id查询技术文件评估单集合  -->
+  <select id="getgljspgdListold" resultMap="ResultMap" parameterType="com.eray.thjw.project2.po.Technical" >
+     SELECT 
+	   	B1.PGDH,B1.BB,B1.PGSJ,B1.PGDZT,B1.ID,B1.JSWJID,
+	    B4.USERNAME || ' ' || B4.REALNAME AS PGR_ID,
+	 	B2.ID AS AIRWORTHINESS_ID, B2.BB AS A_BB,B2.JSWJBH,B2.JSWJZT,B2.jswjlx,B2.bfrq,B2.sxrq,B2.dqrq
+	    FROM B_G2_001 B1
+	    LEFT JOIN B_G2_000 B2 ON B1.JSWJID=B2.ID
+	    LEFT JOIN T_USER B4 ON B1.PGRID=B4.ID
+	    WHERE 1=1
+    
+    <if test="jswjid != null and jswjid != ''"> 
+         AND B1.JSWJID = #{jswjid,jdbcType=VARCHAR} 
+    </if> 
+    <if test="jx != null and jx != ''"> 
+         AND B1.jx = #{jx,jdbcType=VARCHAR} 
+    </if> 
+     order by b1.pgdh
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_G2_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G2_001
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.Technical" >
+    insert into B_G2_001
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="pgdh != null" >
+        PGDH,
+      </if>
+      <if test="bb != null" >
+        BB,
+      </if>
+      <if test="lylx != null" >
+        LYLX,
+      </if>
+      <if test="lysm != null" >
+        LYSM,
+      </if>
+      <if test="jswjid != null" >
+        JSWJID,
+      </if>
+      <if test="glpgdid != null" >
+        GLPGDID,
+      </if>
+      <if test="jx != null" >
+        JX,
+      </if>
+      <if test="pgqx != null" >
+        PGQX,
+      </if>
+      <if test="zjh != null" >
+        ZJH,
+      </if>
+      <if test="pgdzt != null" >
+        PGDZT,
+      </if>
+      <if test="sxyq != null" >
+        SXYQ,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+      <if test="zxbs != null" >
+        ZXBS,
+      </if>
+      <if test="fBbid != null" >
+        F_BBID,
+      </if>
+      <if test="bBbid != null" >
+        B_BBID,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="pgbmid != null" >
+        PGBMID,
+      </if>
+      <if test="pgrid != null" >
+        PGRID,
+        PGSJ,
+      </if>
+      <if test="shbmid != null" >
+        SHBMID,
+      </if>
+      <if test="shrid != null" >
+        SHRID,
+      </if>
+      <if test="shsj != null" >
+        SHSJ,
+      </if>
+      <if test="shyj != null" >
+        SHYJ,
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID,
+      </if>
+      <if test="pfrid != null" >
+        PFRID,
+      </if>
+      <if test="pfsj != null" >
+        PFSJ,
+      </if>
+      <if test="pfyj != null" >
+        PFYJ,
+      </if>
+      <if test="gbrid != null" >
+        GBRID,
+      </if>
+      <if test="gbrq != null" >
+        GBRQ,
+      </if>
+      <if test="gbyy != null" >
+        GBYY,
+      </if>
+      <if test="pfjl != null" >
+        PFJL,
+      </if>
+      <if test="shjl != null" >
+        SHJL,
+      </if>
+      <if test="yjbfzlsj != null" >
+        YJBFZLSJ,
+      </if>
+      <if test="yjbfzl != null" >
+        YJBFZL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdh != null" >
+        #{pgdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="lylx != null" >
+        #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lysm != null" >
+        #{lysm,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjid != null" >
+        #{jswjid,jdbcType=VARCHAR},
+      </if>
+      <if test="glpgdid != null" >
+        #{glpgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="pgqx != null" >
+        #{pgqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zjh != null" >
+        #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdzt != null" >
+        #{pgdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="sxyq != null" >
+        #{sxyq,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zxbs != null" >
+        #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="pgbmid != null" >
+        #{pgbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgrid != null" >
+        #{pgrid,jdbcType=VARCHAR},
+        sysdate,
+      </if>
+      <if test="shbmid != null" >
+        #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        #{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null" >
+        #{shsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shyj != null" >
+        #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfbmid != null" >
+        #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        #{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null" >
+        #{pfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pfyj != null" >
+        #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        #{gbrid,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrq != null" >
+        #{gbrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gbyy != null" >
+        #{gbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="pfjl != null" >
+        #{pfjl,jdbcType=DECIMAL},
+      </if>
+      <if test="shjl != null" >
+        #{shjl,jdbcType=DECIMAL},
+      </if>
+      <if test="yjbfzlsj != null" >
+        #{yjbfzlsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yjbfzl != null" >
+        #{yjbfzl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.Technical" >
+    update B_G2_001
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdh != null" >
+        PGDH = #{pgdh,jdbcType=VARCHAR},
+      </if>
+      <if test="bb != null" >
+        BB = #{bb,jdbcType=DECIMAL},
+      </if>
+      <if test="lylx != null" >
+        LYLX = #{lylx,jdbcType=DECIMAL},
+      </if>
+      <if test="lysm != null" >
+        LYSM = #{lysm,jdbcType=VARCHAR},
+      </if>
+      <if test="jswjid != null" >
+        JSWJID = #{jswjid,jdbcType=VARCHAR},
+      </if>
+      <if test="glpgdid != null" >
+        GLPGDID = #{glpgdid,jdbcType=VARCHAR},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="pgqx != null" >
+        PGQX = #{pgqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zjh != null" >
+        ZJH = #{zjh,jdbcType=VARCHAR},
+      </if>
+      <if test="pgdzt != null" >
+        PGDZT = #{pgdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="sxyq != null" >
+        SXYQ = #{sxyq,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zxbs != null" >
+        ZXBS = #{zxbs,jdbcType=DECIMAL},
+      </if>
+      <if test="fBbid != null" >
+        F_BBID = #{fBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="bBbid != null" >
+        B_BBID = #{bBbid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="pgbmid != null" >
+        PGBMID = #{pgbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pgrid != null" >
+        PGRID = #{pgrid,jdbcType=VARCHAR},
+        PGSJ = sysdate,
+      </if>
+      <if test="shbmid != null" >
+        SHBMID = #{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        SHRID = #{shrid,jdbcType=VARCHAR},
+        SHSJ = sysdate,
+      </if>
+      <if test="shyj != null" >
+        SHYJ = #{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfbmid != null" >
+        PFBMID = #{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        PFRID = #{pfrid,jdbcType=VARCHAR},
+        PFSJ = sysdate,
+      </if>
+      <if test="pfyj != null" >
+        PFYJ = #{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="gbrid != null" >
+        GBRID = #{gbrid,jdbcType=VARCHAR},
+        GBRQ = sysdate,
+      </if>
+      <if test="gbyy != null" >
+        GBYY = #{gbyy,jdbcType=VARCHAR},
+      </if>
+      <if test="pfjl != null" >
+        PFJL = #{pfjl,jdbcType=DECIMAL},
+      </if>
+      <if test="shjl != null" >
+        SHJL = #{shjl,jdbcType=DECIMAL},
+      </if>
+      <if test="yjbfzlsj != null" >
+        YJBFZLSJ = #{yjbfzlsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yjbfzl != null" >
+        YJBFZL = #{yjbfzl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!--start 技术评估单弹出框 -->
+  <select id="selectPgdByZlidAndDprtcode" resultMap="ResultMap">
+  	select b1.ID,b1.DPRTCODE,b1.PGDH,b1.BB,b1.LYLX,b1.LYSM,b1.JSWJID,b1.GLPGDID,b1.JX,b1.PGQX,b1.ZJH,b1.PGDZT,b1.SXYQ,b1.BZ,b1.ZXBS,
+		       b1.F_BBID,b1.B_BBID,b1.ZT,b1.PGBMID,b1.PGRID,b1.PGSJ,b1.SHBMID,b1.SHRID,b1.SHSJ,b1.SHYJ,b1.PFBMID,b1.PFRID,b1.PFSJ,b1.PFYJ,
+		       b1.GBRID,b1.GBRQ,b1.GBYY,b1.PFJL,b1.SHJL,b4.jswjlx,
+		       b4.JSWJBH,b4.bfrq,b4.sxrq,b4.dqrq,b4.bb a_bb,t.username PGR_USERUSER,t.realname PGR_REALNAME
+		from b_g2_001 b1 left join b_g2_00101 b5 on B1.id=B5.MAINID 
+		 <if test="paramsMap!=null and paramsMap.zlid != null and paramsMap.zlid !='' ">
+		left join b_g_003 b3 on b1.id=b3.pgdid and b1.dprtcode =b3.dprtcode
+		</if>
+		left join b_g2_000 b4 on b1.jswjid = b4.id and b4.zt=1
+		left join t_user t on b1.pgrid=t.id 
+		<include refid="BaseResulParam2"></include>
+  </select>
+  <sql id="BaseResulParam2">
+	   where 1=1   and b5.zt=1
+	   <if test="paramsMap!=null and paramsMap.jx != null and paramsMap.jx !='' ">
+             and b1.jx = #{paramsMap.jx,jdbcType=VARCHAR}
+        </if> 
+	    <if test="paramsMap!=null and paramsMap.zlxl != null and paramsMap.zlxl!='' ">
+             and b5.zlxl = #{paramsMap.zlxl,jdbcType=VARCHAR}
+        </if>
+	    <if test="paramsMap!=null and paramsMap.dprtcode != null and paramsMap.dprtcode!='' ">
+             and b1.dprtcode = #{paramsMap.dprtcode,jdbcType=VARCHAR}
+        </if>
+	    <if test="paramsMap!=null and paramsMap.zlid != null and paramsMap.zlid !='' ">
+             and b3.zlid = #{paramsMap.zlid,jdbcType=VARCHAR}
+        </if>
+	    <if test="paramsMap !=null and paramsMap.zlid == null or paramsMap.zlid =='' ">
+             and b1.zt=4
+        </if>
+	    <if test="paramsMap!=null and paramsMap.codeList != null and paramsMap.codeList !='' ">
+             and b1.id not in 
+            <foreach collection="paramsMap.codeList" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+        </if>
+        
+        <if test="paramsMap!=null and paramsMap.id != null and paramsMap.id !='' ">
+             and b1.id = #{paramsMap.id,jdbcType=VARCHAR}
+        </if>
+        
+        <if test="paramsMap!=null and paramsMap.keyword != null and paramsMap.keyword != ''">
+		      and (UPPER(b1.pgdh) like UPPER('%'||#{paramsMap.keyword}||'%')
+		     	)              <!-- 左右匹配 查询关键字 -->
+		 </if>
+  </sql>
+  <!-- end -->
+</mapper>

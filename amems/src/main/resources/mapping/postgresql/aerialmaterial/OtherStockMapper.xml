@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.OtherStockMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.Stock" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="CKLB" property="cklb" jdbcType="INTEGER" />
+    <result column="CKID" property="ckid" jdbcType="VARCHAR" />
+    <result column="CKH" property="ckh" jdbcType="VARCHAR" />
+    <result column="CKMC" property="ckmc" jdbcType="VARCHAR" />
+    <result column="KWID" property="kwid" jdbcType="VARCHAR" />
+    <result column="KWH" property="kwh" jdbcType="VARCHAR" />
+    <result column="BJID" property="bjid" jdbcType="VARCHAR" />
+    <result column="BJH" property="bjh" jdbcType="VARCHAR" />
+    <result column="PCH" property="pch" jdbcType="VARCHAR" />
+    <result column="SN" property="sn" jdbcType="VARCHAR" />
+    <result column="ZWMS" property="zwms" jdbcType="VARCHAR" />
+    <result column="YWMS" property="ywms" jdbcType="VARCHAR" />
+    <result column="JLDW" property="jldw" jdbcType="VARCHAR" />
+    <result column="KCSL" property="kcsl" jdbcType="DECIMAL" />
+    <result column="DJSL" property="djsl" jdbcType="DECIMAL" />
+    <result column="CGHTID" property="cghtid" jdbcType="VARCHAR" />
+    <result column="HTBH_CG" property="htbhCg" jdbcType="VARCHAR" />
+    <result column="SXHTID" property="sxhtid" jdbcType="VARCHAR" />
+    <result column="HTBH_SX" property="htbhSx" jdbcType="VARCHAR" />
+    <result column="TDDID" property="tddid" jdbcType="VARCHAR" />
+    <result column="TDDH" property="tddh" jdbcType="VARCHAR" />
+    <result column="RKSJ" property="rksj" jdbcType="TIMESTAMP" />
+    <result column="RKBMID" property="rkbmid" jdbcType="VARCHAR" />
+    <result column="RKRID" property="rkrid" jdbcType="VARCHAR" />
+    <result column="SHZH" property="shzh" jdbcType="VARCHAR" />
+    <result column="SHZWZ" property="shzwz" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="JYDID" property="jydid" jdbcType="VARCHAR" />
+    <result column="HJSM" property="hjsm" jdbcType="TIMESTAMP" />
+    <result column="SPQX" property="spqx" jdbcType="TIMESTAMP" />
+    <result column="SCRQ" property="scrq" jdbcType="TIMESTAMP" />
+    <result column="XH" property="xh" jdbcType="VARCHAR" />
+    <result column="GG" property="gg" jdbcType="VARCHAR" />
+    <result column="ZZCS" property="zzcs" jdbcType="VARCHAR" />
+    <result column="TSN" property="tsn" jdbcType="VARCHAR" />
+    <result column="TSO" property="tso" jdbcType="VARCHAR" />
+    <result column="HCLY" property="hcly" jdbcType="INTEGER" />
+    <result column="CFYQ" property="cfyq" jdbcType="VARCHAR" />
+    <result column="bjgzjl" property="bjgzjl" jdbcType="VARCHAR" />
+    <result column="llklx" property="llklx" jdbcType="VARCHAR" />
+    <result column="llkbh" property="llkbh" jdbcType="VARCHAR" />
+    <result column="kzlx" property="kzlx" jdbcType="VARCHAR" />
+    <result column="is_dj" property="isDj" jdbcType="VARCHAR" />
+    <result column="kccb" property="kccb" jdbcType="VARCHAR" />
+    
+    <result column="cjjh" property="cjjh" jdbcType="VARCHAR" />
+    <result column="hclx" property="hclx" jdbcType="VARCHAR" />
+    <result column="gljb" property="gljb" jdbcType="VARCHAR" />
+    <result column="cangkuzt" property="cangkuzt" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+  
+  <select id="queryAllPageList" resultMap="BaseResultMap">
+	   select t1.ID,
+	       t1.DPRTCODE,
+	       t1.CKLB,
+	       t1.CKID,
+	       t1.CKH,
+	       t1.CKMC,
+	       t1.KWID,
+	       t1.KWH,
+	       t1.BJID,
+	       t1.BJH,
+	       t1.PCH,
+	       t1.SN,
+	       (CASE WHEN T2.ZWMS IS NULL THEN t1.ZWMS ELSE T2.ZWMS END) ZWMS,
+	       (CASE WHEN T2.YWMS IS NULL THEN t1.YWMS ELSE T2.YWMS END) YWMS,
+	       (CASE WHEN T2.JLDW IS NULL THEN t1.JLDW ELSE T2.JLDW END) JLDW,
+	       t1.KCSL,
+	       t1.DJSL,
+	       t1.CGHTID,
+	       t1.HTBH_CG,
+	       t1.SXHTID,
+	       t1.HTBH_SX,
+	       t1.TDDID,
+	       t1.TDDH,
+	       t1.RKSJ,
+	       t1.RKBMID,
+	       t1.RKRID,
+	       t1.SHZH,
+	       t1.SHZWZ,
+	       t1.ZT,
+	       t1.BZ,
+	       t1.JYDID,
+	       t1.HJSM,
+	       t1.SPQX,
+	       t1.SCRQ,
+	       (CASE WHEN T2.XINGH IS NULL THEN t1.XH ELSE T2.XINGH END) XH,
+	       (CASE WHEN T2.GG IS NULL THEN t1.GG ELSE T2.GG END) GG,
+	       t1.ZZCS,
+	       t1.TSN,
+	       t1.TSO,
+	       t1.HCLY,
+	       t1.CFYQ,
+	       t1.bjgzjl,
+	       t1.llklx,
+	       t1.llkbh,
+	       t1.kzlx,
+	       t1.is_dj,
+	       t1.kccb,
+	       t2.cjjh,
+	       t2.hclx,
+	       t2.gljb
+	  from b_h_001 t1
+	  left join d_008 t2
+	    on t1.bjid = t2.id
+	 where t1.cklb in (5, 6, 7, 8)
+	   and t1.zt = 2
+
+		<include refid="FlightRecordParam"></include>
+
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+		 	
+	</select>
+  
+  <!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+	   
+	     <if test="id != null and id != ''">
+             and t1.id =  #{id}
+         </if>
+         <if test="hclx != null and hclx != ''">
+             and t2.hclx = cast(#{hclx} as integer)
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t1.dprtcode =  #{dprtcode}
+         </if>
+         <if test="ckh != null and ckh != ''">
+             and t1.ckh =  #{ckh}
+         </if>
+         <if test="bjh != null and bjh != ''">
+             and t1.bjh =  #{bjh}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (t1.bjh like '%'||#{keyword}||'%'
+		    	or t1.zwms like '%'||#{keyword}||'%'
+		    	or t1.ywms like '%'||#{keyword}||'%'
+		    	or t2.cjjh like '%'||#{keyword}||'%'
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+		  <if test="paramsMap != null and paramsMap.idList != null and paramsMap.idList != ''">
+		    and t1.bjh not in
+     			 <foreach item="item" index="index" collection="paramsMap.idList" open="(" separator="," close=")">  
+          			#{item}  
+     			 </foreach>  
+		</if>
+	</sql>
+  
+</mapper>

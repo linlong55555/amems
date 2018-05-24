@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.sched.dao.ServiceInstructionMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.sched.po.ServiceInstruction" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZLLX" property="zllx" jdbcType="VARCHAR" />
+    <result column="YWDX" property="ywdx" jdbcType="VARCHAR" />
+    <result column="YWRQ" property="ywrq" jdbcType="TIMESTAMP" />
+    <result column="ZXPC" property="zxpc" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="ZDDWID" property="zddwid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DPRTCODE, ZLLX, YWDX, YWRQ, ZXPC, ZT, ZDDWID, ZDRID, ZDSJ,BZ
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from B_S_016
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectOne" resultMap="BaseResultMap" parameterType="com.eray.thjw.sched.po.ServiceInstruction" >
+    select 
+    <include refid="Base_Column_List" />
+    from (
+    select <include refid="Base_Column_List" /> from B_S_016
+    where zt=1 
+    and ywdx = #{ywdx,jdbcType=VARCHAR} 
+    and zllx = #{zllx,jdbcType=VARCHAR}
+    and dprtcode = #{dprtcode,jdbcType=VARCHAR}   
+    and  ywrq >= #{ywrq,jdbcType=VARCHAR} 
+    order by ZXPC desc
+    ) where rownum = 1
+     
+  </select>
+  
+   <!-- add -->
+  <select id="selectList4Planes" resultMap="BaseResultMap" parameterType="com.eray.thjw.sched.po.ServiceInstruction" >
+	select a.dprtcode,a.fjzch ywdx,b.ywrq from d_007 a left join 
+	 (
+		select t.dprtcode,t.ywdx,max(ywrq) ywrq from b_s_016 t  
+			where t.zllx = 'SCJHYP' and t.zt = 1
+			group by t.dprtcode,t.ywdx
+	)b on a.fjzch = b.ywdx and a.dprtcode = b.dprtcode
+	 where a.zt = 1
+	 
+  </select>
+  <delete id="deleteAll4Sched"  parameterType="com.eray.thjw.sched.po.ServiceInstruction"  >
+    delete from B_S_016 t where t.zllx = 'SCJHYP'
+  </delete>
+  <!-- add -->
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_S_016
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.sched.po.ServiceInstruction" >
+    insert into B_S_016 (ID, DPRTCODE, ZLLX, 
+      YWDX, YWRQ, ZXPC, 
+      ZT, ZDDWID, ZDRID, 
+      ZDSJ,BZ)
+    values (#{id,jdbcType=VARCHAR}, #{dprtcode,jdbcType=VARCHAR}, #{zllx,jdbcType=VARCHAR}, 
+      #{ywdx,jdbcType=VARCHAR}, #{ywrq,jdbcType=TIMESTAMP}, #{zxpc,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{zddwid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, 
+      #{zdsj,jdbcType=TIMESTAMP},#{bz,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.sched.po.ServiceInstruction" >
+    insert into B_S_016
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="zllx != null" >
+        ZLLX,
+      </if>
+      <if test="ywdx != null" >
+        YWDX,
+      </if>
+      <if test="ywrq != null" >
+        YWRQ,
+      </if>
+      <if test="zxpc != null" >
+        ZXPC,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID,
+      </if>
+      <if test="zdrid != null" >
+        ZDRID,
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ,
+      </if>
+      <if test="bz != null" >
+        BZ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zllx != null" >
+        #{zllx,jdbcType=VARCHAR},
+      </if>
+      <if test="ywdx != null" >
+        #{ywdx,jdbcType=VARCHAR},
+      </if>
+      <if test="ywrq != null" >
+        #{ywrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zxpc != null" >
+        #{zxpc,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zddwid != null" >
+        #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+       <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.sched.po.ServiceInstruction" >
+    update B_S_016
+    <set >
+      <if test="dprtcode != null" >
+        DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zllx != null" >
+        ZLLX = #{zllx,jdbcType=VARCHAR},
+      </if>
+      <if test="ywdx != null" >
+        YWDX = #{ywdx,jdbcType=VARCHAR},
+      </if>
+      <if test="ywrq != null" >
+        YWRQ = #{ywrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zxpc != null" >
+        ZXPC = #{zxpc,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zddwid != null" >
+        ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+       <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.sched.po.ServiceInstruction" >
+    update B_S_016
+    set DPRTCODE = #{dprtcode,jdbcType=VARCHAR},
+      ZLLX = #{zllx,jdbcType=VARCHAR},
+      YWDX = #{ywdx,jdbcType=VARCHAR},
+      YWRQ = #{ywrq,jdbcType=TIMESTAMP},
+      ZXPC = #{zxpc,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      ZDDWID = #{zddwid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+     BZ = #{bz,jdbcType=VARCHAR} 
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

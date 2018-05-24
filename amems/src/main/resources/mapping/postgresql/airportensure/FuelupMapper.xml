@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.airportensure.dao.FuelupMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.airportensure.po.Fuelup" >
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="FJJYDBH" property="fjjydbh" jdbcType="VARCHAR" />
+    <result column="FJSSDW" property="fjssdw" jdbcType="VARCHAR" />
+    <result column="JD" property="jd" jdbcType="VARCHAR" />
+    <result column="FJJX" property="fjjx" jdbcType="VARCHAR" />
+    <result column="FJZCH" property="fjzch" jdbcType="VARCHAR" />
+    <result column="HBH" property="hbh" jdbcType="VARCHAR" />
+    <result column="HYDDH" property="hyddh" jdbcType="VARCHAR" />
+    <result column="JYRQ" property="jyrq" jdbcType="TIMESTAMP" />
+    <result column="JYCCH" property="jycch" jdbcType="VARCHAR" />
+    <result column="JYDJBH" property="jydjbh" jdbcType="VARCHAR" />
+    <result column="FYR" property="fyr" jdbcType="VARCHAR" />
+    <result column="JYKSSJ" property="jykssj" jdbcType="VARCHAR" />
+    <result column="JYJSSJ" property="jyjssj" jdbcType="VARCHAR" />
+    <result column="SYR" property="syr" jdbcType="VARCHAR" />
+    <result column="YPGG" property="ypgg" jdbcType="VARCHAR" />
+    <result column="SJMD" property="sjmd" jdbcType="DECIMAL" />
+    <result column="SJJYSL" property="sjjysl" jdbcType="DECIMAL" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="WHBMID" property="whbmid" jdbcType="VARCHAR" />
+    <result column="WHRID" property="whrid" jdbcType="VARCHAR" />
+    <result column="bz" property="bz" jdbcType="VARCHAR" />
+    <result column="WHSJ" property="whsj" jdbcType="TIMESTAMP" />
+    <result column="jdms" property="jdms" jdbcType="TIMESTAMP" />
+    <result column="jyyf" property="jyyf" jdbcType="TIMESTAMP" />
+    <result column="ypfy" property="ypfy" jdbcType="TIMESTAMP" />
+    <result column="ypzl" property="ypzl" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+   <sql id="Base_Column_List">
+    ID, fjjydbh, fjssdw, jd, fjjx, fjzch, hbh, hyddh, jyrq, jycch, jydjbh, fyr, jykssj, 
+    jyjssj, syr, ypgg, sjmd, sjjysl,zt,dprtCode,whbmid,whrid,whsj,bz
+  </sql>
+  
+  <select id="queryAllPageList"  resultMap="BaseResultMap">
+		select b1.ID,
+	       b1.fjjydbh,
+	       b1.fjssdw,
+	       b1.jd,
+	       b1.fjjx,
+	       b1.fjzch,
+	       b1.hbh,
+	       b1.hyddh,
+	       b1.jyrq,
+	       b1.jycch,
+	       b1.jydjbh,
+	       b1.fyr,
+	       b1.jykssj,
+	       b1.jyjssj,
+	       b1.syr,
+	       b1.ypgg,
+	       b1.sjmd,
+	       b1.sjjysl,
+	       b1.zt,
+	       b1.dprtCode,
+	       b1.whbmid,
+	       b1.whsj,
+	       b1.bz,
+	       b2.jdms,(select userName||' '||realName from t_user where t_user.id=b1.whrid) whrid
+	  from b_j_003 b1
+	  left join d_012 b2
+	    on b1.jd = b2.id
+	   <include refid="BaseResulParam1"></include>
+             <choose>
+		    	<when test='pagination.sort == "auto"'>
+		    		order by b1.jyjssj asc
+		    	</when>
+		    	<otherwise>
+				    order by ${pagination.sort} ${pagination.order}
+		    	</otherwise>
+	 	</choose>
+	</select>
+	
+    <sql id="BaseResulParam1">
+	   where  b1.zt=1
+         <if test="dprtcode != null and dprtcode != ''">
+             and b1.dprtcode = #{dprtcode}
+         </if>
+         <if test="fjzch != null and fjzch != ''">
+             and b1.fjzch = #{fjzch}
+         </if>
+         <if test="jyDateBegin != null and jyDateBegin != ''">
+       	and date_trunc('day',b1.jyrq) &gt;=to_date(#{jyDateBegin},'yyyy-mm-dd')
+		</if>
+         <if test="jyDateEnd != null and jyDateEnd != ''">
+        and date_trunc('day',b1.jyrq) &lt;= to_date(#{jyDateEnd},'yyyy-mm-dd')
+		</if>
+          <if test="keyword != null and keyword != ''">
+		    and (    b1.fjjydbh like '%'||#{keyword}||'%'
+		   		 or b1.hyddh like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		 </if>
+        <if test="id != null and id != '' " >   
+            and  b1.id  = #{id,jdbcType=VARCHAR}
+           </if>
+  </sql>
+  
+  <insert id="insert" parameterType="com.eray.thjw.airportensure.po.Fuelup" >
+    insert into B_J_003 (ID, FJJYDBH, FJSSDW, 
+      JD, FJJX, FJZCH, HBH, 
+      HYDDH, JYRQ, JYCCH, 
+      JYDJBH, FYR, JYKSSJ, 
+      JYJSSJ, SYR, YPGG, 
+      SJMD, SJJYSL, ZT, DPRTCODE, 
+      WHBMID, WHRID, WHSJ,bz
+      )
+    values (#{id,jdbcType=VARCHAR}, #{fjjydbh,jdbcType=VARCHAR}, #{fjssdw,jdbcType=VARCHAR}, 
+      #{jd,jdbcType=VARCHAR}, #{fjjx,jdbcType=VARCHAR}, #{fjzch,jdbcType=VARCHAR}, #{hbh,jdbcType=VARCHAR}, 
+      #{hyddh,jdbcType=VARCHAR}, #{jyrq,jdbcType=TIMESTAMP}, #{jycch,jdbcType=VARCHAR}, 
+      #{jydjbh,jdbcType=VARCHAR}, #{fyr,jdbcType=VARCHAR}, #{jykssj,jdbcType=VARCHAR}, 
+      #{jyjssj,jdbcType=VARCHAR}, #{syr,jdbcType=VARCHAR}, #{ypgg,jdbcType=VARCHAR}, 
+      #{sjmd,jdbcType=DECIMAL}, #{sjjysl,jdbcType=DECIMAL}, #{zt,jdbcType=DECIMAL}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{whbmid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP},#{bz,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.airportensure.po.Fuelup" >
+    insert into B_J_003
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="fjjydbh != null" >
+        FJJYDBH,
+      </if>
+      <if test="fjssdw != null" >
+        FJSSDW,
+      </if>
+      <if test="jd != null" >
+        JD,
+      </if>
+      <if test="fjjx != null" >
+        FJJX,
+      </if>
+      <if test="fjzch != null" >
+        FJZCH,
+      </if>
+      <if test="hbh != null" >
+        HBH,
+      </if>
+      <if test="hyddh != null" >
+        HYDDH,
+      </if>
+      <if test="jyrq != null" >
+        JYRQ,
+      </if>
+      <if test="jycch != null" >
+        JYCCH,
+      </if>
+      <if test="jydjbh != null" >
+        JYDJBH,
+      </if>
+      <if test="fyr != null" >
+        FYR,
+      </if>
+      <if test="jykssj != null" >
+        JYKSSJ,
+      </if>
+      <if test="jyjssj != null" >
+        JYJSSJ,
+      </if>
+      <if test="syr != null" >
+        SYR,
+      </if>
+      <if test="ypgg != null" >
+        YPGG,
+      </if>
+      <if test="sjmd != null" >
+        SJMD,
+      </if>
+      <if test="sjjysl != null" >
+        SJJYSL,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+      <if test="whbmid != null" >
+        WHBMID,
+      </if>
+      <if test="whrid != null" >
+        WHRID,
+      </if>
+      <if test="whsj != null" >
+        WHSJ,
+      </if>
+      <if test="bz != null" >
+        bz,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjydbh != null" >
+        #{fjjydbh,jdbcType=VARCHAR},
+      </if>
+      <if test="fjssdw != null" >
+        #{fjssdw,jdbcType=VARCHAR},
+      </if>
+      <if test="jd != null" >
+        #{jd,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null" >
+        #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null" >
+        #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="hbh != null" >
+        #{hbh,jdbcType=VARCHAR},
+      </if>
+      <if test="hyddh != null" >
+        #{hyddh,jdbcType=VARCHAR},
+      </if>
+      <if test="jyrq != null" >
+        #{jyrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jycch != null" >
+        #{jycch,jdbcType=VARCHAR},
+      </if>
+      <if test="jydjbh != null" >
+        #{jydjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="fyr != null" >
+        #{fyr,jdbcType=VARCHAR},
+      </if>
+      <if test="jykssj != null" >
+        #{jykssj,jdbcType=VARCHAR},
+      </if>
+      <if test="jyjssj != null" >
+        #{jyjssj,jdbcType=VARCHAR},
+      </if>
+      <if test="syr != null" >
+        #{syr,jdbcType=VARCHAR},
+      </if>
+      <if test="ypgg != null" >
+        #{ypgg,jdbcType=VARCHAR},
+      </if>
+      <if test="sjmd != null" >
+        #{sjmd,jdbcType=DECIMAL},
+      </if>
+      <if test="sjjysl != null" >
+        #{sjjysl,jdbcType=DECIMAL},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="whbmid != null" >
+        #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null" >
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null" >
+        #{whsj,jdbcType=TIMESTAMP},
+      </if>
+         <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.airportensure.po.Fuelup">
+    update B_J_003
+    <set>
+      <if test="fjssdw != null">
+        fjssdw = #{fjssdw,jdbcType=VARCHAR},
+      </if>
+      <if test="jd != null">
+        jd = #{jd,jdbcType=VARCHAR},
+      </if>
+      <if test="fjjx != null">
+        fjjx = #{fjjx,jdbcType=VARCHAR},
+      </if>
+      <if test="fjzch != null">
+        fjzch = #{fjzch,jdbcType=VARCHAR},
+      </if>
+      <if test="hbh != null">
+        hbh = #{hbh,jdbcType=VARCHAR},
+      </if>
+      <if test="hyddh != null">
+        hyddh = #{hyddh,jdbcType=VARCHAR},
+      </if>
+      <if test="jyrq != null">
+        jyrq = #{jyrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jycch != null">
+        jycch = #{jycch,jdbcType=VARCHAR},
+      </if>
+      <if test="jydjbh != null">
+        jydjbh = #{jydjbh,jdbcType=VARCHAR},
+      </if>
+      <if test="fyr != null">
+        fyr = #{fyr,jdbcType=VARCHAR},
+      </if>
+      <if test="jykssj != null">
+        jykssj = #{jykssj,jdbcType=VARCHAR},
+      </if>
+      <if test="jyjssj != null">
+        jyjssj = #{jyjssj,jdbcType=VARCHAR},
+      </if>
+      <if test="syr != null">
+        syr = #{syr,jdbcType=VARCHAR},
+      </if>
+      <if test="ypgg != null">
+        ypgg = #{ypgg,jdbcType=VARCHAR},
+      </if>
+      <if test="sjmd != null">
+        sjmd = #{sjmd,jdbcType=VARCHAR},
+      </if>
+      <if test="sjjysl != null">
+        sjjysl = #{sjjysl,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null">
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        zt = #{zt,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null"> -->
+<!--         dprtcode = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="whbmid != null">
+        whbmid = #{whbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        whrid = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whsj != null">
+        WHSJ = current_timestamp,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+   <delete id="delete" parameterType="java.lang.String">
+    update B_J_003
+    set zt=0
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+   <select id="queryAllFjzch" parameterType="com.eray.thjw.airportensure.po.Fuelup" resultType="java.lang.String">
+					select t.fjzch
+					  from (select b1.fjzch
+					          from d_007 b1
+					         where b1.zt = 1
+					           and b1.dprtCode = #{dprtcode}
+				          <if test="keyword != null and keyword != ''">
+						    and ( b1.fjjx like '%'||#{keyword}||'%'            
+						   		 or b1.fjzch like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+						 </if>
+					        union
+					        select b2.fjzch
+					          from b_j_003 b2
+					         where b2.zt = 1 and b2.fjzch is not null
+					           and b2.dprtCode = #{dprtcode}
+				          <if test="keyword != null and keyword != ''">
+						    and ( b2.fjjx like '%'||#{keyword}||'%'            
+						   		 or b2.fjzch like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+						 </if>
+					        ) t
+								 where 1 = 1
+								 order by t.fjzch asc
+ 	 </select>
+ 	 
+ 	 <select id="queryAllFyr" parameterType="com.eray.thjw.airportensure.po.Fuelup" resultType="java.lang.String">
+					select distinct(fyr)
+					          from b_j_003 b2
+					         where b2.zt = 1
+					           and b2.dprtCode = #{dprtcode}
+					     <if test="keyword != null and keyword != ''">
+						    and ( b2.fyr like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+						 </if>
+					       
+ 	 </select>
+ 	  <select id="queryfuelupDetailList"  resultMap="BaseResultMap">
+		select b1.ID,b1.sjjysl,b1.fjzch,b1.jyrq,b1.fyr,b1.jd,d1.jdms
+		  from b_j_003 b1 left join D_012 d1 on(b1.jd=d1.id)
+		   <include refid="BaseResulParamByDetail"></include>
+	</select> 
+ <sql id="BaseResulParamByDetail">
+	   where  b1.zt=1
+	   
+         <if test="selectDate != null and selectDate != ''">
+             and to_char(b1.jyrq, 'yyyy-mm') = to_char(to_date(#{selectDate},'yyyy-mm'),'yyyy-mm')
+         </if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and b1.dprtcode = #{dprtcode}
+         </if>
+         <if test="jd != null and jd != ''">
+             and b1.jd = #{jd}
+         </if>
+         <if test="jyDateBegin != null and jyDateBegin != ''">
+		    and b1.jyrq &gt;=to_date(#{jyDateBegin}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="jyDateEnd != null and jyDateEnd != ''">
+		    and b1.jyrq &lt;=to_date(#{jyDateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+          <if test="keyword != null and keyword != ''">
+		    and ( b1.fjjx like '%'||#{keyword}||'%'            
+		   		 or b1.fjzch like '%'||#{keyword}||'%'            
+		   		 or b1.fyr like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		 </if>
+       
+  </sql>
+  
+  	  <select id="queryfuelupFjSummaryList"  resultMap="BaseResultMap">
+				SELECT t1.jyyf, 
+				       t1.dprtcode, 
+				       t1.jd,
+				       t1.fjzch,
+				       d_012.jdms,
+				       sum(t1.sjjysl) sjjysl, 
+				       sum(t1.ypfy) ypfy, 
+				       sum(t1.ypzl) ypzl 
+				  from (SELECT ROW_NUMBER() OVER(PARTITION BY b_j_003.id ORDER BY b_j_004.ksrq desc) rn,
+				               to_char(b_j_003.jyrq, 'yyyymm') jyyf,
+				               b_j_003.jd,
+				               b_j_003.fjzch,
+				               b_j_003.sjjysl,
+				               round(b_j_003.sjjysl * b_j_003.sjmd * (CASE WHEN b_j_004.ypjg IS NULL THEN 0 ELSE b_j_004.ypjg END) / 1000,
+				                     2) ypfy, 
+				               round(b_j_003.sjjysl * b_j_003.sjmd * 1000, 2) ypzl, 
+				               b_j_003.dprtcode
+				          FROM b_j_003
+				          left join (select b_j_004.ypgg, b_j_004.ypjg, b_j_004.ksrq
+				                      from b_j_004
+				                     where b_j_004.zt = 1 and b_j_004.dprtcode = #{dprtcode}) b_j_004
+				            on b_j_004.ypgg = b_j_003.ypgg
+				           and b_j_004.ksrq  &lt;= b_j_003.jyrq
+				         <include refid="BaseResulParamBySummary"></include>
+				        ) t1
+				         left join d_012 on (t1.jd=d_012.id)
+				 WHERE rn = 1
+				 group by t1.jyyf, t1.jd, t1.fjzch, t1.dprtcode,d_012.jdms
+				 order by t1.jyyf asc, t1.jd asc, t1.fjzch asc
+	</select> 
+  	  <select id="queryfuelupFyrSummaryList"  resultMap="BaseResultMap">
+				SELECT t1.jyyf, 
+				       t1.dprtcode, 
+				       t1.jd,
+				       t1.fyr,
+				       d_012.jdms,
+				       sum(t1.sjjysl) sjjysl, 
+				       sum(t1.ypfy) ypfy, 
+				       sum(t1.ypzl) ypzl 
+				  from (SELECT ROW_NUMBER() OVER(PARTITION BY b_j_003.id ORDER BY b_j_004.ksrq desc) rn,
+				               to_char(b_j_003.jyrq, 'yyyymm') jyyf,
+				               b_j_003.jd,
+				               b_j_003.fyr,
+				               b_j_003.sjjysl,
+				               round(b_j_003.sjjysl * b_j_003.sjmd * (CASE WHEN b_j_004.ypjg IS NULL THEN 0 ELSE b_j_004.ypjg END) / 1000,
+				                     2) ypfy, 
+				               round(b_j_003.sjjysl * b_j_003.sjmd * 1000, 2) ypzl, 
+				               b_j_003.dprtcode
+				          FROM b_j_003
+				          left join (select b_j_004.ypgg, b_j_004.ypjg, b_j_004.ksrq
+				                      from b_j_004
+				                     where b_j_004.zt = 1 and b_j_004.dprtcode = #{dprtcode}) b_j_004
+				            on b_j_004.ypgg = b_j_003.ypgg
+				           and b_j_004.ksrq  &lt;= b_j_003.jyrq
+				         <include refid="BaseResulParamBySummary"></include>
+				        ) t1
+				         left join d_012 on (t1.jd=d_012.id)
+				 WHERE rn = 1
+				 group by t1.jyyf, t1.jd, t1.fyr, t1.dprtcode,d_012.jdms
+				 order by t1.jyyf asc, t1.jd asc, t1.fyr asc
+	</select> 
+	
+	 <select id="queryfuelupJdList"  resultType="java.util.HashMap">
+				 select b_j_003.jd AS "JD",d_012.jdms AS "JDMS" from b_j_003  left join d_012 on (b_j_003.jd=d_012.id)  
+				  <include refid="BaseResulParamBySummary"></include>
+				 group by b_j_003.jd,d_012.jdms
+	</select>
+	
+	
+	
+	
+  <sql id="BaseResulParamBySummary">
+	   where  b_j_003.zt=1
+         <if test="dprtcode != null and dprtcode != ''">
+             and b_j_003.dprtcode = #{dprtcode}
+         </if>
+         <if test="jd != null and jd != ''">
+             and b_j_003.jd = #{jd}
+         </if>
+<!--          <if test="jyDateBegin != null and jyDateBegin != ''">
+		    and b_j_003.jyrq &gt;=to_date(#{jyDateBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="jyDateEnd != null and jyDateEnd != ''">
+		    and b_j_003.jyrq &lt;=to_date(#{jyDateEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if> -->
+		 <if test="jyDateBegin != null and jyDateBegin != ''">
+       	and date_trunc('day',b_j_003.jyrq) &gt;=to_date(#{jyDateBegin},'yyyy-mm-dd')
+		</if>
+         <if test="jyDateEnd != null and jyDateEnd != ''">
+        and date_trunc('day',b_j_003.jyrq) &lt;= to_date(#{jyDateEnd},'yyyy-mm-dd')
+		</if>
+          <if test="keyword != null and keyword != ''">
+		    and ( b_j_003.fjjx like '%'||#{keyword}||'%'            
+		   		 or b_j_003.fjzch like '%'||#{keyword}||'%'            
+		   		 or b_j_003.fyr like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		 </if>
+       
+  </sql>
+   
+  
+  
+</mapper>

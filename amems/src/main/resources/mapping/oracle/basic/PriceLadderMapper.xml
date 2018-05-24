@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.basic.dao.PriceLadderMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.basic.po.PriceLadder" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="QSGS" property="qsgs" jdbcType="DECIMAL" />
+    <result column="JZGS" property="jzgs" jdbcType="DECIMAL" />
+    <result column="GSDJ" property="gsdj" jdbcType="DECIMAL" />
+    <result column="QDJE" property="qdje" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, QSGS, JZGS, GSDJ, QDJE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from D_02701
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from D_02701
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.basic.po.PriceLadder" >
+    insert into D_02701 (ID, MAINID, QSGS, 
+      JZGS, GSDJ, QDJE)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{qsgs,jdbcType=DECIMAL}, 
+      #{jzgs,jdbcType=DECIMAL}, #{gsdj,jdbcType=DECIMAL}, #{qdje,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.basic.po.PriceLadder" >
+    insert into D_02701
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="qsgs != null" >
+        QSGS,
+      </if>
+      <if test="jzgs != null" >
+        JZGS,
+      </if>
+      <if test="gsdj != null" >
+        GSDJ,
+      </if>
+      <if test="qdje != null" >
+        QDJE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="qsgs != null" >
+        #{qsgs,jdbcType=DECIMAL},
+      </if>
+      <if test="jzgs != null" >
+        #{jzgs,jdbcType=DECIMAL},
+      </if>
+      <if test="gsdj != null" >
+        #{gsdj,jdbcType=DECIMAL},
+      </if>
+      <if test="qdje != null" >
+        #{qdje,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.basic.po.PriceLadder" >
+    update D_02701
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="qsgs != null" >
+        QSGS = #{qsgs,jdbcType=DECIMAL},
+      </if>
+      <if test="jzgs != null" >
+        JZGS = #{jzgs,jdbcType=DECIMAL},
+      </if>
+      <if test="gsdj != null" >
+        GSDJ = #{gsdj,jdbcType=DECIMAL},
+      </if>
+      <if test="qdje != null" >
+        QDJE = #{qdje,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.basic.po.PriceLadder" >
+    update D_02701
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      QSGS = #{qsgs,jdbcType=DECIMAL},
+      JZGS = #{jzgs,jdbcType=DECIMAL},
+      GSDJ = #{gsdj,jdbcType=DECIMAL},
+      QDJE = #{qdje,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="getRecord" resultType="com.eray.thjw.basic.po.PriceLadder">
+  	 select 
+    <include refid="Base_Column_List" />
+    from D_02701
+  </select>
+  <delete id="deleteAll" parameterType="java.lang.String" >
+    delete from D_02701
+  </delete>
+</mapper>

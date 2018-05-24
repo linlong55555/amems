@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.RevisionNoticeBookMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.po.RevisionNoticeBook" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="JSZLH" property="jszlh" jdbcType="VARCHAR" />
+    <result column="TZSLX" property="tzslx" jdbcType="INTEGER" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="CKZL" property="ckzl" jdbcType="VARCHAR" />
+    <result column="XDZT" property="xdzt" jdbcType="VARCHAR" />
+    <result column="XDNR" property="xdnr" jdbcType="VARCHAR" />
+    <result column="XDRID" property="xdrid" jdbcType="VARCHAR" />
+    <result column="XDQX" property="xdqx" jdbcType="TIMESTAMP" />
+    <result column="BZ" property="bz" jdbcType="VARCHAR" />
+    <result column="ZDBMID" property="zdbmid" jdbcType="VARCHAR" />
+    <result column="ZDRID" property="zdrid" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="DYZT" property="dyzt" jdbcType="INTEGER" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="ZDJSRID" property="zdjsrid" jdbcType="VARCHAR" />
+    <result column="ZDJSRQ" property="zdjsrq" jdbcType="TIMESTAMP" />
+    <result column="ZDJSYY" property="zdjsyy" jdbcType="VARCHAR" />
+    <result column="SHBMID" property="shbmid" jdbcType="VARCHAR" />
+    <result column="SHYJ" property="shyj" jdbcType="VARCHAR" />
+    <result column="SHRID" property="shrid" jdbcType="VARCHAR" />
+    <result column="SHSJ" property="shsj" jdbcType="TIMESTAMP" />
+    <result column="PFBMID" property="pfbmid" jdbcType="VARCHAR" />
+    <result column="PFYJ" property="pfyj" jdbcType="VARCHAR" />
+    <result column="PFRID" property="pfrid" jdbcType="VARCHAR" />
+    <result column="PFSJ" property="pfsj" jdbcType="TIMESTAMP" />
+    <result column="wcrq" property="wcrq" jdbcType="TIMESTAMP" />
+    <result column="bb" property="bb" jdbcType="VARCHAR" />
+    <result column="jszt" property="jszt" jdbcType="DECIMAL" />
+    <association property="shr_user" javaType="com.eray.thjw.po.User">
+         <id column="shrid" property="id"/>
+         <result column="shr_realname" property="realname"/>
+         <result column="shr_username" property="username"/>
+     </association>
+     
+     <association property="pfr_user" javaType="com.eray.thjw.po.User">
+         <id column="pfrid" property="id"/>
+         <result column="pfr_realname" property="realname"/>
+         <result column="pfr_username" property="username"/>
+     </association>
+     <association property="xdr" javaType="com.eray.thjw.po.User">
+         <id column="xdrid" property="id"/>
+         <result column="xdr_realname" property="realname"/>
+         <result column="xdr_username" property="username"/>
+     </association>
+     
+     <association property="zdr_user" javaType="com.eray.thjw.po.User">
+         <id column="zdrid" property="id"/>
+         <result column="zdr_realname" property="realname"/>
+         <result column="zdr_username" property="username"/>
+     </association>
+
+     <association property="zdjs_user" javaType="com.eray.thjw.po.User">
+         <id column="zdjsid" property="id"/>
+         <result column="zdjs_realname" property="realname"/>
+         <result column="zdjs_username" property="username"/>
+     </association>
+
+     <association property="bm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="zdbmid" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+  </resultMap>
+  
+  <!-- 修订通知书列表返回字段 -->
+  <resultMap id="revisionNoticeBookListResultMap" type="java.util.Map">
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="JSZLH" property="jszlh" jdbcType="VARCHAR" />
+    <result column="PGDH" property="pgdh" jdbcType="VARCHAR" />
+    <!-- <result column="ZDR" property="zdr" jdbcType="VARCHAR" /> -->
+    <result column="ZDSJ" property="zdsj" jdbcType="TIMESTAMP" />
+    <result column="TZSLX" property="tzslx" jdbcType="INTEGER" />
+    <result column="JX" property="jx" jdbcType="VARCHAR" />
+    <result column="XDZT" property="xdzt" jdbcType="VARCHAR" />
+    <result column="XDQX" property="xdqx" jdbcType="TIMESTAMP" />
+    <result column="REMAININGDAYS" property="remainingDays" jdbcType="INTEGER" />
+    <result column="XDNR" property="xdnr" jdbcType="VARCHAR" />
+    <result column="XDR" property="xdr" jdbcType="VARCHAR" /> 
+    <result column="DPT" property="dpt" jdbcType="VARCHAR" />
+    <result column="DPT_DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    <result column="ZT" property="zt" jdbcType="INTEGER" />
+    <result column="zdjsyy" property="zdjsyy" jdbcType="VARCHAR" />
+    <result column="zdjsrq" property="zdjsrq" jdbcType="VARCHAR" />
+    <result column="bb" property="bb" jdbcType="VARCHAR" />
+    <result column="jszt" property="jszt" jdbcType="VARCHAR" />
+    <result column="YJTSJB1" property="yjtsjb1" jdbcType="INTEGER" />
+    <result column="YJTSJB2" property="yjtsjb2" jdbcType="INTEGER" />
+    <result column="YJTSJB3" property="yjtsjb3" jdbcType="INTEGER" />
+    <result column="syts" property="syts" jdbcType="INTEGER" />
+    <result column="dprtcode" property="dprtcode" jdbcType="INTEGER" />
+     <association property="xdr" javaType="com.eray.thjw.po.User">
+         <id column="xdrid" property="id"/>
+         <result column="XDR_REALNAME" property="realname"/>
+         <result column="XDR_USERNAME" property="username"/>
+     </association>
+     
+     <association property="shr_user" javaType="com.eray.thjw.po.User">
+         <id column="shrid" property="id"/>
+         <result column="shr_realname" property="realname"/>
+         <result column="shr_username" property="username"/>
+     </association>
+     
+     <association property="pfr_user" javaType="com.eray.thjw.po.User">
+         <id column="pfrid" property="id"/>
+         <result column="pfr_realname" property="realname"/>
+         <result column="pfr_username" property="username"/>
+     </association>
+     
+     <association property="zdr" javaType="com.eray.thjw.po.User">
+         <id column="zdrid" property="id"/>
+         <result column="zdr_realname" property="realname"/>
+         <result column="zdr_username" property="username"/>
+     </association>
+
+     <association property="bm_dprt" javaType="com.eray.thjw.po.Department">
+         <id column="zdbmid" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+     
+      <association property="zdjs_user" javaType="com.eray.thjw.po.User">
+         <id column="zdjsid" property="id"/>
+         <result column="zdjs_realname" property="realname"/>
+         <result column="zdjs_username" property="username"/>
+     </association>
+     <!--  <association property="dpt" javaType="com.eray.thjw.po.Department">
+         <id column="dprtcode" property="id"/>
+         <result column="DPT_DPRTNAME" property="dprtname"/>
+     </association> -->
+    
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    B_G_005.ID, B_G_005.JSZLH, B_G_005.TZSLX, B_G_005.JX, B_G_005.CKZL, B_G_005.XDZT, B_G_005.XDNR, B_G_005.XDRID, B_G_005.XDQX, B_G_005.BZ, B_G_005.ZDBMID, B_G_005.ZDRID, B_G_005.ZDSJ, B_G_005.ZT, 
+    B_G_005.DYZT, B_G_005.DPRTCODE, B_G_005.ZDJSRID, B_G_005.ZDJSRQ, B_G_005.ZDJSYY,B_G_005.shrid,B_G_005.shbmid,B_G_005.shsj,B_G_005.shyj,B_G_005.pfrid,B_G_005.pfbmid,B_G_005.pfsj,B_G_005.pfyj,B_G_005.wcrq,B_G_005.bb
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />,
+     zdr.realname zdr_realname,zdr.username zdr_username,
+     shr.realname shr_realname,shr.username shr_username,
+     pfr.realname pfr_realname,pfr.username pfr_username,
+     xdr.realname xdr_realname,xdr.username xdr_username,
+     zdjs.realname zdjs_realname,zdjs.username zdjs_username,
+     bm.dprtname bm_dprtname
+    from B_G_005 left join t_user zdr on (B_G_005.zdrid=zdr.id)
+    			 left join t_department bm on(B_G_005.ZDBMID=bm.id)
+    			 left join t_user shr on (B_G_005.shrid=shr.id)
+    			 left join t_user pfr on (B_G_005.pfrid=pfr.id)
+    			 left join t_user xdr on (B_G_005.xdrid=pfr.id)
+    			 left join t_user zdjs on (B_G_005.zdjsrid=zdjs.id)
+    where B_G_005.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findAll" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.RevisionNoticeBook" >
+    select <include refid="Base_Column_List" /> from B_G_005
+    where 1=1
+    <!-- 机型 -->
+    <if test="jx != null and jx != ''">
+       and B_G_005.JX = #{jx}
+    </if>
+    <if test="zt != null">
+       and B_G_005.ZT = #{zt}
+    </if>
+     <if test="tzslx != null">
+       and B_G_005.TZSLX = #{tzslx}
+    </if>
+    <if test="dprtcode != null">
+       and B_G_005.DPRTCODE = #{dprtcode}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from B_G_005
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.po.RevisionNoticeBook" >
+    insert into B_G_005 (ID, JSZLH, TZSLX, 
+      JX, CKZL, XDZT, XDNR, 
+      XDRID, XDQX, BZ, 
+      ZDBMID, ZDRID, ZDSJ, 
+      ZT, DYZT, DPRTCODE, 
+      ZDJSRID, ZDJSRQ, ZDJSYY,bb)
+    values (#{id,jdbcType=VARCHAR}, #{jszlh,jdbcType=VARCHAR}, #{tzslx,jdbcType=INTEGER}, 
+      #{jx,jdbcType=VARCHAR}, #{ckzl,jdbcType=VARCHAR}, #{xdzt,jdbcType=VARCHAR}, #{xdnr,jdbcType=VARCHAR}, 
+      #{xdrid,jdbcType=VARCHAR}, #{xdqx,jdbcType=TIMESTAMP}, #{bz,jdbcType=VARCHAR}, 
+      #{zdbmid,jdbcType=VARCHAR}, #{zdrid,jdbcType=VARCHAR}, #{zdsj,jdbcType=TIMESTAMP}, 
+      #{zt,jdbcType=INTEGER}, #{dyzt,jdbcType=INTEGER}, #{dprtcode,jdbcType=VARCHAR}, 
+      #{zdjsrid,jdbcType=VARCHAR}, #{zdjsrq,jdbcType=TIMESTAMP}, #{zdjsyy,jdbcType=VARCHAR}, #{bb,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.RevisionNoticeBook" >
+    insert into B_G_005
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null and id != ''" >
+        ID,
+      </if>
+      <if test="jszlh != null and jszlh != ''" >
+        JSZLH,
+      </if>
+      <if test="tzslx != null and tzslx != ''" >
+        TZSLX,
+      </if>
+      <if test="jx != null and jx != ''" >
+        JX,
+      </if>
+      <if test="ckzl != null and ckzl != ''" >
+        CKZL,
+      </if>
+      <if test="xdzt != null and xdzt != ''" >
+        XDZT,
+      </if>
+      <if test="xdnr != null and xdnr != ''" >
+        XDNR,
+      </if>
+      <if test="xdrid != null and xdrid != ''" >
+        XDRID,
+      </if>
+      <if test="xdqx != null and xdqx != ''" >
+        XDQX,
+      </if>
+      <if test="bz != null and bz != ''" >
+        BZ,
+      </if>
+      <if test="zdbmid != null and zdbmid != ''" >
+        ZDBMID,
+      </if>
+      <if test="zdrid != null and zdrid != ''" >
+        ZDRID,
+      </if>
+      <if test="zdsj != null and zdsj != ''" >
+        ZDSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dyzt != null" >
+        DYZT,
+      </if>
+      <if test="dprtcode != null and dprtcode != ''" >
+        DPRTCODE,
+      </if>
+      <if test="zdjsrid != null and zdjsrid != ''" >
+        ZDJSRID,
+      </if>
+      <if test="zdjsrq != null and zdjsrq != ''" >
+        ZDJSRQ,
+      </if>
+      <if test="zdjsyy != null and djsyy != ''" >
+        ZDJSYY,
+      </if>
+      <if test="wcrq != null and wcrq != ''" >
+        wcrq,
+      </if>
+      <if test="bb != null and bb != ''" >
+        bb,
+      </if>
+      <if test="jszt != null" >
+        jszt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null and id != ''" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jszlh != null and jszlh != ''" >
+        #{jszlh,jdbcType=VARCHAR},
+      </if>
+      <if test="tzslx != null and tzslx != ''" >
+        #{tzslx,jdbcType=INTEGER},
+      </if>
+      <if test="jx != null and jx != ''" >
+        #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="ckzl != null and ckzl != ''" >
+        #{ckzl,jdbcType=VARCHAR},
+      </if>
+      <if test="xdzt != null and xdzt != ''" >
+        #{xdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="xdnr != null and xdnr != ''" >
+        #{xdnr,jdbcType=VARCHAR},
+      </if>
+      <if test="xdrid != null and xdrid != ''" >
+        #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdqx != null and xdqx != ''" >
+        #{xdqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null and bz != ''" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null and zdbmid != ''" >
+        #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null and zdrid != ''" >
+        #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null and zdsj != ''" >
+        #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="dyzt != null" >
+        #{dyzt,jdbcType=INTEGER},
+      </if>
+      <if test="dprtcode != null and dprtcode != ''" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrid != null and zdjsrid != ''" >
+        #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null and zdjsrq != ''" >
+        #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null and zdjsyy != ''" >
+        #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="wcrq != null and wcrq != ''" >
+        #{wcrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bb != null and bb != ''" >
+        #{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="jszt != null" >
+        #{jszt,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.RevisionNoticeBook" >
+    update B_G_005
+    <set >
+      <if test="jszlh != null" >
+        JSZLH = #{jszlh,jdbcType=VARCHAR},
+      </if>
+      <if test="tzslx != null" >
+        TZSLX = #{tzslx,jdbcType=INTEGER},
+      </if>
+      <if test="jx != null" >
+        JX = #{jx,jdbcType=VARCHAR},
+      </if>
+      <if test="ckzl != null" >
+        CKZL = #{ckzl,jdbcType=VARCHAR},
+      </if>
+      <if test="xdzt != null" >
+        XDZT = #{xdzt,jdbcType=VARCHAR},
+      </if>
+      <if test="xdnr != null" >
+        XDNR = #{xdnr,jdbcType=VARCHAR},
+      </if>
+      <if test="xdrid != null" >
+        XDRID = #{xdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="xdqx != null" >
+        XDQX = #{xdqx,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bz != null" >
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="zdbmid != null" >
+        ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdrid != null" >
+        ZDRID = #{zdrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdsj != null" >
+        ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="dyzt != null" >
+        DYZT = #{dyzt,jdbcType=INTEGER},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+      <if test="zdjsrid != null" >
+        ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zdjsrq != null" >
+        ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdjsyy != null" >
+        ZDJSYY = #{zdjsyy,jdbcType=VARCHAR},
+      </if>
+      <if test="shbmid != null" >
+        shbmid=#{shbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="shyj != null" >
+        shyj=#{shyj,jdbcType=VARCHAR},
+      </if>
+      <if test="shrid != null" >
+        shrid=#{shrid,jdbcType=VARCHAR},
+      </if>
+      <if test="shsj != null" >
+        shsj=#{shsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pfbmid != null" >
+        pfbmid=#{pfbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfyj != null" >
+        pfyj=#{pfyj,jdbcType=VARCHAR},
+      </if>
+      <if test="pfrid != null" >
+        pfrid=#{pfrid,jdbcType=VARCHAR},
+      </if>
+      <if test="pfsj != null" >
+        pfsj=#{pfsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wcrq != null" >
+        wcrq=#{wcrq,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bb != null" >
+        bb=#{bb,jdbcType=VARCHAR},
+      </if>
+      <if test="jszt != null" >
+        jszt=#{jszt,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.po.RevisionNoticeBook" >
+    update B_G_005
+    set JSZLH = #{jszlh,jdbcType=VARCHAR},
+      TZSLX = #{tzslx,jdbcType=INTEGER},
+      JX = #{jx,jdbcType=VARCHAR},
+      CKZL = #{ckzl,jdbcType=VARCHAR},
+      XDZT = #{xdzt,jdbcType=VARCHAR},
+      XDNR = #{xdnr,jdbcType=VARCHAR},
+      XDRID = #{xdrid,jdbcType=VARCHAR},
+      XDQX = #{xdqx,jdbcType=TIMESTAMP},
+      BZ = #{bz,jdbcType=VARCHAR},
+      ZDBMID = #{zdbmid,jdbcType=VARCHAR},
+      ZDRID = #{zdrid,jdbcType=VARCHAR},
+      ZDSJ = #{zdsj,jdbcType=TIMESTAMP},
+      ZT = #{zt,jdbcType=INTEGER},
+      DYZT = #{dyzt,jdbcType=INTEGER},
+<!--       DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+      ZDJSRID = #{zdjsrid,jdbcType=VARCHAR},
+      ZDJSRQ = #{zdjsrq,jdbcType=TIMESTAMP},
+      ZDJSYY = #{zdjsyy,jdbcType=VARCHAR}
+      bb = #{bb,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 修订通知书查询条件 -->
+  <sql id="revisionNoticeBookQueryConditions">
+     where B_G_005.zt != 8
+     
+       <if test="keyword != null and keyword != ''">
+          and (
+             B_G_005.JSZLH like '%'||#{keyword}||'%'
+          or B_G_005.xdzt like '%'||#{keyword}||'%'
+          or B_G_005.xdnr like '%'||#{keyword}||'%'
+          or B_G_005.jx like '%'||#{keyword}||'%'
+          or ((select COUNT(1) from B_G_003 t where t.zlxl=3 and t.zlid = B_G_005.ID AND T.PGDH like '%'||#{keyword}||'%')>0)
+          or (zdr.REALNAME like '%'||#{keyword}||'%')
+          or (xdr.REALNAME like '%'||#{keyword}||'%')
+           or (zdr.USERNAME like '%'||#{keyword}||'%')
+          or (xdr.USERNAME like '%'||#{keyword}||'%')
+          )
+       </if>
+       
+	   <!-- id -->
+       <if test="id != null and id != ''">
+          and B_G_005.id  = #{id}
+       </if>
+       
+	   <!-- 技术指令号 -->
+       <if test="jszlh != null and jszlh != ''">
+          and B_G_005.JSZLH like '%'||#{jszlh}||'%'
+       </if>
+       
+       <!-- 评估单号 -->
+       <if test="pgdh != null and pgdh != ''">
+          <!-- and B_G_003.PGDH like '%'||#{pgdh}||'%' -->
+          and  (select COUNT(1) from B_G_003 t where t.zlxl=3 and t.zlid = B_G_005.ID AND T.PGDH like '%'||#{pgdh}||'%')>0
+       </if>
+       
+       <!-- 制单人 -->
+       <if test=" zdrid != null and zdrid != ''">
+          and  B_G_005.zdrid = #{zdrid}
+       </if>
+       
+       <!-- 制单日期 -->
+       <if test="zdsj != null and zdsj != ''">
+          and to_char(B_G_005.ZDSJ,'YYYY-MM-DD') = #{zdsj}
+       </if>
+       
+       <!-- 通知书类型 -->
+       <if test="tzslx != null and tzslx != ''">
+          and B_G_005.TZSLX =  cast(#{tzslx} as NUMERIC)
+       </if>
+       
+       <!-- 机型 -->
+       <if test="jx != null and jx != ''">
+          and B_G_005.JX = #{jx}
+       </if>
+       
+       <!-- 状态 -->
+       <if test="zt != null and zt != ''">
+          and B_G_005.ZT = cast(#{zt} as NUMERIC)
+       </if>
+       
+       <!-- 接收状态 -->
+        <if test="jszt != null and jszt != ''">
+          and B_G_005.JSZT = cast(#{jszt} as NUMERIC)
+       </if>  
+       
+       	<if test="xdqxBegin != null and xdqxBegin != ''">
+		    and B_G_005.xdqx &gt;= to_timestamp(#{xdqxBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="xdqxEnd != null and xdqxEnd != ''">
+		    and B_G_005.xdqx &lt;= to_timestamp(#{xdqxEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+       
+       <!-- 修订主题 -->
+       <if test="xdzt != null and xdzt != ''">
+          and B_G_005.XDZT like '%'||#{xdzt}||'%'
+       </if>
+       
+       <!-- 修订期限 -->
+       <if test="xdqx != null and xdqx != ''">
+          and to_char(B_G_005.XDQX,'YYYY-MM-DD') = #{xdqx}
+       </if>
+       
+       <!-- 修订内容 -->
+       <if test="xdnr != null and xdnr != ''">
+          and B_G_005.XDNR like '%'||#{xdnr}||'%'
+       </if>
+       
+       <!-- 修订人 -->
+       <if test="xdr != null and xdr != ''">
+          and xdr.REALNAME like '%'||#{xdr}||'%'
+       </if>
+       
+       <!-- 组织机构代码 -->
+       <if test="dprtcode != null and dprtcode != ''">
+         and B_G_005.dprtcode = #{dprtcode}
+       </if>
+  </sql>
+  
+  <!-- 查询修订通知书列表并且分页 -->
+  <select id="selectRevisionNoticeBookListByPage" parameterType="java.util.Map" resultMap="revisionNoticeBookListResultMap" >
+	  select * from (
+	   select
+	     B_G_005.ID as ID,
+	     B_G_005.JSZLH as JSZLH,
+	     B_G_005.zdjsyy,
+	     B_G_005.zdjsrq,
+	     B_G_005.jszt,
+	     B_G_005.dprtcode,
+     	 B_G_005.zdrid,
+    	 B_G_005.xdrid,
+         zdr.REALNAME,
+         zdr.USERNAME,
+       <!--   zdr.REALNAME as ZDR, -->
+         B_G_005.ZDSJ,
+	     B_G_005.TZSLX as TZSLX,
+         B_G_005.JX as JX,
+         B_G_005.XDZT as XDZT,
+          to_char(B_G_005.XDQX,'YYYY-MM-DD') as XDQX,
+         CASE WHEN ((to_date(to_char(B_G_005.XDQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) > 0) THEN (to_date(to_char(B_G_005.XDQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)
+              ELSE (to_date(to_char(B_G_005.XDQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)
+         END as REMAININGDAYS, 
+         <!-- case when B_G_005.zt in(0,1,2,5,6) then ceil(to_date(to_char(B_G_005.XDQX,'yyyy-mm-dd'),'yyyy-mm-dd')  - CURRENT_DATE) END syts, -->
+         B_G_005.XDNR as XDNR,
+         xdr.REALNAME as XDR_REALNAME,
+         xdr.USERNAME as XDR_USERNAME,
+         zdr.REALNAME as ZDR_REALNAME,
+         zdr.USERNAME as ZDR_USERNAME,
+         zdjs.REALNAME as zdjs_REALNAME,
+         zdjs.USERNAME as zdjs_USERNAME,
+         dpt.DPRTNAME  as DPT_DPRTNAME,
+         (CASE B_G_005.zt  WHEN 5 THEN 0 WHEN 6 THEN 0 else B_G_005.zt end) orzt,
+	     B_G_005.ZT 
+	     from B_G_005
+	     <!-- inner join B_G_003 on (B_G_005.ID = B_G_003.ZLID) -->
+		 left join T_USER zdr on (B_G_005.ZDRID = zdr.ID)
+		 left join T_USER zdjs on (B_G_005.zdjsrid = zdjs.ID)
+		 left join T_USER xdr on (B_G_005.XDRID = xdr.ID)
+		 left join T_department dpt on (B_G_005.dprtcode = dpt.id )
+	     <include refid="revisionNoticeBookQueryConditions" /> 
+	      <choose>                                                                 
+		    	<when test='userType!=null and userType == "admin"'>                       
+		    		 AND exists 
+		    		( SELECT 1 from D_007 where 
+		    			B_G_005.jx = fjjx
+		    		AND B_G_005.dprtcode = DPRTCODE
+		    		AND zt = 1
+		    		)
+		    	</when>
+		    	<otherwise>
+				     AND exists 
+		    		( SELECT 1 from V_ROLE_JX where 
+		    			B_G_005.jx= fjjx
+		    		AND B_G_005.dprtcode = DPRTCODE
+		    		AND USER_ID = #{userId,jdbcType=VARCHAR}
+		    		)
+		    	</otherwise>
+	   	</choose>
+	     ) as t
+	     <choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+		    	<when test='sort == "auto"'>                       
+		    		order by orzt,REMAININGDAYS asc
+		    	</when>
+		    	<otherwise>
+				    order by ${sort} ${order}
+		    	</otherwise>
+		 </choose>
+  </select>
+  
+  	<!-- 通过评估单id查询修订通知书 -->
+   	<select id="queryByPgdId" resultMap="revisionNoticeBookListResultMap" >
+		select
+	     	B_G_005.ID as ID,
+	     	B_G_005.JSZLH as JSZLH,
+	     	B_G_005.zdjsyy,
+	     	B_G_005.zdjsrq,
+	     	B_G_005.jszt,
+	    	B_G_005.dprtcode,
+         	zdr.REALNAME,
+         	zdr.USERNAME,
+         	B_G_005.ZDSJ,
+	     	B_G_005.TZSLX as TZSLX,
+         	B_G_005.JX as JX,
+         	B_G_005.XDZT as XDZT,
+          	to_char(B_G_005.XDQX,'YYYY-MM-DD') as XDQX,
+         	CASE WHEN ((to_date(to_char(B_G_005.XDQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE) > 0) THEN (to_date(to_char(B_G_005.XDQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)
+              	ELSE (to_date(to_char(B_G_005.XDQX,'yyyy-mm-dd'),'yyyy-mm-dd') - CURRENT_DATE)
+         	END as REMAININGDAYS, 
+         	B_G_005.XDNR as XDNR,
+         	xdr.REALNAME as XDR_REALNAME,
+         	xdr.USERNAME as XDR_USERNAME,
+         	zdr.REALNAME as ZDR_REALNAME,
+         	zdr.USERNAME as ZDR_USERNAME,
+         	zdjs.REALNAME as zdjs_REALNAME,
+         	zdjs.USERNAME as zdjs_USERNAME,
+         	dpt.DPRTNAME  as DPT_DPRTNAME,
+	     	B_G_005.ZT as ZT
+	     from B_G_005
+		 left join T_USER zdr on (B_G_005.ZDRID = zdr.ID)
+		 left join T_USER zdjs on (B_G_005.zdjsrid = zdjs.ID)
+		 left join T_USER xdr on (B_G_005.XDRID = xdr.ID)
+		 left join T_department dpt on (B_G_005.dprtcode = dpt.id )
+ 		 where B_G_005.id in (select ZLID from B_G_003 where PGDID = #{pgdid} and ZLXL = 3) and B_G_005.zt != 8	
+ 		 <!-- 通知书类型 -->
+         <if test="tzslx != null and tzslx != ''">
+             and B_G_005.TZSLX = #{tzslx}
+         </if>
+     	 order by B_G_005.JSZLH desc,REMAININGDAYS asc
+	</select>
+  
+  
+  <!--查询所有-->
+	<select id="queryAll" resultMap="BaseResultMap" parameterType="Map">
+           select 
+          		 		B_G_005.id,
+          		 		B_G_005.jszlh,
+          		 		B_G_005.zdrid,
+          		 		B_G_005.zt,
+          		 		B_G_005.dprtcode
+					from B_G_005 left join b_g_003 on B_G_005.id=b_g_003.zlid 
+					where B_G_005.dprtcode=#{dprtcode,jdbcType=VARCHAR} and B_G_005.zt!=8
+					and b_g_003.pgdid in 
+				 <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+					#{id}
+				 </foreach>
+  </select>
+    	<!-- 批量审核 -->
+	<update id="updateBatchAudit" parameterType="Map" >
+    	update B_G_005
+    	set 
+    		SHRID = #{shrid,jdbcType=VARCHAR},
+    		SHBMID = #{shbmid,jdbcType=VARCHAR},
+    		zt = #{zt,jdbcType=DECIMAL},
+    		SHYJ = #{shyj,jdbcType=VARCHAR},
+      		SHSJ = current_timestamp
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 批量批准 -->
+	<update id="updateBatchApprove" parameterType="Map" >
+    	update B_G_005
+    	set 
+    		PFRID = #{pfrid,jdbcType=VARCHAR},
+    		PFBMID = #{pfbmid,jdbcType=VARCHAR},
+    		zt = #{zt,jdbcType=DECIMAL},
+    		PFYJ = #{pfyj,jdbcType=VARCHAR},
+      		PFSJ = current_timestamp
+		where ID in 
+		 <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		 </foreach>
+	</update>
+	
+	<!-- 根据修订通知书id集合查询修订通知书数据 -->
+	<select id="queryByXdtzsIdList" resultMap="BaseResultMap" >
+		select 
+		ID, JSZLH, ZT,
+       	(
+  		CASE 
+     	WHEN TZSLX = 1 THEN 3
+     	WHEN TZSLX = 2 THEN 8
+     	WHEN TZSLX = 3 THEN 9
+  		END 
+  		) TZSLX
+    	from B_G_005
+    	where ZT != 8 AND ID in
+		<foreach collection="list" item="xdtzsIdList" index="index" open="(" close=")" separator=",">
+			#{xdtzsIdList}
+		 </foreach>
+		 order by JSZLH desc
+ 	</select>
+	
+	  	<!-- 根据定检项目id集合定检项目信息 -->
+	<select id="queryByIdList" resultMap="BaseResultMap" >
+		select 
+		<include refid="Base_Column_List" />
+    	from B_G_005
+    	where ID in
+		<foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
+			#{idList}
+		 </foreach>
+ 	</select>
+</mapper>

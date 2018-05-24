@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eray.thjw.aerialmaterial.dao.MaterialRepairMapper">
+  <resultMap id="BaseResultMap" type="com.eray.thjw.aerialmaterial.po.MaterialRepair">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="MAINID" jdbcType="VARCHAR" property="mainid" />
+    <result column="KCLLID" jdbcType="VARCHAR" property="kcllid" />
+    <result column="ZT" jdbcType="DECIMAL" property="zt" />
+    <result column="BZ" jdbcType="VARCHAR" property="bz" />
+    <result column="XJZT" jdbcType="DECIMAL" property="xjzt" />
+    <result column="XJDH" jdbcType="VARCHAR" property="xjdh" />
+    <result column="WHDWID" jdbcType="VARCHAR" property="whdwid" />
+    <result column="WHRID" jdbcType="VARCHAR" property="whrid" />
+    <result column="WHSJ" jdbcType="TIMESTAMP" property="whsj" />
+    <result column="GLGD" jdbcType="VARCHAR" property="glgd" />
+    <result column="xgdjid" jdbcType="VARCHAR" property="xgdjid" />
+    <result column="NOREAD" jdbcType="DECIMAL" property="noRead" />
+    <result column="READALL" jdbcType="DECIMAL" property="readAll" />
+    <result column="HTH" jdbcType="VARCHAR" property="hth" />
+    <result column="HTID" jdbcType="VARCHAR" property="htid" />
+    <result column="HTLSH" jdbcType="VARCHAR" property="htlsh" />
+  </resultMap>
+  
+  <!-- 注意：在写对应关系时,id字段需要重命名 -->
+  <resultMap type="com.eray.thjw.aerialmaterial.po.MaterialRepair" id="RepairJoinMap" extends="BaseResultMap">  
+  		<!-- 配置送修航材与送修单一对一关系 注意：在写对应关系时,id字段需要重命名 -->
+       <association property="reserveMain" javaType="com.eray.thjw.aerialmaterial.po.ReserveMain">
+         <id column="SXID" property="id"/>
+         <result column="DPRTCODE" property="dprtcode"/>
+         <result column="DJLX" property="djlx"/>
+         <result column="SQDH" property="sqdh"/>
+         <result column="SXZT" property="zt"/>
+         <result column="SQYY" property="sqyy"/>
+         <result column="JJCD" property="jjcd"/>
+         <result column="YQQX" property="yqqx"/>
+         <result column="SQBMID" property="sqbmid"/>
+         <result column="SQRID" property="sqrid"/>
+         <result column="SQSJ" property="sqsj"/>
+         <result column="SPBMID" property="spbmid"/>
+         <result column="SPRID" property="sprid"/>
+         <result column="SPSJ" property="spsj"/>
+         <result column="SPYJ" property="spyj"/>
+         <result column="ZDJSRID" property="zdjsrid"/>
+         <result column="ZDJSRQ" property="zdjsrq"/>
+         <result column="ZDJSYY" property="zdjsyy"/>
+         <result column="SQRUSERNAME" property="sqr.username"/>
+         <result column="SQRREALNAME" property="sqr.realname"/>
+         <result column="SPRUSERNAME" property="spr.username"/>
+         <result column="SPRREALNAME" property="spr.realname"/>
+         <result column="JSRUSERNAME" property="jsr.username"/>
+         <result column="JSRREALNAME" property="jsr.realname"/>
+      </association>
+      <!-- 配置送修航材与部件履历一对一关系 注意：在写对应关系时,id字段需要重命名 -->
+      <association property="materialHistory" javaType="com.eray.thjw.aerialmaterial.po.MaterialHistory">
+         <id column="LLID" property="id"/>
+         <result column="BJH" property="bjh"/>
+         <result column="ZWMS" property="zwms"/>
+         <result column="YWMS" property="ywms"/>
+         <result column="SN" property="sn"/>
+         <result column="CJJH" property="hcMainData.cjjh"/>
+      </association>
+      
+   </resultMap> 
+  
+  <sql id="Base_Column_List">
+    ID, MAINID, KCLLID, ZT, BZ, XJZT, XJDH, WHDWID, WHRID, WHSJ
+  </sql>
+  
+  <select id="queryAllPageList" resultMap="BaseResultMap">
+	  
+	select t.id,t3.sqdh,t5.htlsh,t5.id htid,t6.username || ' ' ||t6.realname sqr,t6.bmdm sqbm,t3.id sxid,t3.sqrid,t3.sqbmid,t3.sqsj,t2.bjh,
+	t2.zwms,
+	t2.ywms,
+	t2.grn,
+	t7.cjjh,t2.sn xh,t2.kwh,t2.ckh,t2.ckmc,t3.dprtcode,t2.shzh from b_h_00203 t
+    left join b_h_017 t1 on t1.id = t.kcllid
+    left join b_h_001 t2 on t1.kcid = t2.id 
+    left join b_h_002 t3 on t.mainid = t3.id and t3.zt = 3 and t3.djlx=2
+    left join b_h_00401 t4 on t4.tddhcid = t.id and t4.zt = 1
+    left join b_h_004 t5 on t4.mainid = t5.id
+    left join t_user t6 on t3.sqrid=t6.id
+    left join d_008 t7 on t2.bjid=t7.id
+    where exists (select id from b_h_001 where id = t1.kcid) 
+    and t3.zt = 3  and t.zt = 1 
+		<include refid="FlightRecordParam"></include>
+
+   		  	<choose>
+			    	<when test='pagination.sort == "auto"'>
+			    		 order by t3.sqsj desc
+			    	</when>
+			    	<otherwise>
+					    order by ${pagination.sort} ${pagination.order}
+			    	</otherwise>
+		 	</choose>
+	</select>
+	
+	<select id="queryAllList" resultMap="BaseResultMap">
+		select t1.id kcllid,t.id,t5.hth,t6.username || ' ' ||t6.realname sqr,t3.sqrid,t6.bmdm sqbmid,t3.sqsj,t2.bjh,
+		t2.zwms,
+		t2.ywms,
+		t7.cjjh,t2.sn xh,t2.kwh,t3.dprtcode,t5.gysid,t1.kcid,t3.id xgdjid from b_h_00203 t
+		left join b_h_017 t1 on t1.id = t.kcllid
+		left join b_h_001 t2 on t1.kcid = t2.id 
+		left join b_h_002 t3 on t.mainid = t3.id and t3.zt = 3 and t3.djlx=2
+		left join b_h_00401 t4 on t4.tddhcid = t.id and t4.zt = 1
+		left join b_h_004 t5 on t4.mainid = t5.id
+		left join t_user t6 on t3.sqrid=t6.id
+		left join d_008 t7 on t2.bjid=t7.id
+		where exists (select id from b_h_001 where id = t1.kcid) 
+		and t3.zt = 3  and t.zt = 1 
+		<include refid="FlightRecordParam"></include>
+	</select>
+	
+		<!-- 搜索参数 -->
+	<sql id="FlightRecordParam">
+	   
+	    <if test="id != null and id != ''">
+             and t.id =#{id}
+         </if>
+	    <if test="ckh != null and ckh != ''">
+             and t1.ckh =#{ckh}
+         </if>
+         <if test="fxDateBegin != null and fxDateBegin != ''">
+		    and t3.sqsj &gt;=to_date(#{fxDateBegin}||' 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="fxDateEnd != null and fxDateEnd != ''">
+		    and t3.sqsj &lt;=to_date(#{fxDateEnd}||' 23:59:59','YYYY-MM-DD HH24:MI:SS') 
+		</if>
+         <if test="dprtcode != null and dprtcode != ''">
+             and t3.dprtcode =  #{dprtcode}
+         </if>
+         <if test="keyword != null and keyword != ''">
+		      and (UPPER(t3.sqdh) like UPPER('%'||#{keyword}||'%')
+		      or UPPER(CASE WHEN t7.zwms IS NULL THEN t2.zwms ELSE t7.zwms END) like UPPER('%'||#{keyword}||'%')
+		      or UPPER(CASE WHEN t7.ywms IS NULL THEN t2.ywms ELSE t7.ywms END) like UPPER('%'||#{keyword}||'%')
+		      or UPPER(t2.sn) like UPPER('%'||#{keyword}||'%')
+		      or UPPER(t6.realname) like  UPPER('%'||#{keyword}||'%')
+		      or UPPER(t6.username) like  UPPER('%'||#{keyword}||'%')
+		      or UPPER(t2.bjh) like  UPPER('%'||#{keyword}||'%')
+		      or UPPER(t2.grn) like  UPPER('%'||#{keyword}||'%')
+		     )              <!-- 左右匹配 查询关键字 -->
+		  </if>
+	</sql>
+	
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from B_H_00203
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  
+ 	<!-- 搜索参数 -->
+	<sql id="RepairParam">
+		<!--id-->
+		<if test="id != null and id != ''">
+			and B00203.ID = #{id}
+		</if>
+		<if test="keyword != null and keyword != ''">
+		    and (
+		    	UPPER(B002.SQDH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B017.BJH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B017.ZWMS) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B017.YWMS) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(D008.CJJH) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B017.SN) like UPPER('%'||#{keyword}||'%')
+		    	or UPPER(B002.SQYY) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrid != null">
+		    and B002.SQRID = #{paramsMap.sqrid}
+		</if>
+		<if test="paramsMap != null and paramsMap.zt != null">
+		    and B002.ZT = #{paramsMap.zt}
+		</if>
+		<if test="paramsMap != null and paramsMap.jjcd != null">
+		    and B002.JJCD = #{paramsMap.jjcd}
+		</if>
+		<if test="paramsMap != null and paramsMap.djlx != null">
+		    and B002.DJLX = #{paramsMap.djlx}
+		</if>
+		<if test="paramsMap != null and paramsMap.dprtcode != null">
+		    and B002.DPRTCODE = #{paramsMap.dprtcode}
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrqBegin != null and paramsMap.sqrqBegin != ''">
+		    and B002.SQSJ &gt;= to_date(#{paramsMap.sqrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrqEnd != null and paramsMap.sqrqEnd != ''">
+		    and B002.SQSJ &lt;= to_date(#{paramsMap.sqrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrrealname != null and paramsMap.sqrrealname != ''">
+		    and (UPPER(U.REALNAME) like UPPER('%'||#{paramsMap.sqrrealname}||'%')
+		    or UPPER(U.USERNAME) like UPPER('%'||#{paramsMap.sqrrealname}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.sprrealname != null and paramsMap.sprrealname != ''">
+		    and UPPER(U2.REALNAME) like UPPER('%'||#{paramsMap.sprrealname}||'%')
+		</if>
+	</sql>
+  
+  <!-- 根据查询条件分页查询航材送修单信息 -->
+	<select id="queryRepairPageList" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair" resultMap="RepairJoinMap">
+		select B00203.ID, B002.ID AS SXID, B002.DPRTCODE, B002.DJLX, B002.SQDH, B002.ZT AS SXZT, B002.SQYY, B002.JJCD, B002.YQQX, B002.SQBMID, B002.SQRID, B002.SQSJ, B002.SPBMID, B002.SPRID, 
+		       B002.SPSJ, B002.SPYJ,B002.ZDJSRID,B002.ZDJSRQ,B002.ZDJSYY,
+		       U.REALNAME AS SQRREALNAME,U.USERNAME AS SQRUSERNAME,U2.REALNAME AS SPRREALNAME,U2.USERNAME AS SPRUSERNAME,
+		       U3.USERNAME AS JSRUSERNAME,U3.REALNAME AS JSRREALNAME,
+		       B017.BJH,
+		       (CASE WHEN D008.ZWMS IS NULL THEN B017.ZWMS ELSE D008.ZWMS END) ZWMS,
+		       (CASE WHEN D008.YWMS IS NULL THEN B017.YWMS ELSE D008.YWMS END) YWMS,
+		       B017.SN,
+		       D008.CJJH,
+		       B1.NOREAD,B2.READALL,
+		       B00202.GLGD,
+		       B00203.XJZT,
+		       B00203.XJDH,
+		       HT.HTH,HT.ID AS HTID,HT.HTLSH
+		from B_H_00203 B00203
+		left join B_H_002 B002
+		on B00203.MAINID = B002.ID
+		left join T_USER U
+		on B002.SQRID = U.ID
+		left join T_USER U2
+		on B002.SPRID = U2.ID
+		left join T_USER U3
+           on B002.ZDJSRID = U3.ID
+		left join (select DJID,count(1) as NOREAD from B_H_005 T where EXISTS (select 1 from B_H_00501 T1 where  T1.MAINID = T.ID and T1.ZT=0 and T1.JSRID = #{sqrid})  group by T.DJID) B1
+           on B1.DJID = B002.ID
+           left join (select DJID,count(1) as READALL from B_H_005 group by DJID) B2
+           on B2.DJID = B002.ID
+		left join (select B.MAINID,WM_CONCAT(GDID||'#'||GDBH||'#'||GDLX) AS GLGD from B_H_00202 B GROUP BY MAINID) B00202
+     			on B002.ID = B00202.MAINID
+		left join B_H_017 B017
+		on B017.ID = B00203.KCLLID
+		left join D_008 D008
+		on B017.BJID = D008.ID
+		left join (select B004.ID,B004.HTLSH,B004.HTH,B00401.TDDHCID,B00401.DHSL,B00401.RKSL,B00401.HT_SL AS HTSL,B00401.HT_DHRQ AS HTDHRQ from b_h_00401 B00401,b_h_004 B004 where B00401.MAINID = B004.ID AND B004.ZT NOT IN(8) AND B00401.ZT = 1) HT
+   		on HT.TDDHCID = B00203.ID
+           where B002.ZT NOT IN (8)
+           	<include refid="RepairParam"></include>
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by B002.SQSJ ${pagination.order}
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+     		
+	</select>
+	
+	<!-- 根据查询条件分页查询审核航材送修单信息 -->
+	<select id="queryApproveRepairPageList" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair" resultMap="RepairJoinMap">
+	
+		select B00203.ID, B002.ID AS SXID, B002.DPRTCODE, B002.DJLX, B002.SQDH, B002.ZT AS SXZT, B002.SQYY, B002.JJCD, B002.YQQX, B002.SQBMID, B002.SQRID, B002.SQSJ, B002.SPBMID, B002.SPRID, 
+		       B002.SPSJ, B002.SPYJ,B002.ZDJSRID,B002.ZDJSRQ,B002.ZDJSYY,
+		       U.REALNAME AS SQRREALNAME,U.USERNAME AS SQRUSERNAME,U2.REALNAME AS SPRREALNAME,U2.USERNAME AS SPRUSERNAME,
+		       U3.USERNAME AS JSRUSERNAME,U3.REALNAME AS JSRREALNAME,
+		       B017.BJH,
+		       (CASE WHEN D008.ZWMS IS NULL THEN B017.ZWMS ELSE D008.ZWMS END) ZWMS,
+		       (CASE WHEN D008.YWMS IS NULL THEN B017.YWMS ELSE D008.YWMS END) YWMS,
+		       B017.SN,
+		       D008.CJJH,
+		       B1.NOREAD,B2.READALL,
+		       B00202.GLGD,
+		       B00203.XJZT,
+		       B00203.XJDH,
+		       HT.HTH,HT.ID AS HTID,HT.HTLSH
+		from B_H_00203 B00203
+		left join B_H_002 B002
+		on B00203.MAINID = B002.ID
+		left join T_USER U
+		on B002.SQRID = U.ID
+		left join T_USER U2
+		on B002.SPRID = U2.ID
+		left join T_USER U3
+           on B002.ZDJSRID = U3.ID
+		left join (select DJID,count(1) as NOREAD from B_H_005 T where EXISTS (select 1 from B_H_00501 T1 where  T1.MAINID = T.ID and T1.ZT=0 and T1.JSRID = #{sqrid})  group by T.DJID) B1
+           on B1.DJID = B002.ID
+           left join (select DJID,count(1) as READALL from B_H_005 group by DJID) B2
+           on B2.DJID = B002.ID
+		left join (select B.MAINID,WM_CONCAT(GDID||'#'||GDBH||'#'||GDLX) AS GLGD from B_H_00202 B GROUP BY MAINID) B00202
+     			on B002.ID = B00202.MAINID
+		left join B_H_017 B017
+		on B017.ID = B00203.KCLLID
+		left join D_008 D008
+		on B017.BJID = D008.ID
+		left join (select B004.ID,B004.HTLSH,B004.HTH,B00401.TDDHCID,B00401.DHSL,B00401.RKSL,B00401.HT_SL AS HTSL,B00401.HT_DHRQ AS HTDHRQ from b_h_00401 B00401,b_h_004 B004 where B00401.MAINID = B004.ID AND B004.ZT NOT IN(8) AND B00401.ZT = 1) HT
+   		on HT.TDDHCID = B00203.ID
+           where B002.ZT NOT IN (1,8)
+           	<include refid="RepairParam"></include>
+           <!-- order by ID asc -->
+	  	<choose><!--  进行排序判断，如果默认就是默认字段排序 -->
+	    	<when test='pagination.sort == "auto"'>                       
+	    		order by B002.SQSJ ${pagination.order}
+	    	</when>
+	    	<otherwise>
+			    order by ${pagination.sort} ${pagination.order}
+	    	</otherwise>
+		</choose>
+     		
+	</select>
+	
+   <!-- 搜索参数 -->
+	<sql id="MaterialRepairParam">
+		<if test="keyword != null and keyword != ''">
+		    and (UPPER(D008.BJH) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(D008.ZWMS) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(D008.YWMS) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(D008.CJJH) like UPPER('%'||#{keyword}||'%')
+		    	OR UPPER(B002.SQDH) like UPPER('%'||#{keyword}||'%')
+		    )
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrqBegin != null and paramsMap.sqrqBegin != ''">
+		    and B002.SQSJ &gt;= to_date(#{paramsMap.sqrqBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.sqrqEnd != null and paramsMap.sqrqEnd != ''">
+		    and B002.SQSJ &lt;= to_date(#{paramsMap.sqrqEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.yqqxBegin != null and paramsMap.yqqxBegin != ''">
+		    and B002.YQQX &gt;= to_date(#{paramsMap.yqqxBegin, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS') 
+		</if>
+		<if test="paramsMap != null and paramsMap.yqqxEnd != null and paramsMap.yqqxEnd != ''">
+		    and B002.YQQX &lt;= to_date(#{paramsMap.yqqxEnd, jdbcType=VARCHAR},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+		
+		<if test="paramsMap != null and paramsMap.sqrname != null and paramsMap.sqrname != ''">
+		    and (UPPER(U.REALNAME) like UPPER('%'||#{paramsMap.sqrname}||'%')
+		    or UPPER(U.USERNAME) like UPPER('%'||#{paramsMap.sqrname}||'%')
+		    )
+		</if>
+		<if test="idList != null">
+		    and B00203.ID not in 
+		 	<foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+		 	</foreach>
+		</if>
+	</sql>
+  
+   <!-- 根据查询条件分页查询送修航材信息(弹窗) --> 
+  <select id="queryRepairMaterialPageList"  resultType="Map" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair">
+     select B00203.ID,B00203.MAINID AS TDDID, B002.ID AS SXID, B002.DPRTCODE, B002.DJLX, B002.SQDH, B002.ZT AS SXZT, B002.SQYY, B002.JJCD, B002.YQQX, B002.SQBMID, B002.SQRID, B002.SQSJ, B002.SPBMID, B002.SPRID, 
+	        B002.SPSJ, B002.SPYJ,B002.ZDJSRID,B002.ZDJSRQ,B002.ZDJSYY,
+	        U.REALNAME,U.USERNAME,
+	        B017.SN,
+	        D008.ID AS BJID,D008.BJH,D008.ZWMS,D008.YWMS,D008.CJJH,
+	        B00203.XJDH
+	 from B_H_00203 B00203
+	 left join B_H_002 B002
+	 on B00203.MAINID = B002.ID
+	 left join T_USER U
+	 on B002.SQRID = U.ID
+	 left join B_H_017 B017
+	 on B017.ID = B00203.KCLLID
+	 left join D_008 D008
+	 on B017.BJID = D008.ID
+	where B00203.ZT IN (1) AND B002.ZT in (3) AND B002.DPRTCODE = #{dprtcode}
+	AND B00203.ID not in (select TDDHCID from b_h_00401 t2 left join b_h_004 t3 on t2.MAINID = t3.ID where (t3.ZT in (1,2,10) or t2.DHSL &lt;&gt; 0) and t2.ZT = 1)
+		<!-- AND B017.KCID in (select ID FROM B_H_001) -->
+ 	<include refid="MaterialRepairParam"></include>
+ 	order by B002.YQQX
+ 
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from B_H_00203
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair">
+    insert into B_H_00203 (ID, MAINID, KCLLID, 
+      ZT, BZ, XJZT, XJDH, 
+      WHDWID, WHRID, WHSJ
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{kcllid,jdbcType=VARCHAR}, 
+      #{zt,jdbcType=DECIMAL}, #{bz,jdbcType=VARCHAR}, #{xjzt,jdbcType=DECIMAL}, #{xjdh,jdbcType=VARCHAR}, 
+      #{whdwid,jdbcType=VARCHAR}, #{whrid,jdbcType=VARCHAR}, #{whsj,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair">
+    insert into B_H_00203
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainid != null">
+        MAINID,
+      </if>
+      <if test="kcllid != null">
+        KCLLID,
+      </if>
+      <if test="zt != null">
+        ZT,
+      </if>
+      <if test="bz != null">
+        BZ,
+      </if>
+      <if test="xjzt != null">
+        XJZT,
+      </if>
+      <if test="xjdh != null">
+        XJDH,
+      </if>
+      <if test="whdwid != null">
+        WHDWID,
+      </if>
+      <if test="whrid != null">
+        WHRID,
+      </if>
+        WHSJ,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null">
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xjzt != null">
+        #{xjzt,jdbcType=DECIMAL},
+      </if>
+      <if test="xjdh != null">
+        #{xjdh,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        #{whrid,jdbcType=VARCHAR},
+      </if>
+        sysdate,
+    </trim>
+  </insert>
+  <!-- 根据mainid修改送修航材询价状态为待询价 -->
+  <update id="updateXjztByMainid" parameterType="java.lang.String">
+    update B_H_00203
+    set XJZT = 1
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </update>
+  
+   <!-- 根据mainid修改送修航材 -->
+  <update id="updateByMainid" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair">
+    update B_H_00203
+    <set>
+      <if test="kcllid != null">
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xjzt != null">
+        XJZT = #{xjzt,jdbcType=DECIMAL},
+      </if>
+      <if test="xjdh != null">
+        XJDH = #{xjdh,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair">
+    update B_H_00203
+    <set>
+      <if test="mainid != null">
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="kcllid != null">
+        KCLLID = #{kcllid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null">
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="bz != null">
+        BZ = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="xjzt != null">
+        XJZT = #{xjzt,jdbcType=DECIMAL},
+      </if>
+      <if test="xjdh != null">
+        XJDH = #{xjdh,jdbcType=VARCHAR},
+      </if>
+      <if test="whdwid != null">
+        WHDWID = #{whdwid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHRID = #{whrid,jdbcType=VARCHAR},
+      </if>
+      <if test="whrid != null">
+        WHSJ = sysdate,
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.aerialmaterial.po.MaterialRepair">
+    update B_H_00203
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      KCLLID = #{kcllid,jdbcType=VARCHAR},
+      ZT = #{zt,jdbcType=DECIMAL},
+      BZ = #{bz,jdbcType=VARCHAR},
+      XJZT = #{xjzt,jdbcType=DECIMAL},
+      XJDH = #{xjdh,jdbcType=VARCHAR},
+      WHDWID = #{whdwid,jdbcType=VARCHAR},
+      WHRID = #{whrid,jdbcType=VARCHAR},
+      WHSJ = #{whsj,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

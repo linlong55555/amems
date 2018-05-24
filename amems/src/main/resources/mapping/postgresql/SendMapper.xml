@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.dao.SendMapper" >
+   <resultMap id="BaseResultMap" type="com.eray.thjw.po.Send" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="JSBMID" property="jsbmid" jdbcType="VARCHAR" />
+    <result column="JSRID" property="jsrid" jdbcType="VARCHAR" />
+    <result column="JSSJ" property="jssj" jdbcType="TIMESTAMP" />
+    <result column="ZT" property="zt" jdbcType="DECIMAL" />
+    <result column="DYZT" property="dyzt" jdbcType="DECIMAL" />
+    <result column="JSFS" property="jsfs" jdbcType="DECIMAL" />
+    <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="DPRTCODE" property="dprtcode" jdbcType="VARCHAR" />
+    <result column="DPRTNAME" property="dprtname" jdbcType="VARCHAR" />
+    <result column="ZHUT" property="zhut" jdbcType="VARCHAR" />
+    <result column="ZDSJ" property="zdsj" jdbcType="VARCHAR" />
+    <result column="jstgid" property="jstgid" jdbcType="VARCHAR" />
+    <result column="jstgh" property="jstgh" jdbcType="VARCHAR" />
+     <!-- 在查询来源文件时候级联查询订单的集合 --><!-- 注意：在写一对多关系时,id字段需要重命名 -->
+	 <!-- <collection property="orderSourceList" ofType="OrderSource" column="zlid">
+			<result column="odprtcode" property="dprtcode"/>
+			<result column="PGDID" property="pgdid"/>
+			<result column="ZLXL" property="zlxl"/>
+			<result column="ZLID" property="zlid"/>
+			<result column="PGDH" property="pgdh"/>
+   </collection> -->
+    
+    <association property="use" javaType="com.eray.thjw.po.User">
+         <id column="jsrid" property="id"/>
+         <result column="use_realname" property="realname"/>
+         <result column="use_username" property="username"/>
+     </association>
+
+     <association property="bm" javaType="com.eray.thjw.po.Department">
+         <id column="bmdm" property="id"/>
+         <result column="bm_dprtname" property="dprtname"/>
+     </association>
+    
+  </resultMap>
+  <!-- 查询条件 -->
+  <sql id="SendParam">
+	   where 1=1
+	     <if test="mainid != null and mainid != ''">
+             and b_g_00201.mainid= #{mainid,jdbcType=VARCHAR}
+         </if> 
+	      <if test="jsrid != null and jsrid != ''">
+             and b_g_00201.JSRID= #{jsrid,jdbcType=VARCHAR}
+         </if>
+	     <if test="dprtcode != null and dprtcode != ''">
+             and b_g_00201.DPRTCODE= #{dprtcode,jdbcType=VARCHAR}
+         </if>
+         
+         
+	</sql>
+  
+  <!-- 查询所有用户信息和所在组织机构 -->
+  <select id="querySendAll" resultMap="BaseResultMap" parameterType="com.eray.thjw.po.Send">
+      
+	  	select
+	  	 b_g_00201.id,
+	  	 b_g_00201.mainid,
+	  	 b_g_00201.jsbmid,
+	  	 b_g_00201.jsrid,
+	  	 b_g_00201.jssj,
+	  	 b_g_00201.zt,
+	  	 b_g_00201.dyzt,
+	  	 b_g_00201.jsfs,
+	  	 b_g_00201.dprtcode,
+	  	 use.realname use_realname,
+        		 use.username use_username,
+        		 bm.dprtname bm_dprtname 
+	  	 from b_g_00201  left join t_user use on (b_g_00201.jsrid=use.id)
+	  	 							 left join t_department bm on(use.BMDM=bm.id)
+	  	 <include refid="SendParam"></include>
+	  	  order by b_g_00201.mainid asc 
+      
+  	
+  </select>
+  
+  <!-- 根据条件查询所有 -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap"  parameterType="com.eray.thjw.po.Send" >
+    select 
+    	*
+    from b_g_00201
+    where 1=1 
+    <if test="id != null and id != ''">
+       and  id = #{id}
+    </if>
+ 	<if test="mainid != null and mainid != ''">
+       and  mainid = #{mainid}
+    </if>
+  </select>
+  
+  <insert id="insert" parameterType="com.eray.thjw.po.Send" >
+    insert into B_G_00201 (MAINID, JSBMID, JSRID, 
+      JSSJ, ZT, DYZT, JSFS, 
+      DPRTCODE)
+    values (#{mainid,jdbcType=VARCHAR}, #{jsbmid,jdbcType=VARCHAR}, #{jsrid,jdbcType=VARCHAR}, 
+      current_timestamp, #{zt,jdbcType=DECIMAL}, #{dyzt,jdbcType=DECIMAL}, #{jsfs,jdbcType=DECIMAL}, 
+      #{dprtcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.po.Send" >
+    insert into B_G_00201
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="jsbmid != null" >
+        JSBMID,
+      </if>
+      <if test="jsrid != null" >
+        JSRID,
+      </if>
+      <if test="jssj != null" >
+        JSSJ,
+      </if>
+      <if test="zt != null" >
+        ZT,
+      </if>
+      <if test="dyzt != null" >
+        DYZT,
+      </if>
+      <if test="jsfs != null" >
+        JSFS,
+      </if>
+      <if test="dprtcode != null" >
+        DPRTCODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbmid != null" >
+        #{jsbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null" >
+        #{jsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="jssj != null" >
+        current_timestamp,
+      </if>
+      <if test="zt != null" >
+        #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="dyzt != null" >
+        #{dyzt,jdbcType=DECIMAL},
+      </if>
+      <if test="jsfs != null" >
+        #{jsfs,jdbcType=DECIMAL},
+      </if>
+      <if test="dprtcode != null" >
+        #{dprtcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <!-- 删除下达指令来源信息 -->
+  <delete id="deleteSend" parameterType="com.eray.thjw.po.Send" >
+     delete from B_G_00201
+       where MAINID = #{mainid}
+  </delete>
+  
+  <!-- 删除下达指令来源信息 -->
+  <delete id="delete" parameterType="com.eray.thjw.po.Send">
+     delete from B_G_00201
+       where 1=1 
+       
+       <if test="mainid != null" >
+        and MAINID = #{mainid}
+      </if>
+       <if test="jsrid != null" >
+        and jsrid = #{jsrid}
+      </if>
+       <if test="jsbmid != null" >
+        and jsbmid = #{jsbmid}
+      </if>
+       
+  </delete>
+  
+  <!-- 根据条件进行查询 -->
+  <select id="queryAll" parameterType="com.eray.thjw.po.Send" resultMap="BaseResultMap">
+       select 
+         t1.id,
+         t1.mainid,
+         t1.jsbmid,
+         t1.jsrid,
+         t1.jssj,
+         t1.zt,
+         t1.jsfs,
+         t1.dyzt,
+         t1.dprtcode,
+         t2.realname,
+         t2.username,
+         t1.zdsj,
+         t1.jstgid,
+         t1.jstgh,
+         t1.zhut from (
+             select 
+          a1.id,
+          a1.mainid,
+          a1.jsbmid,
+          a1.jsrid,
+          a1.jssj,
+          a1.zt,
+          a1.jsfs,
+          a1.dyzt,
+          a1.dprtcode,
+          a2.zhut,
+          a2.zdsj,
+          a2.zdrid,
+          a2.id jstgid,
+          a2.jstgh
+      from (select id,jstgh,zhut,zt,zdsj,zdrid from b_g_002 where zt in (1,2,3)) a2 left join b_g_00201 a1 on a2.id=a1.mainid 
+      <include refid="SendParam1"></include>
+      ) t1 left join t_user t2 on t1.zdrid=t2.id
+  	<choose>                                                                                 <!--  进行排序判断，如果默认就是默认字段排序 -->
+	   	<when test='pagination.sort == "auto"'>                       
+	   		order by t1.zt asc
+	   	</when>
+	   	<otherwise>
+		    order by t1.${pagination.sort} ${pagination.order}
+	   	</otherwise>
+	</choose>
+            
+     		
+  </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.po.Send" >
+    update B_G_00201
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsbmid != null" >
+        JSBMID = #{jsbmid,jdbcType=VARCHAR},
+      </if>
+      <if test="jsrid != null" >
+        JSRID = #{jsrid,jdbcType=VARCHAR},
+      </if>
+      <if test="zt != null" >
+        ZT = #{zt,jdbcType=DECIMAL},
+      </if>
+      <if test="zt == 1" >
+        JSSJ = current_timestamp,
+      </if>
+      <if test="dyzt != null" >
+        DYZT = #{dyzt,jdbcType=DECIMAL},
+      </if>
+      <if test="jsfs != null" >
+        JSFS = #{jsfs,jdbcType=DECIMAL},
+      </if>
+<!--       <if test="dprtcode != null" > -->
+<!--         DPRTCODE = #{dprtcode,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByMainid" parameterType="com.eray.thjw.po.Send" >
+    update B_G_00201
+    <set >
+        ZT = #{zt,jdbcType=DECIMAL},
+        jssj = #{jssj,jdbcType=TIMESTAMP}
+    </set>
+    where mainid = #{mainid,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateJszt" parameterType="com.eray.thjw.po.Send" >
+    update B_G_00201
+    <set >
+        ZT = #{zt,jdbcType=DECIMAL},
+        jssj = current_timestamp
+    </set>
+    where mainid = #{mainid,jdbcType=VARCHAR} and jsrid=#{jsrid,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 查询条件 -->
+  <sql id="SendParam1">
+	   where 1=1
+	     <if test="zt != null ">
+             and a1.zt= #{zt}
+         </if>
+	     <if test="jsrid != null and jsrid != ''">
+             and a1.JSRID= #{jsrid,jdbcType=VARCHAR}
+         </if>
+	     <if test="dprtcode != null and dprtcode != ''">
+             and a1.dprtcode= #{dprtcode,jdbcType=VARCHAR}
+         </if>
+          <if test="keyword != null and keyword != ''">
+		    and (   
+		    		a2.jstgh like '%'||#{keyword}||'%')              <!-- 左右匹配 查询关键字 -->
+		</if>
+	</sql>
+</mapper>

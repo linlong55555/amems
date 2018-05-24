@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eray.thjw.project2.dao.TodorsMapper" >
+  <resultMap id="BaseResultMap" type="com.eray.thjw.project2.po.Todors" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MAINID" property="mainid" jdbcType="VARCHAR" />
+    <result column="YWID" property="ywid" jdbcType="VARCHAR" />
+    <result column="YWBH" property="ywbh" jdbcType="VARCHAR" />
+    <result column="YWBB" property="ywbb" jdbcType="VARCHAR" />
+    <result column="YWZT" property="ywzt" jdbcType="VARCHAR" />
+    <result column="YWDJZT" property="ywdjzt" jdbcType="DECIMAL" />
+  </resultMap>
+   <resultMap id="todorsTotodoMap" extends="BaseResultMap" type="com.eray.thjw.project2.po.Todors" >
+   <association property="todo" javaType="com.eray.thjw.project2.po.Todo">
+         <id column="mainid" property="id"/>
+         <result column="shr_realname" property="realname"/>
+         <result column="shr_username" property="username"/>
+		 <association property="blr" javaType="com.eray.thjw.po.User">
+	         <id column="blrid" property="id"/>
+	         <result column="blr_realname" property="realname"/>
+	         <result column="blr_username" property="username"/>
+		  </association>
+     </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, MAINID, YWID, YWBH, YWBB, YWZT,YWDJZT
+  </sql>
+  
+  
+    <select id="selectOuputsList" resultMap="BaseResultMap">
+       SELECT   <include refid="Base_Column_List" />
+    FROM T_TODO_RS 
+    WHERE MAINID in 
+   	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+      
+   </select>
+  
+  
+   <select id="selectTodorsBylyid" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+	      T_TODO_RS.ID, T_TODO_RS.MAINID, T_TODO_RS.YWID, T_TODO_RS.YWBH, T_TODO_RS.YWBB, T_TODO_RS.YWZT,
+	      T_TODO.dbgzlx,T_TODO.blqx,T_TODO.blrid,blr.realname blr_realname,blr.username blr_username
+	      from T_TODO_RS 
+	               left join T_TODO on T_TODO_RS.mainid=T_TODO.id
+	               left join T_USER blr on T_TODO.blrid=blr.id
+   				   where T_TODO.lyid = #{lyid,jdbcType=VARCHAR}
+    
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TODO_RS
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByMainid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TODO_RS
+    where MAINID = #{mainid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByMainids" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TODO_RS
+    where MAINID in 
+    	<foreach collection="list" item="mainid" index="index" open="(" close=")" separator=",">
+			#{mainid,jdbcType=VARCHAR}
+		</foreach>
+  </select>
+  
+  
+  <delete id="deleteYwIds"  >
+    delete from T_TODO_RS
+    where ywid in 
+   		<foreach collection="list" item="ywid" index="index" open="(" close=")" separator=",">
+			#{ywid,jdbcType=VARCHAR}
+		</foreach>
+  </delete>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_TODO_RS
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.eray.thjw.project2.po.Todors" >
+    insert into T_TODO_RS (ID, MAINID, YWID, 
+      YWBH, YWBB, YWZT)
+    values (#{id,jdbcType=VARCHAR}, #{mainid,jdbcType=VARCHAR}, #{ywid,jdbcType=VARCHAR}, 
+      #{ywbh,jdbcType=VARCHAR}, #{ywbb,jdbcType=VARCHAR}, #{ywzt,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.eray.thjw.project2.po.Todors" >
+    insert into T_TODO_RS
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="mainid != null" >
+        MAINID,
+      </if>
+      <if test="ywid != null" >
+        YWID,
+      </if>
+      <if test="ywbh != null" >
+        YWBH,
+      </if>
+      <if test="ywbb != null" >
+        YWBB,
+      </if>
+      <if test="ywzt != null" >
+        YWZT,
+      </if>
+      <if test="ywdjzt != null" >
+        YWDJZT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainid != null" >
+        #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywid != null" >
+        #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywbh != null" >
+        #{ywbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ywbb != null" >
+        #{ywbb,jdbcType=VARCHAR},
+      </if>
+      <if test="ywzt != null" >
+        #{ywzt,jdbcType=VARCHAR},
+      </if>
+      <if test="ywdjzt != null" >
+        #{ywdjzt,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.eray.thjw.project2.po.Todors" >
+    update T_TODO_RS
+    <set >
+      <if test="mainid != null" >
+        MAINID = #{mainid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywid != null" >
+        YWID = #{ywid,jdbcType=VARCHAR},
+      </if>
+      <if test="ywbh != null" >
+        YWBH = #{ywbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ywbb != null" >
+        YWBB = #{ywbb,jdbcType=VARCHAR},
+      </if>
+      <if test="ywzt != null" >
+        YWZT = #{ywzt,jdbcType=VARCHAR},
+      </if>
+      <if test="ywdjzt != null" >
+        YWDJZT = #{ywdjzt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.eray.thjw.project2.po.Todors" >
+    update T_TODO_RS
+    set MAINID = #{mainid,jdbcType=VARCHAR},
+      YWID = #{ywid,jdbcType=VARCHAR},
+      YWBH = #{ywbh,jdbcType=VARCHAR},
+      YWBB = #{ywbb,jdbcType=VARCHAR},
+      YWZT = #{ywzt,jdbcType=VARCHAR},
+      YWDJZT = #{ywzt,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <!-- start 批量新增 -->
+  <insert id="insertTodors" parameterType="java.util.List">
+  	insert all
+  	<foreach collection="list" item="item" index="index" >
+  	into t_todo_rs(
+		ID, MAINID, YWID, YWBH, YWBB, YWZT,YWDJZT
+		)
+		values (
+			#{item.id,jdbcType=VARCHAR},
+			#{item.mainid,jdbcType=VARCHAR},
+			#{item.ywid,jdbcType=INTEGER},
+			#{item.ywbh,jdbcType=VARCHAR},
+			#{item.ywbb,jdbcType=VARCHAR},
+			#{item.ywzt,jdbcType=VARCHAR},
+			#{item.ywdjzt,jdbcType=DECIMAL}
+			)
+		</foreach>
+		select 1 from dual
+  </insert>
+  <!-- end -->
+  <!-- start 根据业务id删除数据 -->
+  <delete id="deleteTodorsByYwid" parameterType="String">
+   	delete from T_TODO_RS
+    where ywid = #{ywid,jdbcType=VARCHAR}
+  </delete>
+  <!-- end -->
+  <!-- start 根据业务id更新单据数据 -->
+  <update id="updateByYwid" parameterType="com.eray.thjw.project2.po.Todors" >
+    update T_TODO_RS
+    set
+      YWBH = #{ywbh,jdbcType=VARCHAR},
+      YWBB = #{ywbb,jdbcType=VARCHAR},
+      YWZT = #{ywzt,jdbcType=VARCHAR},
+      YWDJZT = #{ywdjzt,jdbcType=DECIMAL}
+    where YWID = #{ywid,jdbcType=VARCHAR}
+  </update>
+  <!-- end -->
+  <!-- start 更新状态 -->
+  <update id="updateYwdjztByYwid" >
+  	update T_TODO_RS set YWDJZT = #{ywdjzt,jdbcType=DECIMAL} where YWID = #{ywid,jdbcType=VARCHAR}
+  </update>
+  <!-- start 更新状态 -->
+  <update id="updatetByYwid" >
+  	update T_TODO_RS set ywbh = #{2,jdbcType=DECIMAL},ywbb = #{1,jdbcType=DECIMAL} where YWID = #{0,jdbcType=VARCHAR}
+  </update>
+  <!-- start 更新 -->
+  <update id="updatetsByYwid" >
+  	update T_TODO_RS set ywbh = #{1,jdbcType=DECIMAL},ywbb = #{2,jdbcType=DECIMAL},ywzt = #{3,jdbcType=DECIMAL},ywdjzt = #{4,jdbcType=DECIMAL} where YWID = #{0,jdbcType=VARCHAR}
+  </update>
+ 
+  <!-- end -->
+  <!-- start 批量更新状态 -->
+  <update id="updateZtByYwidList" >
+ 	 update T_TODO_RS set YWDJZT = #{ywdjzt,jdbcType=DECIMAL} where YWID in
+ 	 <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		 </foreach>
+  </update>
+</mapper>
