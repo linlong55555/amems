@@ -1,0 +1,46 @@
+select t1.id,
+       case
+         when t1.jsid = '2ba4b318-bf6a-4829-91a8-4c92b149af59' then
+          2
+         when t2.wxryid = '2ba4b318-bf6a-4829-91a8-4c92b149af59' then
+          1
+         else
+          0
+       end state,
+       t3.id as cid,
+       t3.kcbh,
+       t3.kcmc,
+       t3.fjjx,
+       t1.jh_ksrq,
+       t1.jh_kssj,
+       t1.jh_jsrq,
+       t1.jh_jssj,
+       t1.kcdd,
+       t1.pxlb,
+       t1.pxjg,
+       t1.zrr,
+       t1.pxdx,
+       t1.jsxm,
+       t1.fxbs,
+       t1.pxxs,
+       t1.ksxs,
+       t1.ks,
+       t1.whsj,
+       t1.dprtcode,
+       t1.zt,
+       t1.jsid
+  from b_p_002 t1
+  join b_p_003 t3 on t1.kcid = t3.id
+                 and t3.zt = 1
+  left join (select b_p_00201.pxjhid, b_z_001.wxryid
+               from b_p_00201
+               join b_z_001 on b_p_00201.zt = 1
+                           and b_p_00201.is_yc = 1
+                           and b_z_001.id = b_p_00201.wxrydaid
+                           and b_z_001.wxryid =
+                               '2ba4b318-bf6a-4829-91a8-4c92b149af59') t2 on t1.id =
+                                                                             t2.pxjhid
+  left join b_p_008 t5 on t1.jsid = t5.id
+ where t1.dprtcode = '4475584d-f41c-4928-b5ea-49ed0882c539'
+   and (t5.wxryid = '' or t1.whrid = '2ba4b318-bf6a-4829-91a8-4c92b149af59' or
+       t2.wxryid = '2ba4b318-bf6a-4829-91a8-4c92b149af59')

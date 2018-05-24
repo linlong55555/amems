@@ -1,0 +1,217 @@
+SELECT B1.ID,
+       B1.DPRTCODE,
+       B1.WHDWID,
+       B1.WHRID,
+       B1.WHSJ,
+       B1.ZT,
+       B1.ZCBLBS,
+       B1.BLDH,
+       B1.FJZCH,
+       B1.ZJH,
+       B1.HZ,
+       B1.BS145,
+       B1.BLLY,
+       B1.BLLYID,
+       B1.BLLX,
+       B1.BLLXSM,
+       B1.SXGS_RS,
+       B1.SXGS_XS,
+       B1.BLYJ,
+       B1.GZMS,
+       B1.BLYY,
+       B1.LSCS,
+       B1.MBS,
+       B1.MSM,
+       B1.OBS,
+       B1.OSM,
+       B1.YXXZBS,
+       B1.YXXZSM,
+       B1.SC_SQRBMID,
+       B1.SC_SQRID,
+       B1.SC_SQRZZH,
+       B1.SC_SQRQ,
+       B1.SC_BLQX, --首次保留期限
+       B1.SC_PZRBMID,
+       B1.SC_PZRID,
+       (CASE
+         WHEN (B1.ZC_BLQX IS NULL) THEN
+          CEIL(B1.SC_BLQX - SYSDATE)
+         ELSE
+          CEIL(B1.ZC_BLQX - SYSDATE)
+       END) SYTS,
+       B2.USERNAME || ' ' || B2.REALNAME AS SCSQR,
+       B1.SC_PZRQ,
+       B1.SC_PZYJ,
+       B1.SC_PZCZSJ,
+       B1.ZC_SQRBMID,
+       B1.ZC_SQRID,
+       B1.ZC_SQRQ,
+       B1.ZC_BLQX, --再次保留期限
+       B1.ZC_BLYY,
+       B1.ZC_PZRBMID,
+       B1.ZC_PZRID,
+       B1.ZC_PZRQ,
+       B1.JFPZYJ,
+       B1.JFPZR,
+       B1.JFPZRQ,
+       B1.GBRBMID,
+       B1.GBRID,
+       B1.GBCZSJ,
+       B1.GBYY,
+       B1.GZZ,
+       B1.GZRQ,
+       B1.JCZ,
+       B1.JCRQ,
+       B1.GDID,
+       B4.USERNAME || ' ' || B4.REALNAME AS WHR_ID,
+       B5.DPRTNAME AS DPRT_DPRTNAME,
+       B6.ZJH || ' ' || B6.YWMS AS ZJH_ZJH,
+       B7.USERNAME || ' ' || B7.REALNAME AS GBR,
+       (CASE
+         WHEN (B1.BS145 = 1) THEN
+          BB1.GDBH
+         ELSE
+          BB2.GDBH
+       END) GDBH,
+       (CASE
+         WHEN (B1.BS145 = 1) THEN
+          BB1.ZT
+         ELSE
+          BB2.ZT
+       END) GDZT,
+       T7.IS_WARNING, --警告
+       T7.JHSJSJ, --剩余期限
+       T8.JHSJSJ SCQX, --首次期限
+       T9.JHSJSJ ZCQX --再次期限
+  FROM B_S2_013 B1
+  LEFT JOIN T_USER B2
+    ON B2.ID = B1.SC_SQRID
+  LEFT JOIN T_USER B4
+    ON B1.WHRID = B4.ID
+  LEFT JOIN T_DEPARTMENT B5
+    ON B1.DPRTCODE = B5.ID
+  LEFT JOIN D_005 B6
+    ON B1.ZJH = B6.ZJH
+   AND B1.DPRTCODE = B6.DPRTCODE
+  LEFT JOIN T_USER B7
+    ON B7.ID = B1.GBRID
+  LEFT JOIN B_S2_014 BB1
+    ON BB1.ID = B1.GDID
+  LEFT JOIN B_S2_008 BB2
+    ON BB2.ID = B1.GDID
+  LEFT JOIN (SELECT T6.GZBLID, MAX(T6.JHSJSJ) JHSJSJ
+               FROM (SELECT T4.GZBLID,
+                            WM_CONCAT(T4.JKLBH || '#_#' || T4.JHZ) OVER(PARTITION BY T4.GZBLID ORDER BY T4.GZBLID) JHSJSJ
+                       FROM (SELECT S201301.JKLBH,
+                                    S201301.JKZ    JHZ,
+                                    S201301.MAINID GZBLID
+                               FROM B_S2_01301 S201301
+                               JOIN B_S2_013 S2013
+                                 ON S201301.MAINID = S2013.ID
+                                AND S201301.JD = 1
+                              WHERE 1 = 1) T4
+                      WHERE 1 = 1) T6
+              GROUP BY T6.GZBLID) T8
+    ON T8.GZBLID = B1.ID
+  LEFT JOIN (SELECT T6.GZBLID, MAX(T6.JHSJSJ) JHSJSJ
+               FROM (SELECT T4.GZBLID,
+                            WM_CONCAT(T4.JKLBH || '#_#' || T4.JHZ) OVER(PARTITION BY T4.GZBLID ORDER BY T4.GZBLID) JHSJSJ
+                       FROM (SELECT S201301.JKLBH,
+                                    S201301.JKZ    JHZ,
+                                    S201301.MAINID GZBLID
+                               FROM B_S2_01301 S201301
+                               JOIN B_S2_013 S2013
+                                 ON S201301.MAINID = S2013.ID
+                                AND S201301.JD = 2
+                              WHERE 1 = 1) T4
+                      WHERE 1 = 1) T6
+              GROUP BY T6.GZBLID) T9
+    ON T9.GZBLID = B1.ID
+  LEFT JOIN (SELECT T6.GZBLID,
+                    MAX(IS_WARNING) IS_WARNING,
+                    MAX(T6.JHSJSJ) JHSJSJ
+               FROM (SELECT T4.GZBLID,
+                            CASE
+                              WHEN T4.LX = 2 THEN
+                               CASE
+                                 WHEN T4.SYZ <= T4.FZ THEN
+                                  1
+                                 ELSE
+                                  0
+                               END
+                              ELSE
+                               CASE
+                                 WHEN T4.JKLBH = '1_10' THEN
+                                  CASE
+                                    WHEN T4.SYZ <= 0 THEN
+                                     1
+                                    ELSE
+                                     0
+                                  END
+                                 ELSE
+                                  CASE
+                                    WHEN T4.SYZ <=
+                                         CEIL(COALESCE(T4.JHZ * 1, 0) *
+                                              (COALESCE(T4.FZ, 0) / 100)) THEN
+                                     1
+                                    ELSE
+                                     0
+                                  END
+                               END
+                            END IS_WARNING,
+                            WM_CONCAT(T4.JKLBH || '#_#' || T4.SJZ || '#_#' ||
+                                      T4.SYZ) OVER(PARTITION BY T4.GZBLID ORDER BY T4.GZBLID) JHSJSJ
+                       FROM (SELECT S201301.JKLBH,
+                                    S201301.JKZ JHZ,
+                                    S201301.MAINID GZBLID,
+                                    CASE
+                                      WHEN S201301.JKLBH = '1_10' THEN
+                                       TO_CHAR(SYSDATE, 'yyyy-mm-dd')
+                                      ELSE
+                                       (COALESCE(S2911.LJZ, 0) +
+                                       COALESCE(S2911.CSZ, 0)) || ''
+                                    END SJZ,
+                                    CASE
+                                      WHEN S201301.JKLBH = '1_10' THEN
+                                       TO_DATE(S201301.JKZ, 'yyyy-mm-dd') -
+                                       TO_DATE(TO_CHAR(SYSDATE, 'yyyy-mm-dd'),
+                                               'yyyy-mm-dd')
+                                      ELSE
+                                       CAST(S201301.JKZ AS INTEGER) -
+                                       (COALESCE(S2911.LJZ, 0) +
+                                        COALESCE(S2911.CSZ, 0))
+                                    END * 1 SYZ,
+                                    THRESHOLD.FZ,
+                                    THRESHOLD.LX
+                               FROM B_S2_01301 S201301
+                               JOIN B_S2_013 S2013
+                                 ON S201301.MAINID = S2013.ID
+                                AND S201301.JKBS = 1
+                               LEFT JOIN B_S2_911 S2911
+                                 ON S2911.DPRTCODE = S2013.DPRTCODE
+                                AND S2911.FJZCH = S2013.FJZCH
+                                AND S2911.JKLBH = S201301.JKLBH
+                                AND S2911.WZ = 11
+                               LEFT JOIN T_THRESHOLD_AIR THRESHOLD
+                                 ON THRESHOLD.DPRTCODE = S2013.DPRTCODE
+                                AND THRESHOLD.FJZCH = S2013.FJZCH
+                                AND THRESHOLD.JKLBH = S201301.JKLBH
+                              WHERE 1 = 1) T4
+                      WHERE 1 = 1) T6
+              GROUP BY T6.GZBLID) T7
+    ON T7.GZBLID = B1.ID
+ WHERE 1 = 1
+   AND B1.ZT IN (1, 2, 4, 6)
+   AND B1.DPRTCODE = '4475584d-f41c-4928-b5ea-49ed0882c539'
+   AND EXISTS
+ (SELECT T.DPRTCODE, T.FJZCH, T.FJJX, MAX(T.XLH) XLH
+          FROM (SELECT DPRTCODE, FJZCH, XLH, FJJX
+                  FROM V_ROLE_JX
+                 WHERE USER_ID = '09b50648-f40e-4e20-b60f-6dd2bcfab8f2'
+                UNION ALL
+                SELECT D010.DPRTCODE, D010.FJZCH, D010.XLH, D010.FJJX
+                  FROM D_010 D010
+                 WHERE D010.ZT = 1) T
+         WHERE T.DPRTCODE = DPRTCODE
+         GROUP BY T.DPRTCODE, T.FJZCH, T.FJJX)
+ ORDER BY WHSJ

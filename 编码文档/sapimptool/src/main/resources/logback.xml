@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<jmxConfigurator />
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- 典型的日志pattern -->
+		<encoder>
+			<pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 演示按时间滚动的策略 -->
+	<appender name="defaultlogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/tmp/logs/pbsbase.log</file>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/tmp/logs/pbsbase.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- 保留 30天数据，默认无限-->
+			 <maxHistory>30</maxHistory>
+		</rollingPolicy>
+		
+		<layout class="ch.qos.logback.classic.PatternLayout">  
+        	<pattern>  
+                <![CDATA[ 
+                %n%-4r [%d{yyyy-MM-dd HH:mm:ss}] - %X{method}  %-5level %logger{35} - %m%n 
+                ]]>  
+        	</pattern>  
+    	</layout> 
+	</appender>
+	
+	<!-- 按文件大小滚动的策略 -->
+	<appender name="metricsLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/tmp/logs/metrics.log</file>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>/tmp/logs/metrics.%i.log</fileNamePattern>
+			<!-- 最多保留10个文件，默认是7 -->
+      		<maxIndex>10</maxIndex>
+		</rollingPolicy>
+		
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      		<maxFileSize>100MB</maxFileSize>
+      	</triggeringPolicy>
+		
+		<encoder>
+			<pattern>%msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 综合时间与大小的滚动策略，先按小时滚动，小时内的文件大于10mb时再按大小滚动 -->
+	<appender name="businessLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/tmp/logs/business.log</file>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/tmp/logs/business-%d{yyyy-MM-dd_HH}.%i.zip</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS},%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- project default level -->
+	<logger name="com.eray.pbs" level="INFO" />
+	
+	<!--log4jdbc -->
+	<logger name="jdbc.sqltiming" level="INFO"/>
+	
+	<!-- modules -->
+	<logger name="com.eray.util" level="INFO" />
+	
+	<!-- root -->
+	<root level="INFO">
+		<appender-ref ref="console" />
+		<appender-ref ref="defaultlogFile" />
+	</root>
+</configuration>

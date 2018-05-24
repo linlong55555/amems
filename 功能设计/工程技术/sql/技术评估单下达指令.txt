@@ -1,0 +1,32 @@
+SELECT B1.LYBH,
+       B1.BLQX,
+       B1.DBGZLX,
+       B1.BLRID,
+       B1.SM,
+       B1.ZT,
+       B1.ID,
+       B1.FJJX,
+       B1.FKYJ,
+       B1.FKSJ,
+       B1.LYID,
+       B1.BB,
+       B2.USERNAME || ' ' || B2.REALNAME AS ZPR_ID
+  FROM T_TODO B1
+  LEFT JOIN T_USER B2 ON B1.BLRID = B2.ID
+ WHERE B1.LYID = '98eaa506-c379-49ad-8c7d-68852d9497db'
+  or b1.lyid = (select glpgdid from b_g2_001 where id = '98eaa506-c379-49ad-8c7d-68852d9497db');
+  
+  SELECT B1.DPRTCODE,
+       B1.PGDID,
+       B1.PGDH,
+       B1.BB,
+       B1.ZLXL,
+       B1.ZLID,
+       B1.ZLBH,
+       B1.ZLBB,
+       B1.YWZT,
+       B1.YWDJZT
+  FROM B_G_003 B1
+ WHERE b1.PGDID = '98eaa506-c379-49ad-8c7d-68852d9497db'
+        or b1.PGDID = (select glpgdid from b_g2_001 where id = '98eaa506-c379-49ad-8c7d-68852d9497db')
+ order by B1.PGDH, B1.BB;

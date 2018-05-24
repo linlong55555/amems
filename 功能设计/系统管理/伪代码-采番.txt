@@ -1,0 +1,174 @@
+采番规则json样例：
+{
+	"info:maxlength": 50,
+	"sn:3": {
+		"join": "Y",
+		"cont": "NRC",
+		"type": "$S"
+	},
+	"sn:4": {
+		"join": "Y",
+		"cont": {
+			"field": "fjzch",
+			"pattern": {
+				"3": "NRC",
+				"2": "EO",
+				"1": "RNT",
+				"default": "",
+				"5": "NRC",
+				"4": "NRC",
+				"9": "FLB"
+			},
+			"start": 0,
+			"end": -1
+		},
+		"type": "$D"
+	},
+	"sn:1": {
+		"join": "Y",
+		"cont": "YYYYMMDDHH24MI",
+		"type": "$D"
+	},
+	"sn:2": {
+		"join": "N",
+		"cont": {
+			"hex": "D",
+			"posi": "B",
+			"fill": "0",
+			"len": 6
+		},
+		"type": "$N"
+	}
+}
+
+public class SNGeneratorByRedis extends SNGenerator implements Generator {//依赖redis的番号生成器
+
+	构造方法(Object entity){
+		super(entity);
+	}
+	
+	public string generateSN(){//生成采番号
+		String rule = 执行R命令：hget key field;//key："SNR" + ":" + 机构代码    field：采番key
+		Map ruleMap = super.analysisRule(rule);
+		执行R命令:hincrby key field 1;//key："SN" + ":" + 机构代码 + ":" + 采番key   field：ruleMap.get("snno"),snno对应的流水值+1
+		int sn_num = 执行R命令：hget key field;//key："SN" + ":" + 机构代码 + ":" + 采番key   field：ruleMap.get("snno"),获取snno对应的流水值
+		String sn_str = "H".equalsIgnoreCase(ruleMap.get("numbertype").get("hex"))?Integer.toHexString(sn_num):sn_num+"";
+		if(sn_str.lenth()<ruleMap.get("numbertype").get("len")){
+			使用ruleMap.get("numbertype").get("fill")和填补位置ruleMap.get("numbertype").get("posi")，来补充字符串
+		}else if (sn_str.lenth()>ruleMap.get("numbertype").get("len")) {
+			执行R命令重置为1
+		}
+		while(num >= ruleMap.size()){
+			拼接番号，到了这一步就是so easy！
+		}
+		return 番号;
+	}
+}
+
+public class SNGeneratorByRDS extends SNGenerator implements Generator {//依赖RDS的番号生成器
+	参照SNGeneratorByRedis的逻辑实现，区别：不是jedis而是jdbc
+
+}
+
+public class SNGenerator {
+	Map ruleMap;//规则解析后实体
+	Object entity;//业务属性实体
+	构造方法(){}
+	构造方法(Object obj){
+		this.getEntity(obj);
+	}
+	/* 采番规则解析 */
+	private Map analysisRule(String rule) {
+		if (rule == null || "".equals(rule.trim())) {
+			return null;
+		}
+		ruleMap = new Gson().fromJson(rule.trim(), Map.class);
+		int num = 0;
+		Map tempMap = null;
+		int d_num = 0;//流水字段类型的计数器
+		StringBuffer snno = new StringBuffer();
+		while(num >= ruleMap.size()){
+			tempMap = ruleMap.get("sn:" + num);
+			if ("$N".equals(tempMap.get("type"))) {
+				ruleMap.put("numbertype",tempMap.get("cont"));//将流水类型存入，方便后面引用
+				++d_num;
+			} else if ("$T".equals(tempMap.get("type"))) {
+				tempMap.put("value",fomat(tempMap.get("cont")));//时间格式化后存入value中，发生错误则报错：时间格式错误
+				if ("Y".equalsIgnoreCase(tempMap.get("type")!=null?tempMap.get("type"):"Y")) {
+					snno.append(tempMap.get("value"));//加入到snno中
+				}
+			} else if ("$S".equals(tempMap.get("type"))) {
+				tempMap.put("value",tempMap.get("cont"));//固定字符存入value中
+				if ("Y".equalsIgnoreCase(tempMap.get("type")!=null?tempMap.get("type"):"Y")) {
+					snno.append(tempMap.get("cont"));//加入到snno中
+				}
+			} else if ("$D".equals(tempMap.get("type"))) {
+				String d_str = get_DtypeValue(tempMap);
+				tempMap.put("value",d_str);//业务字段存入value中
+				if ("Y".equalsIgnoreCase(tempMap.get("type")!=null?tempMap.get("type"):"Y")) {
+					snno.append(d_str);//加入到snno中
+				}
+			} else {
+				//报错：格式错误
+			}
+		}
+		if(d_num!=1){
+			//报错：规则定义错误，流水类型有且只有一个。
+		}
+		ruleMap.put("snno",snno.tostring());//snno存入
+		return ruleMap;
+	}
+	
+	private String get_DtypeValue(Map map) {
+		if(map==null){
+			return "";
+		}
+		Map contMap = map.get("cont");
+		Map patternMap = contMap.get("pattern");
+		String retStr = getDeclaredFieldValue(contMap.get("field"));//根据contMap.get("field")做java反射获取并执行匹配的po的get方法;
+		int start = contMap.get("start") != null ? contMap.get("start") : 0;
+		int end = contMap.get("end") != null ? contMap.get("end") : retStr.length-1;
+		if(start<0){//支持负数，方便从后截取
+			start = start + retStr.length;
+		}
+		if(end<0){//支持负数，方便从后截取
+			end = end + retStr.length;
+		}
+		retStr = retStr.substr(start,end);
+		if(patternMap!=null){
+			if(patternMap.get(retStr)!=null){
+				retStr = patternMap.get(retStr);
+			}else if(contMap.get("pattern-default")!=null){
+				retStr = contMap.get("pattern-default");
+			}
+		}
+		return retStr;
+	}
+	
+	private String getDeclaredFieldValue(String field){
+		Class clazz = entity.getClass();
+		for (; clazz != Object.class; clazz = clazz.getSuperclass()) {
+			try{
+				Field field = entity.getClass().getDeclaredField(field);//获得属性
+				Object fieldvalue = field.get(entity);
+				break;
+			} catch (Exception e){
+				continue;
+			}
+		}
+		return fieldvalue;
+	}
+}
+
+配置文件中：applicationredis=yes/no
+
+public class SNGeneratorFactory {
+	public static Generator creator(Object entity){//获取执行采番的对象
+		String applicationredis = 配置文件.applicationredis;
+		if("YES".equalsIgnoreCase(applicationredis)){
+			return new SNGeneratorByRedis(entity);
+		}else{
+			return new SNGeneratorByRDS(entity);
+		}
+	}
+}

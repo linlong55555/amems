@@ -1,0 +1,15 @@
+ORACLE --> POSTGRESQL
+ok--1、ora：SYS_GUID()     postgres：uuid_generate_v4()         --create extension "uuid-ossp";
+ok--2、ora：nvl            postgres：COALESCE 
+验证后发现这个好像不是问题 3、固定值列 ora：SELECT '1' AS COL1       postgres：SELECT CAST('1' AS TEXT) AS COL1
+4、类型转换 ora：支持类型自动转换         postgres：不能自动匹配，需要在java和sql的类型匹配
+ok--5、ora：instr       postgres：strpos
+6、ora：START WITH语句  CONNECT BY语句    postgres：WITH RECURSIVE语句
+ok--7、ora：ROWNUM关键字        postgres：生成行号ROW_NUMBER() OVER()    限制结果集数量，用于翻页等SELECT * FROM T LIMIT 5 OFFSET 0
+8、注意to_char    to_number
+ok--9、注意SUBSTR    postgres：不支持负数为参数
+10、每一个子查询都需要给出别名
+11、每一个列如果有别名，必须都加上AS        eq：select xx as name from t
+ok--12、COALESCE 
+ok--13、ora：sysdate      postgres：current_timestamp
+14、ora：wm_concat      postgres：
