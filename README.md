@@ -41,7 +41,7 @@
    
 4.在Eclipe中运行amems项目。<br>
    
-OK，至此，服务端就启动成功了，此时我们直接在地址栏输入http://localhost:8080/amems即可访问我们的项目。<br>
+OK，至此，服务端就启动成功了，此时我们直接在地址栏输入http://localhost:8080/amems 即可访问我们的项目。<br>
    
 文档<br>
 ===
