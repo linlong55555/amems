@@ -27,11 +27,11 @@
    
 3.Oracle<br>
    
-#前端技术栈<br>
+前端技术栈<br>
 --------------
 1.Bootstrap
    
-#快速部署<br>
+快速部署<br>
 =======  
 1.clone项目到本地git@github.com:linlong5555/amems.git。<br>
    
@@ -43,8 +43,8 @@
    
 OK，至此，服务端就启动成功了，此时我们直接在地址栏输入http://localhost:8080/amems即可访问我们的项目。<br>
    
-#文档<br>
+文档<br>
 ===
-   
+
 待完善<br>
    
