@@ -1,6 +1,6 @@
 航空维修工程系统<br>
 ================
-项目地址：https://github.com/linlong5555/amems<br>
+项目地址：https://github.com/linlong55555/amems<br>
 
 提供工程技术、生产计划、计划执行看板、工时管理、数据采集、现场调度、安全质量、航材管理、培训管理、状态监控、决策分析、商务智能等功能，符合CCAR-91、CCAR-135、CCAR-25、CCAR-145等规章要求。<br>
 
@@ -34,7 +34,7 @@
    
 快速部署<br>
 =======  
-1.clone项目到本地git@github.com:linlong5555/amems.git。<br>
+1.clone项目到本地git@github.com:linlong55555/amems.git。<br>
    
 2.数据库脚本放在DB目录下，在Oracle中执行数据库脚本。<br>
    
