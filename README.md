@@ -34,7 +34,7 @@
    
 快速部署<br>
 =======  
-1.clone项目到本地git@github.com:linlong55555/amems.git。<br>
+1.clone项目到本地git@github.com/linlong55555/amems.git。<br>
    
 2.数据库脚本放在DB目录下，在Oracle中执行数据库脚本。<br>
    
